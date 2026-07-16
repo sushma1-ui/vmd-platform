@@ -1,0 +1,44 @@
+---
+import { PRACTICE } from '@vmd/config';
+import { Disclaimer } from '@vmd/ui';
+const cols = [
+  { h: 'Visa Services', links: [['General Skilled Migration','/visa-services/general-skilled-migration/'],['Employer Sponsored','/visa-services/employer-sponsored/'],['Skills Assessments','/visa-services/skills-assessments/'],['Family & Partner','/visa-services/family-partner/'],['Refusals & Appeals','/visa-services/refusals-and-appeals/']] },
+  { h: 'Practice', links: [['About','/about/'],['Sunil Uprety, RMA','/about/sunil-uprety/'],['Our Fees','/about/fees/'],['Contact','/contact/']] },
+  { h: 'Checkable', links: [['MARN 2318234 · OMARA register', PRACTICE.regulator.registerUrl],['Code of Conduct', PRACTICE.regulator.registerUrl],['Complaints & Feedback','/complaints/'],['Client Reviews','/results/reviews/']] },
+  { h: 'Legal', links: [['Privacy Policy','/privacy/'],['Terms','/terms/'],['Accessibility','/accessibility/'],['Sitemap','/sitemap/']] },
+];
+---
+<footer class="footer">
+  <div class="footer__inner">
+    <div class="footer__brand">
+      <p class="footer__name">{PRACTICE.legalName}</p>
+      <p class="footer__nap">{PRACTICE.address.street}, {PRACTICE.address.locality} {PRACTICE.address.region} {PRACTICE.address.postcode}</p>
+      <p class="footer__nap"><a href={`tel:${PRACTICE.contact.phone}`}>{PRACTICE.contact.phoneDisplay}</a> · <a href={`mailto:${PRACTICE.contact.email}`}>{PRACTICE.contact.email}</a></p>
+      <p class="footer__nap">{PRACTICE.principal.name} · Registered Migration Agent · MARN {PRACTICE.principal.marn}</p>
+    </div>
+    {cols.map((c) => (
+      <nav class="footer__col" aria-label={c.h}>
+        <p class="footer__h">{c.h}</p>
+        {c.links.map(([label, href]) => <a class="footer__link" href={href}>{label}</a>)}
+      </nav>
+    ))}
+  </div>
+  <div class="footer__legal">
+    <Disclaimer variant="outcomes" />
+    <p class="footer__copy">© {new Date().getFullYear()} {PRACTICE.legalName}. Bound by the Migration Agents Code of Conduct (OMARA).</p>
+  </div>
+</footer>
+<style>
+  .footer { background: var(--color-ground-deep); color: var(--color-text-inverse); margin-block-start: var(--space-9); }
+  .footer__inner { max-inline-size: var(--container-max); margin-inline: auto; padding: var(--space-8) var(--space-4); display: grid; gap: var(--space-6); grid-template-columns: 1fr; }
+  .footer__name { font-family: var(--font-display); font-size: var(--type-h3); }
+  .footer__nap { font-size: var(--type-body-sm); color: color-mix(in srgb, var(--color-text-inverse) 82%, transparent); margin-block-start: var(--space-1); }
+  .footer__nap a { color: inherit; }
+  .footer__col { display: flex; flex-direction: column; gap: var(--space-2); }
+  .footer__h { font-size: var(--type-caption); letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-emphasis); }
+  .footer__link { color: color-mix(in srgb, var(--color-text-inverse) 88%, transparent); text-decoration: none; font-size: var(--type-body-sm); }
+  .footer__link:hover { color: var(--color-text-inverse); }
+  .footer__legal { max-inline-size: var(--container-max); margin-inline: auto; padding: 0 var(--space-4) var(--space-8); }
+  .footer__copy { font-size: var(--type-caption); color: color-mix(in srgb, var(--color-text-inverse) 70%, transparent); margin-block-start: var(--space-3); }
+  @media (min-width: 768px) { .footer__inner { grid-template-columns: 1.4fr repeat(4, 1fr); } }
+</style>

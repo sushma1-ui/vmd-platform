@@ -1,0 +1,80 @@
+---
+import Base from '../../layouts/Base.astro';
+import { breadcrumbSchema } from '@vmd/seo';
+import { Button, Card, Rule } from '@vmd/ui';
+import { cms } from '../../lib/cms.ts';
+import { pathnameToTrail } from '../../lib/breadcrumbs.ts';
+
+/**
+ * Situations index — the plain-language axis into the platform. Fully CMS-driven from
+ * the Situations collection; each card routes to the ONE canonical [situation] renderer.
+ * People don't think in subclass numbers, so this is the "start where you are" entry.
+ */
+const situations = await cms.situations();
+const trail = pathnameToTrail(Astro.url.pathname);
+const destTitle = (s: any) =>
+  s.destinationService && typeof s.destinationService === 'object' ? s.destinationService.title : 'Your situation';
+---
+
+<Base
+  title="Your situation — find your visa pathway in plain language"
+  description="Not sure of your visa subclass? Start from where you are — married to an Australian, skilled professional, student, employer, on a bridging visa, or refused — and we'll translate it into the right pathway."
+  schemas={[breadcrumbSchema(trail)]}
+>
+  <section class="si-hero">
+    <div class="si-hero__inner">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        {trail.map((t, i) => (
+          <span>{i > 0 && <span aria-hidden="true"> / </span>}<a href={t.path}>{t.name}</a></span>
+        ))}
+      </nav>
+      <p class="eyebrow">The plain-language axis</p>
+      <h1 class="si-hero__title">Which of these is you?</h1>
+      <Rule width="short" />
+      <p class="si-hero__lead">People don't think in subclass numbers. Start from where you are — we'll translate it into the right pathway, and tell you honestly if you're not yet eligible.</p>
+    </div>
+  </section>
+
+  <section class="si-body">
+    {situations.length > 0 ? (
+      <ul class="si-grid">
+        {situations.map((s: any) => (
+          <li>
+            <Card title={s.title} href={`/your-situation/${s.slug}/`} eyebrow={destTitle(s)}>
+              {s.empathyLine ?? 'See the pathways this usually involves.'}
+            </Card>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <div class="si-empty">Situation guides appear here as they're published in the CMS. In the meantime, the free Health Check will point you to the right pathway.</div>
+    )}
+
+    <div class="si-cta">
+      <p>Not sure which fits?</p>
+      <Button variant="primary" href="/health-check/">Take the free Visa Health Check</Button>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .crumbs { font-size: var(--type-caption); color: var(--color-text-muted); margin-block-end: var(--space-4); }
+  .crumbs a { color: inherit; text-decoration: none; }
+  .crumbs a:hover { border-block-end: 1px solid var(--color-emphasis); }
+  .eyebrow { font-size: var(--type-caption); letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-text-muted); }
+
+  .si-hero { background: var(--color-ground-warm); }
+  .si-hero__inner { max-inline-size: var(--container-max); margin-inline: auto; padding: var(--space-7) var(--space-4); }
+  .si-hero__title { font-size: var(--type-display-1); line-height: var(--leading-display-1); margin-block: var(--space-2) 0; }
+  .si-hero__lead { font-size: var(--type-body-lg); line-height: 1.5; margin-block-start: var(--space-3); max-inline-size: 60ch; }
+
+  .si-body { max-inline-size: var(--container-max); margin-inline: auto; padding: var(--space-8) var(--space-4); }
+  .si-grid { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--space-4); grid-template-columns: 1fr; }
+  .si-empty { border: 1px dashed color-mix(in srgb, var(--color-emphasis) 55%, transparent); border-radius: var(--radius-card); padding: var(--space-5); color: var(--color-text-muted); }
+
+  .si-cta { margin-block-start: var(--space-7); display: flex; flex-direction: column; gap: var(--space-3); align-items: flex-start; }
+  .si-cta p { font-size: var(--type-body-lg); color: var(--color-text-muted); }
+
+  @media (min-width: 640px) { .si-grid { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 1024px) { .si-grid { grid-template-columns: repeat(3, 1fr); } }
+</style>

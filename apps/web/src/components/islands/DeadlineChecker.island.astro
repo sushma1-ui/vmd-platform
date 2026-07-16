@@ -1,0 +1,48 @@
+---
+/**
+ * Deadline Checker (Blueprint §7.2). Amber utility. Turns a decision-letter date
+ * into an urgency prompt — general information only, urging immediate verification.
+ * It NEVER asserts the user's specific legal deadline.
+ */
+---
+<div class="dc" data-dc>
+  <div class="dc__head">
+    <span class="dc__icon" aria-hidden="true">!</span>
+    <div>
+      <p class="dc__title">Deadline checker</p>
+      <p class="dc__sub">Review time limits are short and strict. Enter the date on your decision letter.</p>
+    </div>
+  </div>
+  <label class="dc__label" for="dc-date">Date on your decision letter</label>
+  <input class="dc__input" id="dc-date" type="date" data-dc-date />
+  <div class="dc__result" data-dc-result hidden role="status"></div>
+  <p class="dc__disc">Review time limits vary by decision type — sometimes as little as 7 days. This is general information, not advice about your case. Confirm your exact deadline immediately.</p>
+  <a class="dc__cta" href="#second-opinion">Request a Second Opinion →</a>
+</div>
+<style>
+  .dc { border: 1px solid var(--color-caution); border-radius: var(--radius-card); padding: var(--space-4); background: color-mix(in srgb, var(--color-caution) 8%, var(--color-ground-light)); }
+  .dc__head { display: flex; gap: var(--space-3); align-items: start; margin-block-end: var(--space-3); }
+  .dc__icon { flex: none; inline-size: var(--space-5); block-size: var(--space-5); display: grid; place-items: center; border-radius: var(--radius-chip); background: var(--color-caution); color: var(--color-text-inverse); font-weight: 700; }
+  .dc__title { font-family: var(--font-display); font-size: var(--type-h3); color: var(--color-action); margin: 0; }
+  .dc__sub { font-size: var(--type-body-sm); color: var(--color-text); margin: var(--space-1) 0 0; }
+  .dc__label { display: block; font-weight: 500; margin-block: var(--space-2) var(--space-1); }
+  .dc__input { min-block-size: calc(var(--space-6) + var(--space-2)); padding-inline: var(--space-3); border: 1px solid var(--color-text-muted); border-radius: var(--radius-control); font-size: var(--type-body); }
+  .dc__result { margin-block-start: var(--space-3); padding: var(--space-3); border-inline-start: 3px solid var(--color-caution); background: var(--color-ground-light); font-size: var(--type-body); }
+  .dc__disc { font-size: var(--type-body-sm); color: var(--color-text-muted); margin-block: var(--space-3); }
+  .dc__cta { color: var(--color-action); border-block-end: 1px solid var(--color-emphasis); text-decoration: none; }
+</style>
+<script>
+  const root = document.querySelector('[data-dc]');
+  if (root) {
+    const input = root.querySelector('[data-dc-date]');
+    const out = root.querySelector('[data-dc-result]');
+    const fmt = (iso) => new Date(iso + 'T00:00:00').toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
+    const addDays = (iso, n) => { const d = new Date(iso + 'T00:00:00'); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
+    input.addEventListener('change', () => {
+      if (!input.value) { out.hidden = true; return; }
+      const earliest = addDays(input.value, 7);
+      out.innerHTML = `Based on a decision date of <strong>${fmt(input.value)}</strong>, a review window could close <strong>as early as ${fmt(earliest)}</strong>. Time limits are short — check today.`;
+      out.hidden = false;
+    });
+  }
+</script>

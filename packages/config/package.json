@@ -1,0 +1,28 @@
+{
+  "name": "@vmd/config",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Foundation package. Depends on nothing. Shared tsconfig, ESLint, Prettier, environment schema, and the three or four genuinely cross-cutting constants. There is no utils junk drawer — see ARCHITECTURE.md §2.5.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./env": "./src/env.ts",
+    "./tsconfig.base.json": "./tsconfig.base.json",
+    "./eslint": "./eslint/index.js",
+    "./prettier": "./prettier/index.js"
+  },
+  "scripts": {
+    "build": "echo \"@vmd/config is source-only; nothing to build\"",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.13.0",
+    "typescript-eslint": "^8.11.0",
+    "eslint-plugin-astro": "^1.3.0",
+    "eslint": "^9.13.0"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "name": "@vmd/ui",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Primitives + patterns, framework-light. Consumes @vmd/tokens ONLY. Accessibility lives here so it is inherited, not reimplemented per page. Icons/illustrations are assets, not tokens.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./styles/base.css": "./src/styles/base.css"
+  },
+  "scripts": {
+    "build": "echo source-only",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@vmd/tokens": "workspace:*",
+    "@vmd/config": "workspace:*"
+  },
+  "peerDependencies": {
+    "astro": "^4.0.0"
+  }
+}

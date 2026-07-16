@@ -1,0 +1,83 @@
+---
+import Base from '../../layouts/Base.astro';
+import { breadcrumbSchema } from '@vmd/seo';
+import { Button, Card, Rule } from '@vmd/ui';
+import { getSettings } from '../../lib/cms.ts';
+import { pathnameToTrail } from '../../lib/breadcrumbs.ts';
+import type { SiteSettings } from '@vmd/schema';
+
+/**
+ * Results hub — the "evidence, not testimony" entry. Three surfaces, ordered by weight of
+ * proof: the Grant Ledger (record), Case Studies (worked matters), Reviews (third-party
+ * corroboration). The aggregate rating is DATA from Settings, shown only when present.
+ */
+const settings: SiteSettings | null = await getSettings();
+const gr = settings?.googleReviews;
+const trail = pathnameToTrail(Astro.url.pathname);
+---
+
+<Base
+  title="Results — evidence, not testimony"
+  description="How we show our work: a dated Grant Ledger, anonymised case studies, and verified Google reviews. Evidence you can check — no success rates, no cherry-picked promises."
+  schemas={[breadcrumbSchema(trail)]}
+>
+  <section class="rs-hero">
+    <div class="rs-hero__inner">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        {trail.map((t, i) => (<span>{i > 0 && <span aria-hidden="true"> / </span>}<a href={t.path}>{t.name}</a></span>))}
+      </nav>
+      <p class="eyebrow">Evidence, not testimony</p>
+      <h1 class="rs-hero__title">How we show our work</h1>
+      <Rule width="short" />
+      <p class="rs-hero__lead">The only differentiation that survives scrutiny is the kind that visibly costs us something. So instead of promises, we publish a record — dated, anonymised, and checkable.</p>
+      {gr?.rating && gr?.count && (
+        <p class="rs-hero__agg">{gr.rating.toFixed(1)} ★ from {gr.count} verified Google reviews</p>
+      )}
+    </div>
+  </section>
+
+  <section class="rs-body">
+    <ul class="rs-grid">
+      <li>
+        <Card title="Grant Ledger" href="/results/grant-ledger/" eyebrow="A record">
+          Dated, anonymised, subclass-tagged grants and favourable reviews. A testimonial is an opinion we chose; a ledger is a record.
+        </Card>
+      </li>
+      <li>
+        <Card title="Case studies" href="/results/case-studies/" eyebrow="Worked matters">
+          Anonymised problem → approach → outcome. How real matters were worked — no names, no photos, no success rates.
+        </Card>
+      </li>
+      <li>
+        <Card title="Client reviews" href="/results/reviews/" eyebrow="Third parties speak">
+          Verified Google reviews, placed after the evidence so they read as corroboration rather than advertising.
+        </Card>
+      </li>
+    </ul>
+
+    <div class="rs-cta">
+      <p>Rather see where you stand yourself?</p>
+      <Button variant="primary" href="/health-check/">Take the free Visa Health Check</Button>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .crumbs { font-size: var(--type-caption); color: var(--color-text-muted); margin-block-end: var(--space-4); }
+  .crumbs a { color: inherit; text-decoration: none; }
+  .crumbs a:hover { border-block-end: 1px solid var(--color-emphasis); }
+  .eyebrow { font-size: var(--type-caption); letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-text-muted); }
+
+  .rs-hero { background: var(--color-ground-warm); }
+  .rs-hero__inner { max-inline-size: var(--container-max); margin-inline: auto; padding: var(--space-7) var(--space-4); }
+  .rs-hero__title { font-size: var(--type-display-1); line-height: var(--leading-display-1); margin-block: var(--space-2) 0; }
+  .rs-hero__lead { font-size: var(--type-body-lg); line-height: 1.5; margin-block: var(--space-3) var(--space-3); max-inline-size: 60ch; }
+  .rs-hero__agg { font-size: var(--type-body-lg); color: var(--color-action); font-weight: 500; }
+
+  .rs-body { max-inline-size: var(--container-max); margin-inline: auto; padding: var(--space-8) var(--space-4); }
+  .rs-grid { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--space-4); grid-template-columns: 1fr; }
+  .rs-cta { margin-block-start: var(--space-7); display: flex; flex-direction: column; gap: var(--space-3); align-items: flex-start; }
+  .rs-cta p { font-size: var(--type-body-lg); color: var(--color-text-muted); }
+
+  @media (min-width: 720px) { .rs-grid { grid-template-columns: repeat(3, 1fr); } }
+</style>

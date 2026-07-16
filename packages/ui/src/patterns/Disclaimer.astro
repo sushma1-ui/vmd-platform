@@ -1,0 +1,24 @@
+---
+/**
+ * Disclaimer — a DESIGNED component, never fine print (Blueprint §11.2). body-sm,
+ * full AA, gold left rule, generous padding. Identical everywhere. A disclaimer set
+ * with confidence *is* the trust signal.
+ */
+import { DISCLAIMERS } from '@vmd/config';
+interface Props { variant?: 'outcomes' | 'generalInformation'; class?: string }
+const { variant = 'generalInformation', class: className = '' } = Astro.props;
+const text = DISCLAIMERS[variant];
+---
+<aside class:list={['disclaimer', className]}>
+  <slot>{text}</slot>
+</aside>
+<style>
+  .disclaimer {
+    border-inline-start: 3px solid var(--color-emphasis);
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--type-body-sm);
+    line-height: 1.6;
+    color: var(--color-text);
+    background: var(--color-ground-warm);
+  }
+</style>

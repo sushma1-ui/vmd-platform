@@ -1,0 +1,191 @@
+---
+import Base from '../../layouts/Base.astro';
+import { breadcrumbSchema, faqSchema } from '@vmd/seo';
+import { PRACTICE } from '@vmd/config';
+import { Button, Rule, Disclaimer } from '@vmd/ui';
+import { cms } from '../../lib/cms.ts';
+import { lexicalToHtml } from '../../lib/lexical.ts';
+import { pathnameToTrail } from '../../lib/breadcrumbs.ts';
+import PathwayGrid from '../../components/content/service/PathwayGrid.astro';
+
+/**
+ * ONE canonical Situation hub for every entry in the Situations collection. The axis is
+ * plain-language ("I married an Australian"); the page translates that into the right
+ * pathway. Everything substantive — the pathways, the FAQs — is COMPOSED from the linked
+ * destination Service, never duplicated here. The Situations collection stays thin
+ * (title · slug · empathyLine · destinationService) by design; enriching it is an ADR.
+ */
+export async function getStaticPaths() {
+  const situations = await cms.situations();
+  return situations
+    .filter((s: any) => s.slug)
+    .map((s: any) => ({ params: { situation: s.slug }, props: { situation: s } }));
+}
+
+const { situation } = Astro.props;
+const path = Astro.url.pathname;
+const strip = (h: string) => h.replace(/<[^>]+>/g, '').trim();
+
+// Resolve the destination Service to its full record so pathways + FAQs are populated.
+const dest = situation.destinationService;
+const destSlug = dest && typeof dest === 'object' ? dest.slug : null;
+const service = destSlug ? await cms.serviceBySlug(destSlug) : dest && typeof dest === 'object' ? dest : null;
+
+const pathways = service?.id ? await cms.subclassesForService(service.id) : [];
+const faqs = service?.faqs?.length ? service.faqs : [];
+const personas = service?.personas ?? [];
+
+const trail = pathnameToTrail(path);
+const schemas = [
+  breadcrumbSchema(trail),
+  ...(faqs.length
+    ? [faqSchema(faqs.map((f: any) => ({ question: f.question, answer: strip(lexicalToHtml(f.answer)) })))]
+    : []),
+];
+---
+
+<Base
+  title={`${situation.title} — your visa pathway`}
+  description={situation.empathyLine ?? `${situation.title} — the visa pathways this usually involves, and honest guidance from a Registered Migration Agent in Perth.`}
+  schemas={schemas}
+>
+  <!-- 1 · HERO -->
+  <section class="st-hero">
+    <div class="st-hero__inner">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        {trail.map((t, i) => (
+          <span>{i > 0 && <span aria-hidden="true"> / </span>}<a href={t.path}>{t.name}</a></span>
+        ))}
+      </nav>
+      <p class="eyebrow">Your situation</p>
+      <h1 class="st-hero__title">{situation.title}</h1>
+      <Rule width="short" />
+      {situation.empathyLine && <p class="st-hero__lead">{situation.empathyLine}</p>}
+      <div class="st-hero__cta">
+        <Button variant="primary" href="/health-check/">Free Visa Health Check</Button>
+        <Button variant="secondary" href="/book/">Book a consultation</Button>
+      </div>
+    </div>
+  </section>
+
+  <div class="st-body">
+    <!-- 2 · WHERE THIS POINTS — the translation into a Service -->
+    {service ? (
+      <section class="st-sec">
+        <h2 class="st-h">Where this usually points</h2>
+        <p class="st-sub">Situations aren't visa subclasses. Here's the service this most often maps to — the same page anyone in your position would land on.</p>
+        <a class="st-dest" href={`/visa-services/${service.slug}/`}>
+          <span class="st-dest__eyebrow">Recommended service</span>
+          <span class="st-dest__title">{service.title}</span>
+          {(service.valueProposition || service.summary) && (
+            <span class="st-dest__line">{service.valueProposition ?? service.summary}</span>
+          )}
+          <span class="st-dest__more">See the full service →</span>
+        </a>
+      </section>
+    ) : (
+      <section class="st-sec">
+        <div class="st-empty">The recommended service for this situation appears here once it's linked in the CMS. In the meantime, the free Health Check will point you to the right pathway.</div>
+      </section>
+    )}
+
+    <!-- 3 · WHO THIS SUITS (composed from the Service's personas) -->
+    {personas.length > 0 && (
+      <section class="st-sec section--bone">
+        <div class="st-sec__inner">
+          <h2 class="st-h">Is this you?</h2>
+          <div class="st-personas">
+            {personas.map((p: any, i: number) => (
+              <details class="st-disc" open={i === 0}><summary>{p.title}</summary><p>{p.description}</p></details>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- 4 · PATHWAYS (composed from Subclasses, via the shared PathwayGrid) -->
+    {service && (
+      <section class="st-sec">
+        <h2 class="st-h">The visa pathways this usually involves</h2>
+        <p class="st-sub">Not sure which is yours? Take the free Health Check, or compare them below.</p>
+        <PathwayGrid pathways={pathways} serviceSlug={service.slug} />
+      </section>
+    )}
+
+    <!-- 5 · FAQ (composed from the Service's FAQs) -->
+    {faqs.length > 0 && (
+      <section class="st-sec section--bone">
+        <div class="st-sec__inner">
+          <h2 class="st-h">Common questions</h2>
+          <div class="st-faq">
+            {faqs.map((f: any) => (
+              <details class="st-disc"><summary>{f.question}</summary><div class="st-rt" set:html={lexicalToHtml(f.answer)} /></details>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <section class="st-sec st-sec--tight">
+      <Disclaimer variant="generalInformation" />
+    </section>
+  </div>
+
+  <!-- 6 · CONVERSION -->
+  <section class="band">
+    <div class="band__inner band__inner--center">
+      <h2 class="band__h">Not sure this is quite your situation?</h2>
+      <p class="band__lead">Ninety seconds, six questions, a real answer — including if you're not yet eligible. You'll speak to {PRACTICE.principal.name}, RMA (MARN {PRACTICE.principal.marn}), not a salesperson.</p>
+      <div class="band__cta">
+        <Button variant="primary" href="/health-check/">Start your free Health Check</Button>
+        <Button variant="secondary" href="/contact/">Contact the practice</Button>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .crumbs { font-size: var(--type-caption); color: var(--color-text-muted); margin-block-end: var(--space-4); }
+  .crumbs a { color: inherit; text-decoration: none; }
+  .crumbs a:hover { border-block-end: 1px solid var(--color-emphasis); }
+  .eyebrow { font-size: var(--type-caption); letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-text-muted); }
+
+  .st-hero { background: var(--color-ground-warm); }
+  .st-hero__inner { max-inline-size: var(--container-max); margin-inline: auto; padding: var(--space-7) var(--space-4); }
+  .st-hero__title { font-size: var(--type-display-1); line-height: var(--leading-display-1); margin-block: var(--space-2) 0; }
+  .st-hero__lead { font-size: var(--type-body-lg); line-height: 1.5; margin-block: var(--space-3) var(--space-4); max-inline-size: 56ch; }
+  .st-hero__cta { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+
+  .st-body { max-inline-size: var(--container-max); margin-inline: auto; }
+  .st-sec { padding: var(--space-8) var(--space-4); }
+  .st-sec--tight { padding-block: var(--space-4); }
+  .section--bone { background: var(--color-ground-warm); }
+  .st-sec__inner { max-inline-size: var(--container-max); margin-inline: auto; }
+  .st-h { font-size: var(--type-h2); margin-block-end: var(--space-4); }
+  .st-sub { font-size: var(--type-body-lg); color: var(--color-text-muted); margin-block-end: var(--space-5); max-inline-size: 60ch; }
+
+  .st-dest { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-5); border: 1px solid color-mix(in srgb, var(--color-action) 12%, transparent); border-radius: var(--radius-card); background: var(--color-ground-light); text-decoration: none; transition: border-color var(--motion-fast) var(--ease-standard), transform var(--motion-fast) var(--ease-standard); }
+  .st-dest:hover { border-color: var(--color-emphasis); transform: translateY(-2px); }
+  .st-dest__eyebrow { font-size: var(--type-caption); text-transform: uppercase; letter-spacing: 0.03em; color: var(--color-text-muted); }
+  .st-dest__title { font-family: var(--font-display); font-size: var(--type-h3); color: var(--color-action); }
+  .st-dest__line { font-size: var(--type-body); color: var(--color-text); line-height: 1.55; max-inline-size: 60ch; }
+  .st-dest__more { font-size: var(--type-body-sm); color: var(--color-action); border-block-end: 1px solid var(--color-emphasis); align-self: flex-start; }
+
+  .st-personas, .st-faq { display: grid; gap: var(--space-2); }
+  .st-disc { border: 1px solid color-mix(in srgb, var(--color-action) 12%, transparent); border-radius: var(--radius-card); padding: var(--space-3) var(--space-4); }
+  .st-disc summary { cursor: pointer; font-weight: 500; font-size: var(--type-h4); color: var(--color-action); }
+  .st-disc p, .st-rt { margin-block-start: var(--space-2); line-height: 1.65; }
+
+  .st-empty { border: 1px dashed color-mix(in srgb, var(--color-emphasis) 55%, transparent); border-radius: var(--radius-card); padding: var(--space-5); color: var(--color-text-muted); }
+
+  .band { background: var(--color-action); }
+  .band__inner { max-inline-size: var(--container-max); margin-inline: auto; padding: var(--space-8) var(--space-4); }
+  .band__inner--center { text-align: center; display: flex; flex-direction: column; align-items: center; gap: var(--space-3); }
+  .band__h { font-size: var(--type-h2); color: var(--color-text-inverse); }
+  .band__lead { font-size: var(--type-body-lg); color: color-mix(in srgb, var(--color-text-inverse) 86%, transparent); max-inline-size: 60ch; }
+  .band__cta { display: flex; flex-wrap: wrap; gap: var(--space-3); justify-content: center; }
+
+  @media (min-width: 900px) {
+    .st-personas, .st-faq { grid-template-columns: 1fr; }
+  }
+</style>

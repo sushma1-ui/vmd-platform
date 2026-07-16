@@ -1,0 +1,10 @@
+{
+  "name": "@vmd/auth",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Admin (Payload) + client (Supabase) auth helpers. RBAC predicates for the CMS; Supabase session helpers for the 3 client routes.",
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "scripts": { "build": "echo source-only", "typecheck": "tsc --noEmit", "lint": "eslint ." },
+  "dependencies": { "@vmd/config": "workspace:*" }
+}

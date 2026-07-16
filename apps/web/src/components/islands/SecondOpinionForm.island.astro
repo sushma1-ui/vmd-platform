@@ -1,0 +1,58 @@
+---
+/**
+ * Second Opinion priority intake (Blueprint §9.4). Decision-letter date first; mobile
+ * required; free-text is dignity. Posts to /api/second-opinion. No exit-intent, no
+ * popups anywhere near this — the person is in distress.
+ */
+---
+<form class="so" id="second-opinion" data-so novalidate>
+  <p class="so__flag">Priority · flagged for a one-business-day response</p>
+  <div class="so__grid">
+    <div class="so__field"><label for="so-date">Date on your decision letter</label><input id="so-date" name="decisionDate" type="date" /></div>
+    <div class="so__field"><label for="so-sub">Visa subclass (if known)</label><input id="so-sub" name="subclass" placeholder="e.g. 600, 500, 190" /></div>
+    <div class="so__field"><label for="so-name">First name</label><input id="so-name" name="firstName" autocomplete="given-name" required /></div>
+    <div class="so__field"><label for="so-email">Email</label><input id="so-email" name="email" type="email" inputmode="email" autocomplete="email" required /></div>
+    <div class="so__field"><label for="so-mobile">Mobile</label><input id="so-mobile" name="mobile" type="tel" inputmode="tel" autocomplete="tel" required /></div>
+    <div class="so__field"><label for="so-lodged">Already lodged a review?</label>
+      <select id="so-lodged" name="alreadyLodged"><option value="not-sure">Not sure</option><option value="no">No</option><option value="yes">Yes</option></select>
+    </div>
+  </div>
+  <div class="so__field"><label for="so-msg">Tell us what happened</label><textarea id="so-msg" name="message" rows="4"></textarea></div>
+  <label class="so__consent"><input type="checkbox" name="sensitive" /> I understand this may involve sensitive personal information and that this is general information, not migration advice until we are engaged.</label>
+  <p class="so__err" data-so-err role="alert" hidden></p>
+  <button class="so__submit" type="submit">Request a Second Opinion</button>
+  <div class="so__ok" data-so-ok hidden role="status">Received. Sunil will review this and reply — priority matters within one business day.</div>
+</form>
+<style>
+  .so { border: 1px solid color-mix(in srgb, var(--color-action) 14%, transparent); border-radius: var(--radius-card); padding: var(--space-5); background: var(--color-ground-light); }
+  .so__flag { font-size: var(--type-caption); letter-spacing: 0.04em; text-transform: uppercase; color: var(--color-critical); margin: 0 0 var(--space-4); }
+  .so__grid { display: grid; gap: var(--space-3); grid-template-columns: 1fr; }
+  .so__field { display: flex; flex-direction: column; gap: var(--space-1); margin-block-end: var(--space-3); }
+  .so__field label { font-weight: 500; font-size: var(--type-body-sm); }
+  .so input, .so select, .so textarea { min-block-size: calc(var(--space-6) + var(--space-2)); padding: var(--space-2) var(--space-3); border: 1px solid var(--color-text-muted); border-radius: var(--radius-control); font-size: var(--type-body); font-family: var(--font-body); }
+  .so textarea { min-block-size: auto; }
+  .so__consent { display: flex; gap: var(--space-2); align-items: start; font-size: var(--type-body-sm); color: var(--color-text-muted); margin-block: var(--space-3); }
+  .so__submit { min-block-size: var(--space-6); padding-inline: var(--space-4); background: var(--color-action); color: var(--color-text-inverse); border: 0; border-radius: var(--radius-control); font-size: var(--type-body); font-weight: 500; cursor: pointer; }
+  .so__err { color: var(--color-critical); font-size: var(--type-body-sm); }
+  .so__ok { margin-block-start: var(--space-4); border-inline-start: 3px solid var(--color-success); background: color-mix(in srgb, var(--color-success) 8%, var(--color-ground-light)); padding: var(--space-3) var(--space-4); }
+  @media (min-width: 640px) { .so__grid { grid-template-columns: 1fr 1fr; } }
+</style>
+<script>
+  const form = document.querySelector('[data-so]');
+  if (form) {
+    const err = form.querySelector('[data-so-err]');
+    const ok = form.querySelector('[data-so-ok]');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      err.hidden = true;
+      const fd = new FormData(form);
+      const payload = Object.fromEntries(fd.entries());
+      payload.hasDocument = false;
+      payload.sensitiveInfoAcknowledged = fd.get('sensitive') === 'on';
+      if (!payload.firstName || !payload.email || !payload.mobile) { err.textContent = 'Please enter your name, email and mobile so we can respond quickly.'; err.hidden = false; return; }
+      try { await fetch('/api/second-opinion', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(payload) }); } catch (_) {}
+      form.querySelectorAll('input,select,textarea,button').forEach((el) => (el.disabled = true));
+      ok.hidden = false;
+    });
+  }
+</script>

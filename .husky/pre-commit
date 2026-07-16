@@ -1,0 +1,2 @@
+pnpm exec lint-staged 2>/dev/null || pnpm run format:check
+pnpm run stylelint

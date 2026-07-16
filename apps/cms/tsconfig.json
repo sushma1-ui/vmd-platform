@@ -1,0 +1,30 @@
+{
+  "extends": "@vmd/config/tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "jsx": "preserve",
+    "baseUrl": ".",
+    "paths": {
+      "@payload-config": [
+        "./payload.config.ts"
+      ]
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "allowJs": true,
+    "incremental": true
+  },
+  "include": [
+    "src",
+    "payload.config.ts",
+    "next-env.d.ts",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    ".next"
+  ]
+}

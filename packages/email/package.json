@@ -1,0 +1,19 @@
+{
+  "name": "@vmd/email",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Postmark templates + send. One public function, sendTransactional(); swapping providers touches internals only (ARCHITECTURE.md \u00a74.4 Scenario C).",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "echo source-only",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@vmd/schema": "workspace:*",
+    "@vmd/config": "workspace:*"
+  }
+}

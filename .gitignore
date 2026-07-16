@@ -1,0 +1,21 @@
+# deps
+node_modules/
+.pnpm-store/
+# builds
+dist/
+build/
+.next/
+.astro/
+.turbo/
+# tokens generated artifacts are committed? No — generated at build.
+packages/tokens/dist/
+# env
+.env
+.env.*
+!.env.example
+# os / editor
+.DS_Store
+*.log
+coverage/
+playwright-report/
+test-results/

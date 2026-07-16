@@ -1,0 +1,129 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { breadcrumbSchema } from '@vmd/seo';
+import { Button, Rule, TrustStrip } from '@vmd/ui';
+import { cms, getSettings } from '../../../lib/cms.ts';
+import { pathnameToTrail } from '../../../lib/breadcrumbs.ts';
+import type { PinnedReview, Testimonial, SiteSettings } from '@vmd/schema';
+
+/**
+ * Client Reviews — third parties speak. The 5.0★/N aggregate is DATA from the Settings
+ * global (never hardcoded); pinned reviews are real, consented Google reviews only;
+ * testimonials are first-party, consented, dated quotes (a distinct collection). All
+ * degrade to honest empty states when the CMS has nothing yet.
+ */
+const settings: SiteSettings | null = await getSettings();
+const gr = settings?.googleReviews;
+const pinned: PinnedReview[] = await cms.pinnedReviews();
+const testimonials: Testimonial[] = await cms.testimonials();
+const trail = pathnameToTrail(Astro.url.pathname);
+const stars = (n?: number) => (n ? '★'.repeat(Math.round(n)) : '');
+const tYear = (iso?: string) => {
+  if (!iso) return '';
+  const d = new Date(iso);
+  return isNaN(d.getTime()) ? '' : String(d.getFullYear());
+};
+---
+
+<Base
+  title="Client reviews — verified Google reviews"
+  description="Verified Google reviews for Visa & Migration Doctors, Perth. Placed after the evidence and the person, reviews read as corroboration — not advertising."
+  schemas={[breadcrumbSchema(trail)]}
+>
+  <section class="rv-hero">
+    <div class="rv-hero__inner">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        {trail.map((t, i) => (<span>{i > 0 && <span aria-hidden="true"> / </span>}<a href={t.path}>{t.name}</a></span>))}
+      </nav>
+      <p class="eyebrow">Attested — third parties speak</p>
+      {gr?.rating && gr?.count ? (
+        <h1 class="rv-hero__title">{gr.rating.toFixed(1)} ★ from {gr.count} verified Google reviews</h1>
+      ) : (
+        <h1 class="rv-hero__title">Verified client reviews</h1>
+      )}
+      <Rule width="short" />
+      <p class="rv-hero__lead">Placed here — after the evidence and the person — reviews read as corroboration, not advertising. Every one is a real, verified Google review.</p>
+      <TrustStrip rating={gr?.rating} reviewCount={gr?.count} reviewUrl={gr?.profileUrl ?? '/results/reviews/'} />
+      {gr?.profileUrl && (
+        <p class="rv-hero__link"><a href={gr.profileUrl} rel="noopener" target="_blank">Read every review on Google →</a></p>
+      )}
+    </div>
+  </section>
+
+  <section class="rv-body">
+    {pinned.length > 0 ? (
+      <ul class="rv-grid">
+        {pinned.map((r) => (
+          <li class="rv-card">
+            {r.rating && <p class="rv-card__stars" aria-label={`${r.rating} out of 5`}>{stars(r.rating)}</p>}
+            {r.text && <blockquote class="rv-card__quote">{r.text}</blockquote>}
+            <p class="rv-card__by">{r.reviewerName}</p>
+            {r.googleReviewUrl && <a class="rv-card__src" href={r.googleReviewUrl} rel="noopener" target="_blank">View on Google →</a>}
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <div class="rv-embed">Selected, consented Google reviews appear here once pinned in the CMS. The live Google embed is wired to the Business Profile in Settings — no fabricated quotes.</div>
+    )}
+
+    <div class="rv-cta">
+      <p>Prefer an honest read on your own case first?</p>
+      <Button variant="primary" href="/book/">Book a consultation</Button>
+    </div>
+  </section>
+
+  {testimonials.length > 0 && (
+    <section class="rv-testi">
+      <div class="rv-testi__inner">
+        <p class="eyebrow">In their words</p>
+        <h2 class="rv-testi__h">Client testimonials</h2>
+        <p class="rv-testi__sub">First-party, consented and dated — distinct from the Google reviews above.</p>
+        <ul class="rv-grid">
+          {testimonials.map((t) => (
+            <li class="rv-card">
+              <blockquote class="rv-card__quote">{t.quote}</blockquote>
+              <p class="rv-card__by">
+                {t.name}{t.situation && <span class="rv-card__ctx"> · {t.situation}</span>}{tYear(t.date) && <span class="rv-card__ctx"> · {tYear(t.date)}</span>}
+              </p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+</Base>
+
+<style>
+  .crumbs { font-size: var(--type-caption); color: var(--color-text-muted); margin-block-end: var(--space-4); }
+  .crumbs a { color: inherit; text-decoration: none; }
+  .crumbs a:hover { border-block-end: 1px solid var(--color-emphasis); }
+  .eyebrow { font-size: var(--type-caption); letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-text-muted); }
+
+  .rv-hero { background: var(--color-ground-warm); }
+  .rv-hero__inner { max-inline-size: var(--container-max); margin-inline: auto; padding: var(--space-7) var(--space-4); }
+  .rv-hero__title { font-size: var(--type-display-2); line-height: var(--leading-display-1); margin-block: var(--space-2) 0; }
+  .rv-hero__lead { font-size: var(--type-body-lg); line-height: 1.5; margin-block: var(--space-3) var(--space-4); max-inline-size: 58ch; }
+  .rv-hero__link { margin-block-start: var(--space-3); }
+  .rv-hero__link a { color: var(--color-action); border-block-end: 1px solid var(--color-emphasis); text-decoration: none; }
+
+  .rv-body { max-inline-size: var(--container-max); margin-inline: auto; padding: var(--space-8) var(--space-4); }
+  .rv-grid { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--space-4); grid-template-columns: 1fr; }
+  .rv-card { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-4); border: 1px solid color-mix(in srgb, var(--color-action) 9%, transparent); border-radius: var(--radius-card); background: var(--color-ground-light); }
+  .rv-card__stars { color: var(--color-emphasis); letter-spacing: 0.1em; }
+  .rv-card__quote { margin: 0; font-size: var(--type-body); line-height: 1.6; color: var(--color-text); }
+  .rv-card__by { font-weight: 500; color: var(--color-action); }
+  .rv-card__src { font-size: var(--type-body-sm); color: var(--color-action); border-block-end: 1px solid var(--color-emphasis); text-decoration: none; align-self: flex-start; }
+
+  .rv-embed { border: 1px dashed color-mix(in srgb, var(--color-emphasis) 55%, transparent); border-radius: var(--radius-card); padding: var(--space-6); color: var(--color-text-muted); font-size: var(--type-body-sm); }
+  .rv-cta { margin-block-start: var(--space-7); display: flex; flex-direction: column; gap: var(--space-3); align-items: flex-start; }
+  .rv-cta p { font-size: var(--type-body-lg); color: var(--color-text-muted); }
+
+  .rv-testi { background: var(--color-ground-warm); }
+  .rv-testi__inner { max-inline-size: var(--container-max); margin-inline: auto; padding: var(--space-8) var(--space-4); }
+  .rv-testi__h { font-size: var(--type-h2); margin-block: var(--space-2) 0; }
+  .rv-testi__sub { font-size: var(--type-body-lg); color: var(--color-text-muted); margin-block: var(--space-2) var(--space-5); max-inline-size: 58ch; }
+  .rv-card__ctx { color: var(--color-text-muted); font-weight: 400; }
+
+  @media (min-width: 640px) { .rv-grid { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 1024px) { .rv-grid { grid-template-columns: repeat(3, 1fr); } }
+</style>

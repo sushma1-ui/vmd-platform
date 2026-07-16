@@ -1,0 +1,7 @@
+/* Self-hosted WOFF2 (Fontsource) — no render-blocking external request (§17.2).
+   Cormorant Garamond: display/wordmark. Hanken Grotesk: UI/body/data + the 800 monogram. */
+@import '@fontsource/cormorant-garamond/500.css';
+@import '@fontsource/cormorant-garamond/600.css';
+@import '@fontsource/hanken-grotesk/400.css';
+@import '@fontsource/hanken-grotesk/500.css';
+@import '@fontsource/hanken-grotesk/800.css';

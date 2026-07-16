@@ -1,0 +1,11 @@
+---
+import Base from '../layouts/Base.astro';
+import { Button } from '@vmd/ui';
+---
+<Base title="Page not found" description="That page doesn't exist." noindex={true}>
+  <section style="max-inline-size: var(--container-prose); margin-inline: auto; padding: var(--space-9) var(--space-4);">
+    <h1 style="font-size: var(--type-display-2);">We couldn't find that page.</h1>
+    <p style="font-size: var(--type-body-lg); margin-block: var(--space-3) var(--space-5);">Try the Visa Health Check, or search from the navigation.</p>
+    <Button variant="primary" href="/health-check/">Start the Visa Health Check</Button>
+  </section>
+</Base>

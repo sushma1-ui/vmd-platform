@@ -1,0 +1,19 @@
+---
+import Client from '../../layouts/Client.astro';
+import { PRACTICE } from '@vmd/config';
+export const prerender = false;
+const user = (Astro.locals as any).user;
+---
+<Client title="Support" user={user}>
+  <h1>Support</h1>
+  <p class="cp-lead">Need help with the portal or your matter?</p>
+  <ul class="cp-list">
+    <li>Message the practice from <a class="cp-link" href="/client/messages/">Messages</a></li>
+    <li>Phone <a class="cp-link" href={`tel:${PRACTICE.contact.phone}`}>{PRACTICE.contact.phoneDisplay}</a> (Mon–Fri 9–5 AWST)</li>
+    <li>Email <a class="cp-link" href={`mailto:${PRACTICE.contact.email}`}>{PRACTICE.contact.email}</a></li>
+  </ul>
+</Client>
+<style>
+  h1 { font-size: var(--type-h2); } .cp-lead { color: var(--color-text-muted); margin-block: var(--space-2) var(--space-4); }
+  .cp-list { line-height: 2; } .cp-link { color: var(--color-action); border-block-end: 1px solid var(--color-emphasis); text-decoration: none; }
+</style>

@@ -1,0 +1,1 @@
+{ "extends": "@vmd/config/tsconfig.base.json", "include": ["src", "build.ts"] }

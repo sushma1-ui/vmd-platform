@@ -1,0 +1,34 @@
+---
+import Base from '../../layouts/Base.astro';
+import { breadcrumbSchema, localBusinessSchema } from '@vmd/seo';
+import { PRACTICE } from '@vmd/config';
+import EnquiryForm from '../../components/islands/EnquiryForm.island.astro';
+const trail = [{ name: 'Home', path: '/' }, { name: 'Contact', path: '/contact/' }];
+---
+<Base title="Contact" description="Contact Visa & Migration Doctors, Perth — phone, email or WhatsApp. Appointment-only, in person in Perth CBD or online." schemas={[localBusinessSchema(), breadcrumbSchema(trail)]}>
+  <section class="ct">
+    <div class="ct__intro">
+      <p class="ct__eyebrow">Contact</p>
+      <h1 class="ct__title">Talk to a registered agent</h1>
+      <p class="ct__lead">An appointment-only practice — a CBD address you can check, and three ways to reach a human.</p>
+      <ul class="ct__channels">
+        <li><strong>Phone</strong> <a href={`tel:${PRACTICE.contact.phone}`}>{PRACTICE.contact.phoneDisplay}</a> · Mon–Fri 9–5 AWST</li>
+        <li><strong>Email</strong> <a href={`mailto:${PRACTICE.contact.email}`}>{PRACTICE.contact.email}</a></li>
+        <li><strong>WhatsApp</strong> <a href="https://wa.me/61493719431" rel="noopener">Message us</a></li>
+        <li><strong>Office</strong> {PRACTICE.address.street}, {PRACTICE.address.locality} {PRACTICE.address.region} {PRACTICE.address.postcode}</li>
+      </ul>
+    </div>
+    <div class="ct__form">
+      <EnquiryForm source="general-enquiry" heading="Send an enquiry" />
+    </div>
+  </section>
+</Base>
+<style>
+  .ct { max-inline-size: var(--container-max); margin-inline: auto; padding: var(--space-7) var(--space-4) var(--space-9); display: grid; gap: var(--space-7); grid-template-columns: 1fr; }
+  .ct__eyebrow { font-size: var(--type-caption); letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-text-muted); }
+  .ct__title { font-size: var(--type-display-2); margin-block: var(--space-2) var(--space-3); }
+  .ct__lead { font-size: var(--type-body-lg); margin-block-end: var(--space-5); }
+  .ct__channels { list-style: none; padding: 0; line-height: 2.2; }
+  .ct__channels a { color: var(--color-action); border-block-end: 1px solid var(--color-emphasis); text-decoration: none; }
+  @media (min-width: 900px) { .ct { grid-template-columns: 1fr 1fr; } }
+</style>

@@ -1,0 +1,115 @@
+---
+/**
+ * Button — the accent is a promise of interactivity (Blueprint §11.1/§11.6).
+ *  - primary   : navy fill, white text (14.43:1 AAA)
+ *  - secondary : ghost — navy border, navy text
+ *  - tertiary  : text + arrow, gold underline on hover
+ * Min tap target 48×48. Loading announces to screen readers via a live region.
+ */
+interface Props {
+  variant?: 'primary' | 'secondary' | 'tertiary';
+  href?: string;
+  type?: 'button' | 'submit';
+  loading?: boolean;
+  disabled?: boolean;
+  class?: string;
+}
+const {
+  variant = 'primary',
+  href,
+  type = 'button',
+  loading = false,
+  disabled = false,
+  class: className = '',
+} = Astro.props;
+const Tag = href ? 'a' : 'button';
+const isDisabled = disabled || loading;
+---
+
+<Tag
+  class:list={['btn', `btn--${variant}`, className]}
+  href={href}
+  type={href ? undefined : type}
+  aria-busy={loading ? 'true' : undefined}
+  aria-disabled={isDisabled ? 'true' : undefined}
+  {...(!href && isDisabled ? { disabled: true } : {})}
+>
+  <span class="btn__label"><slot /></span>
+  {variant === 'tertiary' && <span class="btn__arrow" aria-hidden="true">→</span>}
+  {loading && <span class="btn__spinner" aria-hidden="true"></span>}
+  {loading && <span class="sr-only" role="status">Loading</span>}
+</Tag>
+
+<style>
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    min-block-size: var(--space-6); /* 48px tap target */
+    padding-inline: var(--space-4);
+    padding-block: var(--space-2);
+    border-radius: var(--radius-control);
+    font-family: var(--font-body);
+    font-size: var(--type-body);
+    font-weight: 500;
+    line-height: 1;
+    text-decoration: none;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition:
+      transform var(--motion-fast) var(--ease-standard),
+      border-color var(--motion-fast) var(--ease-standard),
+      background-color var(--motion-fast) var(--ease-standard);
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .btn[aria-disabled='true'] { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+  .btn--primary { background: var(--color-action); color: var(--color-action-contrast); }
+  .btn--primary:hover { border-color: var(--color-emphasis); }
+
+  .btn--secondary {
+    background: transparent;
+    color: var(--color-action);
+    border-color: var(--color-action);
+  }
+  .btn--secondary:hover { border-color: var(--color-emphasis); }
+
+  .btn--tertiary {
+    background: transparent;
+    color: var(--color-action);
+    min-block-size: auto;
+    padding-inline: 0;
+    border: 0;
+  }
+  .btn--tertiary .btn__label { border-block-end: 1px solid transparent; }
+  .btn--tertiary:hover .btn__label { border-block-end-color: var(--color-emphasis); }
+  .btn--tertiary:hover .btn__arrow { transform: translateX(2px); }
+  .btn__arrow { transition: transform var(--motion-fast) var(--ease-standard); }
+
+  .btn__spinner {
+    inline-size: var(--space-3);
+    block-size: var(--space-3);
+    border: 2px solid currentColor;
+    border-block-start-color: transparent;
+    border-radius: var(--radius-chip);
+    animation: spin var(--motion-slow) linear infinite;
+  }
+  .sr-only {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) {
+    .btn { transition: none; }
+    .btn:hover { transform: none; }
+    .btn__spinner { animation: none; }
+  }
+</style>

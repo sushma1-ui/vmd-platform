@@ -1,0 +1,54 @@
+---
+/**
+ * Card — situation/service card. Whole card clickable via a stretched link on the
+ * heading (one focus stop, correct semantics). Hover: 1px gold border + 2px lift,
+ * 150ms (Blueprint §11.6). No icons.
+ */
+interface Props {
+  title: string;
+  href: string;
+  eyebrow?: string;
+  class?: string;
+}
+const { title, href, eyebrow, class: className = '' } = Astro.props;
+---
+<article class:list={['card', className]}>
+  {eyebrow && <p class="card__eyebrow">{eyebrow}</p>}
+  <h3 class="card__title">
+    <a class="card__link" href={href}>{title}</a>
+  </h3>
+  <div class="card__body"><slot /></div>
+</article>
+<style>
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-4);
+    background: var(--color-ground-light);
+    border: 1px solid transparent;
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-subtle);
+    transition:
+      transform var(--motion-fast) var(--ease-standard),
+      border-color var(--motion-fast) var(--ease-standard),
+      box-shadow var(--motion-fast) var(--ease-standard);
+  }
+  .card:hover { transform: translateY(-2px); border-color: var(--color-emphasis); box-shadow: var(--shadow-raised); }
+  .card:focus-within { border-color: var(--color-emphasis); }
+  .card__eyebrow {
+    margin: 0;
+    font-size: var(--type-caption);
+    letter-spacing: 0.02em;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+  }
+  .card__title { margin: 0; font-family: var(--font-display); font-size: var(--type-h3); color: var(--color-action); }
+  .card__link { color: inherit; text-decoration: none; }
+  /* stretched link — whole card is the target, single focusable element */
+  .card__link::after { content: ''; position: absolute; inset: 0; }
+  .card__link:focus-visible { outline: 2px solid var(--color-interactive); outline-offset: 2px; }
+  .card__body { font-size: var(--type-body); line-height: 1.6; color: var(--color-text); }
+  @media (prefers-reduced-motion: reduce) { .card, .card:hover { transition: none; transform: none; } }
+</style>

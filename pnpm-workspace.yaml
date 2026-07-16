@@ -1,0 +1,5 @@
+# pnpm workspace definition — the ONE place package locations are declared.
+# Strict by default (see .npmrc): a package may only import what it declares.
+packages:
+  - "apps/*"
+  - "packages/*"

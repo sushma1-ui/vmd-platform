@@ -1,0 +1,20 @@
+{
+  "name": "@vmd/tokens",
+  "version": "0.0.0",
+  "private": true,
+  "description": "THE design system, as one package. Colour, type, space, shadow, motion, radius — emitted as CSS custom properties AND typed TS. A build-time contrast check makes gold-as-text a build failure. Depends only on @vmd/config.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./tailwind-preset": "./src/tailwind-preset.ts",
+    "./tokens.css": "./dist/tokens.css"
+  },
+  "scripts": {
+    "build": "node --experimental-strip-types build.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3"
+  }
+}

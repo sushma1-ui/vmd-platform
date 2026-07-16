@@ -1,0 +1,47 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "ui": "stream",
+  "globalDependencies": [".env", "tsconfig.json", "packages/config/**"],
+  "globalEnv": [
+    "NODE_ENV",
+    "PUBLIC_SITE_URL",
+    "DATABASE_URL",
+    "DATABASE_POOL_URL",
+    "PAYLOAD_SECRET",
+    "SUPABASE_URL",
+    "SUPABASE_ANON_KEY",
+    "SUPABASE_SERVICE_ROLE_KEY",
+    "SUPABASE_STORAGE_BUCKET",
+    "POSTMARK_SERVER_TOKEN",
+    "POSTMARK_FROM_EMAIL",
+    "GA4_MEASUREMENT_ID",
+    "GA4_API_SECRET",
+    "PLAUSIBLE_DOMAIN",
+    "TURNSTILE_SECRET_KEY",
+    "PUBLIC_TURNSTILE_SITE_KEY",
+    "UPSTASH_REDIS_REST_URL",
+    "UPSTASH_REDIS_REST_TOKEN",
+    "SCHEDULING_PROVIDER"
+  ],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**", "build/**"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "lint": {
+      "dependsOn": ["^build"]
+    },
+    "typecheck": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
+    "test": {
+      "dependsOn": ["^build"],
+      "outputs": ["coverage/**"]
+    }
+  }
+}

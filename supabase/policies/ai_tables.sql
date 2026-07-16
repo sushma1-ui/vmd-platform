@@ -1,0 +1,3 @@
+-- AI tables are server-only: no client access. RLS enabled with no permissive policy
+-- means only the service role (which bypasses RLS) can read/write. Deny by default.
+-- (article_embeddings, document_ai_checks) — intentionally no client policies.

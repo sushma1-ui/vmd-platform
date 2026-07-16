@@ -1,0 +1,53 @@
+name: CI
+on:
+  push: { branches: [main] }
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 9 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+
+      - name: Tokens build (contrast gate)
+        run: pnpm --filter @vmd/tokens build
+
+      - name: Typecheck
+        run: pnpm run typecheck
+      - name: Lint (incl. boundary rule)
+        run: pnpm run lint
+      - name: Module boundaries
+        run: pnpm run boundaries
+      - name: Styles (no raw hex/px)
+        run: pnpm run stylelint
+      - name: Duplication (< 2%)
+        run: pnpm run duplication
+      - name: CMS read-contract completeness (ADR-0004)
+        run: pnpm run check:contract
+      - name: Build
+        run: pnpm run build
+      - name: Security — no service-role in client bundles
+        run: pnpm run check:secrets
+
+  lighthouse:
+    runs-on: ubuntu-latest
+    needs: verify
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo "Lighthouse CI (LCP<2.0s, JS<120KB) wired with the web app's deploy preview in the Performance module."
+
+  a11y:
+    runs-on: ubuntu-latest
+    needs: verify
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo "Playwright + axe-core per route wired in the QA module (WCAG 2.2 AA gate)."

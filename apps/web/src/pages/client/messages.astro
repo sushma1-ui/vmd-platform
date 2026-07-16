@@ -1,0 +1,56 @@
+---
+import Client from '../../layouts/Client.astro';
+import { serverSupabase } from '../../lib/supabase.ts';
+export const prerender = false;
+const user = (Astro.locals as any).user;
+const sb = serverSupabase(Astro.cookies);
+let messages: any[] = [];
+if (sb && user) { try { messages = (await sb.from('client_messages').select('*').order('created_at', { ascending: true })).data ?? []; } catch {} }
+---
+<Client title="Messages" user={user}>
+  <h1>Messages</h1>
+  <div class="cp-thread" data-thread>
+    {messages.length === 0 && <div class="cp-empty">No messages yet. Send the practice a note below.</div>}
+    {messages.map((m) => (
+      <div class:list={['cp-msg', m.sender === 'client' && 'cp-msg--me']}>
+        <p>{m.body}</p>
+        <time>{new Date(m.created_at).toLocaleString('en-AU')}</time>
+      </div>
+    ))}
+  </div>
+  <form data-msg class="cp-compose" novalidate>
+    <label class="sr-only" for="cp-body">Your message</label>
+    <textarea id="cp-body" name="body" rows="3" placeholder="Write a message to the practice…" required></textarea>
+    <p class="cp-err" data-err role="alert" hidden></p>
+    <button type="submit">Send</button>
+  </form>
+</Client>
+<style>
+  h1 { font-size: var(--type-h2); margin-block-end: var(--space-4); }
+  .cp-thread { display: flex; flex-direction: column; gap: var(--space-3); margin-block-end: var(--space-5); }
+  .cp-msg { max-inline-size: 80%; padding: var(--space-3); border-radius: var(--radius-card); background: var(--color-ground-warm); }
+  .cp-msg--me { align-self: flex-end; background: color-mix(in srgb, var(--color-action) 8%, var(--color-ground-light)); }
+  .cp-msg p { margin: 0; } .cp-msg time { font-size: var(--type-caption); color: var(--color-text-muted); }
+  .cp-empty { border: 1px dashed color-mix(in srgb, var(--color-emphasis) 55%, transparent); border-radius: var(--radius-card); padding: var(--space-5); color: var(--color-text-muted); }
+  .cp-compose { display: flex; flex-direction: column; gap: var(--space-2); }
+  textarea { padding: var(--space-3); border: 1px solid var(--color-text-muted); border-radius: var(--radius-control); font-family: var(--font-body); font-size: var(--type-body); }
+  button { align-self: flex-start; min-block-size: var(--space-6); padding-inline: var(--space-4); background: var(--color-action); color: var(--color-text-inverse); border: 0; border-radius: var(--radius-control); font-weight: 500; cursor: pointer; }
+  .cp-err { color: var(--color-critical); font-size: var(--type-body-sm); }
+</style>
+<script>
+  import { browserSupabase } from '../../lib/supabase.ts';
+  const form = document.querySelector('[data-msg]');
+  const err = document.querySelector('[data-err]');
+  const sb = browserSupabase();
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    err.hidden = true;
+    if (!sb) { err.textContent = 'Messaging is not configured yet.'; err.hidden = false; return; }
+    const body = new FormData(form).get('body');
+    const { data: { user } } = await sb.auth.getUser();
+    if (!user) { err.textContent = 'Your session expired. Sign in again.'; err.hidden = false; return; }
+    const { error } = await sb.from('client_messages').insert({ user_id: user.id, sender: 'client', body });
+    if (error) { err.textContent = 'Could not send. Try again.'; err.hidden = false; return; }
+    window.location.reload();
+  });
+</script>

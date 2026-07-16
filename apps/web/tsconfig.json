@@ -1,0 +1,5 @@
+{
+  "extends": "@vmd/config/tsconfig.base.json",
+  "compilerOptions": { "jsx": "preserve", "noEmit": true },
+  "include": ["src", "astro.config.mjs", "tailwind.config.ts", ".astro/types.d.ts"]
+}

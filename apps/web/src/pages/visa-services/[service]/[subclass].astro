@@ -1,0 +1,241 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { breadcrumbSchema, faqSchema, serviceSchema } from '@vmd/seo';
+import { Button, Chip, Rule, Disclaimer, Card } from '@vmd/ui';
+import { cms } from '../../../lib/cms.ts';
+import { lexicalToHtml } from '../../../lib/lexical.ts';
+import StickyFacts from '../../../components/content/subclass/StickyFacts.astro';
+import BenefitsGrid from '../../../components/content/subclass/BenefitsGrid.astro';
+import ProcessTimeline from '../../../components/content/subclass/ProcessTimeline.astro';
+
+/** ONE renderer for every visa subclass. Fully CMS-driven; zero hardcoded content. */
+export async function getStaticPaths() {
+  const subs = await cms.subclasses();
+  return subs.filter((s: any) => s.service?.slug && s.slug).map((s: any) => ({ params: { service: s.service.slug, subclass: s.slug }, props: { sub: s } }));
+}
+const { sub } = Astro.props;
+const path = Astro.url.pathname;
+const strip = (html: string) => html.replace(/<[^>]+>/g, '').trim();
+const faqs = sub.faqs?.length ? sub.faqs : await cms.faqs(sub.id);
+const ledger = await cms.grantLedger(sub.code);
+const resources = sub.relatedResources ?? [];
+const relServices = sub.relatedServices ?? [];
+const relVisas = sub.relatedVisas ?? [];
+const testimonials = sub.featuredTestimonials ?? [];
+const updated = sub.reviewedBy?.lastReviewedAt ? new Date(sub.reviewedBy.lastReviewedAt).toLocaleDateString('en-AU') : null;
+const trail = [
+  { name: 'Home', path: '/' },
+  { name: 'Visa Services', path: '/visa-services/' },
+  { name: sub.service?.title ?? 'Service', path: `/visa-services/${sub.service?.slug ?? ''}/` },
+  { name: sub.name, path },
+];
+const schemas = [
+  serviceSchema({ name: sub.name, description: sub.valueProposition ?? sub.plainOneLiner ?? sub.name, path, serviceType: sub.service?.title }),
+  breadcrumbSchema(trail),
+  ...(faqs.length ? [faqSchema(faqs.map((f: any) => ({ question: f.question, answer: strip(lexicalToHtml(f.answer)) })))] : []),
+];
+---
+<Base
+  title={`${sub.name} — eligibility, cost, process & pathway`}
+  description={sub.valueProposition ?? sub.plainOneLiner ?? `${sub.name}: eligibility, cost, processing time, step-by-step process and what usually goes wrong, from a Registered Migration Agent in Perth.`}
+  ogImage={sub.seo?.ogImage?.url}
+  schemas={schemas}
+>
+  <!-- 1 · HERO -->
+  <section class="sh-hero">
+    <div class="sh-hero__inner">
+      <nav class="crumbs" aria-label="Breadcrumb">{trail.map((t, i) => <span>{i > 0 && <span aria-hidden="true"> / </span>}<a href={t.path}>{t.name}</a></span>)}</nav>
+      <div class="sh-hero__grid">
+        <div>
+          <Chip>{sub.code}</Chip>
+          <h1 class="sh-hero__title">{sub.name}</h1>
+          <Rule width="short" />
+          {sub.valueProposition && <p class="sh-hero__lead">{sub.valueProposition}</p>}
+          <div class="sh-hero__cta">
+            <Button variant="primary" href="/book/">Book a consultation</Button>
+            <Button variant="secondary" href="/health-check/">Free Visa Health Check</Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sh-layout">
+    <div class="sh-main">
+      <!-- 3 · OVERVIEW -->
+      {(sub.overview?.whatItIs || sub.overview?.whoItIsFor || sub.overview?.whyThisPathway) ? (
+        <section class="sh-sec">
+          <h2 class="sh-h">Overview</h2>
+          {sub.overview.whatItIs && <div class="sh-block"><h3>What this visa is</h3><div class="sh-rt" set:html={lexicalToHtml(sub.overview.whatItIs)} /></div>}
+          {sub.overview.whoItIsFor && <div class="sh-block"><h3>Who it's for</h3><div class="sh-rt" set:html={lexicalToHtml(sub.overview.whoItIsFor)} /></div>}
+          {sub.overview.whyThisPathway && <div class="sh-block"><h3>Why choose this pathway</h3><div class="sh-rt" set:html={lexicalToHtml(sub.overview.whyThisPathway)} /></div>}
+        </section>
+      ) : <section class="sh-sec"><h2 class="sh-h">Overview</h2><div class="sh-empty">Overview content is authored in the CMS and appears here once published.</div></section>}
+
+      <!-- 4 · ELIGIBILITY (expandable, zero-JS) -->
+      {sub.eligibility?.length > 0 && (
+        <section class="sh-sec">
+          <h2 class="sh-h">Eligibility requirements</h2>
+          <div class="sh-elig">
+            {sub.eligibility.map((g: any, i: number) => (
+              <details class="sh-disc" open={i === 0}>
+                <summary>{g.title}</summary>
+                <ul class="sh-checks">{(g.items ?? []).map((it: any) => (<li><strong>{it.requirement}</strong>{it.detail && <span> — {it.detail}</span>}</li>))}</ul>
+              </details>
+            ))}
+          </div>
+          <Disclaimer variant="generalInformation" />
+        </section>
+      )}
+
+      <!-- 5 · BENEFITS -->
+      {(sub.benefits && (Object.values(sub.benefits).some((v) => v === true) || sub.benefits.custom?.length)) && (
+        <section class="sh-sec"><h2 class="sh-h">Benefits</h2><BenefitsGrid benefits={sub.benefits} /></section>
+      )}
+
+      <!-- 6 · PROCESS TIMELINE -->
+      {sub.process?.length > 0 && (
+        <section class="sh-sec"><h2 class="sh-h">The process, step by step</h2><ProcessTimeline steps={sub.process} /></section>
+      )}
+
+      <!-- 7 · REQUIRED DOCUMENTS -->
+      {sub.documents?.length > 0 && (
+        <section class="sh-sec">
+          <h2 class="sh-h">Required documents</h2>
+          <div class="sh-docs">
+            {sub.documents.map((cat: any) => (
+              <div class="sh-doccat"><h3>{cat.category}</h3><ul>{(cat.items ?? []).map((d: any) => <li>{d.name}{d.note && <small> — {d.note}</small>}</li>)}</ul></div>
+            ))}
+          </div>
+          <p class="sh-note">A downloadable checklist for this visa is coming — the document list above is the source it will generate from.</p>
+        </section>
+      )}
+
+      <!-- 8 · COSTS & FEES -->
+      <section class="sh-sec">
+        <h2 class="sh-h">Costs &amp; fees</h2>
+        <div class="sh-costs">
+          <div class="sh-cost"><span>Government fee</span><strong>{sub.governmentFee?.amount && sub.governmentFee?.asAt ? sub.governmentFee.amount : '—'}</strong>{sub.governmentFee?.asAt && <small>as at {new Date(sub.governmentFee.asAt).toLocaleDateString('en-AU')}</small>}</div>
+          <div class="sh-cost"><span>Professional fee</span><strong>{sub.costs?.professionalFeeEnabled && sub.costs?.professionalFeeRange ? sub.costs.professionalFeeRange : '—'}</strong></div>
+        </div>
+        {sub.costs?.notes && <p class="sh-note">{sub.costs.notes}</p>}
+        <p class="sh-note">Figures shown as "—" are published only once verified. Government fees change; we cite the source and date rather than estimate.</p>
+      </section>
+
+      <!-- 9 · COMMON MISTAKES / REFUSAL REASONS -->
+      {(sub.commonMistakes?.length > 0 || sub.whatGoesWrong?.length > 0) && (
+        <section class="sh-sec sh-sec--wrong">
+          <h2 class="sh-h">Common mistakes &amp; why applications fail</h2>
+          <ul class="sh-mistakes">
+            {(sub.commonMistakes ?? []).map((m: any) => <li><strong>{m.title}</strong>{m.detail && <span> — {m.detail}</span>}</li>)}
+            {(sub.whatGoesWrong ?? []).map((w: any) => <li>{w.item}</li>)}
+          </ul>
+        </section>
+      )}
+
+      <!-- 10 · FAQ (schema-enabled, zero-JS) -->
+      {faqs.length > 0 && (
+        <section class="sh-sec">
+          <h2 class="sh-h">Frequently asked questions</h2>
+          <div class="sh-faq">
+            {faqs.map((f: any) => (<details class="sh-disc"><summary>{f.question}</summary><div class="sh-rt" set:html={lexicalToHtml(f.answer)} /></details>))}
+          </div>
+        </section>
+      )}
+
+      <!-- 13 · SUCCESS STORIES (consented, no rates) -->
+      <section class="sh-sec">
+        <h2 class="sh-h">Results for {sub.code}</h2>
+        {ledger.length > 0 ? (
+          <ul class="sh-ledger">{ledger.map((e: any) => <li><Chip tone="positive">{e.outcome}</Chip> {e.decisionDate && new Date(e.decisionDate).toLocaleDateString('en-AU')} — {e.descriptor}</li>)}</ul>
+        ) : <div class="sh-empty">Grants and favourable reviews for {sub.code} appear here as client consent is confirmed — dated, anonymised, no names or success rates.</div>}
+        {testimonials.length > 0 && <div class="sh-testis">{testimonials.map((t: any) => <blockquote class="sh-testi">"{t.quote}"<cite>— {t.name}{t.situation && `, ${t.situation}`}</cite></blockquote>)}</div>}
+        <Disclaimer variant="outcomes" />
+      </section>
+
+      <!-- 11 + 12 · KEEP EXPLORING (resources + services) -->
+      {(resources.length > 0 || relServices.length > 0 || relVisas.length > 0) && (
+        <section class="sh-sec">
+          <h2 class="sh-h">Keep exploring</h2>
+          <div class="sh-explore">
+            {(resources.length > 0 || relVisas.length > 0) && (
+              <div><h3>Resources &amp; related visas</h3><ul class="sh-links">
+                {resources.map((r: any) => <li><a href={`/resources/${r.slug}/`}>{r.title}</a></li>)}
+                {relVisas.map((v: any) => <li><a href={`/visa-services/${v.service?.slug ?? sub.service?.slug}/${v.slug}/`}>{v.name}</a></li>)}
+              </ul></div>
+            )}
+            {relServices.length > 0 && (
+              <div><h3>Related services</h3><ul class="sh-links">{relServices.map((s: any) => <li><a href={`/visa-services/${s.slug}/`}>{s.title}</a></li>)}</ul></div>
+            )}
+          </div>
+        </section>
+      )}
+    </div>
+
+    <!-- 2 · STICKY SUMMARY (rail) -->
+    <div class="sh-rail"><StickyFacts glance={sub.atAGlance ?? {}} govFee={sub.governmentFee} complexity={sub.complexity} updated={updated} /></div>
+  </div>
+
+  <!-- 14 · STRONG CONVERSION -->
+  <section class="band">
+    <div class="band__inner band__inner--center">
+      <h2 class="band__h">Is {sub.code} your pathway?</h2>
+      <p class="band__lead">Get an honest read on where you stand — including if this isn't the right visa for you.</p>
+      <div class="band__cta">
+        <Button variant="primary" href="/book/">Book a consultation</Button>
+        <Button variant="secondary" href="/health-check/">Free Visa Health Check</Button>
+      </div>
+      <p class="band__contact"><a href="/contact/">Or contact the team →</a></p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .crumbs { font-size: var(--type-caption); color: var(--color-text-muted); margin-block-end: var(--space-4); }
+  .crumbs a { color: inherit; text-decoration: none; }
+  .sh-hero { background: var(--color-ground-warm); }
+  .sh-hero__inner { max-inline-size: var(--container-max); margin-inline: auto; padding: var(--space-7) var(--space-4); }
+  .sh-hero__title { font-size: var(--type-display-2); line-height: 1.05; margin-block: var(--space-2) var(--space-2); }
+  .sh-hero__lead { font-size: var(--type-body-lg); line-height: 1.5; margin-block: var(--space-3) var(--space-4); max-inline-size: 60ch; }
+  .sh-hero__cta { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+
+  .sh-layout { max-inline-size: var(--container-max); margin-inline: auto; padding: var(--space-8) var(--space-4); display: grid; gap: var(--space-8); grid-template-columns: 1fr; }
+  .sh-main { min-inline-size: 0; display: flex; flex-direction: column; gap: var(--space-8); }
+  .sh-sec { scroll-margin-block-start: var(--space-8); }
+  .sh-h { font-size: var(--type-h2); margin-block-end: var(--space-4); }
+  .sh-block { margin-block-end: var(--space-4); }
+  .sh-block h3 { font-size: var(--type-h4); margin-block-end: var(--space-2); }
+  .sh-rt { line-height: 1.7; } .sh-rt :global(p) { margin-block-end: var(--space-3); }
+  .sh-disc { border: 1px solid color-mix(in srgb, var(--color-action) 12%, transparent); border-radius: var(--radius-card); padding: var(--space-3) var(--space-4); margin-block-end: var(--space-2); }
+  .sh-disc summary { cursor: pointer; font-weight: 500; font-size: var(--type-h4); color: var(--color-action); }
+  .sh-checks { padding-inline-start: var(--space-4); line-height: 1.9; margin-block-start: var(--space-2); }
+  .sh-docs { display: grid; gap: var(--space-4); grid-template-columns: 1fr; }
+  .sh-doccat h3 { font-size: var(--type-h4); margin-block-end: var(--space-2); }
+  .sh-doccat ul, .sh-mistakes, .sh-links { padding-inline-start: var(--space-4); line-height: 1.9; }
+  .sh-doccat small { color: var(--color-text-muted); }
+  .sh-costs { display: grid; gap: var(--space-3); grid-template-columns: 1fr 1fr; }
+  .sh-cost { padding: var(--space-4); border: 1px solid color-mix(in srgb, var(--color-action) 10%, transparent); border-radius: var(--radius-card); display: flex; flex-direction: column; gap: var(--space-1); }
+  .sh-cost span { font-size: var(--type-caption); text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-text-muted); }
+  .sh-cost strong { font-family: var(--font-display); font-size: var(--type-h3); color: var(--color-action); }
+  .sh-cost small { font-size: var(--type-caption); color: var(--color-text-muted); }
+  .sh-note { font-size: var(--type-body-sm); color: var(--color-text-muted); margin-block-start: var(--space-3); }
+  .sh-sec--wrong .sh-mistakes { border-inline-start: 3px solid var(--color-emphasis); padding-block: var(--space-2); }
+  .sh-ledger { list-style: none; padding: 0; }
+  .sh-ledger li { padding-block: var(--space-2); border-block-end: 1px solid color-mix(in srgb, var(--color-action) 8%, transparent); }
+  .sh-empty { border: 1px dashed color-mix(in srgb, var(--color-emphasis) 55%, transparent); border-radius: var(--radius-card); padding: var(--space-5); color: var(--color-text-muted); }
+  .sh-testis { display: grid; gap: var(--space-3); margin-block-start: var(--space-4); }
+  .sh-testi { margin: 0; padding: var(--space-4); background: var(--color-ground-warm); border-radius: var(--radius-card); font-size: var(--type-body-lg); line-height: 1.5; }
+  .sh-testi cite { display: block; margin-block-start: var(--space-2); font-size: var(--type-body-sm); color: var(--color-text-muted); font-style: normal; }
+  .sh-explore { display: grid; gap: var(--space-5); grid-template-columns: 1fr; }
+  .sh-explore h3 { font-size: var(--type-h4); margin-block-end: var(--space-2); }
+  .sh-links { list-style: none; padding: 0; } .sh-links a { color: var(--color-action); text-decoration: none; border-block-end: 1px solid var(--color-emphasis); }
+  .band { background: var(--color-ground-deep); color: var(--color-text-inverse); }
+  .band__inner { max-inline-size: var(--container-max); margin-inline: auto; padding: var(--space-9) var(--space-4); }
+  .band__inner--center { text-align: center; display: flex; flex-direction: column; align-items: center; gap: var(--space-3); }
+  .band__h { font-size: var(--type-h2); color: var(--color-text-inverse); }
+  .band__lead { font-size: var(--type-body-lg); color: color-mix(in srgb, var(--color-text-inverse) 86%, transparent); max-inline-size: 52ch; }
+  .band__cta { display: flex; flex-wrap: wrap; gap: var(--space-3); justify-content: center; margin-block-start: var(--space-2); }
+  .band__contact a { color: var(--color-emphasis); text-decoration: none; }
+  @media (min-width: 600px) { .sh-docs { grid-template-columns: 1fr 1fr; } .sh-explore { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 1024px) { .sh-layout { grid-template-columns: minmax(0, 1fr) 320px; align-items: start; } }
+</style>

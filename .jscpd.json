@@ -1,0 +1,8 @@
+{
+  "threshold": 2,
+  "reporters": ["console"],
+  "absolute": true,
+  "gitignore": true,
+  "pattern": "**/src/**/*.{ts,tsx,astro}",
+  "ignore": ["**/dist/**", "**/node_modules/**", "**/*.test.ts"]
+}

@@ -1,0 +1,97 @@
+---
+import Base from '../layouts/Base.astro';
+import { Button, Input, Card, Chip, Rule, Disclaimer, TrustStrip, AtAGlance } from '@vmd/ui';
+// Internal design-system reference. noindex. Not linked in nav. Example data only.
+---
+<Base title="Design System" description="Internal component reference" noindex={true}>
+  <main class="sg">
+    <header class="sg__head">
+      <p class="sg__eyebrow">VMD Design System · Module 1</p>
+      <h1 class="sg__title">Components</h1>
+      <Rule width="short" />
+    </header>
+
+    <section class="sg__block">
+      <h2>Buttons</h2>
+      <div class="sg__row">
+        <Button variant="primary" href="#">Start your free Visa Health Check</Button>
+        <Button variant="secondary" href="#">Book a consultation</Button>
+        <Button variant="tertiary" href="#">Read the guide</Button>
+        <Button variant="primary" loading={true}>Submitting</Button>
+      </div>
+    </section>
+
+    <section class="sg__block">
+      <h2>Chips</h2>
+      <div class="sg__row">
+        <Chip>SC190</Chip>
+        <Chip tone="positive">Granted</Chip>
+        <Chip tone="caution">Conditional</Chip>
+        <Chip tone="critical">Refused</Chip>
+      </div>
+    </section>
+
+    <section class="sg__block">
+      <h2>Input — default & error</h2>
+      <div class="sg__grid2">
+        <Input id="email" name="email" label="Email" type="email" inputmode="email"
+          autocomplete="email" help="We use this to send your Health Check result." required />
+        <Input id="mobile" name="mobile" label="Mobile" type="tel" inputmode="tel"
+          error="Enter a valid phone number" required />
+      </div>
+    </section>
+
+    <section class="sg__block">
+      <h2>Cards</h2>
+      <div class="sg__grid3">
+        <Card title="I married an Australian" href="#" eyebrow="Your situation">
+          Partner visa pathways, onshore and offshore.
+        </Card>
+        <Card title="Skilled Nominated (190)" href="#" eyebrow="General Skilled Migration">
+          State-nominated permanent residence. The one thing that most often goes wrong:
+          nomination refusals turn on occupation-list timing.
+        </Card>
+        <Card title="My visa was refused" href="#" eyebrow="Refusals & Appeals">
+          A refusal is not always the end — but the deadlines are short.
+        </Card>
+      </div>
+    </section>
+
+    <section class="sg__block">
+      <h2>Trust strip</h2>
+      <TrustStrip rating={5.0} reviewCount={39} reviewUrl="#" />
+    </section>
+
+    <section class="sg__block">
+      <h2>At a Glance</h2>
+      <AtAGlance
+        updated="12 Jun 2026"
+        facts={[
+          { label: 'Cost range', value: '—' },
+          { label: 'Processing time', value: '—' },
+          { label: 'PR or temporary', value: 'Permanent' },
+          { label: 'On / offshore', value: 'Either' },
+          { label: 'Points needed', value: '65+' },
+        ]}
+      />
+      <p class="sg__note">Values shown as em dashes are empty states — no fabricated figures.</p>
+    </section>
+
+    <section class="sg__block">
+      <h2>Disclaimer</h2>
+      <Disclaimer variant="outcomes" />
+    </section>
+  </main>
+</Base>
+<style>
+  .sg { max-inline-size: var(--container-max); margin-inline: auto; padding: var(--space-8) var(--space-4); display: flex; flex-direction: column; gap: var(--space-8); }
+  .sg__head { display: flex; flex-direction: column; gap: var(--space-3); }
+  .sg__eyebrow { font-size: var(--type-caption); letter-spacing: 0.02em; text-transform: uppercase; color: var(--color-text-muted); }
+  .sg__title { font-size: var(--type-display-2); }
+  .sg__block { display: flex; flex-direction: column; gap: var(--space-4); }
+  .sg__block h2 { font-size: var(--type-h2); }
+  .sg__row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); }
+  .sg__grid2 { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(var(--space-9), 1fr)); }
+  .sg__grid3 { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(var(--space-9), 1fr)); }
+  .sg__note { font-size: var(--type-body-sm); color: var(--color-text-muted); }
+</style>

@@ -1,0 +1,26 @@
+---
+import Base from '../../layouts/Base.astro';
+import { breadcrumbSchema } from '@vmd/seo';
+import { TrustStrip, Disclaimer } from '@vmd/ui';
+import BookingForm from '../../components/islands/BookingForm.island.astro';
+const trail = [{ name: 'Home', path: '/' }, { name: 'Book a Consultation', path: '/book/' }];
+---
+<Base title="Book a Consultation" description="Book a fixed-fee consultation with a Registered Migration Agent in Perth — in person or online, timezone-aware." schemas={[breadcrumbSchema(trail)]}>
+  <section class="bkp">
+    <p class="bkp__eyebrow">Advisory · fixed fee</p>
+    <h1 class="bkp__title">Book a consultation</h1>
+    <p class="bkp__lead">A fixed fee, a named person, and a preparation checklist by email. We'll confirm your time in AWST.</p>
+    <TrustStrip rating={5.0} reviewCount={39} reviewUrl="/results/reviews/" />
+    <div class="bkp__form"><BookingForm /></div>
+    <Disclaimer variant="generalInformation" />
+    <p class="bkp__alt">Not ready? <a href="/health-check/">Take the free Visa Health Check first →</a></p>
+  </section>
+</Base>
+<style>
+  .bkp { max-inline-size: var(--container-prose); margin-inline: auto; padding: var(--space-7) var(--space-4) var(--space-9); }
+  .bkp__eyebrow { font-size: var(--type-caption); letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-text-muted); }
+  .bkp__title { font-size: var(--type-display-2); margin-block: var(--space-2) var(--space-3); }
+  .bkp__lead { font-size: var(--type-body-lg); margin-block-end: var(--space-4); }
+  .bkp__form { margin-block: var(--space-6); }
+  .bkp__alt { margin-block-start: var(--space-4); } .bkp__alt a { color: var(--color-action); border-block-end: 1px solid var(--color-emphasis); text-decoration: none; }
+</style>

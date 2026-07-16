@@ -1,0 +1,38 @@
+---
+import Client from '../../layouts/Client.astro';
+import { serverSupabase } from '../../lib/supabase.ts';
+export const prerender = false;
+const user = (Astro.locals as any).user;
+const sb = serverSupabase(Astro.cookies);
+let profile: any = null, unread = 0, docs = 0;
+if (sb && user) {
+  try {
+    const p = await sb.from('client_profiles').select('full_name').eq('user_id', user.id).maybeSingle();
+    profile = p.data;
+    const m = await sb.from('client_messages').select('id', { count: 'exact', head: true }).is('read_at', null).eq('sender', 'practice');
+    unread = m.count ?? 0;
+    const d = await sb.from('client_documents').select('id', { count: 'exact', head: true });
+    docs = d.count ?? 0;
+  } catch {}
+}
+---
+<Client title="Dashboard" user={user}>
+  <h1>Welcome{profile?.full_name ? `, ${profile.full_name}` : ''}</h1>
+  <p class="cp-lead">Your matter at a glance.</p>
+  <div class="cp-cards">
+    <a class="cp-card" href="/client/appointments/"><span>Appointments</span><strong>View schedule</strong></a>
+    <a class="cp-card" href="/client/messages/"><span>Messages</span><strong>{unread > 0 ? `${unread} unread` : 'Up to date'}</strong></a>
+    <a class="cp-card" href="/client/documents/"><span>Documents</span><strong>{docs} on file</strong></a>
+  </div>
+  <p class="cp-note">This portal shows information about your engagement. It is general to your matter and does not replace advice from your Registered Migration Agent.</p>
+</Client>
+<style>
+  h1 { font-size: var(--type-h2); }
+  .cp-lead { color: var(--color-text-muted); margin-block: var(--space-2) var(--space-5); }
+  .cp-cards { display: grid; gap: var(--space-3); grid-template-columns: 1fr; }
+  .cp-card { display: flex; flex-direction: column; gap: var(--space-1); padding: var(--space-4); border: 1px solid color-mix(in srgb, var(--color-action) 12%, transparent); border-radius: var(--radius-card); text-decoration: none; color: var(--color-text); }
+  .cp-card span { font-size: var(--type-caption); text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-text-muted); }
+  .cp-card strong { font-family: var(--font-display); font-size: var(--type-h3); color: var(--color-action); }
+  .cp-note { font-size: var(--type-body-sm); color: var(--color-text-muted); margin-block-start: var(--space-5); }
+  @media (min-width: 700px) { .cp-cards { grid-template-columns: repeat(3, 1fr); } }
+</style>

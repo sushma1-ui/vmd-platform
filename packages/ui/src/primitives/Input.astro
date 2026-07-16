@@ -1,0 +1,87 @@
+---
+/**
+ * Input — label ABOVE always; help text beneath the label, before the field;
+ * errors via aria-describedby, red + icon + text (never colour alone). 56px field
+ * height, expressed as tokens so no literal px leaks in (Blueprint §9.4/§11.6).
+ */
+interface Props {
+  id: string;
+  name: string;
+  label: string;
+  type?: string;
+  help?: string;
+  error?: string;
+  required?: boolean;
+  inputmode?: 'text' | 'email' | 'tel' | 'numeric';
+  autocomplete?: string;
+  placeholder?: string;
+  value?: string;
+}
+const {
+  id, name, label, type = 'text', help, error,
+  required = false, inputmode, autocomplete, placeholder, value,
+} = Astro.props;
+const helpId = help ? `${id}-help` : undefined;
+const errorId = error ? `${id}-error` : undefined;
+const describedBy = [helpId, errorId].filter(Boolean).join(' ') || undefined;
+---
+<div class="field">
+  <label class="field__label" for={id}>
+    {label}{required && <span class="field__req" aria-hidden="true"> *</span>}
+  </label>
+  {help && <p class="field__help" id={helpId}>{help}</p>}
+  <input
+    class:list={['field__input', error && 'field__input--error']}
+    id={id}
+    name={name}
+    type={type}
+    inputmode={inputmode}
+    autocomplete={autocomplete}
+    placeholder={placeholder}
+    value={value}
+    required={required}
+    aria-invalid={error ? 'true' : undefined}
+    aria-describedby={describedBy}
+  />
+  {error && (
+    <p class="field__error" id={errorId}>
+      <span class="field__error-icon" aria-hidden="true">⚠</span>
+      <span>{error}</span>
+    </p>
+  )}
+</div>
+<style>
+  .field { display: flex; flex-direction: column; gap: var(--space-2); }
+  .field__label {
+    font-family: var(--font-body);
+    font-size: var(--type-h4);
+    font-weight: 500;
+    color: var(--color-text);
+  }
+  .field__req { color: var(--color-critical); }
+  .field__help {
+    margin: 0;
+    font-size: var(--type-body-sm);
+    color: var(--color-text-muted);
+  }
+  .field__input {
+    min-block-size: calc(var(--space-6) + var(--space-2)); /* 56px */
+    padding-inline: var(--space-3);
+    font-family: var(--font-body);
+    font-size: var(--type-body);
+    color: var(--color-text);
+    background: var(--color-ground-light);
+    border: 1px solid var(--color-text-muted);
+    border-radius: var(--radius-control);
+  }
+  .field__input:focus-visible { outline: 2px solid var(--color-interactive); outline-offset: 2px; }
+  .field__input--error { border-color: var(--color-critical); }
+  .field__error {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    margin: 0;
+    font-size: var(--type-body-sm);
+    color: var(--color-critical);
+  }
+</style>

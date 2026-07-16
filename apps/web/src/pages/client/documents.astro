@@ -1,0 +1,61 @@
+---
+import Client from '../../layouts/Client.astro';
+import { serverSupabase } from '../../lib/supabase.ts';
+export const prerender = false;
+const user = (Astro.locals as any).user;
+const sb = serverSupabase(Astro.cookies);
+let docs: any[] = [];
+if (sb && user) { try { docs = (await sb.from('client_documents').select('*').order('uploaded_at', { ascending: false })).data ?? []; } catch {} }
+---
+<Client title="Documents" user={user}>
+  <h1>Documents</h1>
+  <p class="cp-lead">Upload documents securely. Only you and the practice can see them.</p>
+  <form data-up class="cp-up" novalidate>
+    <input type="file" data-file accept=".pdf,.jpg,.jpeg,.png,.docx" />
+    <button type="submit">Upload</button>
+    <p class="cp-err" data-err role="alert" hidden></p>
+    <p class="cp-ok" data-ok hidden role="status">Uploaded.</p>
+  </form>
+  <ul class="cp-docs">
+    {docs.length === 0 && <li class="cp-empty">No documents yet.</li>}
+    {docs.map((d) => <li><span>{d.filename}</span><time>{new Date(d.uploaded_at).toLocaleDateString('en-AU')}</time></li>)}
+  </ul>
+  <p class="cp-note">Accepted: PDF, JPG, PNG, DOCX. Files are encrypted at rest and access-controlled to your account.</p>
+</Client>
+<style>
+  h1 { font-size: var(--type-h2); } .cp-lead { color: var(--color-text-muted); margin-block: var(--space-2) var(--space-4); }
+  .cp-up { display: flex; gap: var(--space-3); align-items: center; flex-wrap: wrap; margin-block-end: var(--space-5); }
+  .cp-up button { min-block-size: var(--space-6); padding-inline: var(--space-4); background: var(--color-action); color: var(--color-text-inverse); border: 0; border-radius: var(--radius-control); cursor: pointer; }
+  .cp-docs { list-style: none; padding: 0; }
+  .cp-docs li { display: flex; justify-content: space-between; padding-block: var(--space-2); border-block-end: 1px solid color-mix(in srgb, var(--color-action) 8%, transparent); }
+  .cp-empty { color: var(--color-text-muted); border: 0; }
+  .cp-err { color: var(--color-critical); font-size: var(--type-body-sm); } .cp-ok { color: var(--color-success); font-size: var(--type-body-sm); }
+  .cp-note { font-size: var(--type-body-sm); color: var(--color-text-muted); margin-block-start: var(--space-4); }
+</style>
+<script>
+  import { browserSupabase } from '../../lib/supabase.ts';
+  const BUCKET = 'vmd-client-docs';
+  const MAX = 15 * 1024 * 1024;
+  const form = document.querySelector('[data-up]');
+  const err = document.querySelector('[data-err]');
+  const ok = document.querySelector('[data-ok]');
+  const fileEl = document.querySelector('[data-file]');
+  const sb = browserSupabase();
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    err.hidden = true; ok.hidden = true;
+    const file = fileEl.files?.[0];
+    if (!file) return;
+    if (file.size > MAX) { err.textContent = 'File is over the 15 MB limit.'; err.hidden = false; return; }
+    if (!sb) { err.textContent = 'Uploads are not configured yet.'; err.hidden = false; return; }
+    const { data: { user } } = await sb.auth.getUser();
+    if (!user) { err.textContent = 'Your session expired. Sign in again.'; err.hidden = false; return; }
+    const path = `${user.id}/${Date.now()}-${file.name}`;
+    const up = await sb.storage.from(BUCKET).upload(path, file, { upsert: false });
+    if (up.error) { err.textContent = 'Upload failed. Try again.'; err.hidden = false; return; }
+    const { error } = await sb.from('client_documents').insert({ user_id: user.id, filename: file.name, storage_path: path, mime_type: file.type, size_bytes: file.size });
+    if (error) { err.textContent = 'Saved the file but could not record it. Contact us.'; err.hidden = false; return; }
+    ok.hidden = false;
+    setTimeout(() => window.location.reload(), 800);
+  });
+</script>

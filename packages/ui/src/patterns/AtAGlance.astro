@@ -1,0 +1,51 @@
+---
+/**
+ * AtAGlance — the 5 facts a subclass visitor came for (Blueprint §7.1/§11.6).
+ * Tabular numerals, gold top rule, "Last updated" stamp. Data passed in; the panel
+ * has no opinion about which subclass.
+ */
+interface Fact { label: string; value: string }
+interface Props { facts: Fact[]; updated?: string }
+const { facts, updated } = Astro.props;
+---
+<section class="glance" aria-label="At a glance">
+  <dl class="glance__grid">
+    {facts.map((f) => (
+      <div class="glance__cell">
+        <dt class="glance__label">{f.label}</dt>
+        <dd class="glance__value">{f.value}</dd>
+      </div>
+    ))}
+  </dl>
+  {updated && <p class="glance__updated">Last updated {updated}</p>}
+</section>
+<style>
+  .glance {
+    border-block-start: 2px solid var(--color-emphasis);
+    padding-block-start: var(--space-3);
+  }
+  .glance__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(var(--space-8), 1fr));
+    gap: var(--space-4);
+    margin: 0;
+  }
+  .glance__cell { display: flex; flex-direction: column; gap: var(--space-1); }
+  .glance__label {
+    font-size: var(--type-caption);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+  .glance__value {
+    margin: 0;
+    font-size: var(--type-data);
+    font-variant-numeric: tabular-nums lining-nums;
+    color: var(--color-text);
+  }
+  .glance__updated {
+    margin-block-start: var(--space-3);
+    font-size: var(--type-caption);
+    color: var(--color-text-muted);
+  }
+</style>

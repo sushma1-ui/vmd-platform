@@ -1,0 +1,10 @@
+{
+  "name": "@vmd/seo",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Schema.org (JSON-LD), meta tags, Open Graph/Twitter, canonical, breadcrumbs, sitemap. Generated from typed data, never hand-written.",
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "scripts": { "build": "echo source-only", "typecheck": "tsc --noEmit", "lint": "eslint ." },
+  "dependencies": { "@vmd/schema": "workspace:*", "@vmd/config": "workspace:*" }
+}

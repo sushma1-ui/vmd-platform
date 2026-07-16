@@ -1,0 +1,34 @@
+import { PRACTICE } from '@vmd/config';
+
+export interface MetaInput {
+  title: string;
+  description: string;
+  path: string;            // e.g. "/about/"
+  ogImage?: string;
+  noindex?: boolean;
+  type?: 'website' | 'article';
+}
+export interface MetaTag { name?: string; property?: string; content: string }
+
+/** Pure: typed input -> the meta tags the layout renders. Canonical from one origin. */
+export function buildMeta(input: MetaInput) {
+  const site = `https://${PRACTICE.domain}`;
+  const canonical = new URL(input.path, site).href;
+  const title = `${input.title} · ${PRACTICE.legalName}`;
+  const image = input.ogImage ?? `${site}/og-default.png`;
+  const tags: MetaTag[] = [
+    { name: 'description', content: input.description },
+    { property: 'og:title', content: title },
+    { property: 'og:description', content: input.description },
+    { property: 'og:type', content: input.type ?? 'website' },
+    { property: 'og:url', content: canonical },
+    { property: 'og:image', content: image },
+    { property: 'og:site_name', content: PRACTICE.legalName },
+    { name: 'twitter:card', content: 'summary_large_image' },
+    { name: 'twitter:title', content: title },
+    { name: 'twitter:description', content: input.description },
+    { name: 'twitter:image', content: image },
+  ];
+  if (input.noindex) tags.push({ name: 'robots', content: 'noindex, nofollow' });
+  return { title, canonical, tags };
+}

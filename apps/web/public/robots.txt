@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /lp/
+Disallow: /thank-you/
+Disallow: /search
+Sitemap: https://migrationdoctors.com.au/sitemap-index.xml

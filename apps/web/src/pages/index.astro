@@ -1,0 +1,209 @@
+---
+import Base from '../layouts/Base.astro';
+import { PRACTICE } from '@vmd/config';
+import { Button, Card, Chip, Rule, TrustStrip, Disclaimer } from '@vmd/ui';
+import { localBusinessSchema, personSchema } from '@vmd/seo';
+import { cms } from '../lib/cms.ts';
+
+const register = PRACTICE.regulator.registerSearchUrl;
+const situations = [
+  ["I'm a skilled professional", 'Points, nominations and the right subclass — mapped to your occupation.', '/your-situation/skilled-professional/'],
+  ["I'm a student", 'The genuine-student test, working rights and what comes after study.', '/your-situation/student/'],
+  ["I'm partnered to an Australian", 'Onshore or offshore, and the evidence a case officer actually weighs.', '/your-situation/partnered-to-australian/'],
+  ["I'm an employer", 'Whether you can sponsor, your obligations, and the compliance exposure.', '/your-situation/employer/'],
+  ['My visa was refused', 'Deadlines are short. A fixed-fee Second Opinion on whether review is worth it.', '/your-situation/visa-refused/'],
+  ["I'm on a bridging visa", 'What you can and can't do, and what you're actually bridging to.', '/your-situation/bridging-visa/'],
+];
+const services = [
+  ['General Skilled Migration', 'SC189 · SC190 · SC491', 'Points-tested PR, including WA state nomination.', '/visa-services/general-skilled-migration/'],
+  ['Employer Sponsored', 'SC482 · SC186 · SC494', 'For employers and skilled workers — sponsorship and compliance.', '/visa-services/employer-sponsored/'],
+  ['Skills Assessments', 'VETASSESS · TRA · ACS', 'The upstream step that most often trips people up.', '/visa-services/skills-assessments/'],
+  ['Family & Partner', 'SC820/801 · SC309/100', 'Relationship evidence, prepared for how it is assessed.', '/visa-services/family-partner/'],
+];
+let posts: any[] = [];
+try { posts = (await cms.articles()).slice(0, 3); } catch {}
+---
+<Base
+  title="Registered Migration Agent in Perth"
+  description={`Honest migration advice in Perth from ${PRACTICE.principal.name}, RMA (MARN ${PRACTICE.principal.marn}). Know exactly where you stand before you spend a dollar — clear pathways, no false promises.`}
+  schemas={[localBusinessSchema(), { '@context': 'https://schema.org', ...personSchema() }]}
+>
+  <!-- 3 · HERO -->
+  <section class="hero">
+    <div class="hero__copy">
+      <p class="eyebrow">{PRACTICE.descriptor}</p>
+      <h1 class="hero__title">Know exactly where you stand — before you spend a dollar.</h1>
+      <Rule width="short" />
+      <p class="hero__lead">Registered migration advice in Perth from {PRACTICE.principal.name}, a Registered Migration Agent. Clear pathways, honest answers, no false promises.</p>
+      <div class="hero__cta">
+        <Button variant="primary" href="/health-check/">Start your free Visa Health Check</Button>
+        <Button variant="secondary" href="/book/">Book a consultation</Button>
+      </div>
+      <TrustStrip rating={5.0} reviewCount={39} reviewUrl="/results/reviews/" />
+    </div>
+    <figure class="hero__portrait" aria-hidden="true">
+      <span>{PRACTICE.principal.name} — working portrait to be commissioned (§19). Real, not stock.</span>
+    </figure>
+  </section>
+
+  <!-- 4 · SITUATION -->
+  <section class="section section--bone">
+    <div class="section__inner">
+      <h2 class="section__h">Which of these is you?</h2>
+      <p class="section__sub">People don't think in subclass numbers. Start where you are — we'll translate.</p>
+      <div class="grid grid--3">
+        {situations.map(([label, line, href]) => <Card title={label} href={href} eyebrow="Your situation">{line}</Card>)}
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 · DIAGNOSIS PROMISE -->
+  <section class="section">
+    <div class="section__inner">
+      <h2 class="section__h">The diagnosis promise</h2>
+      <p class="section__sub">The only differentiation that survives scrutiny is the kind that visibly costs us something.</p>
+      <div class="grid grid--3 promises">
+        <div class="promise"><Rule width="short" /><p>We tell you if you're <strong>not</strong> eligible — including when the honest answer is to wait.</p></div>
+        <div class="promise"><Rule width="short" /><p>A <strong>fixed fee</strong>, quoted before you commit. No surprises.</p></div>
+        <div class="promise"><Rule width="short" /><p>You deal with the <strong>registered agent</strong> — not a salesperson.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 · GRANT LEDGER (evidence, navy band) -->
+  <section class="band">
+    <div class="band__inner">
+      <p class="band__eyebrow">Evidence, not testimony</p>
+      <h2 class="band__h">Grant Ledger</h2>
+      <p class="band__lead">A dated, anonymised, subclass-tagged record of grants and favourable reviews. A testimonial is an opinion we chose; a ledger is a record.</p>
+      <div class="ledger-empty">Entries appear here as client consent is confirmed — no names, no photos, no success rates.</div>
+      <Disclaimer variant="outcomes" />
+    </div>
+  </section>
+
+  <!-- 7 · WHAT WE DO -->
+  <section class="section">
+    <div class="section__inner">
+      <h2 class="section__h">What we do</h2>
+      <p class="section__sub">Find yourself in one scan. Every service is a problem we solve, not a product we sell.</p>
+      <div class="grid grid--2">
+        {services.map(([title, subs, line, href]) => <Card title={title} href={href} eyebrow={subs}>{line}</Card>)}
+      </div>
+      <p class="section__more"><a href="/visa-services/refusals-and-appeals/">Visa refused or cancelled? Refusals &amp; Appeals — including the fixed-fee Second Opinion →</a></p>
+    </div>
+  </section>
+
+  <!-- 8 · HOW WE WORK -->
+  <section class="section section--bone">
+    <div class="section__inner">
+      <h2 class="section__h">How we work</h2>
+      <div class="grid grid--3 steps">
+        <div class="step"><Chip>1 · Diagnosis</Chip><p>A thorough, evidence-based assessment of where you stand.</p></div>
+        <div class="step"><Chip>2 · Pathway</Chip><p>A clear plan matched to your circumstances and the law.</p></div>
+        <div class="step"><Chip>3 · Outcome</Chip><p>Careful preparation and honest guidance through to decision.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9 · MEET SUNIL -->
+  <section class="section">
+    <div class="section__inner meet">
+      <figure class="meet__portrait" aria-hidden="true"><span>Portrait — §19</span></figure>
+      <div class="meet__copy">
+        <p class="eyebrow">The practitioner</p>
+        <h2 class="section__h">You'll speak to {PRACTICE.principal.name}.</h2>
+        <p>I'm a Registered Migration Agent in Perth, bound by the Migration Agents Code of Conduct. When you come to me, you get an honest read on where your case stands — including when the better answer is to wait, take a different pathway, or that I'm not the right person to help.</p>
+        <p>What I won't do: promise an outcome, quote a success rate, or take a matter I don't believe in. That's the whole practice.</p>
+        <p class="meet__marn"><a href={register} rel="noopener" target="_blank">{PRACTICE.principal.name} · Registered Migration Agent · MARN {PRACTICE.principal.marn} — verify on the OMARA register →</a></p>
+        <Button variant="secondary" href="/about/sunil-uprety/">More about Sunil</Button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 · REVIEWS -->
+  <section class="section section--bone">
+    <div class="section__inner reviews">
+      <div>
+        <p class="eyebrow">Attested — third parties speak</p>
+        <h2 class="section__h">5.0 ★ from 39 verified Google reviews</h2>
+        <p class="section__sub">Placed here, after the evidence and the person, reviews read as corroboration — not advertising.</p>
+        <a class="reviews__link" href="/results/reviews/">Read the reviews on Google →</a>
+      </div>
+      <div class="reviews__embed">Live Google reviews embed — wired to the CMS Settings and linked to the Business Profile.</div>
+    </div>
+  </section>
+
+  <!-- 11 · INSIGHTS -->
+  <section class="section">
+    <div class="section__inner">
+      <h2 class="section__h">Recent insights</h2>
+      <p class="section__sub">Migration law changes constantly. Every piece is authored by a Registered Migration Agent.</p>
+      {posts.length > 0 ? (
+        <div class="grid grid--3">
+          {posts.map((p) => <Card title={p.title} href={`/resources/${p.slug}/`} eyebrow={String(p.category).replace(/-/g, ' ')}>{p.excerpt ?? ''}</Card>)}
+        </div>
+      ) : (
+        <div class="ledger-empty ledger-empty--light">Articles appear here once published — each byline links to Sunil Uprety, RMA (MARN {PRACTICE.principal.marn}).</div>
+      )}
+    </div>
+  </section>
+
+  <!-- 12 · CLOSING -->
+  <section class="band band--close">
+    <div class="band__inner band__inner--center">
+      <h2 class="band__h">Not sure where you stand?</h2>
+      <p class="band__lead band__lead--center">Ninety seconds, six questions, a real answer — including if you're not yet eligible.</p>
+      <Button variant="primary" href="/health-check/">Start your free Visa Health Check</Button>
+      <p class="band__promise">If we don't think we can help you, we'll say so.</p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .eyebrow { font-size: var(--type-caption); letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-text-muted); }
+  .section { padding-block: var(--space-8); }
+  .section--bone { background: var(--color-ground-warm); }
+  .section__inner { max-inline-size: var(--container-max); margin-inline: auto; padding-inline: var(--space-4); }
+  .section__h { font-size: var(--type-h2); }
+  .section__sub { font-size: var(--type-body-lg); color: var(--color-text-muted); margin-block: var(--space-2) var(--space-5); max-inline-size: 62ch; }
+  .section__more { margin-block-start: var(--space-4); }
+  .section__more a { color: var(--color-action); border-block-end: 1px solid var(--color-emphasis); text-decoration: none; }
+
+  .hero { max-inline-size: var(--container-max); margin-inline: auto; padding: var(--space-8) var(--space-4); display: grid; gap: var(--space-6); align-items: center; }
+  .hero__title { font-size: var(--type-display-1); line-height: var(--leading-display-1); }
+  .hero__lead { font-size: var(--type-body-lg); line-height: 1.5; margin-block: var(--space-3) var(--space-4); max-inline-size: 52ch; }
+  .hero__cta { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-block-end: var(--space-4); }
+  .hero__portrait { margin: 0; aspect-ratio: 4 / 5; background: var(--color-ground-warm); border: 1px solid color-mix(in srgb, var(--color-action) 12%, transparent); border-radius: var(--radius-card); display: grid; place-items: center; text-align: center; color: var(--color-text-muted); font-size: var(--type-body-sm); padding: var(--space-5); }
+
+  .grid { display: grid; gap: var(--space-4); grid-template-columns: 1fr; }
+  .promise { padding: var(--space-4); background: var(--color-ground-light); border-radius: var(--radius-card); }
+  .section--bone .promise { background: var(--color-ground-warm); }
+  .promise p { margin-block-start: var(--space-3); font-size: var(--type-body-lg); line-height: 1.45; }
+  .step p { margin-block-start: var(--space-2); font-size: var(--type-body); line-height: 1.6; }
+
+  .band { background: var(--color-ground-deep); color: var(--color-text-inverse); }
+  .band__inner { max-inline-size: var(--container-max); margin-inline: auto; padding: var(--space-9) var(--space-4); }
+  .band__inner--center { text-align: center; display: flex; flex-direction: column; align-items: center; gap: var(--space-4); }
+  .band__eyebrow { font-size: var(--type-caption); letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-emphasis); }
+  .band__h { font-size: var(--type-h2); color: var(--color-text-inverse); margin-block-start: var(--space-2); }
+  .band__lead { font-size: var(--type-body-lg); color: color-mix(in srgb, var(--color-text-inverse) 86%, transparent); margin-block: var(--space-3) var(--space-5); max-inline-size: 64ch; }
+  .band__lead--center { max-inline-size: 52ch; }
+  .ledger-empty { border: 1px dashed color-mix(in srgb, var(--color-emphasis) 50%, transparent); border-radius: var(--radius-card); padding: var(--space-5); color: color-mix(in srgb, var(--color-text-inverse) 82%, transparent); margin-block-end: var(--space-4); }
+  .ledger-empty--light { color: var(--color-text-muted); }
+  .band--close .band__promise { color: var(--color-emphasis); font-size: var(--type-body-lg); }
+
+  .meet, .reviews { display: grid; gap: var(--space-6); align-items: center; grid-template-columns: 1fr; }
+  .meet__portrait { margin: 0; aspect-ratio: 1 / 1; background: var(--color-ground-warm); border: 1px solid color-mix(in srgb, var(--color-action) 12%, transparent); border-radius: var(--radius-card); display: grid; place-items: center; color: var(--color-text-muted); font-size: var(--type-body-sm); }
+  .meet__copy p { margin-block-end: var(--space-3); line-height: 1.65; }
+  .meet__marn a { color: var(--color-action); border-block-end: 1px solid var(--color-emphasis); text-decoration: none; font-size: var(--type-body-sm); }
+  .reviews__link { color: var(--color-action); border-block-end: 1px solid var(--color-emphasis); text-decoration: none; }
+  .reviews__embed { border: 1px dashed color-mix(in srgb, var(--color-emphasis) 50%, transparent); border-radius: var(--radius-card); padding: var(--space-6); color: var(--color-text-muted); font-size: var(--type-body-sm); }
+
+  @media (min-width: 768px) {
+    .grid--2 { grid-template-columns: 1fr 1fr; }
+    .hero { grid-template-columns: 1.25fr 1fr; }
+    .meet { grid-template-columns: 1fr 1.4fr; }
+    .reviews { grid-template-columns: 1.2fr 1fr; }
+  }
+  @media (min-width: 1024px) { .grid--3 { grid-template-columns: repeat(3, 1fr); } }
+</style>

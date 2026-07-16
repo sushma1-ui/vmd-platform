@@ -1,0 +1,19 @@
+{
+  "name": "@vmd/database",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Supabase clients with a strict .server split. The service-role client is server-only and never reaches a client bundle (CI-verified).",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "echo source-only",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@vmd/config": "workspace:*",
+    "@supabase/supabase-js": "^2.45.4"
+  }
+}

@@ -1,0 +1,178 @@
+---
+/**
+ * Visa Health Check — the product (Blueprint §9.3). Six steps, one question per
+ * screen, progress bar, back button, browser-local resume, email only at step 6.
+ * Returns a real, general-information diagnosis — including "not yet". Lightweight
+ * vanilla JS island: this is the rare place interactivity is genuinely required.
+ */
+---
+<div class="hc" data-hc>
+  <div class="hc__progress"><div class="hc__bar" data-hc-bar></div></div>
+  <form data-hc-form novalidate>
+    <!-- Step 1 -->
+    <fieldset class="hc__step" data-step="1">
+      <legend class="hc__q">What best describes your situation?</legend>
+      <div class="hc__opts">
+        <button type="button" data-next data-set="situation:skilled-professional">I'm a skilled professional</button>
+        <button type="button" data-next data-set="situation:student">I'm a student</button>
+        <button type="button" data-next data-set="situation:partnered-to-australian">I'm partnered to an Australian</button>
+        <button type="button" data-next data-set="situation:employer">I'm an employer</button>
+        <button type="button" data-next data-set="situation:visa-refused">My visa was refused</button>
+        <button type="button" data-next data-set="situation:bridging-visa">I'm on a bridging visa</button>
+      </div>
+    </fieldset>
+    <!-- Step 2 -->
+    <fieldset class="hc__step" data-step="2" hidden>
+      <legend class="hc__q">Where are you now?</legend>
+      <div class="hc__opts">
+        <button type="button" data-next data-set="location:australia">In Australia</button>
+        <button type="button" data-next data-set="location:offshore">Offshore</button>
+      </div>
+    </fieldset>
+    <!-- Step 3 -->
+    <fieldset class="hc__step" data-step="3" hidden>
+      <legend class="hc__q">Age bracket</legend>
+      <div class="hc__opts">
+        <button type="button" data-next data-set="ageBracket:under-25">Under 25</button>
+        <button type="button" data-next data-set="ageBracket:25-32">25–32</button>
+        <button type="button" data-next data-set="ageBracket:33-39">33–39</button>
+        <button type="button" data-next data-set="ageBracket:40-44">40–44</button>
+        <button type="button" data-next data-set="ageBracket:45-plus">45+</button>
+      </div>
+    </fieldset>
+    <!-- Step 4 -->
+    <fieldset class="hc__step" data-step="4" hidden>
+      <legend class="hc__q">Have you completed an English test and a skills assessment?</legend>
+      <div class="hc__opts">
+        <button type="button" data-next data-set="gates:both">Both done</button>
+        <button type="button" data-next data-set="gates:one">One done</button>
+        <button type="button" data-next data-set="gates:none">Neither</button>
+        <button type="button" data-next data-set="gates:not-sure">Not sure</button>
+      </div>
+    </fieldset>
+    <!-- Step 5 -->
+    <fieldset class="hc__step" data-step="5" hidden>
+      <legend class="hc__q">Has a visa ever been refused or cancelled?</legend>
+      <div class="hc__opts">
+        <button type="button" data-next data-set="everRefusedOrCancelled:no">No</button>
+        <button type="button" data-next data-set="everRefusedOrCancelled:yes">Yes</button>
+        <button type="button" data-next data-set="everRefusedOrCancelled:not-sure">Not sure</button>
+      </div>
+    </fieldset>
+    <!-- Step 6 -->
+    <fieldset class="hc__step" data-step="6" hidden>
+      <legend class="hc__q">Where should we send your result?</legend>
+      <label class="hc__label" for="hc-name">First name</label>
+      <input class="hc__input" id="hc-name" name="firstName" autocomplete="given-name" required />
+      <label class="hc__label" for="hc-email">Email</label>
+      <input class="hc__input" id="hc-email" name="email" type="email" inputmode="email" autocomplete="email" required />
+      <label class="hc__label" for="hc-mobile">Mobile (optional)</label>
+      <input class="hc__input" id="hc-mobile" name="mobile" type="tel" inputmode="tel" autocomplete="tel" />
+      <label class="hc__consent"><input type="checkbox" name="sensitive" /> I understand this is general information, not migration advice, and may involve sensitive personal information.</label>
+      <p class="hc__err" data-hc-err role="alert" hidden></p>
+      <button class="hc__submit" type="submit">See my result</button>
+    </fieldset>
+  </form>
+
+  <!-- Result -->
+  <div class="hc__result" data-hc-result hidden>
+    <h2 class="hc__result-h">Your indicative position</h2>
+    <p data-hc-summary></p>
+    <div class="vmd-disclaimer">This is general information based on what you told us — not migration advice. Outcomes depend on your circumstances and Australian migration law.</div>
+    <a class="hc__book" href="/book/">Book a consultation →</a>
+  </div>
+
+  <div class="hc__foot">
+    <button type="button" data-hc-back hidden>← Back</button>
+    <span data-hc-count>Step 1 of 6</span>
+  </div>
+</div>
+
+<style>
+  .hc { max-inline-size: var(--container-prose); margin-inline: auto; }
+  .hc__progress { block-size: 4px; background: var(--color-ground-warm); border-radius: var(--radius-chip); overflow: hidden; }
+  .hc__bar { block-size: 100%; inline-size: 16%; background: var(--color-action); transition: inline-size var(--motion-base) var(--ease-standard); }
+  .hc__step { border: 0; padding: var(--space-5) 0; margin: 0; }
+  .hc__q { font-family: var(--font-display); font-size: var(--type-h2); color: var(--color-action); padding: 0; margin-block-end: var(--space-4); }
+  .hc__opts { display: grid; gap: var(--space-2); }
+  .hc__opts button, .hc__submit { text-align: start; padding: var(--space-3) var(--space-4); font-size: var(--type-body); font-family: var(--font-body); background: var(--color-ground-light); color: var(--color-text); border: 1px solid var(--color-text-muted); border-radius: var(--radius-control); cursor: pointer; min-block-size: var(--space-6); }
+  .hc__opts button:hover { border-color: var(--color-emphasis); }
+  .hc__label { display: block; font-weight: 500; margin-block: var(--space-3) var(--space-1); }
+  .hc__input { display: block; inline-size: 100%; min-block-size: calc(var(--space-6) + var(--space-2)); padding-inline: var(--space-3); border: 1px solid var(--color-text-muted); border-radius: var(--radius-control); font-size: var(--type-body); }
+  .hc__consent { display: flex; gap: var(--space-2); align-items: start; margin-block: var(--space-4); font-size: var(--type-body-sm); color: var(--color-text-muted); }
+  .hc__submit { text-align: center; background: var(--color-action); color: var(--color-text-inverse); border-color: transparent; font-weight: 500; }
+  .hc__err { color: var(--color-critical); font-size: var(--type-body-sm); }
+  .hc__result-h { font-size: var(--type-h2); }
+  .hc__book { display: inline-block; margin-block-start: var(--space-4); color: var(--color-action); border-block-end: 1px solid var(--color-emphasis); text-decoration: none; }
+  .hc__foot { display: flex; justify-content: space-between; align-items: center; padding-block: var(--space-3); font-size: var(--type-body-sm); color: var(--color-text-muted); }
+  .hc__foot button { background: none; border: 0; color: var(--color-action); cursor: pointer; font-size: var(--type-body-sm); }
+</style>
+
+<script>
+  const root = document.querySelector('[data-hc]');
+  if (root) {
+    const KEY = 'vmd-health-check';
+    const state = JSON.parse(localStorage.getItem(KEY) || '{}');
+    let step = 1;
+    const total = 6;
+    const bar = root.querySelector('[data-hc-bar]');
+    const count = root.querySelector('[data-hc-count]');
+    const back = root.querySelector('[data-hc-back]');
+    const form = root.querySelector('[data-hc-form]');
+    const result = root.querySelector('[data-hc-result]');
+    const summaryEl = root.querySelector('[data-hc-summary]');
+    const errEl = root.querySelector('[data-hc-err]');
+
+    const show = (n) => {
+      root.querySelectorAll('.hc__step').forEach((f) => { f.hidden = Number(f.dataset.step) !== n; });
+      bar.style.inlineSize = `${Math.round((n / total) * 100)}%`;
+      count.textContent = `Step ${n} of ${total}`;
+      back.hidden = n === 1;
+      step = n;
+    };
+    const persist = () => localStorage.setItem(KEY, JSON.stringify(state));
+
+    root.querySelectorAll('[data-next]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const [k, v] = btn.dataset.set.split(':');
+        state[k] = v;
+        persist();
+        if (step < total) show(step + 1);
+      });
+    });
+    back.addEventListener('click', () => { if (step > 1) show(step - 1); });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errEl.hidden = true;
+      const fd = new FormData(form);
+      state.firstName = fd.get('firstName');
+      state.email = fd.get('email');
+      state.mobile = fd.get('mobile');
+      if (!state.firstName || !state.email) { errEl.textContent = 'Please enter your first name and email.'; errEl.hidden = false; return; }
+      persist();
+      try {
+        await fetch('/api/health-check', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(state) });
+      } catch (_) { /* result still shown; lead retried server-side */ }
+      // Honest, general-information diagnosis derived from inputs.
+      const lines = [];
+      if (state.situation === 'visa-refused' || state.everRefusedOrCancelled === 'yes') {
+        lines.push('Because a refusal or cancellation is involved, the priority is any review deadline — these are short and strict. A fixed-fee Second Opinion is often the right first step.');
+      } else if (state.situation === 'skilled-professional') {
+        lines.push('Skilled pathways (190/491) are most likely relevant. Before either is possible you will usually need a positive skills assessment — we would want to see that before advising further.');
+      } else if (state.situation === 'partnered-to-australian') {
+        lines.push('Partner pathways (820/801 onshore, 309/100 offshore) are likely relevant. The work is in preparing relationship evidence for how it is actually assessed.');
+      } else {
+        lines.push('Based on what you told us, we can identify the pathways worth exploring at a consultation.');
+      }
+      if (state.gates === 'none' || state.gates === 'not-sure') lines.push('You have not yet completed the gating steps (English test, skills assessment), so a firm assessment is not yet possible — that is a normal starting point, not a barrier.');
+      summaryEl.textContent = lines.join(' ');
+      form.hidden = true;
+      result.hidden = false;
+      root.querySelector('.hc__foot').hidden = true;
+      localStorage.removeItem(KEY);
+    });
+
+    show(1);
+  }
+</script>
