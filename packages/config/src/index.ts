@@ -11,7 +11,7 @@
  * that capability's package.
  */
 
-export { serverEnv, publicEnv, type ServerEnv, type PublicEnv } from './env.js';
+export { serverEnv, publicEnv, type ServerEnv, type PublicEnv } from './env.ts';
 
 /**
  * Canonical practice identity. Single source of truth for NAP and registration.
