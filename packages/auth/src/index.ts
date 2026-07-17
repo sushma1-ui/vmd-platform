@@ -13,7 +13,15 @@ export interface Principal {
   email: string;
 }
 
-/** Reusable predicate factory — used by Payload access fns (Module 8). */
+/**
+ * Reusable predicate factory — used by Payload access fns (Module 8).
+ *
+ * The predicate only inspects `role`, so it accepts any role-bearing principal
+ * (a full {@link Principal}, or Payload's generated `User`, whose `id` is numeric
+ * rather than a string). Widening the parameter this way keeps the role gate
+ * usable from both planes without a cast.
+ */
 export function requireRole(...allowed: Role[]) {
-  return (principal: Principal | null): boolean => !!principal && allowed.includes(principal.role);
+  return (principal: Pick<Principal, 'role'> | null): boolean =>
+    !!principal && allowed.includes(principal.role);
 }

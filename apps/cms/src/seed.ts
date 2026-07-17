@@ -324,7 +324,7 @@ async function upsert(
 
 export async function seed() {
   const payload = await getPayload({ config });
-  const svc: Record<string, string> = {};
+  const svc: Record<string, number> = {};
   for (const s of services) {
     const extra = s.slug === 'employer-sponsored' ? ES_SERVICE : {};
     const doc = await upsert(payload, 'services', 'slug', s.slug, {
@@ -334,7 +334,7 @@ export async function seed() {
     });
     svc[s.slug] = doc.id;
   }
-  const subIds: Record<string, string> = {};
+  const subIds: Record<string, number> = {};
   for (const [service, code, name, slug, visaType] of subclasses) {
     const extra = ES_SUB_CONTENT[code as string] ?? {};
     const base: any = { code, name, status: 'published', service: svc[service as string] };
@@ -364,9 +364,8 @@ export async function seed() {
   }
 
   // Employer Sponsored FAQs -> relate to the service
-  const faqIds: string[] = [];
-  for (const [i, f] of ES_FAQS.entries()) {
-    const slug = `es-faq-${i + 1}`;
+  const faqIds: number[] = [];
+  for (const f of ES_FAQS) {
     const doc = await upsert(payload, 'faqs', 'question', f.q, {
       question: f.q,
       answer: rt(f.a),
@@ -376,9 +375,13 @@ export async function seed() {
     faqIds.push(doc.id);
   }
   // journey links to the 482/186 subclasses
+  const employerSponsoredId = svc['employer-sponsored'];
+  if (!employerSponsoredId) {
+    throw new Error("Seed: 'employer-sponsored' service must exist before linking its journey");
+  }
   await payload.update({
     collection: 'services',
-    id: svc['employer-sponsored'],
+    id: employerSponsoredId,
     overrideAccess: true,
     data: {
       faqs: faqIds,
