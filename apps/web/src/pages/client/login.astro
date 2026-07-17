@@ -3,32 +3,87 @@ import Client from '../../layouts/Client.astro';
 export const prerender = false;
 const next = Astro.url.searchParams.get('next') ?? '/client/';
 ---
+
 <Client title="Sign in">
   <section class="cp-login">
     <h1>Sign in to your portal</h1>
     <p class="cp-lead">Track your matter, message the practice, and manage documents securely.</p>
     <form data-login novalidate>
       <label for="cp-email">Email</label>
-      <input id="cp-email" name="email" type="email" inputmode="email" autocomplete="email" required />
+      <input
+        id="cp-email"
+        name="email"
+        type="email"
+        inputmode="email"
+        autocomplete="email"
+        required
+      />
       <label for="cp-pass">Password</label>
-      <input id="cp-pass" name="password" type="password" autocomplete="current-password" required />
+      <input
+        id="cp-pass"
+        name="password"
+        type="password"
+        autocomplete="current-password"
+        required
+      />
       <p class="cp-err" data-err role="alert" hidden></p>
       <button type="submit">Sign in</button>
     </form>
-    <p class="cp-note">Access is created by the practice when your matter begins. Trouble signing in? <a href="/contact/">Contact us</a>.</p>
+    <p class="cp-note">
+      Access is created by the practice when your matter begins. Trouble signing in? <a
+        href="/contact/">Contact us</a
+      >.
+    </p>
     <input type="hidden" data-next value={next} />
   </section>
 </Client>
 <style>
-  .cp-login { max-inline-size: var(--container-prose); }
-  .cp-login h1 { font-size: var(--type-h2); }
-  .cp-lead { color: var(--color-text-muted); margin-block: var(--space-2) var(--space-5); }
-  form { display: flex; flex-direction: column; gap: var(--space-2); max-inline-size: 380px; }
-  label { font-weight: 500; margin-block-start: var(--space-2); }
-  input { min-block-size: calc(var(--space-6) + var(--space-2)); padding-inline: var(--space-3); border: 1px solid var(--color-text-muted); border-radius: var(--radius-control); font-size: var(--type-body); }
-  button { min-block-size: var(--space-6); margin-block-start: var(--space-3); background: var(--color-action); color: var(--color-text-inverse); border: 0; border-radius: var(--radius-control); font-weight: 500; cursor: pointer; }
-  .cp-err { color: var(--color-critical); font-size: var(--type-body-sm); }
-  .cp-note { font-size: var(--type-body-sm); color: var(--color-text-muted); margin-block-start: var(--space-4); }
+  .cp-login {
+    max-inline-size: var(--container-prose);
+  }
+  .cp-login h1 {
+    font-size: var(--type-h2);
+  }
+  .cp-lead {
+    color: var(--color-text-muted);
+    margin-block: var(--space-2) var(--space-5);
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    max-inline-size: 380px;
+  }
+  label {
+    font-weight: 500;
+    margin-block-start: var(--space-2);
+  }
+  input {
+    min-block-size: calc(var(--space-6) + var(--space-2));
+    padding-inline: var(--space-3);
+    border: 1px solid var(--color-text-muted);
+    border-radius: var(--radius-control);
+    font-size: var(--type-body);
+  }
+  button {
+    min-block-size: var(--space-6);
+    margin-block-start: var(--space-3);
+    background: var(--color-action);
+    color: var(--color-text-inverse);
+    border: 0;
+    border-radius: var(--radius-control);
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .cp-err {
+    color: var(--color-critical);
+    font-size: var(--type-body-sm);
+  }
+  .cp-note {
+    font-size: var(--type-body-sm);
+    color: var(--color-text-muted);
+    margin-block-start: var(--space-4);
+  }
 </style>
 <script>
   import { browserSupabase } from '../../lib/supabase.ts';
@@ -39,10 +94,21 @@ const next = Astro.url.searchParams.get('next') ?? '/client/';
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     err.hidden = true;
-    if (!sb) { err.textContent = 'Portal sign-in is not configured yet.'; err.hidden = false; return; }
+    if (!sb) {
+      err.textContent = 'Portal sign-in is not configured yet.';
+      err.hidden = false;
+      return;
+    }
     const fd = new FormData(form);
-    const { error } = await sb.auth.signInWithPassword({ email: fd.get('email'), password: fd.get('password') });
-    if (error) { err.textContent = 'Those details did not match. Check and try again.'; err.hidden = false; return; }
+    const { error } = await sb.auth.signInWithPassword({
+      email: fd.get('email'),
+      password: fd.get('password'),
+    });
+    if (error) {
+      err.textContent = 'Those details did not match. Check and try again.';
+      err.hidden = false;
+      return;
+    }
     window.location.href = next;
   });
 </script>

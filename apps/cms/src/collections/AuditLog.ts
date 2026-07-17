@@ -7,10 +7,19 @@ import { isAdmin } from '../access/index.ts';
  */
 export const AuditLog: CollectionConfig = {
   slug: 'audit-log',
-  admin: { useAsTitle: 'action', defaultColumns: ['action', 'collectionSlug', 'docId', 'user', 'createdAt'] },
+  admin: {
+    useAsTitle: 'action',
+    defaultColumns: ['action', 'collectionSlug', 'docId', 'user', 'createdAt'],
+  },
   access: { read: isAdmin, create: () => false, update: () => false, delete: () => false },
   fields: [
-    { name: 'action', type: 'select', required: true, options: ['create', 'update', 'delete'], index: true },
+    {
+      name: 'action',
+      type: 'select',
+      required: true,
+      options: ['create', 'update', 'delete'],
+      index: true,
+    },
     { name: 'collectionSlug', type: 'text', required: true, index: true },
     { name: 'docId', type: 'text', required: true },
     { name: 'user', type: 'relationship', relationTo: 'users' },

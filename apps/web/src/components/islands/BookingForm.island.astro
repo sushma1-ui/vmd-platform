@@ -1,42 +1,156 @@
 ---
 /** Consultation request. Timezone-aware (AWST default). Posts to /api/booking. */
 ---
+
 <form class="bk" data-bk novalidate>
   <div class="bk__grid">
-    <div class="bk__f"><label for="bk-type">Consultation type</label>
-      <select id="bk-type" name="type"><option value="online">Online</option><option value="in-person">In person (Perth CBD)</option><option value="second-opinion">Second Opinion</option></select></div>
-    <div class="bk__f"><label for="bk-name">First name</label><input id="bk-name" name="firstName" autocomplete="given-name" required /></div>
-    <div class="bk__f"><label for="bk-email">Email</label><input id="bk-email" name="email" type="email" inputmode="email" autocomplete="email" required /></div>
-    <div class="bk__f"><label for="bk-mobile">Mobile</label><input id="bk-mobile" name="mobile" type="tel" inputmode="tel" autocomplete="tel" required /></div>
-    <div class="bk__f"><label for="bk-when">Preferred date/time (optional)</label><input id="bk-when" name="requestedStartUtc" type="datetime-local" /></div>
+    <div class="bk__f">
+      <label for="bk-type">Consultation type</label>
+      <select id="bk-type" name="type"
+        ><option value="online">Online</option><option value="in-person"
+          >In person (Perth CBD)</option
+        ><option value="second-opinion">Second Opinion</option></select
+      >
+    </div>
+    <div class="bk__f">
+      <label for="bk-name">First name</label><input
+        id="bk-name"
+        name="firstName"
+        autocomplete="given-name"
+        required
+      />
+    </div>
+    <div class="bk__f">
+      <label for="bk-email">Email</label><input
+        id="bk-email"
+        name="email"
+        type="email"
+        inputmode="email"
+        autocomplete="email"
+        required
+      />
+    </div>
+    <div class="bk__f">
+      <label for="bk-mobile">Mobile</label><input
+        id="bk-mobile"
+        name="mobile"
+        type="tel"
+        inputmode="tel"
+        autocomplete="tel"
+        required
+      />
+    </div>
+    <div class="bk__f">
+      <label for="bk-when">Preferred date/time (optional)</label><input
+        id="bk-when"
+        name="requestedStartUtc"
+        type="datetime-local"
+      />
+    </div>
   </div>
-  <div class="bk__f"><label for="bk-notes">Anything we should know?</label><textarea id="bk-notes" name="notes" rows="3"></textarea></div>
+  <div class="bk__f">
+    <label for="bk-notes">Anything we should know?</label><textarea
+      id="bk-notes"
+      name="notes"
+      rows="3"></textarea>
+  </div>
   <p class="bk__err" data-err role="alert" hidden></p>
   <button type="submit">Request consultation</button>
-  <div class="bk__ok" data-ok hidden role="status">Requested. We'll confirm your time (AWST) and send a preparation checklist by email.</div>
+  <div class="bk__ok" data-ok hidden role="status">
+    Requested. We'll confirm your time (AWST) and send a preparation checklist by email.
+  </div>
 </form>
 <style>
-  .bk__grid { display: grid; gap: var(--space-3); grid-template-columns: 1fr; }
-  .bk__f { display: flex; flex-direction: column; gap: var(--space-1); margin-block-end: var(--space-3); }
-  .bk__f label { font-weight: 500; font-size: var(--type-body-sm); }
-  .bk input, .bk select, .bk textarea { min-block-size: calc(var(--space-6) + var(--space-2)); padding: var(--space-2) var(--space-3); border: 1px solid var(--color-text-muted); border-radius: var(--radius-control); font-size: var(--type-body); font-family: var(--font-body); }
-  .bk textarea { min-block-size: auto; }
-  .bk button { min-block-size: var(--space-6); padding-inline: var(--space-4); background: var(--color-action); color: var(--color-text-inverse); border: 0; border-radius: var(--radius-control); font-weight: 500; cursor: pointer; }
-  .bk__err { color: var(--color-critical); font-size: var(--type-body-sm); }
-  .bk__ok { margin-block-start: var(--space-4); border-inline-start: 3px solid var(--color-success); background: color-mix(in srgb, var(--color-success) 8%, var(--color-ground-light)); padding: var(--space-3) var(--space-4); }
-  @media (min-width: 640px) { .bk__grid { grid-template-columns: 1fr 1fr; } }
+  .bk__grid {
+    display: grid;
+    gap: var(--space-3);
+    grid-template-columns: 1fr;
+  }
+  .bk__f {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    margin-block-end: var(--space-3);
+  }
+  .bk__f label {
+    font-weight: 500;
+    font-size: var(--type-body-sm);
+  }
+  .bk input,
+  .bk select,
+  .bk textarea {
+    min-block-size: calc(var(--space-6) + var(--space-2));
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--color-text-muted);
+    border-radius: var(--radius-control);
+    font-size: var(--type-body);
+    font-family: var(--font-body);
+  }
+  .bk textarea {
+    min-block-size: auto;
+  }
+  .bk button {
+    min-block-size: var(--space-6);
+    padding-inline: var(--space-4);
+    background: var(--color-action);
+    color: var(--color-text-inverse);
+    border: 0;
+    border-radius: var(--radius-control);
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .bk__err {
+    color: var(--color-critical);
+    font-size: var(--type-body-sm);
+  }
+  .bk__ok {
+    margin-block-start: var(--space-4);
+    border-inline-start: 3px solid var(--color-success);
+    background: color-mix(in srgb, var(--color-success) 8%, var(--color-ground-light));
+    padding: var(--space-3) var(--space-4);
+  }
+  @media (min-width: 640px) {
+    .bk__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
 </style>
 <script>
   const form = document.querySelector('[data-bk]');
-  const err = form?.querySelector('[data-err]'); const ok = form?.querySelector('[data-ok]');
+  const err = form?.querySelector('[data-err]');
+  const ok = form?.querySelector('[data-ok]');
   form?.addEventListener('submit', async (e) => {
-    e.preventDefault(); err.hidden = true;
+    e.preventDefault();
+    err.hidden = true;
     const fd = new FormData(form);
     let when = fd.get('requestedStartUtc');
-    const payload = { type: fd.get('type'), firstName: fd.get('firstName'), email: fd.get('email'), mobile: fd.get('mobile'), timezone: 'Australia/Perth', requestedStartUtc: when ? new Date(when).toISOString() : undefined, notes: fd.get('notes') || undefined };
-    if (!payload.firstName || !payload.email || !payload.mobile) { err.textContent = 'Please enter your name, email and mobile.'; err.hidden = false; return; }
-    try { const r = await fetch('/api/booking', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(payload) }); if (!r.ok) throw new Error(); }
-    catch { err.textContent = 'Could not send your request. Please call us on +61 493 719 431.'; err.hidden = false; return; }
-    form.querySelectorAll('input,select,textarea,button').forEach((el) => (el.disabled = true)); ok.hidden = false;
+    const payload = {
+      type: fd.get('type'),
+      firstName: fd.get('firstName'),
+      email: fd.get('email'),
+      mobile: fd.get('mobile'),
+      timezone: 'Australia/Perth',
+      requestedStartUtc: when ? new Date(when).toISOString() : undefined,
+      notes: fd.get('notes') || undefined,
+    };
+    if (!payload.firstName || !payload.email || !payload.mobile) {
+      err.textContent = 'Please enter your name, email and mobile.';
+      err.hidden = false;
+      return;
+    }
+    try {
+      const r = await fetch('/api/booking', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!r.ok) throw new Error();
+    } catch {
+      err.textContent = 'Could not send your request. Please call us on +61 493 719 431.';
+      err.hidden = false;
+      return;
+    }
+    form.querySelectorAll('input,select,textarea,button').forEach((el) => (el.disabled = true));
+    ok.hidden = false;
   });
 </script>

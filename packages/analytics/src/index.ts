@@ -1,8 +1,17 @@
 export type AnalyticsEvent =
-  | 'health_check_start' | 'health_check_step' | 'health_check_complete'
-  | 'consultation_requested' | 'second_opinion_submitted' | 'guide_download' | 'newsletter_signup';
+  | 'health_check_start'
+  | 'health_check_step'
+  | 'health_check_complete'
+  | 'consultation_requested'
+  | 'second_opinion_submitted'
+  | 'guide_download'
+  | 'newsletter_signup';
 
-export interface TrackInput { event: AnalyticsEvent; params?: Record<string, string | number | boolean>; consent: boolean }
+export interface TrackInput {
+  event: AnalyticsEvent;
+  params?: Record<string, string | number | boolean>;
+  consent: boolean;
+}
 export interface AnalyticsConfig {
   ga4?: { measurementId: string; apiSecret: string; clientId?: string };
   plausible?: { domain: string; url?: string };
@@ -17,7 +26,10 @@ export async function track(input: TrackInput, config: AnalyticsConfig): Promise
     tasks.push(
       fetch(url, {
         method: 'POST',
-        body: JSON.stringify({ client_id: config.ga4.clientId ?? 'server', events: [{ name: input.event, params: input.params ?? {} }] }),
+        body: JSON.stringify({
+          client_id: config.ga4.clientId ?? 'server',
+          events: [{ name: input.event, params: input.params ?? {} }],
+        }),
       }).catch(() => undefined),
     );
   }
@@ -26,7 +38,11 @@ export async function track(input: TrackInput, config: AnalyticsConfig): Promise
       fetch(config.plausible.url ?? 'https://plausible.io/api/event', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ name: input.event, domain: config.plausible.domain, url: `https://${config.plausible.domain}/` }),
+        body: JSON.stringify({
+          name: input.event,
+          domain: config.plausible.domain,
+          url: `https://${config.plausible.domain}/`,
+        }),
       }).catch(() => undefined),
     );
   }

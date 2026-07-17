@@ -1,27 +1,63 @@
 ---
 import ComplexityMeter from './ComplexityMeter.astro';
 import { Button } from '@vmd/ui';
-interface Props { glance?: any; govFee?: any; complexity?: any; updated?: string | null }
+interface Props {
+  glance?: any;
+  govFee?: any;
+  complexity?: any;
+  updated?: string | null;
+}
 const { glance = {}, govFee, complexity, updated } = Astro.props;
 const dash = (v: unknown) => (v && String(v).trim() ? String(v) : '—');
 const feeShown = govFee?.amount && govFee?.asAt; // render only when verified + dated
 const rows = [
-  ['Visa type', glance.visaType ? glance.visaType[0].toUpperCase() + glance.visaType.slice(1) : '—'],
+  [
+    'Visa type',
+    glance.visaType ? glance.visaType[0].toUpperCase() + glance.visaType.slice(1) : '—',
+  ],
   ['Processing time', dash(glance.processingTime)],
   ['Duration', dash(glance.duration)],
   ['Location', dash(glance.onshoreOffshore)],
   ['Points needed', dash(glance.pointsNeeded)],
 ];
 ---
+
 <aside class="sf" aria-label="At a glance">
   <p class="sf__h">At a glance</p>
   <dl class="sf__list">
-    {rows.map(([k, v]) => (<div class="sf__row"><dt>{k}</dt><dd>{v}</dd></div>))}
-    {feeShown && (
-      <div class="sf__row"><dt>Government fee</dt><dd>{govFee.amount} <a href={govFee.sourceUrl} rel="noopener" class="sf__src">(as at {new Date(govFee.asAt).toLocaleDateString('en-AU')})</a></dd></div>
-    )}
+    {
+      rows.map(([k, v]) => (
+        <div class="sf__row">
+          <>
+            <dt>{k}</dt>
+            <dd>{v}</dd>
+          </>
+        </div>
+      ))
+    }
+    {
+      feeShown && (
+        <div class="sf__row">
+          <>
+            <dt>Government fee</dt>
+            <dd>
+              {govFee.amount}{' '}
+              <a href={govFee.sourceUrl} rel="noopener" class="sf__src">
+                (as at {new Date(govFee.asAt).toLocaleDateString('en-AU')})
+              </a>
+            </dd>
+          </>
+        </div>
+      )
+    }
   </dl>
-  {complexity?.level && <div class="sf__cx"><ComplexityMeter level={complexity.level} note={complexity.note} /></div>}
+  {
+    complexity?.level && (
+      <div class="sf__cx">
+        <ComplexityMeter level={complexity.level} note={complexity.note} />
+      </div>
+    )
+  }
   {updated && <p class="sf__upd">Last reviewed {updated}</p>}
   <div class="sf__cta">
     <Button variant="primary" href="/book/">Book a consultation</Button>
@@ -29,14 +65,65 @@ const rows = [
   </div>
 </aside>
 <style>
-  .sf { border: 1px solid color-mix(in srgb, var(--color-action) 12%, transparent); border-radius: var(--radius-card); padding: var(--space-4); background: var(--color-ground-light); border-block-start: 2px solid var(--color-emphasis); }
-  .sf__h { font-size: var(--type-caption); letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-text-muted); margin-block-end: var(--space-3); }
-  .sf__list { margin: 0; display: flex; flex-direction: column; gap: var(--space-2); }
-  .sf__row { display: flex; justify-content: space-between; gap: var(--space-3); font-size: var(--type-body-sm); border-block-end: 1px solid color-mix(in srgb, var(--color-action) 6%, transparent); padding-block-end: var(--space-2); }
-  .sf__row dt { color: var(--color-text-muted); } .sf__row dd { margin: 0; font-variant-numeric: tabular-nums lining-nums; text-align: end; }
-  .sf__src { color: var(--color-text-muted); border-block-end: 1px solid var(--color-emphasis); text-decoration: none; }
-  .sf__cx { margin-block: var(--space-3); }
-  .sf__upd { font-size: var(--type-caption); color: var(--color-text-muted); margin-block: var(--space-2); }
-  .sf__cta { display: flex; flex-direction: column; gap: var(--space-2); margin-block-start: var(--space-3); }
-  @media (min-width: 1024px) { .sf { position: sticky; inset-block-start: calc(var(--space-8) + var(--space-2)); } }
+  .sf {
+    border: 1px solid color-mix(in srgb, var(--color-action) 12%, transparent);
+    border-radius: var(--radius-card);
+    padding: var(--space-4);
+    background: var(--color-ground-light);
+    border-block-start: 2px solid var(--color-emphasis);
+  }
+  .sf__h {
+    font-size: var(--type-caption);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin-block-end: var(--space-3);
+  }
+  .sf__list {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  .sf__row {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-3);
+    font-size: var(--type-body-sm);
+    border-block-end: 1px solid color-mix(in srgb, var(--color-action) 6%, transparent);
+    padding-block-end: var(--space-2);
+  }
+  .sf__row dt {
+    color: var(--color-text-muted);
+  }
+  .sf__row dd {
+    margin: 0;
+    font-variant-numeric: tabular-nums lining-nums;
+    text-align: end;
+  }
+  .sf__src {
+    color: var(--color-text-muted);
+    border-block-end: 1px solid var(--color-emphasis);
+    text-decoration: none;
+  }
+  .sf__cx {
+    margin-block: var(--space-3);
+  }
+  .sf__upd {
+    font-size: var(--type-caption);
+    color: var(--color-text-muted);
+    margin-block: var(--space-2);
+  }
+  .sf__cta {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin-block-start: var(--space-3);
+  }
+  @media (min-width: 1024px) {
+    .sf {
+      position: sticky;
+      inset-block-start: calc(var(--space-8) + var(--space-2));
+    }
+  }
 </style>

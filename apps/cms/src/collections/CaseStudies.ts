@@ -6,7 +6,12 @@ import { seoField } from '../fields/index.ts';
 export const CaseStudies: CollectionConfig = {
   slug: 'case-studies',
   admin: { useAsTitle: 'title' },
-  access: { read: publishedOrEditorial, create: isEditorial, update: isEditorial, delete: isEditorial },
+  access: {
+    read: publishedOrEditorial,
+    create: isEditorial,
+    update: isEditorial,
+    delete: isEditorial,
+  },
   fields: [
     { name: 'title', type: 'text', required: true },
     { name: 'slug', type: 'text', required: true, unique: true, index: true },
@@ -15,7 +20,13 @@ export const CaseStudies: CollectionConfig = {
     { name: 'approach', type: 'richText' },
     { name: 'outcome', type: 'richText' },
     { name: 'consentRecorded', type: 'checkbox', required: true },
-    { name: 'status', type: 'select', defaultValue: 'draft', index: true, options: ['draft', 'published'] },
+    {
+      name: 'status',
+      type: 'select',
+      defaultValue: 'draft',
+      index: true,
+      options: ['draft', 'published'],
+    },
     seoField,
   ],
 };

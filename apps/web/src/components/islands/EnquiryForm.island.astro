@@ -1,48 +1,181 @@
 ---
 /** Reusable enquiry form (Contact, footer, general enquiry). Posts to /api/lead. */
-interface Props { source?: string; heading?: string; withMessage?: boolean; consent?: boolean }
+interface Props {
+  source?: string;
+  heading?: string;
+  withMessage?: boolean;
+  consent?: boolean;
+}
 const { source = 'general-enquiry', heading, withMessage = true, consent = true } = Astro.props;
 ---
+
 <form class="ef" data-ef data-source={source} novalidate>
   {heading && <h2 class="ef__h">{heading}</h2>}
   <div class="ef__grid">
-    <div class="ef__f"><label for={`${source}-name`}>First name</label><input id={`${source}-name`} name="firstName" autocomplete="given-name" required /></div>
-    <div class="ef__f"><label for={`${source}-email`}>Email</label><input id={`${source}-email`} name="email" type="email" inputmode="email" autocomplete="email" required /></div>
-    <div class="ef__f"><label for={`${source}-mobile`}>Mobile (optional)</label><input id={`${source}-mobile`} name="mobile" type="tel" inputmode="tel" autocomplete="tel" /></div>
+    <div class="ef__f">
+      <label for={`${source}-name`}>First name</label><input
+        id={`${source}-name`}
+        name="firstName"
+        autocomplete="given-name"
+        required
+      />
+    </div>
+    <div class="ef__f">
+      <label for={`${source}-email`}>Email</label><input
+        id={`${source}-email`}
+        name="email"
+        type="email"
+        inputmode="email"
+        autocomplete="email"
+        required
+      />
+    </div>
+    <div class="ef__f">
+      <label for={`${source}-mobile`}>Mobile (optional)</label><input
+        id={`${source}-mobile`}
+        name="mobile"
+        type="tel"
+        inputmode="tel"
+        autocomplete="tel"
+      />
+    </div>
   </div>
-  {withMessage && <div class="ef__f"><label for={`${source}-msg`}>How can we help?</label><textarea id={`${source}-msg`} name="message" rows="4"></textarea></div>}
-  <input type="text" name="company" tabindex="-1" autocomplete="off" class="ef__hp" aria-hidden="true" />
-  {consent && <label class="ef__consent"><input type="checkbox" name="marketingConsent" /> Keep me updated when the rules that affect me change (optional).</label>}
+  {
+    withMessage && (
+      <div class="ef__f">
+        <>
+          <label for={`${source}-msg`}>How can we help?</label>
+          <textarea id={`${source}-msg`} name="message" rows="4" />
+        </>
+      </div>
+    )
+  }
+  <input
+    type="text"
+    name="company"
+    tabindex="-1"
+    autocomplete="off"
+    class="ef__hp"
+    aria-hidden="true"
+  />
+  {
+    consent && (
+      <label class="ef__consent">
+        <input type="checkbox" name="marketingConsent" /> Keep me updated when the rules that affect
+        me change (optional).
+      </label>
+    )
+  }
   <p class="ef__err" data-err role="alert" hidden></p>
   <button type="submit">Send enquiry</button>
-  <div class="ef__ok" data-ok hidden role="status">Thank you — we've received your enquiry and will reply, usually within one to two business days.</div>
+  <div class="ef__ok" data-ok hidden role="status">
+    Thank you — we've received your enquiry and will reply, usually within one to two business days.
+  </div>
 </form>
 <style>
-  .ef__h { font-size: var(--type-h3); margin-block-end: var(--space-3); }
-  .ef__grid { display: grid; gap: var(--space-3); grid-template-columns: 1fr; }
-  .ef__f { display: flex; flex-direction: column; gap: var(--space-1); margin-block-end: var(--space-3); }
-  .ef__f label { font-weight: 500; font-size: var(--type-body-sm); }
-  .ef input, .ef textarea { min-block-size: calc(var(--space-6) + var(--space-2)); padding: var(--space-2) var(--space-3); border: 1px solid var(--color-text-muted); border-radius: var(--radius-control); font-size: var(--type-body); font-family: var(--font-body); }
-  .ef textarea { min-block-size: auto; }
-  .ef__hp { position: absolute; left: -9999px; }
-  .ef__consent { display: flex; gap: var(--space-2); align-items: start; font-size: var(--type-body-sm); color: var(--color-text-muted); margin-block: var(--space-3); }
-  .ef button { min-block-size: var(--space-6); padding-inline: var(--space-4); background: var(--color-action); color: var(--color-text-inverse); border: 0; border-radius: var(--radius-control); font-weight: 500; cursor: pointer; }
-  .ef__err { color: var(--color-critical); font-size: var(--type-body-sm); }
-  .ef__ok { margin-block-start: var(--space-4); border-inline-start: 3px solid var(--color-success); background: color-mix(in srgb, var(--color-success) 8%, var(--color-ground-light)); padding: var(--space-3) var(--space-4); }
-  @media (min-width: 640px) { .ef__grid { grid-template-columns: repeat(3, 1fr); } }
+  .ef__h {
+    font-size: var(--type-h3);
+    margin-block-end: var(--space-3);
+  }
+  .ef__grid {
+    display: grid;
+    gap: var(--space-3);
+    grid-template-columns: 1fr;
+  }
+  .ef__f {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    margin-block-end: var(--space-3);
+  }
+  .ef__f label {
+    font-weight: 500;
+    font-size: var(--type-body-sm);
+  }
+  .ef input,
+  .ef textarea {
+    min-block-size: calc(var(--space-6) + var(--space-2));
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--color-text-muted);
+    border-radius: var(--radius-control);
+    font-size: var(--type-body);
+    font-family: var(--font-body);
+  }
+  .ef textarea {
+    min-block-size: auto;
+  }
+  .ef__hp {
+    position: absolute;
+    left: -9999px;
+  }
+  .ef__consent {
+    display: flex;
+    gap: var(--space-2);
+    align-items: start;
+    font-size: var(--type-body-sm);
+    color: var(--color-text-muted);
+    margin-block: var(--space-3);
+  }
+  .ef button {
+    min-block-size: var(--space-6);
+    padding-inline: var(--space-4);
+    background: var(--color-action);
+    color: var(--color-text-inverse);
+    border: 0;
+    border-radius: var(--radius-control);
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .ef__err {
+    color: var(--color-critical);
+    font-size: var(--type-body-sm);
+  }
+  .ef__ok {
+    margin-block-start: var(--space-4);
+    border-inline-start: 3px solid var(--color-success);
+    background: color-mix(in srgb, var(--color-success) 8%, var(--color-ground-light));
+    padding: var(--space-3) var(--space-4);
+  }
+  @media (min-width: 640px) {
+    .ef__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
 </style>
 <script>
   document.querySelectorAll('[data-ef]').forEach((form) => {
-    const err = form.querySelector('[data-err]'); const ok = form.querySelector('[data-ok]');
+    const err = form.querySelector('[data-err]');
+    const ok = form.querySelector('[data-ok]');
     form.addEventListener('submit', async (e) => {
-      e.preventDefault(); err.hidden = true;
+      e.preventDefault();
+      err.hidden = true;
       const fd = new FormData(form);
-      const payload = { source: form.dataset.source, firstName: fd.get('firstName'), email: fd.get('email'), mobile: fd.get('mobile') || undefined, message: fd.get('message') || undefined, marketingConsent: fd.get('marketingConsent') === 'on', company: fd.get('company') || undefined };
-      if (!payload.firstName || !payload.email) { err.textContent = 'Please enter your name and email.'; err.hidden = false; return; }
+      const payload = {
+        source: form.dataset.source,
+        firstName: fd.get('firstName'),
+        email: fd.get('email'),
+        mobile: fd.get('mobile') || undefined,
+        message: fd.get('message') || undefined,
+        marketingConsent: fd.get('marketingConsent') === 'on',
+        company: fd.get('company') || undefined,
+      };
+      if (!payload.firstName || !payload.email) {
+        err.textContent = 'Please enter your name and email.';
+        err.hidden = false;
+        return;
+      }
       try {
-        const res = await fetch('/api/lead', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(payload) });
+        const res = await fetch('/api/lead', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
         if (!res.ok) throw new Error();
-      } catch { err.textContent = 'Something went wrong sending that. Please try again or call us.'; err.hidden = false; return; }
+      } catch {
+        err.textContent = 'Something went wrong sending that. Please try again or call us.';
+        err.hidden = false;
+        return;
+      }
       form.querySelectorAll('input,textarea,button').forEach((el) => (el.disabled = true));
       ok.hidden = false;
     });

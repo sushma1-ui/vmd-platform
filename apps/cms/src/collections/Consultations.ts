@@ -11,7 +11,12 @@ export const Consultations: CollectionConfig = {
   admin: { useAsTitle: 'email', defaultColumns: ['email', 'type', 'status', 'createdAt'] },
   access: { read: isEditorial, create: isAgent, update: isEditorial, delete: isEditorial },
   fields: [
-    { name: 'type', type: 'select', required: true, options: ['standard', 'second-opinion', 'online', 'in-person'] },
+    {
+      name: 'type',
+      type: 'select',
+      required: true,
+      options: ['standard', 'second-opinion', 'online', 'in-person'],
+    },
     { name: 'firstName', type: 'text', required: true },
     { name: 'email', type: 'email', required: true, index: true },
     { name: 'mobile', type: 'text', required: true },

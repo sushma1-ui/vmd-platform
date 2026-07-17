@@ -31,6 +31,6 @@ foundation now; surfaced in the Phase-2 portal.
 - One writer per table. Leads/Consultations are Payload's; the browser never writes them
   directly, so the service-role key never reaches the client (CI-verified).
 - Client documents live in a private Supabase Storage bucket with RLS + type/size limits
-  + encryption at rest (Blueprint §17.4). File-upload architecture is future-ready for
-  OneDrive automation and AI document checks (see ADR-0003).
+  - encryption at rest (Blueprint §17.4). File-upload architecture is future-ready for
+    OneDrive automation and AI document checks (see ADR-0003).
 - The two planes share ids but not credentials; a breach of one plane does not grant the other.

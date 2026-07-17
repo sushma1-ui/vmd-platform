@@ -26,7 +26,9 @@ export type SecondOpinionIntake = z.infer<typeof secondOpinionIntake>;
  * date to create appropriate urgency; it is NOT a statement of the user's actual
  * legal deadline, and the UI says so plainly.
  */
-export function indicativeReviewWindow(decisionISO: string): { earliest: string; typical: string } | null {
+export function indicativeReviewWindow(
+  decisionISO: string,
+): { earliest: string; typical: string } | null {
   const d = new Date(decisionISO);
   if (Number.isNaN(d.getTime())) return null;
   const add = (days: number) => {

@@ -4,7 +4,16 @@
   "private": true,
   "description": "ADR-0001. Provider-agnostic scheduling capability. The booking flow depends on the SchedulingProvider port, never a concrete provider. V1 ships the manual adapter; Cal.com/Calendly/Google/Outlook drop in with no change to web or business logic.",
   "type": "module",
-  "exports": { ".": "./src/index.ts" },
-  "scripts": { "build": "echo source-only", "typecheck": "tsc --noEmit", "lint": "eslint ." },
-  "dependencies": { "@vmd/schema": "workspace:*", "zod": "^3.23.8" }
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "echo source-only",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@vmd/schema": "workspace:*",
+    "zod": "^3.23.8"
+  }
 }

@@ -15,9 +15,7 @@ const colors = Object.fromEntries(
 );
 
 const spacing = Object.fromEntries(Object.entries(space).map(([k, v]) => [k, `${v}px`]));
-const screens = Object.fromEntries(
-  Object.entries(breakpoints).map(([k, v]) => [k, `${v}px`]),
-);
+const screens = Object.fromEntries(Object.entries(breakpoints).map(([k, v]) => [k, `${v}px`]));
 
 export const vmdPreset = {
   theme: {

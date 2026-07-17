@@ -11,11 +11,22 @@ import { seoField, reviewedByField } from '../fields/index.ts';
 export const Services: CollectionConfig = {
   slug: 'services',
   admin: { useAsTitle: 'title', defaultColumns: ['title', 'status'] },
-  access: { read: publishedOrEditorial, create: isEditorial, update: isEditorial, delete: isEditorial },
+  access: {
+    read: publishedOrEditorial,
+    create: isEditorial,
+    update: isEditorial,
+    delete: isEditorial,
+  },
   fields: [
     { name: 'title', type: 'text', required: true, localized: true },
     { name: 'slug', type: 'text', required: true, unique: true, index: true },
-    { name: 'status', type: 'select', defaultValue: 'draft', index: true, options: ['draft', 'published'] },
+    {
+      name: 'status',
+      type: 'select',
+      defaultValue: 'draft',
+      index: true,
+      options: ['draft', 'published'],
+    },
 
     // hero
     { name: 'valueProposition', type: 'textarea', localized: true },
@@ -27,7 +38,10 @@ export const Services: CollectionConfig = {
       name: 'personas',
       type: 'array',
       labels: { singular: 'Persona', plural: 'Personas' },
-      fields: [{ name: 'title', type: 'text', localized: true }, { name: 'description', type: 'textarea', localized: true }],
+      fields: [
+        { name: 'title', type: 'text', localized: true },
+        { name: 'description', type: 'textarea', localized: true },
+      ],
     },
 
     // §4 why choose this pathway
@@ -35,9 +49,21 @@ export const Services: CollectionConfig = {
       name: 'whyChoose',
       type: 'group',
       fields: [
-        { name: 'benefits', type: 'array', fields: [{ name: 'title', type: 'text', localized: true }, { name: 'detail', type: 'text', localized: true }] },
+        {
+          name: 'benefits',
+          type: 'array',
+          fields: [
+            { name: 'title', type: 'text', localized: true },
+            { name: 'detail', type: 'text', localized: true },
+          ],
+        },
         { name: 'typicalOutcomes', type: 'textarea', localized: true },
-        { name: 'considerations', type: 'textarea', localized: true, admin: { description: 'Honest limitations — on brand.' } },
+        {
+          name: 'considerations',
+          type: 'textarea',
+          localized: true,
+          admin: { description: 'Honest limitations — on brand.' },
+        },
       ],
     },
 

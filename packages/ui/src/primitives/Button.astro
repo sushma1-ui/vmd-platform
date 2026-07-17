@@ -32,12 +32,24 @@ const isDisabled = disabled || loading;
   type={href ? undefined : type}
   aria-busy={loading ? 'true' : undefined}
   aria-disabled={isDisabled ? 'true' : undefined}
-  {...(!href && isDisabled ? { disabled: true } : {})}
+  {...!href && isDisabled ? { disabled: true } : {}}
 >
   <span class="btn__label"><slot /></span>
-  {variant === 'tertiary' && <span class="btn__arrow" aria-hidden="true">→</span>}
-  {loading && <span class="btn__spinner" aria-hidden="true"></span>}
-  {loading && <span class="sr-only" role="status">Loading</span>}
+  {
+    variant === 'tertiary' && (
+      <span class="btn__arrow" aria-hidden="true">
+        →
+      </span>
+    )
+  }
+  {loading && <span class="btn__spinner" aria-hidden="true" />}
+  {
+    loading && (
+      <span class="sr-only" role="status">
+        Loading
+      </span>
+    )
+  }
 </Tag>
 
 <style>
@@ -62,18 +74,31 @@ const isDisabled = disabled || loading;
       border-color var(--motion-fast) var(--ease-standard),
       background-color var(--motion-fast) var(--ease-standard);
   }
-  .btn:hover { transform: translateY(-2px); }
-  .btn[aria-disabled='true'] { opacity: 0.6; cursor: not-allowed; transform: none; }
+  .btn:hover {
+    transform: translateY(-2px);
+  }
+  .btn[aria-disabled='true'] {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
 
-  .btn--primary { background: var(--color-action); color: var(--color-action-contrast); }
-  .btn--primary:hover { border-color: var(--color-emphasis); }
+  .btn--primary {
+    background: var(--color-action);
+    color: var(--color-action-contrast);
+  }
+  .btn--primary:hover {
+    border-color: var(--color-emphasis);
+  }
 
   .btn--secondary {
     background: transparent;
     color: var(--color-action);
     border-color: var(--color-action);
   }
-  .btn--secondary:hover { border-color: var(--color-emphasis); }
+  .btn--secondary:hover {
+    border-color: var(--color-emphasis);
+  }
 
   .btn--tertiary {
     background: transparent;
@@ -82,10 +107,18 @@ const isDisabled = disabled || loading;
     padding-inline: 0;
     border: 0;
   }
-  .btn--tertiary .btn__label { border-block-end: 1px solid transparent; }
-  .btn--tertiary:hover .btn__label { border-block-end-color: var(--color-emphasis); }
-  .btn--tertiary:hover .btn__arrow { transform: translateX(2px); }
-  .btn__arrow { transition: transform var(--motion-fast) var(--ease-standard); }
+  .btn--tertiary .btn__label {
+    border-block-end: 1px solid transparent;
+  }
+  .btn--tertiary:hover .btn__label {
+    border-block-end-color: var(--color-emphasis);
+  }
+  .btn--tertiary:hover .btn__arrow {
+    transform: translateX(2px);
+  }
+  .btn__arrow {
+    transition: transform var(--motion-fast) var(--ease-standard);
+  }
 
   .btn__spinner {
     inline-size: var(--space-3);
@@ -106,10 +139,20 @@ const isDisabled = disabled || loading;
     white-space: nowrap;
     border: 0;
   }
-  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
   @media (prefers-reduced-motion: reduce) {
-    .btn { transition: none; }
-    .btn:hover { transform: none; }
-    .btn__spinner { animation: none; }
+    .btn {
+      transition: none;
+    }
+    .btn:hover {
+      transform: none;
+    }
+    .btn__spinner {
+      animation: none;
+    }
   }
 </style>

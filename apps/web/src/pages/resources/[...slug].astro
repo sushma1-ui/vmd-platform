@@ -21,6 +21,7 @@ const trail = [
   { name: post.title, path },
 ];
 ---
+
 <Base
   title={post.title}
   description={post.excerpt ?? post.title}
@@ -28,21 +29,63 @@ const trail = [
   schemas={[articleSchema(post, path), breadcrumbSchema(trail)]}
 >
   <article class="post">
-    <nav class="crumbs" aria-label="Breadcrumb">{trail.map((t, i) => <span>{i > 0 && <span aria-hidden="true"> / </span>}<a href={t.path}>{t.name}</a></span>)}</nav>
+    <nav class="crumbs" aria-label="Breadcrumb">
+      {
+        trail.map((t, i) => (
+          <span>
+            {i > 0 && <span aria-hidden="true"> / </span>}
+            <a href={t.path}>{t.name}</a>
+          </span>
+        ))
+      }
+    </nav>
     <p class="post__eyebrow">{String(post.category).replace(/-/g, ' ')}</p>
     <h1 class="post__title">{post.title}</h1>
-    <p class="post__byline">By Sunil Uprety, Registered Migration Agent · MARN 2318234{post.reviewedBy?.lastReviewedAt && ` · Last reviewed ${new Date(post.reviewedBy.lastReviewedAt).toLocaleDateString('en-AU')}`}</p>
+    <p class="post__byline">
+      By Sunil Uprety, Registered Migration Agent · MARN 2318234{
+        post.reviewedBy?.lastReviewedAt &&
+          ` · Last reviewed ${new Date(post.reviewedBy.lastReviewedAt).toLocaleDateString('en-AU')}`
+      }
+    </p>
     <div class="post__body" set:html={lexicalToHtml(post.content)} />
     <Disclaimer variant="generalInformation" />
   </article>
 </Base>
 <style>
-  .post { max-inline-size: var(--container-prose); margin-inline: auto; padding: var(--space-7) var(--space-4) var(--space-9); }
-  .crumbs { font-size: var(--type-caption); color: var(--color-text-muted); margin-block-end: var(--space-4); }
-  .crumbs a { color: inherit; text-decoration: none; }
-  .post__eyebrow { font-size: var(--type-caption); letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-text-muted); }
-  .post__title { font-size: var(--type-display-2); margin-block: var(--space-2) var(--space-2); }
-  .post__byline { font-size: var(--type-body-sm); color: var(--color-text-muted); margin-block-end: var(--space-5); }
-  .post__body { font-size: var(--type-body); line-height: 1.75; }
-  .post__body :global(p) { margin-block-end: var(--space-3); }
+  .post {
+    max-inline-size: var(--container-prose);
+    margin-inline: auto;
+    padding: var(--space-7) var(--space-4) var(--space-9);
+  }
+  .crumbs {
+    font-size: var(--type-caption);
+    color: var(--color-text-muted);
+    margin-block-end: var(--space-4);
+  }
+  .crumbs a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .post__eyebrow {
+    font-size: var(--type-caption);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+  .post__title {
+    font-size: var(--type-display-2);
+    margin-block: var(--space-2) var(--space-2);
+  }
+  .post__byline {
+    font-size: var(--type-body-sm);
+    color: var(--color-text-muted);
+    margin-block-end: var(--space-5);
+  }
+  .post__body {
+    font-size: var(--type-body);
+    line-height: 1.75;
+  }
+  .post__body :global(p) {
+    margin-block-end: var(--space-3);
+  }
 </style>

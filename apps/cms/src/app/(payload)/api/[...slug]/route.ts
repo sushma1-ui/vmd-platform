@@ -1,7 +1,12 @@
 /* Payload REST API handlers. */
 import config from '@payload-config';
 import {
-  REST_GET, REST_POST, REST_PATCH, REST_DELETE, REST_PUT, REST_OPTIONS,
+  REST_GET,
+  REST_POST,
+  REST_PATCH,
+  REST_DELETE,
+  REST_PUT,
+  REST_OPTIONS,
 } from '@payloadcms/next/routes';
 
 export const GET = REST_GET(config);

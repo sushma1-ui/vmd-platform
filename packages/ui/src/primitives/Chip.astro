@@ -6,6 +6,7 @@ interface Props {
 }
 const { tone = 'neutral', class: className = '' } = Astro.props;
 ---
+
 <span class:list={['chip', `chip--${tone}`, className]}><slot /></span>
 <style>
   .chip {
@@ -24,7 +25,16 @@ const { tone = 'neutral', class: className = '' } = Astro.props;
     background: var(--color-ground-warm);
   }
   /* Colour never carries meaning alone — tone changes the border + adds a label. */
-  .chip--positive { border-color: var(--color-success); color: var(--color-success); }
-  .chip--caution { border-color: var(--color-caution); color: var(--color-caution); }
-  .chip--critical { border-color: var(--color-critical); color: var(--color-critical); }
+  .chip--positive {
+    border-color: var(--color-success);
+    color: var(--color-success);
+  }
+  .chip--caution {
+    border-color: var(--color-caution);
+    color: var(--color-caution);
+  }
+  .chip--critical {
+    border-color: var(--color-critical);
+    color: var(--color-critical);
+  }
 </style>

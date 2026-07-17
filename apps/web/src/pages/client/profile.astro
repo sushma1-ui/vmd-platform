@@ -5,19 +5,44 @@ export const prerender = false;
 const user = (Astro.locals as any).user;
 const sb = serverSupabase(Astro.cookies);
 let profile: any = null;
-if (sb && user) { try { profile = (await sb.from('client_profiles').select('*').eq('user_id', user.id).maybeSingle()).data; } catch {} }
+if (sb && user) {
+  try {
+    profile = (await sb.from('client_profiles').select('*').eq('user_id', user.id).maybeSingle())
+      .data;
+  } catch {}
+}
 ---
+
 <Client title="Profile" user={user}>
   <h1>Your profile</h1>
   <dl class="cp-dl">
     <dt>Email</dt><dd>{user?.email ?? '—'}</dd>
     <dt>Name</dt><dd>{profile?.full_name ?? '—'}</dd>
   </dl>
-  <p class="cp-note">To update your details, message the practice — changes to identity data are confirmed by a person.</p>
+  <p class="cp-note">
+    To update your details, message the practice — changes to identity data are confirmed by a
+    person.
+  </p>
 </Client>
 <style>
-  h1 { font-size: var(--type-h2); margin-block-end: var(--space-4); }
-  .cp-dl { display: grid; grid-template-columns: max-content 1fr; gap: var(--space-2) var(--space-5); }
-  .cp-dl dt { color: var(--color-text-muted); } .cp-dl dd { margin: 0; }
-  .cp-note { font-size: var(--type-body-sm); color: var(--color-text-muted); margin-block-start: var(--space-5); }
+  h1 {
+    font-size: var(--type-h2);
+    margin-block-end: var(--space-4);
+  }
+  .cp-dl {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: var(--space-2) var(--space-5);
+  }
+  .cp-dl dt {
+    color: var(--color-text-muted);
+  }
+  .cp-dl dd {
+    margin: 0;
+  }
+  .cp-note {
+    font-size: var(--type-body-sm);
+    color: var(--color-text-muted);
+    margin-block-start: var(--space-5);
+  }
 </style>

@@ -4,18 +4,27 @@
  * Tabular numerals, gold top rule, "Last updated" stamp. Data passed in; the panel
  * has no opinion about which subclass.
  */
-interface Fact { label: string; value: string }
-interface Props { facts: Fact[]; updated?: string }
+interface Fact {
+  label: string;
+  value: string;
+}
+interface Props {
+  facts: Fact[];
+  updated?: string;
+}
 const { facts, updated } = Astro.props;
 ---
+
 <section class="glance" aria-label="At a glance">
   <dl class="glance__grid">
-    {facts.map((f) => (
-      <div class="glance__cell">
-        <dt class="glance__label">{f.label}</dt>
-        <dd class="glance__value">{f.value}</dd>
-      </div>
-    ))}
+    {
+      facts.map((f) => (
+        <div class="glance__cell">
+          <dt class="glance__label">{f.label}</dt>
+          <dd class="glance__value">{f.value}</dd>
+        </div>
+      ))
+    }
   </dl>
   {updated && <p class="glance__updated">Last updated {updated}</p>}
 </section>
@@ -30,7 +39,11 @@ const { facts, updated } = Astro.props;
     gap: var(--space-4);
     margin: 0;
   }
-  .glance__cell { display: flex; flex-direction: column; gap: var(--space-1); }
+  .glance__cell {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
   .glance__label {
     font-size: var(--type-caption);
     letter-spacing: 0.02em;

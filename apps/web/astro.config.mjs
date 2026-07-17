@@ -9,6 +9,12 @@ export default defineConfig({
   site: 'https://migrationdoctors.com.au',
   output: 'hybrid',
   adapter: vercel({ isr: { expiration: 60 * 60 }, webAnalytics: { enabled: false } }),
-  integrations: [tailwind({ applyBaseStyles: false }), sitemap({ filter: (page) => !page.includes('/client/') && !page.includes('/thank-you/') && !page.includes('/lp/') })],
+  integrations: [
+    tailwind({ applyBaseStyles: false }),
+    sitemap({
+      filter: (page) =>
+        !page.includes('/client/') && !page.includes('/thank-you/') && !page.includes('/lp/'),
+    }),
+  ],
   build: { inlineStylesheets: 'auto' },
 });

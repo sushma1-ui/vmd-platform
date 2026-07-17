@@ -3,9 +3,13 @@
  * Rule — the gold hairline. VMD's signature device: "a steadying baseline"
  * (The Mark). Emphasis only; never carries text. Decorative by default.
  */
-interface Props { width?: 'short' | 'full'; class?: string }
+interface Props {
+  width?: 'short' | 'full';
+  class?: string;
+}
 const { width = 'short', class: className = '' } = Astro.props;
 ---
+
 <hr class:list={['rule', `rule--${width}`, className]} aria-hidden="true" />
 <style>
   .rule {
@@ -14,6 +18,11 @@ const { width = 'short', class: className = '' } = Astro.props;
     background: var(--color-emphasis);
     margin: 0;
   }
-  .rule--short { inline-size: var(--space-6); } /* 48px, echoing the mark's gold rule */
-  .rule--full { inline-size: 100%; block-size: 1px; }
+  .rule--short {
+    inline-size: var(--space-6);
+  } /* 48px, echoing the mark's gold rule */
+  .rule--full {
+    inline-size: 100%;
+    block-size: 1px;
+  }
 </style>

@@ -4,14 +4,29 @@
  * back to an empty result if the CMS is unreachable, so the site builds and renders
  * honest empty states without a live CMS. Types come from @vmd/schema.
  */
-import type { ArticleMeta, CaseStudy, Testimonial, PinnedReview, GrantLedgerEntry, SiteSettings } from '@vmd/schema';
+import type {
+  ArticleMeta,
+  CaseStudy,
+  Testimonial,
+  PinnedReview,
+  GrantLedgerEntry,
+  SiteSettings,
+} from '@vmd/schema';
 
 const BASE = import.meta.env.PUBLIC_CMS_URL ?? 'http://localhost:3000';
 
 type Doc = Record<string, unknown> & { id: string; slug?: string };
 
-async function query<T = Doc>(collection: string, params: Record<string, string> = {}): Promise<T[]> {
-  const search = new URLSearchParams({ 'where[status][equals]': 'published', limit: '200', depth: '1', ...params });
+async function query<T = Doc>(
+  collection: string,
+  params: Record<string, string> = {},
+): Promise<T[]> {
+  const search = new URLSearchParams({
+    'where[status][equals]': 'published',
+    limit: '200',
+    depth: '1',
+    ...params,
+  });
   try {
     const res = await fetch(`${BASE}/api/${collection}?${search.toString()}`);
     if (!res.ok) return [];
@@ -24,25 +39,37 @@ async function query<T = Doc>(collection: string, params: Record<string, string>
 
 export const cms = {
   articles: (category?: string) =>
-    query('articles', category ? { 'where[category][equals]': category } : {}) as Promise<(ArticleMeta & Doc)[]>,
+    query('articles', category ? { 'where[category][equals]': category } : {}) as Promise<
+      (ArticleMeta & Doc)[]
+    >,
   articleBySlug: async (slug: string) => {
     const docs = await query('articles', { 'where[slug][equals]': slug, limit: '1' });
     return docs[0] ?? null;
   },
   subclasses: () => query('subclasses', { depth: '2' }),
-  subclassBySlug: async (slug: string) => (await query('subclasses', { 'where[slug][equals]': slug, limit: '1', depth: '2' }))[0] ?? null,
+  subclassBySlug: async (slug: string) =>
+    (await query('subclasses', { 'where[slug][equals]': slug, limit: '1', depth: '2' }))[0] ?? null,
   services: () => query('services'),
-  serviceBySlug: async (slug: string) => (await query('services', { 'where[slug][equals]': slug, limit: '1', depth: '2' }))[0] ?? null,
-  subclassesForService: (serviceId: string) => query('subclasses', { 'where[service][equals]': serviceId, depth: '1' }),
+  serviceBySlug: async (slug: string) =>
+    (await query('services', { 'where[slug][equals]': slug, limit: '1', depth: '2' }))[0] ?? null,
+  subclassesForService: (serviceId: string) =>
+    query('subclasses', { 'where[service][equals]': serviceId, depth: '1' }),
   grantLedger: (subclassCode?: string) =>
-    query<GrantLedgerEntry>('grant-ledger', subclassCode ? { 'where[subclassCode][equals]': subclassCode } : {}),
+    query<GrantLedgerEntry>(
+      'grant-ledger',
+      subclassCode ? { 'where[subclassCode][equals]': subclassCode } : {},
+    ),
   processingTimes: () => query('processing-times'),
-  faqs: (subclass?: string) => query('faqs', subclass ? { 'where[subclass][equals]': subclass } : {}),
+  faqs: (subclass?: string) =>
+    query('faqs', subclass ? { 'where[subclass][equals]': subclass } : {}),
   situations: () => query('situations', { depth: '1' }),
   situationBySlug: async (slug: string) =>
     (await query('situations', { 'where[slug][equals]': slug, limit: '1', depth: '1' }))[0] ?? null,
   caseStudies: (subclassCode?: string) =>
-    query<CaseStudy>('case-studies', subclassCode ? { 'where[subclass.code][equals]': subclassCode, depth: '1' } : { depth: '1' }),
+    query<CaseStudy>(
+      'case-studies',
+      subclassCode ? { 'where[subclass.code][equals]': subclassCode, depth: '1' } : { depth: '1' },
+    ),
   testimonials: () => query<Testimonial>('testimonials', { sort: '-date' }),
   pinnedReviews: () => query<PinnedReview>('pinned-reviews', { sort: 'pinnedOrder' }),
 };
@@ -73,15 +100,24 @@ export async function getRedirects(): Promise<Redirect[]> {
   try {
     const res = await fetch(`${BASE}/api/redirects?limit=1000&depth=0`);
     if (!res.ok) return [];
-    const data = (await res.json()) as { docs?: Array<{ from: string; to: string; code?: string }> };
-    return (data.docs ?? []).map((d) => ({ from: d.from, to: d.to, code: d.code === '302' ? 302 : 301 }));
+    const data = (await res.json()) as {
+      docs?: Array<{ from: string; to: string; code?: string }>;
+    };
+    return (data.docs ?? []).map((d) => ({
+      from: d.from,
+      to: d.to,
+      code: d.code === '302' ? 302 : 301,
+    }));
   } catch {
     return [];
   }
 }
 
 /** SERVER-ONLY write: create a lead in Payload via REST with the agent API key. */
-export async function createLead(lead: Record<string, unknown>, apiKey: string): Promise<{ id: string } | null> {
+export async function createLead(
+  lead: Record<string, unknown>,
+  apiKey: string,
+): Promise<{ id: string } | null> {
   try {
     const res = await fetch(`${BASE}/api/leads`, {
       method: 'POST',
@@ -97,7 +133,10 @@ export async function createLead(lead: Record<string, unknown>, apiKey: string):
 }
 
 /** SERVER-ONLY: create a consultation record (system-of-record, ADR-0001). */
-export async function createConsultation(rec: Record<string, unknown>, apiKey: string): Promise<{ id: string } | null> {
+export async function createConsultation(
+  rec: Record<string, unknown>,
+  apiKey: string,
+): Promise<{ id: string } | null> {
   try {
     const res = await fetch(`${BASE}/api/consultations`, {
       method: 'POST',
@@ -107,11 +146,17 @@ export async function createConsultation(rec: Record<string, unknown>, apiKey: s
     if (!res.ok) return null;
     const data = (await res.json()) as { doc?: { id: string } };
     return data.doc ? { id: data.doc.id } : null;
-  } catch { return null; }
+  } catch {
+    return null;
+  }
 }
 
 /** SERVER-ONLY: patch a consultation (e.g. store the provider reference). */
-export async function patchConsultation(id: string, data: Record<string, unknown>, apiKey: string): Promise<boolean> {
+export async function patchConsultation(
+  id: string,
+  data: Record<string, unknown>,
+  apiKey: string,
+): Promise<boolean> {
   try {
     const res = await fetch(`${BASE}/api/consultations/${id}`, {
       method: 'PATCH',
@@ -119,5 +164,7 @@ export async function patchConsultation(id: string, data: Record<string, unknown
       body: JSON.stringify(data),
     });
     return res.ok;
-  } catch { return false; }
+  } catch {
+    return false;
+  }
 }

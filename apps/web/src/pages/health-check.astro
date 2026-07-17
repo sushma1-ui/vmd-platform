@@ -3,21 +3,45 @@ import Base from '../layouts/Base.astro';
 import HealthCheck from '../components/islands/HealthCheck.island.astro';
 import { breadcrumbSchema } from '@vmd/seo';
 ---
+
 <Base
   title="Visa Health Check"
   description="A free 90-second diagnosis of your Australian visa position — including an honest 'not yet'. General information, not migration advice."
-  schemas={[breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Visa Health Check', path: '/health-check/' }])]}
+  schemas={[
+    breadcrumbSchema([
+      { name: 'Home', path: '/' },
+      { name: 'Visa Health Check', path: '/health-check/' },
+    ]),
+  ]}
 >
   <section class="hc-page">
     <p class="hc-page__eyebrow">Free · 90 seconds · no obligation</p>
     <h1 class="hc-page__title">Visa Health Check</h1>
-    <p class="hc-page__lead">Six quick questions. A real diagnosis of where you stand — including if you're not yet eligible.</p>
+    <p class="hc-page__lead">
+      Six quick questions. A real diagnosis of where you stand — including if you're not yet
+      eligible.
+    </p>
     <HealthCheck />
   </section>
 </Base>
 <style>
-  .hc-page { max-inline-size: var(--container-prose); margin-inline: auto; padding: var(--space-8) var(--space-4); }
-  .hc-page__eyebrow { font-size: var(--type-caption); letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-text-muted); }
-  .hc-page__title { font-size: var(--type-display-2); margin-block: var(--space-2) var(--space-3); }
-  .hc-page__lead { font-size: var(--type-body-lg); margin-block-end: var(--space-5); }
+  .hc-page {
+    max-inline-size: var(--container-prose);
+    margin-inline: auto;
+    padding: var(--space-8) var(--space-4);
+  }
+  .hc-page__eyebrow {
+    font-size: var(--type-caption);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+  .hc-page__title {
+    font-size: var(--type-display-2);
+    margin-block: var(--space-2) var(--space-3);
+  }
+  .hc-page__lead {
+    font-size: var(--type-body-lg);
+    margin-block-end: var(--space-5);
+  }
 </style>

@@ -12,17 +12,39 @@ import { seoField, reviewedByField } from '../fields/index.ts';
 export const Subclasses: CollectionConfig = {
   slug: 'subclasses',
   admin: { useAsTitle: 'name', defaultColumns: ['code', 'name', 'complexity', 'status'] },
-  access: { read: publishedOrEditorial, create: isEditorial, update: isEditorial, delete: isEditorial },
+  access: {
+    read: publishedOrEditorial,
+    create: isEditorial,
+    update: isEditorial,
+    delete: isEditorial,
+  },
   fields: [
     // --- identity ---
-    { name: 'code', type: 'text', required: true, index: true, admin: { description: 'e.g. 190, 482, 820/801' } },
+    {
+      name: 'code',
+      type: 'text',
+      required: true,
+      index: true,
+      admin: { description: 'e.g. 190, 482, 820/801' },
+    },
     { name: 'name', type: 'text', required: true, localized: true },
     { name: 'slug', type: 'text', required: true, unique: true, index: true },
-    { name: 'status', type: 'select', defaultValue: 'draft', index: true, options: ['draft', 'published'] },
+    {
+      name: 'status',
+      type: 'select',
+      defaultValue: 'draft',
+      index: true,
+      options: ['draft', 'published'],
+    },
     { name: 'service', type: 'relationship', relationTo: 'services' },
 
     // --- hero ---
-    { name: 'valueProposition', type: 'textarea', localized: true, admin: { description: 'One-line hero value proposition.' } },
+    {
+      name: 'valueProposition',
+      type: 'textarea',
+      localized: true,
+      admin: { description: 'One-line hero value proposition.' },
+    },
     { name: 'plainOneLiner', type: 'textarea', localized: true },
 
     // --- quick facts / sticky summary (typed = comparable) ---
@@ -30,7 +52,11 @@ export const Subclasses: CollectionConfig = {
       name: 'atAGlance',
       type: 'group',
       fields: [
-        { name: 'visaType', type: 'select', options: ['permanent', 'temporary', 'provisional', 'bridging'] },
+        {
+          name: 'visaType',
+          type: 'select',
+          options: ['permanent', 'temporary', 'provisional', 'bridging'],
+        },
         { name: 'costRange', type: 'text' },
         { name: 'processingTime', type: 'text' },
         { name: 'duration', type: 'text' },
@@ -41,7 +67,9 @@ export const Subclasses: CollectionConfig = {
     {
       name: 'governmentFee',
       type: 'group',
-      admin: { description: 'Renders ONLY with a verified amount + as-at date + source. Never estimate.' },
+      admin: {
+        description: 'Renders ONLY with a verified amount + as-at date + source. Never estimate.',
+      },
       fields: [
         { name: 'amount', type: 'text' },
         { name: 'asAt', type: 'date' },
@@ -53,7 +81,12 @@ export const Subclasses: CollectionConfig = {
       type: 'group',
       fields: [
         { name: 'level', type: 'select', options: ['straightforward', 'moderate', 'complex'] },
-        { name: 'note', type: 'textarea', localized: true, admin: { description: 'General guidance, not a prediction.' } },
+        {
+          name: 'note',
+          type: 'textarea',
+          localized: true,
+          admin: { description: 'General guidance, not a prediction.' },
+        },
       ],
     },
 
@@ -75,7 +108,14 @@ export const Subclasses: CollectionConfig = {
       labels: { singular: 'Eligibility group', plural: 'Eligibility groups' },
       fields: [
         { name: 'title', type: 'text', localized: true },
-        { name: 'items', type: 'array', fields: [{ name: 'requirement', type: 'text', localized: true }, { name: 'detail', type: 'textarea', localized: true }] },
+        {
+          name: 'items',
+          type: 'array',
+          fields: [
+            { name: 'requirement', type: 'text', localized: true },
+            { name: 'detail', type: 'textarea', localized: true },
+          ],
+        },
       ],
     },
 
@@ -90,7 +130,14 @@ export const Subclasses: CollectionConfig = {
         { name: 'studyRights', type: 'checkbox' },
         { name: 'medicare', type: 'checkbox' },
         { name: 'travelRights', type: 'checkbox' },
-        { name: 'custom', type: 'array', fields: [{ name: 'title', type: 'text', localized: true }, { name: 'detail', type: 'text', localized: true }] },
+        {
+          name: 'custom',
+          type: 'array',
+          fields: [
+            { name: 'title', type: 'text', localized: true },
+            { name: 'detail', type: 'text', localized: true },
+          ],
+        },
       ],
     },
 
@@ -103,7 +150,11 @@ export const Subclasses: CollectionConfig = {
         { name: 'stepTitle', type: 'text', localized: true },
         { name: 'description', type: 'textarea', localized: true },
         { name: 'estimatedDuration', type: 'text' },
-        { name: 'documents', type: 'array', fields: [{ name: 'doc', type: 'text', localized: true }] },
+        {
+          name: 'documents',
+          type: 'array',
+          fields: [{ name: 'doc', type: 'text', localized: true }],
+        },
       ],
     },
 
@@ -114,7 +165,14 @@ export const Subclasses: CollectionConfig = {
       labels: { singular: 'Document category', plural: 'Document categories' },
       fields: [
         { name: 'category', type: 'text', localized: true },
-        { name: 'items', type: 'array', fields: [{ name: 'name', type: 'text', localized: true }, { name: 'note', type: 'text', localized: true }] },
+        {
+          name: 'items',
+          type: 'array',
+          fields: [
+            { name: 'name', type: 'text', localized: true },
+            { name: 'note', type: 'text', localized: true },
+          ],
+        },
       ],
     },
 
@@ -134,19 +192,41 @@ export const Subclasses: CollectionConfig = {
       name: 'commonMistakes',
       type: 'array',
       labels: { singular: 'Common mistake', plural: 'Common mistakes' },
-      fields: [{ name: 'title', type: 'text', localized: true }, { name: 'detail', type: 'textarea', localized: true }],
+      fields: [
+        { name: 'title', type: 'text', localized: true },
+        { name: 'detail', type: 'textarea', localized: true },
+      ],
     },
-    { name: 'whatGoesWrong', type: 'array', fields: [{ name: 'item', type: 'textarea', localized: true }] },
+    {
+      name: 'whatGoesWrong',
+      type: 'array',
+      fields: [{ name: 'item', type: 'textarea', localized: true }],
+    },
 
     // --- is this you (kept) ---
-    { name: 'isThisYou', type: 'array', fields: [{ name: 'check', type: 'text', localized: true }] },
+    {
+      name: 'isThisYou',
+      type: 'array',
+      fields: [{ name: 'check', type: 'text', localized: true }],
+    },
 
     // --- relationships: faqs, resources, services, related visas, success stories ---
     { name: 'faqs', type: 'relationship', relationTo: 'faqs', hasMany: true },
     { name: 'relatedResources', type: 'relationship', relationTo: 'articles', hasMany: true },
     { name: 'relatedServices', type: 'relationship', relationTo: 'services', hasMany: true },
-    { name: 'relatedVisas', type: 'relationship', relationTo: 'subclasses', hasMany: true, admin: { description: 'For "related visa" recommendations + comparison pages.' } },
-    { name: 'featuredTestimonials', type: 'relationship', relationTo: 'testimonials', hasMany: true },
+    {
+      name: 'relatedVisas',
+      type: 'relationship',
+      relationTo: 'subclasses',
+      hasMany: true,
+      admin: { description: 'For "related visa" recommendations + comparison pages.' },
+    },
+    {
+      name: 'featuredTestimonials',
+      type: 'relationship',
+      relationTo: 'testimonials',
+      hasMany: true,
+    },
     { name: 'featuredReviews', type: 'relationship', relationTo: 'pinned-reviews', hasMany: true },
 
     reviewedByField,

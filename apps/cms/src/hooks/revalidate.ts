@@ -14,6 +14,8 @@ export const revalidateAfterChange: CollectionAfterChangeHook = async ({ doc, co
       headers: { 'content-type': 'application/json', 'x-revalidate-secret': secret },
       body: JSON.stringify({ collection: collection.slug, slug: (doc as { slug?: string }).slug }),
     });
-  } catch { /* revalidation is best-effort */ }
+  } catch {
+    /* revalidation is best-effort */
+  }
   return doc;
 };

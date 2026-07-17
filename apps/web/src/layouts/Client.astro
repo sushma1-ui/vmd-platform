@@ -1,7 +1,10 @@
 ---
 import '@vmd/ui/styles/base.css';
 import { PRACTICE } from '@vmd/config';
-interface Props { title: string; user?: { email?: string } | null }
+interface Props {
+  title: string;
+  user?: { email?: string } | null;
+}
 const { title, user } = Astro.props;
 const nav = [
   ['Dashboard', '/client/'],
@@ -12,6 +15,7 @@ const nav = [
   ['Support', '/client/support/'],
 ];
 ---
+
 <!doctype html>
 <html lang="en-AU">
   <head>
@@ -23,34 +27,110 @@ const nav = [
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
     <header class="cp-top">
-      <a class="cp-brand" href="/client/"><span class="cp-mark" aria-hidden="true">VMD</span> Client Portal</a>
-      {user && (
-        <form method="POST" action="/client/logout" class="cp-out">
-          <span class="cp-user">{user.email}</span>
-          <button type="submit">Sign out</button>
-        </form>
-      )}
+      <a class="cp-brand" href="/client/"
+        ><span class="cp-mark" aria-hidden="true">VMD</span> Client Portal</a
+      >
+      {
+        user && (
+          <form method="POST" action="/client/logout" class="cp-out">
+            <span class="cp-user">{user.email}</span>
+            <button type="submit">Sign out</button>
+          </form>
+        )
+      }
     </header>
     <div class="cp-shell">
-      {user && (
-        <nav class="cp-nav" aria-label="Portal">
-          {nav.map(([label, href]) => <a href={href} aria-current={Astro.url.pathname === href ? 'page' : undefined}>{label}</a>)}
-        </nav>
-      )}
+      {
+        user && (
+          <nav class="cp-nav" aria-label="Portal">
+            {nav.map(([label, href]) => (
+              <a href={href} aria-current={Astro.url.pathname === href ? 'page' : undefined}>
+                {label}
+              </a>
+            ))}
+          </nav>
+        )
+      }
       <main id="main" class="cp-main"><slot /></main>
     </div>
   </body>
 </html>
 <style>
-  .cp-top { display: flex; justify-content: space-between; align-items: center; padding: var(--space-3) var(--space-4); background: var(--color-ground-deep); color: var(--color-text-inverse); }
-  .cp-brand { color: var(--color-text-inverse); text-decoration: none; font-family: var(--font-display); font-size: var(--type-h4); display: flex; gap: var(--space-2); align-items: center; }
-  .cp-mark { display: inline-grid; place-items: center; inline-size: var(--space-5); block-size: var(--space-5); background: var(--color-action); border-radius: var(--radius-control); font-family: var(--font-body); font-weight: 800; font-size: var(--type-caption); letter-spacing: -0.05em; }
-  .cp-out { display: flex; gap: var(--space-3); align-items: center; }
-  .cp-user { font-size: var(--type-body-sm); color: color-mix(in srgb, var(--color-text-inverse) 80%, transparent); }
-  .cp-out button { background: none; border: 1px solid color-mix(in srgb, var(--color-emphasis) 60%, transparent); color: var(--color-text-inverse); border-radius: var(--radius-control); padding: var(--space-1) var(--space-3); cursor: pointer; }
-  .cp-shell { max-inline-size: var(--container-max); margin-inline: auto; display: grid; grid-template-columns: 1fr; gap: var(--space-5); padding: var(--space-6) var(--space-4); }
-  .cp-nav { display: flex; flex-wrap: wrap; gap: var(--space-2); }
-  .cp-nav a { padding: var(--space-2) var(--space-3); border-radius: var(--radius-control); text-decoration: none; color: var(--color-action); border: 1px solid transparent; }
-  .cp-nav a[aria-current='page'] { border-color: var(--color-emphasis); }
-  @media (min-width: 900px) { .cp-shell { grid-template-columns: 220px 1fr; } .cp-nav { flex-direction: column; } }
+  .cp-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-ground-deep);
+    color: var(--color-text-inverse);
+  }
+  .cp-brand {
+    color: var(--color-text-inverse);
+    text-decoration: none;
+    font-family: var(--font-display);
+    font-size: var(--type-h4);
+    display: flex;
+    gap: var(--space-2);
+    align-items: center;
+  }
+  .cp-mark {
+    display: inline-grid;
+    place-items: center;
+    inline-size: var(--space-5);
+    block-size: var(--space-5);
+    background: var(--color-action);
+    border-radius: var(--radius-control);
+    font-family: var(--font-body);
+    font-weight: 800;
+    font-size: var(--type-caption);
+    letter-spacing: -0.05em;
+  }
+  .cp-out {
+    display: flex;
+    gap: var(--space-3);
+    align-items: center;
+  }
+  .cp-user {
+    font-size: var(--type-body-sm);
+    color: color-mix(in srgb, var(--color-text-inverse) 80%, transparent);
+  }
+  .cp-out button {
+    background: none;
+    border: 1px solid color-mix(in srgb, var(--color-emphasis) 60%, transparent);
+    color: var(--color-text-inverse);
+    border-radius: var(--radius-control);
+    padding: var(--space-1) var(--space-3);
+    cursor: pointer;
+  }
+  .cp-shell {
+    max-inline-size: var(--container-max);
+    margin-inline: auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+    padding: var(--space-6) var(--space-4);
+  }
+  .cp-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .cp-nav a {
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-control);
+    text-decoration: none;
+    color: var(--color-action);
+    border: 1px solid transparent;
+  }
+  .cp-nav a[aria-current='page'] {
+    border-color: var(--color-emphasis);
+  }
+  @media (min-width: 900px) {
+    .cp-shell {
+      grid-template-columns: 220px 1fr;
+    }
+    .cp-nav {
+      flex-direction: column;
+    }
+  }
 </style>

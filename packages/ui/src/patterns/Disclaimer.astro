@@ -5,10 +5,14 @@
  * with confidence *is* the trust signal.
  */
 import { DISCLAIMERS } from '@vmd/config';
-interface Props { variant?: 'outcomes' | 'generalInformation'; class?: string }
+interface Props {
+  variant?: 'outcomes' | 'generalInformation';
+  class?: string;
+}
 const { variant = 'generalInformation', class: className = '' } = Astro.props;
 const text = DISCLAIMERS[variant];
 ---
+
 <aside class:list={['disclaimer', className]}>
   <slot>{text}</slot>
 </aside>

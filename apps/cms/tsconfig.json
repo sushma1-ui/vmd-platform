@@ -5,9 +5,7 @@
     "jsx": "preserve",
     "baseUrl": ".",
     "paths": {
-      "@payload-config": [
-        "./payload.config.ts"
-      ]
+      "@payload-config": ["./payload.config.ts"]
     },
     "plugins": [
       {
@@ -17,14 +15,6 @@
     "allowJs": true,
     "incremental": true
   },
-  "include": [
-    "src",
-    "payload.config.ts",
-    "next-env.d.ts",
-    ".next/types/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    ".next"
-  ]
+  "include": ["src", "payload.config.ts", "next-env.d.ts", ".next/types/**/*.ts"],
+  "exclude": ["node_modules", ".next"]
 }

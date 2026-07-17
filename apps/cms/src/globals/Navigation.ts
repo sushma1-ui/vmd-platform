@@ -6,6 +6,14 @@ export const Navigation: GlobalConfig = {
   slug: 'navigation',
   access: { read: anyone, update: isEditorial },
   fields: [
-    { name: 'primary', type: 'array', maxRows: 6, fields: [{ name: 'label', type: 'text' }, { name: 'href', type: 'text' }] },
+    {
+      name: 'primary',
+      type: 'array',
+      maxRows: 6,
+      fields: [
+        { name: 'label', type: 'text' },
+        { name: 'href', type: 'text' },
+      ],
+    },
   ],
 };

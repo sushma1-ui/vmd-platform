@@ -23,7 +23,9 @@ const OUTCOME: Record<string, { label: string; tone: 'positive' | 'neutral' }> =
 };
 const monthYear = (iso: string) => {
   const d = new Date(iso);
-  return isNaN(d.getTime()) ? '—' : d.toLocaleDateString('en-AU', { month: 'short', year: 'numeric' });
+  return isNaN(d.getTime())
+    ? '—'
+    : d.toLocaleDateString('en-AU', { month: 'short', year: 'numeric' });
 };
 const showFilter = entries.length >= 5;
 const codes = [...new Set(entries.map((e) => e.subclassCode))].sort();
@@ -37,38 +39,61 @@ const codes = [...new Set(entries.map((e) => e.subclassCode))].sort();
   <section class="gl-hero">
     <div class="gl-hero__inner">
       <nav class="crumbs" aria-label="Breadcrumb">
-        {trail.map((t, i) => (<span>{i > 0 && <span aria-hidden="true"> / </span>}<a href={t.path}>{t.name}</a></span>))}
+        {
+          trail.map((t, i) => (
+            <span>
+              {i > 0 && <span aria-hidden="true"> / </span>}
+              <a href={t.path}>{t.name}</a>
+            </span>
+          ))
+        }
       </nav>
       <p class="eyebrow">Evidence, not testimony</p>
       <h1 class="gl-hero__title">Grant Ledger</h1>
       <Rule width="short" />
-      <p class="gl-hero__lead">A testimonial is an opinion we selected. A ledger is a record. Every entry is dated, anonymised and tagged to a subclass — no names, no photos, and never a success rate.</p>
+      <p class="gl-hero__lead">
+        A testimonial is an opinion we selected. A ledger is a record. Every entry is dated,
+        anonymised and tagged to a subclass — no names, no photos, and never a success rate.
+      </p>
     </div>
   </section>
 
   <section class="gl-body">
-    {entries.length > 0 ? (
-      <div class="gl" data-gl>
-        {showFilter && (
-          <div class="gl-filter" role="group" aria-label="Filter by subclass">
-            <button type="button" data-code="all" aria-pressed="true">All</button>
-            {codes.map((c) => <button type="button" data-code={c} aria-pressed="false">{c}</button>)}
-          </div>
-        )}
-        <ul class="gl-list">
-          {entries.map((e) => (
-            <li class="gl-row" data-code={e.subclassCode}>
-              <span class="gl-row__date">{monthYear(e.decisionDate)}</span>
-              <Chip>{e.subclassCode}</Chip>
-              <Chip tone={OUTCOME[e.outcome]?.tone ?? 'neutral'}>{OUTCOME[e.outcome]?.label ?? e.outcome}</Chip>
-              <span class="gl-row__desc">{e.descriptor}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-    ) : (
-      <div class="gl-empty">Entries are published here as client consent is confirmed — dated, anonymised, subclass-tagged. No names, no photos, no success rates.</div>
-    )}
+    {
+      entries.length > 0 ? (
+        <div class="gl" data-gl>
+          {showFilter && (
+            <div class="gl-filter" role="group" aria-label="Filter by subclass">
+              <button type="button" data-code="all" aria-pressed="true">
+                All
+              </button>
+              {codes.map((c) => (
+                <button type="button" data-code={c} aria-pressed="false">
+                  {c}
+                </button>
+              ))}
+            </div>
+          )}
+          <ul class="gl-list">
+            {entries.map((e) => (
+              <li class="gl-row" data-code={e.subclassCode}>
+                <span class="gl-row__date">{monthYear(e.decisionDate)}</span>
+                <Chip>{e.subclassCode}</Chip>
+                <Chip tone={OUTCOME[e.outcome]?.tone ?? 'neutral'}>
+                  {OUTCOME[e.outcome]?.label ?? e.outcome}
+                </Chip>
+                <span class="gl-row__desc">{e.descriptor}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : (
+        <div class="gl-empty">
+          Entries are published here as client consent is confirmed — dated, anonymised,
+          subclass-tagged. No names, no photos, no success rates.
+        </div>
+      )
+    }
 
     <div class="gl-disc"><Disclaimer variant="outcomes" /></div>
 
@@ -80,34 +105,128 @@ const codes = [...new Set(entries.map((e) => e.subclassCode))].sort();
 </Base>
 
 <style>
-  .crumbs { font-size: var(--type-caption); color: var(--color-text-muted); margin-block-end: var(--space-4); }
-  .crumbs a { color: inherit; text-decoration: none; }
-  .crumbs a:hover { border-block-end: 1px solid var(--color-emphasis); }
-  .eyebrow { font-size: var(--type-caption); letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-text-muted); }
+  .crumbs {
+    font-size: var(--type-caption);
+    color: var(--color-text-muted);
+    margin-block-end: var(--space-4);
+  }
+  .crumbs a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .crumbs a:hover {
+    border-block-end: 1px solid var(--color-emphasis);
+  }
+  .eyebrow {
+    font-size: var(--type-caption);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
 
-  .gl-hero { background: var(--color-ground-warm); }
-  .gl-hero__inner { max-inline-size: var(--container-max); margin-inline: auto; padding: var(--space-7) var(--space-4); }
-  .gl-hero__title { font-size: var(--type-display-1); line-height: var(--leading-display-1); margin-block: var(--space-2) 0; }
-  .gl-hero__lead { font-size: var(--type-body-lg); line-height: 1.5; margin-block-start: var(--space-3); max-inline-size: 60ch; }
+  .gl-hero {
+    background: var(--color-ground-warm);
+  }
+  .gl-hero__inner {
+    max-inline-size: var(--container-max);
+    margin-inline: auto;
+    padding: var(--space-7) var(--space-4);
+  }
+  .gl-hero__title {
+    font-size: var(--type-display-1);
+    line-height: var(--leading-display-1);
+    margin-block: var(--space-2) 0;
+  }
+  .gl-hero__lead {
+    font-size: var(--type-body-lg);
+    line-height: 1.5;
+    margin-block-start: var(--space-3);
+    max-inline-size: 60ch;
+  }
 
-  .gl-body { max-inline-size: var(--container-max); margin-inline: auto; padding: var(--space-8) var(--space-4); }
-  .gl-filter { display: flex; gap: var(--space-2); flex-wrap: wrap; margin-block-end: var(--space-4); }
-  .gl-filter button { font-size: var(--type-body-sm); padding: var(--space-1) var(--space-3); border: 1px solid color-mix(in srgb, var(--color-action) 20%, transparent); border-radius: var(--radius-chip); background: var(--color-ground-light); color: var(--color-action); cursor: pointer; font-variant-numeric: tabular-nums; }
-  .gl-filter button[aria-pressed='true'] { border-color: var(--color-emphasis); background: var(--color-ground-warm); }
+  .gl-body {
+    max-inline-size: var(--container-max);
+    margin-inline: auto;
+    padding: var(--space-8) var(--space-4);
+  }
+  .gl-filter {
+    display: flex;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+    margin-block-end: var(--space-4);
+  }
+  .gl-filter button {
+    font-size: var(--type-body-sm);
+    padding: var(--space-1) var(--space-3);
+    border: 1px solid color-mix(in srgb, var(--color-action) 20%, transparent);
+    border-radius: var(--radius-chip);
+    background: var(--color-ground-light);
+    color: var(--color-action);
+    cursor: pointer;
+    font-variant-numeric: tabular-nums;
+  }
+  .gl-filter button[aria-pressed='true'] {
+    border-color: var(--color-emphasis);
+    background: var(--color-ground-warm);
+  }
 
-  .gl-list { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--space-2); }
-  .gl-row { display: grid; grid-template-columns: auto auto auto; align-items: center; gap: var(--space-3); padding: var(--space-3) var(--space-4); border: 1px solid color-mix(in srgb, var(--color-action) 9%, transparent); border-radius: var(--radius-card); background: var(--color-ground-light); }
-  .gl-row__date { font-size: var(--type-body-sm); color: var(--color-text-muted); font-variant-numeric: tabular-nums; min-inline-size: 8ch; }
-  .gl-row__desc { grid-column: 1 / -1; font-size: var(--type-body); color: var(--color-text); }
+  .gl-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: var(--space-2);
+  }
+  .gl-row {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid color-mix(in srgb, var(--color-action) 9%, transparent);
+    border-radius: var(--radius-card);
+    background: var(--color-ground-light);
+  }
+  .gl-row__date {
+    font-size: var(--type-body-sm);
+    color: var(--color-text-muted);
+    font-variant-numeric: tabular-nums;
+    min-inline-size: 8ch;
+  }
+  .gl-row__desc {
+    grid-column: 1 / -1;
+    font-size: var(--type-body);
+    color: var(--color-text);
+  }
 
-  .gl-empty { border: 1px dashed color-mix(in srgb, var(--color-emphasis) 55%, transparent); border-radius: var(--radius-card); padding: var(--space-5); color: var(--color-text-muted); }
-  .gl-disc { margin-block-start: var(--space-5); }
-  .gl-cta { margin-block-start: var(--space-7); display: flex; flex-direction: column; gap: var(--space-3); align-items: flex-start; }
-  .gl-cta p { font-size: var(--type-body-lg); color: var(--color-text-muted); }
+  .gl-empty {
+    border: 1px dashed color-mix(in srgb, var(--color-emphasis) 55%, transparent);
+    border-radius: var(--radius-card);
+    padding: var(--space-5);
+    color: var(--color-text-muted);
+  }
+  .gl-disc {
+    margin-block-start: var(--space-5);
+  }
+  .gl-cta {
+    margin-block-start: var(--space-7);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    align-items: flex-start;
+  }
+  .gl-cta p {
+    font-size: var(--type-body-lg);
+    color: var(--color-text-muted);
+  }
 
   @media (min-width: 720px) {
-    .gl-row { grid-template-columns: 8ch 7ch auto 1fr; }
-    .gl-row__desc { grid-column: auto; }
+    .gl-row {
+      grid-template-columns: 8ch 7ch auto 1fr;
+    }
+    .gl-row__desc {
+      grid-column: auto;
+    }
   }
 </style>
 

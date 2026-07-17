@@ -36,17 +36,25 @@ for (const [name, def] of Object.entries(colorTokens)) {
 // GATE 2 — gold and azure must NEVER be declared as text-on-light. This is the
 // specific failure mode the whole system exists to prevent.
 for (const [name, def] of Object.entries(colorTokens)) {
-  if (def.intent === 'text-on-light' && (def.value === palette.gold || def.value === palette.azure)) {
-    errors.push(`${name} maps ${def.value} to a light-text role. Gold/Azure fail on white. Forbidden.`);
+  if (
+    def.intent === 'text-on-light' &&
+    (def.value === palette.gold || def.value === palette.azure)
+  ) {
+    errors.push(
+      `${name} maps ${def.value} to a light-text role. Gold/Azure fail on white. Forbidden.`,
+    );
   }
 }
 
 // GATE 3 — sanity: the known brand facts must hold (catches an accidental hex edit).
 const goldOnWhite = round2(contrastRatio(palette.gold, WHITE));
-if (goldOnWhite >= 4.5) errors.push(`Gold on white is now ${goldOnWhite}:1 — palette changed unexpectedly.`);
+if (goldOnWhite >= 4.5)
+  errors.push(`Gold on white is now ${goldOnWhite}:1 — palette changed unexpectedly.`);
 
 if (errors.length) {
-  console.error('\n✖ Token contrast gate FAILED:\n' + errors.map((e) => `  - ${e}`).join('\n') + '\n');
+  console.error(
+    '\n✖ Token contrast gate FAILED:\n' + errors.map((e) => `  - ${e}`).join('\n') + '\n',
+  );
   process.exit(1);
 }
 
@@ -68,11 +76,15 @@ for (const [name, s] of Object.entries(typeScale)) {
   const max = Math.max(mSize, dSize);
   const pref = `calc(${mSize}px + ${dSize - mSize} * ((100vw - 390px) / 890))`;
   const leading = round2(s.desktop[1] / s.desktop[0]);
-  lines.push(`  --type-${name}: clamp(${min}px, ${pref}, ${max}px); --leading-${name}: ${leading};`);
+  lines.push(
+    `  --type-${name}: clamp(${min}px, ${pref}, ${max}px); --leading-${name}: ${leading};`,
+  );
 }
 lines.push('', '  /* space (8px grid) */');
 for (const [k, v] of Object.entries(space)) lines.push(`  --space-${k}: ${v}px;`);
-lines.push(`  --container-max: ${container.max}px; --container-prose: ${container.prose}px; --gutter: ${container.gutter}px;`);
+lines.push(
+  `  --container-max: ${container.max}px; --container-prose: ${container.prose}px; --gutter: ${container.gutter}px;`,
+);
 lines.push('', '  /* radius */');
 for (const [k, v] of Object.entries(radius)) lines.push(`  --radius-${k}: ${v};`);
 lines.push('', '  /* shadow (exactly four) */');

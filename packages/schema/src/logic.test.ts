@@ -9,7 +9,11 @@ test('second-opinion is the highest-scoring lead source', () => {
   assert.ok(scoreLead('second-opinion') > scoreLead('newsletter'));
 });
 test('leadSchema rejects a bad email', () => {
-  const r = leadSchema.safeParse({ source: 'quick-enquiry', firstName: 'A', email: 'not-an-email' });
+  const r = leadSchema.safeParse({
+    source: 'quick-enquiry',
+    firstName: 'A',
+    email: 'not-an-email',
+  });
   assert.equal(r.success, false);
 });
 test('indicative review window returns earliest before typical', () => {

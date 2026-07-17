@@ -5,32 +5,80 @@ import { Card } from '@vmd/ui';
 import { cms } from '../../../lib/cms.ts';
 
 const posts = await cms.articles();
-const trail = [{ name: 'Home', path: '/' }, { name: 'Resources', path: '/resources/' }, { name: 'Migration Insights', path: '/resources/blog/' }];
+const trail = [
+  { name: 'Home', path: '/' },
+  { name: 'Resources', path: '/resources/' },
+  { name: 'Migration Insights', path: '/resources/blog/' },
+];
 ---
-<Base title="Migration Insights" description="Current, authored migration insights from a Registered Migration Agent in Perth." schemas={[breadcrumbSchema(trail)]}>
+
+<Base
+  title="Migration Insights"
+  description="Current, authored migration insights from a Registered Migration Agent in Perth."
+  schemas={[breadcrumbSchema(trail)]}
+>
   <section class="blog">
     <p class="blog__eyebrow">Knowledge Centre</p>
     <h1 class="blog__title">Migration Insights</h1>
-    <p class="blog__lead">Recent, authored, current — every piece carries a Sunil Uprety, RMA byline.</p>
-    {posts.length > 0 ? (
-      <div class="blog__grid">
-        {posts.map((p) => (
-          <Card title={p.title} href={`/resources/${p.slug}/`} eyebrow={String(p.category).replace(/-/g, ' ')}>
-            {p.excerpt ?? ''}
-          </Card>
-        ))}
-      </div>
-    ) : (
-      <div class="blog__empty">Articles are authored in the CMS and appear here once published. The publishing workflow, scheduling and Sunil Uprety, RMA byline are already wired.</div>
-    )}
+    <p class="blog__lead">
+      Recent, authored, current — every piece carries a Sunil Uprety, RMA byline.
+    </p>
+    {
+      posts.length > 0 ? (
+        <div class="blog__grid">
+          {posts.map((p) => (
+            <Card
+              title={p.title}
+              href={`/resources/${p.slug}/`}
+              eyebrow={String(p.category).replace(/-/g, ' ')}
+            >
+              {p.excerpt ?? ''}
+            </Card>
+          ))}
+        </div>
+      ) : (
+        <div class="blog__empty">
+          Articles are authored in the CMS and appear here once published. The publishing workflow,
+          scheduling and Sunil Uprety, RMA byline are already wired.
+        </div>
+      )
+    }
   </section>
 </Base>
 <style>
-  .blog { max-inline-size: var(--container-max); margin-inline: auto; padding: var(--space-7) var(--space-4) var(--space-9); }
-  .blog__eyebrow { font-size: var(--type-caption); letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-text-muted); }
-  .blog__title { font-size: var(--type-display-2); margin-block: var(--space-2) var(--space-3); }
-  .blog__lead { font-size: var(--type-body-lg); margin-block-end: var(--space-6); }
-  .blog__grid { display: grid; gap: var(--space-4); grid-template-columns: 1fr; }
-  .blog__empty { border: 1px dashed color-mix(in srgb, var(--color-emphasis) 55%, transparent); border-radius: var(--radius-card); padding: var(--space-5); color: var(--color-text-muted); }
-  @media (min-width: 768px) { .blog__grid { grid-template-columns: repeat(3, 1fr); } }
+  .blog {
+    max-inline-size: var(--container-max);
+    margin-inline: auto;
+    padding: var(--space-7) var(--space-4) var(--space-9);
+  }
+  .blog__eyebrow {
+    font-size: var(--type-caption);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+  .blog__title {
+    font-size: var(--type-display-2);
+    margin-block: var(--space-2) var(--space-3);
+  }
+  .blog__lead {
+    font-size: var(--type-body-lg);
+    margin-block-end: var(--space-6);
+  }
+  .blog__grid {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: 1fr;
+  }
+  .blog__empty {
+    border: 1px dashed color-mix(in srgb, var(--color-emphasis) 55%, transparent);
+    border-radius: var(--radius-card);
+    padding: var(--space-5);
+    color: var(--color-text-muted);
+  }
+  @media (min-width: 768px) {
+    .blog__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
 </style>

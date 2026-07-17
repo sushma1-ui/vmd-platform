@@ -18,6 +18,7 @@ const { title, description, noindex = false, type = 'website', schemas = [] } = 
 const meta = buildMeta({ title, description, path: Astro.url.pathname, noindex, type });
 const jsonLd = [organizationSchema(), ...schemas];
 ---
+
 <!doctype html>
 <html lang="en-AU">
   <head>

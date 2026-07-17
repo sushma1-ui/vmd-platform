@@ -13,8 +13,8 @@ another provider) with no change to the frontend or business logic. All consulta
 requests must be **stored in our own database first**, with the provider acting only
 as an integration layer.
 
-The ratified Modular Architecture (§2.3) classifies *content types* as CMS collections
-and *capabilities* (reusable, provider-swappable code) as packages — `email` is the
+The ratified Modular Architecture (§2.3) classifies _content types_ as CMS collections
+and _capabilities_ (reusable, provider-swappable code) as packages — `email` is the
 canonical example. Scheduling has both aspects: the **record** is a content type; the
 **provider** is a capability. Splitting it along the doc's own taxonomy resolves the
 apparent conflict.
@@ -40,7 +40,7 @@ practice); others are added later with zero caller changes.
 interface SchedulingProvider {
   readonly id: 'manual' | 'calcom' | 'calendly' | 'google' | 'outlook';
   getAvailability(range: DateRange, opts: AvailabilityOptions): Promise<Slot[]>;
-  createAppointment(input: AppointmentInput): Promise<ProviderRef>;   // idempotent by bookingKey
+  createAppointment(input: AppointmentInput): Promise<ProviderRef>; // idempotent by bookingKey
   reschedule(ref: ProviderRef, slot: Slot): Promise<ProviderRef>;
   cancel(ref: ProviderRef): Promise<void>;
 }
@@ -48,7 +48,7 @@ interface SchedulingProvider {
 
 ## Guarantees (design invariants)
 
-- **Record-first.** Our DB row is written and confirmed *before* the provider call, so
+- **Record-first.** Our DB row is written and confirmed _before_ the provider call, so
   a provider outage never loses a lead.
 - **Idempotent.** `createAppointment` is keyed by our consultation id (`bookingKey`);
   retries never double-book.
@@ -62,7 +62,7 @@ interface SchedulingProvider {
 1. Implement `SchedulingProvider` in `packages/scheduling/src/adapters/<provider>.ts`.
 2. Register it in the `getSchedulingProvider` factory (`src/index.ts`).
 3. Add any provider env to `@vmd/config/env`.
-No changes to `apps/web` or the booking business logic.
+   No changes to `apps/web` or the booking business logic.
 
 ## Consequences
 

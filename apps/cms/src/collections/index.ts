@@ -17,8 +17,20 @@ import { Redirects } from './Redirects.ts';
 import { AuditLog } from './AuditLog.ts';
 
 export const collections = [
-  Users, Media,
-  Articles, Services, Subclasses, Situations, FAQs,
-  Testimonials, CaseStudies, GrantLedger, ProcessingTimes, PinnedReviews,
-  Leads, Consultations, Redirects, AuditLog,
+  Users,
+  Media,
+  Articles,
+  Services,
+  Subclasses,
+  Situations,
+  FAQs,
+  Testimonials,
+  CaseStudies,
+  GrantLedger,
+  ProcessingTimes,
+  PinnedReviews,
+  Leads,
+  Consultations,
+  Redirects,
+  AuditLog,
 ];

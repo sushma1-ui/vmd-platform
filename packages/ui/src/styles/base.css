@@ -1,10 +1,19 @@
 /* @vmd/ui base — reset + document defaults. Consumes generated token vars. */
 @import '@vmd/tokens/tokens.css';
 
-*, *::before, *::after { box-sizing: border-box; }
-* { margin: 0; }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+* {
+  margin: 0;
+}
 
-html { font-size: var(--type-base); -webkit-text-size-adjust: 100%; }
+html {
+  font-size: var(--type-base);
+  -webkit-text-size-adjust: 100%;
+}
 
 body {
   font-family: var(--font-body);
@@ -14,11 +23,24 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-h1, h2, h3 { font-family: var(--font-display); color: var(--color-action); line-height: 1.1; }
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  color: var(--color-action);
+  line-height: 1.1;
+}
 
-a { color: var(--color-action); }
+a {
+  color: var(--color-action);
+}
 
-img, picture, svg { display: block; max-inline-size: 100%; }
+img,
+picture,
+svg {
+  display: block;
+  max-inline-size: 100%;
+}
 
 /* Global focus — high-contrast ring, never removed (Blueprint §16). */
 :where(a, button, input, select, textarea, [tabindex]):focus-visible {
@@ -37,4 +59,6 @@ img, picture, svg { display: block; max-inline-size: 100%; }
   border-radius: var(--radius-control);
   transition: inset-block-start var(--motion-fast) var(--ease-standard);
 }
-.skip-link:focus { inset-block-start: var(--space-3); }
+.skip-link:focus {
+  inset-block-start: var(--space-3);
+}

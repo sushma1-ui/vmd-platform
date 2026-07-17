@@ -15,7 +15,8 @@ export function serverSupabase(cookies: AstroCookies) {
   return createServerClient(url, anon, {
     cookies: {
       getAll: () => cookies.getAll().map(({ name, value }) => ({ name, value })),
-      setAll: (list) => list.forEach(({ name, value, options }) => cookies.set(name, value, options)),
+      setAll: (list) =>
+        list.forEach(({ name, value, options }) => cookies.set(name, value, options)),
     },
   });
 }

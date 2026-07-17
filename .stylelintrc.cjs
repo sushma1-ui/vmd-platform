@@ -4,10 +4,7 @@
 module.exports = {
   rules: {
     'declaration-property-value-disallowed-list': {
-      '/color|background|border|fill|stroke|shadow/': [
-        '/#[0-9a-fA-F]{3,8}/',
-        '/rgb|hsl/',
-      ],
+      '/color|background|border|fill|stroke|shadow/': ['/#[0-9a-fA-F]{3,8}/', '/rgb|hsl/'],
       // Spacing must ride the 8px grid via tokens. Physical hairlines
       // (border/outline) and logical sizing (inline-size/block-size) are exempt.
       '/^(margin|padding|gap|inset|top|right|bottom|left)/': ['/[0-9]+px/'],

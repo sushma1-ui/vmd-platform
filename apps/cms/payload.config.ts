@@ -12,8 +12,7 @@ import { auditAfterChange, auditAfterDelete } from './src/hooks/index.ts';
  * Supabase Storage over its S3-compatible endpoint. The audit hook is attached to
  * every collection. Connection happens at runtime — importing this file needs no DB.
  */
-const connectionString =
-  process.env.DATABASE_POOL_URL ?? process.env.DATABASE_URL ?? '';
+const connectionString = process.env.DATABASE_POOL_URL ?? process.env.DATABASE_URL ?? '';
 
 export default buildConfig({
   secret: process.env.PAYLOAD_SECRET ?? '',

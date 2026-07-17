@@ -58,7 +58,7 @@ renderer and test rungs as informational columns so the remaining work stays vis
 Once the platform is feature-complete, the **renderer** rung becomes a gate too: every
 PUBLIC_CONTENT collection must either have a renderer wired to its helper **or** explicitly
 declare itself API-only in the classification. That stops forgotten collections from
-accumulating a contract with no surface. It is deliberately *not* enforced while the
+accumulating a contract with no surface. It is deliberately _not_ enforced while the
 content surfaces are still being built (it would fail on the very pages a phase is about to
 add); flipping it on is a future amendment to this ADR once the `renderer: pending` rows
 are resolved. Mechanical enforcement of the **Type** rung (asserting each public helper

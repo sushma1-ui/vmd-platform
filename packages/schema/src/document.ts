@@ -5,7 +5,12 @@ export const clientDocument = z.object({
   userId: z.string().uuid(),
   filename: z.string().min(1),
   storagePath: z.string().min(1),
-  mimeType: z.enum(['application/pdf', 'image/jpeg', 'image/png', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']),
+  mimeType: z.enum([
+    'application/pdf',
+    'image/jpeg',
+    'image/png',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  ]),
   sizeBytes: z.number().int().nonnegative(),
   provider: z.enum(['supabase', 'onedrive']).default('supabase'),
   providerRef: z.string().nullable().default(null),

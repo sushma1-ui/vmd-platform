@@ -1,4 +1,10 @@
-import type { AppointmentInput, DateRange, ProviderRef, SchedulingProvider, Slot } from '../types.ts';
+import type {
+  AppointmentInput,
+  DateRange,
+  ProviderRef,
+  SchedulingProvider,
+  Slot,
+} from '../types.ts';
 
 /**
  * V1 default. The practice is appointment-only; the manual adapter records intent

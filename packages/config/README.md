@@ -4,6 +4,7 @@ The **foundation** package. Depends on nothing (ARCHITECTURE.md §4.2) so everyt
 else can stand on it.
 
 Exports:
+
 - `./tsconfig.base.json` — the strict TS base every package extends.
 - `./eslint` — shared flat config, including the no-deep-import boundary rule (LAW 2).
 - `./prettier` — shared formatting.

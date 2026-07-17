@@ -10,7 +10,10 @@ import { isEditorial, isAgent } from '../access/index.ts';
  */
 export const Leads: CollectionConfig = {
   slug: 'leads',
-  admin: { useAsTitle: 'email', defaultColumns: ['email', 'source', 'score', 'status', 'createdAt'] },
+  admin: {
+    useAsTitle: 'email',
+    defaultColumns: ['email', 'source', 'score', 'status', 'createdAt'],
+  },
   access: {
     read: isEditorial,
     create: isAgent, // server-to-server via agent API key
@@ -23,7 +26,15 @@ export const Leads: CollectionConfig = {
       type: 'select',
       required: true,
       index: true,
-      options: ['health-check', 'second-opinion', 'consultation', 'guide-download', 'newsletter', 'quick-enquiry', 'general-enquiry'],
+      options: [
+        'health-check',
+        'second-opinion',
+        'consultation',
+        'guide-download',
+        'newsletter',
+        'quick-enquiry',
+        'general-enquiry',
+      ],
     },
     { name: 'firstName', type: 'text', required: true },
     { name: 'email', type: 'email', required: true, index: true },
@@ -39,7 +50,11 @@ export const Leads: CollectionConfig = {
       options: ['new', 'contacted', 'qualified', 'booked', 'won', 'lost'],
     },
     { name: 'assignedTo', type: 'relationship', relationTo: 'users' },
-    { name: 'healthCheck', type: 'json', admin: { description: 'Structured Health Check answers.' } },
+    {
+      name: 'healthCheck',
+      type: 'json',
+      admin: { description: 'Structured Health Check answers.' },
+    },
     {
       name: 'attribution',
       type: 'group',

@@ -4,72 +4,201 @@
  * typed quick-facts (comparison-ready). A lightweight filter appears only when there
  * are enough pathways to warrant it (zero JS otherwise).
  */
-interface Props { pathways: any[]; serviceSlug: string }
+interface Props {
+  pathways: any[];
+  serviceSlug: string;
+}
 const { pathways, serviceSlug } = Astro.props;
 const showFilter = pathways.length >= 5;
 const typeLabel = (t?: string) => (t ? t[0].toUpperCase() + t.slice(1) : '—');
 ---
-{pathways.length > 0 ? (
-  <div class="pg" data-pg>
-    {showFilter && (
-      <div class="pg__filter" role="group" aria-label="Filter pathways">
-        <button type="button" data-filter="all" aria-pressed="true">All</button>
-        <button type="button" data-filter="permanent" aria-pressed="false">Permanent</button>
-        <button type="button" data-filter="temporary" aria-pressed="false">Temporary</button>
-      </div>
-    )}
-    <ul class="pg__grid">
-      {pathways.map((s: any) => (
-        <li class="pg__card" data-type={s.atAGlance?.visaType ?? ''}>
-          <a class="pg__link" href={`/visa-services/${serviceSlug}/${s.slug}/`}>
-            <span class="pg__code">{s.code}</span>
-            <h3 class="pg__name">{s.name}</h3>
-          </a>
-          {s.plainOneLiner && <p class="pg__line">{s.plainOneLiner}</p>}
-          <dl class="pg__facts">
-            <div><dt>Type</dt><dd>{typeLabel(s.atAGlance?.visaType)}</dd></div>
-            <div><dt>Processing</dt><dd>{s.atAGlance?.processingTime || '—'}</dd></div>
-          </dl>
-          <a class="pg__more" href={`/visa-services/${serviceSlug}/${s.slug}/`}>See details →</a>
-        </li>
-      ))}
-    </ul>
-  </div>
-) : (
-  <div class="pg__empty">Pathways for this service appear here automatically as subclasses are published in the CMS.</div>
-)}
+
+{
+  pathways.length > 0 ? (
+    <div class="pg" data-pg>
+      {showFilter && (
+        <div class="pg__filter" role="group" aria-label="Filter pathways">
+          <button type="button" data-filter="all" aria-pressed="true">
+            All
+          </button>
+          <button type="button" data-filter="permanent" aria-pressed="false">
+            Permanent
+          </button>
+          <button type="button" data-filter="temporary" aria-pressed="false">
+            Temporary
+          </button>
+        </div>
+      )}
+      <ul class="pg__grid">
+        {pathways.map((s: any) => (
+          <li class="pg__card" data-type={s.atAGlance?.visaType ?? ''}>
+            <a class="pg__link" href={`/visa-services/${serviceSlug}/${s.slug}/`}>
+              <span class="pg__code">{s.code}</span>
+              <h3 class="pg__name">{s.name}</h3>
+            </a>
+            {s.plainOneLiner && <p class="pg__line">{s.plainOneLiner}</p>}
+            <dl class="pg__facts">
+              <div>
+                <dt>Type</dt>
+                <dd>{typeLabel(s.atAGlance?.visaType)}</dd>
+              </div>
+              <div>
+                <dt>Processing</dt>
+                <dd>{s.atAGlance?.processingTime || '—'}</dd>
+              </div>
+            </dl>
+            <a class="pg__more" href={`/visa-services/${serviceSlug}/${s.slug}/`}>
+              See details →
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  ) : (
+    <div class="pg__empty">
+      Pathways for this service appear here automatically as subclasses are published in the CMS.
+    </div>
+  )
+}
 <style>
-  .pg__filter { display: flex; gap: var(--space-2); margin-block-end: var(--space-4); flex-wrap: wrap; }
-  .pg__filter button { font-size: var(--type-body-sm); padding: var(--space-1) var(--space-3); border: 1px solid color-mix(in srgb, var(--color-action) 20%, transparent); border-radius: var(--radius-chip); background: var(--color-ground-light); color: var(--color-action); cursor: pointer; }
-  .pg__filter button[aria-pressed='true'] { border-color: var(--color-emphasis); background: var(--color-ground-warm); }
-  .pg__grid { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--space-4); grid-template-columns: 1fr; }
-  .pg__card { position: relative; display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-4); border: 1px solid color-mix(in srgb, var(--color-action) 9%, transparent); border-radius: var(--radius-card); background: var(--color-ground-light); transition: transform var(--motion-fast) var(--ease-standard), border-color var(--motion-fast) var(--ease-standard); }
-  .pg__card:hover { transform: translateY(-2px); border-color: var(--color-emphasis); }
-  .pg__code { display: inline-block; align-self: flex-start; border: 1px solid var(--color-emphasis); border-radius: var(--radius-chip); font-size: var(--type-caption); padding: 0 var(--space-2); }
-  .pg__link { text-decoration: none; }
-  .pg__link::after { content: ''; position: absolute; inset: 0; }
-  .pg__link:focus-visible { outline: 2px solid var(--color-interactive); outline-offset: 2px; }
-  .pg__name { font-family: var(--font-display); font-size: var(--type-h4); color: var(--color-action); margin: 0; }
-  .pg__line { font-size: var(--type-body-sm); color: var(--color-text); margin: 0; }
-  .pg__facts { display: flex; gap: var(--space-4); margin: 0; }
-  .pg__facts dt { font-size: var(--type-caption); text-transform: uppercase; letter-spacing: 0.03em; color: var(--color-text-muted); }
-  .pg__facts dd { margin: 0; font-size: var(--type-body-sm); font-variant-numeric: tabular-nums; }
-  .pg__more { position: relative; z-index: 1; font-size: var(--type-body-sm); color: var(--color-action); border-block-end: 1px solid var(--color-emphasis); text-decoration: none; align-self: flex-start; }
-  .pg__empty { border: 1px dashed color-mix(in srgb, var(--color-emphasis) 55%, transparent); border-radius: var(--radius-card); padding: var(--space-5); color: var(--color-text-muted); }
-  @media (min-width: 640px) { .pg__grid { grid-template-columns: 1fr 1fr; } }
-  @media (min-width: 1024px) { .pg__grid { grid-template-columns: repeat(3, 1fr); } }
-  @media (prefers-reduced-motion: reduce) { .pg__card, .pg__card:hover { transition: none; transform: none; } }
+  .pg__filter {
+    display: flex;
+    gap: var(--space-2);
+    margin-block-end: var(--space-4);
+    flex-wrap: wrap;
+  }
+  .pg__filter button {
+    font-size: var(--type-body-sm);
+    padding: var(--space-1) var(--space-3);
+    border: 1px solid color-mix(in srgb, var(--color-action) 20%, transparent);
+    border-radius: var(--radius-chip);
+    background: var(--color-ground-light);
+    color: var(--color-action);
+    cursor: pointer;
+  }
+  .pg__filter button[aria-pressed='true'] {
+    border-color: var(--color-emphasis);
+    background: var(--color-ground-warm);
+  }
+  .pg__grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: 1fr;
+  }
+  .pg__card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-4);
+    border: 1px solid color-mix(in srgb, var(--color-action) 9%, transparent);
+    border-radius: var(--radius-card);
+    background: var(--color-ground-light);
+    transition:
+      transform var(--motion-fast) var(--ease-standard),
+      border-color var(--motion-fast) var(--ease-standard);
+  }
+  .pg__card:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-emphasis);
+  }
+  .pg__code {
+    display: inline-block;
+    align-self: flex-start;
+    border: 1px solid var(--color-emphasis);
+    border-radius: var(--radius-chip);
+    font-size: var(--type-caption);
+    padding: 0 var(--space-2);
+  }
+  .pg__link {
+    text-decoration: none;
+  }
+  .pg__link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+  .pg__link:focus-visible {
+    outline: 2px solid var(--color-interactive);
+    outline-offset: 2px;
+  }
+  .pg__name {
+    font-family: var(--font-display);
+    font-size: var(--type-h4);
+    color: var(--color-action);
+    margin: 0;
+  }
+  .pg__line {
+    font-size: var(--type-body-sm);
+    color: var(--color-text);
+    margin: 0;
+  }
+  .pg__facts {
+    display: flex;
+    gap: var(--space-4);
+    margin: 0;
+  }
+  .pg__facts dt {
+    font-size: var(--type-caption);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--color-text-muted);
+  }
+  .pg__facts dd {
+    margin: 0;
+    font-size: var(--type-body-sm);
+    font-variant-numeric: tabular-nums;
+  }
+  .pg__more {
+    position: relative;
+    z-index: 1;
+    font-size: var(--type-body-sm);
+    color: var(--color-action);
+    border-block-end: 1px solid var(--color-emphasis);
+    text-decoration: none;
+    align-self: flex-start;
+  }
+  .pg__empty {
+    border: 1px dashed color-mix(in srgb, var(--color-emphasis) 55%, transparent);
+    border-radius: var(--radius-card);
+    padding: var(--space-5);
+    color: var(--color-text-muted);
+  }
+  @media (min-width: 640px) {
+    .pg__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (min-width: 1024px) {
+    .pg__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pg__card,
+    .pg__card:hover {
+      transition: none;
+      transform: none;
+    }
+  }
 </style>
 <script>
   const root = document.querySelector('[data-pg]');
   if (root && root.querySelector('.pg__filter')) {
     const buttons = root.querySelectorAll('[data-filter]');
     const cards = root.querySelectorAll('.pg__card');
-    buttons.forEach((b) => b.addEventListener('click', () => {
-      buttons.forEach((x) => x.setAttribute('aria-pressed', 'false'));
-      b.setAttribute('aria-pressed', 'true');
-      const f = b.getAttribute('data-filter');
-      cards.forEach((c) => { c.hidden = f !== 'all' && c.getAttribute('data-type') !== f; });
-    }));
+    buttons.forEach((b) =>
+      b.addEventListener('click', () => {
+        buttons.forEach((x) => x.setAttribute('aria-pressed', 'false'));
+        b.setAttribute('aria-pressed', 'true');
+        const f = b.getAttribute('data-filter');
+        cards.forEach((c) => {
+          c.hidden = f !== 'all' && c.getAttribute('data-type') !== f;
+        });
+      }),
+    );
   }
 </script>

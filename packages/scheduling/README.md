@@ -1,4 +1,4 @@
-# @vmd/scheduling  (ADR-0001)
+# @vmd/scheduling (ADR-0001)
 
 Provider-agnostic scheduling. The booking flow depends on the `SchedulingProvider`
 port; concrete providers are internal and swapped via `SCHEDULING_PROVIDER`.

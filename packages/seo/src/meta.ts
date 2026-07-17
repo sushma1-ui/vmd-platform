@@ -3,12 +3,16 @@ import { PRACTICE } from '@vmd/config';
 export interface MetaInput {
   title: string;
   description: string;
-  path: string;            // e.g. "/about/"
+  path: string; // e.g. "/about/"
   ogImage?: string;
   noindex?: boolean;
   type?: 'website' | 'article';
 }
-export interface MetaTag { name?: string; property?: string; content: string }
+export interface MetaTag {
+  name?: string;
+  property?: string;
+  content: string;
+}
 
 /** Pure: typed input -> the meta tags the layout renders. Canonical from one origin. */
 export function buildMeta(input: MetaInput) {

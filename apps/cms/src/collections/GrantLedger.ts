@@ -13,7 +13,12 @@ import { publishedOrEditorial, isEditorial } from '../access/index.ts';
 export const GrantLedger: CollectionConfig = {
   slug: 'grant-ledger',
   admin: { useAsTitle: 'descriptor', defaultColumns: ['subclassCode', 'outcome', 'decisionDate'] },
-  access: { read: publishedOrEditorial, create: isEditorial, update: isEditorial, delete: isEditorial },
+  access: {
+    read: publishedOrEditorial,
+    create: isEditorial,
+    update: isEditorial,
+    delete: isEditorial,
+  },
   fields: [
     { name: 'subclassCode', type: 'text', required: true, index: true },
     { name: 'subclass', type: 'relationship', relationTo: 'subclasses' },
@@ -25,8 +30,19 @@ export const GrantLedger: CollectionConfig = {
       options: ['granted', 'nomination-approved', 'set-aside', 'favourable-review'],
     },
     { name: 'decisionDate', type: 'date', required: true, index: true },
-    { name: 'descriptor', type: 'text', required: true, admin: { description: 'Coarse, non-identifying, e.g. "RN, offshore". No names.' } },
+    {
+      name: 'descriptor',
+      type: 'text',
+      required: true,
+      admin: { description: 'Coarse, non-identifying, e.g. "RN, offshore". No names.' },
+    },
     { name: 'consentRecorded', type: 'checkbox', required: true },
-    { name: 'status', type: 'select', defaultValue: 'draft', index: true, options: ['draft', 'published'] },
+    {
+      name: 'status',
+      type: 'select',
+      defaultValue: 'draft',
+      index: true,
+      options: ['draft', 'published'],
+    },
   ],
 };

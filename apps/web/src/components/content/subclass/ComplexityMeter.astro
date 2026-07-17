@@ -1,24 +1,54 @@
 ---
-interface Props { level?: 'straightforward' | 'moderate' | 'complex'; note?: string }
+interface Props {
+  level?: 'straightforward' | 'moderate' | 'complex';
+  note?: string;
+}
 const { level, note } = Astro.props;
 const map = { straightforward: 1, moderate: 2, complex: 3 } as const;
 const filled = level ? map[level] : 0;
 const label = level ? level.charAt(0).toUpperCase() + level.slice(1) : '';
 ---
-{level && (
-  <div class="cx" role="img" aria-label={`Complexity: ${label}`}>
-    <div class="cx__dots" aria-hidden="true">
-      {[1, 2, 3].map((i) => <span class:list={['cx__dot', i <= filled && 'cx__dot--on']}></span>)}
+
+{
+  level && (
+    <div class="cx" role="img" aria-label={`Complexity: ${label}`}>
+      <div class="cx__dots" aria-hidden="true">
+        {[1, 2, 3].map((i) => (
+          <span class:list={['cx__dot', i <= filled && 'cx__dot--on']} />
+        ))}
+      </div>
+      <span class="cx__label">{label}</span>
+      {note && <p class="cx__note">{note}</p>}
     </div>
-    <span class="cx__label">{label}</span>
-    {note && <p class="cx__note">{note}</p>}
-  </div>
-)}
+  )
+}
 <style>
-  .cx { display: flex; flex-direction: column; gap: var(--space-1); }
-  .cx__dots { display: inline-flex; gap: var(--space-1); }
-  .cx__dot { inline-size: var(--space-3); block-size: var(--space-2); border-radius: var(--radius-chip); background: color-mix(in srgb, var(--color-action) 15%, transparent); }
-  .cx__dot--on { background: var(--color-emphasis); }
-  .cx__label { font-size: var(--type-body-sm); font-weight: 500; color: var(--color-text); }
-  .cx__note { font-size: var(--type-caption); color: var(--color-text-muted); margin: 0; }
+  .cx {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+  .cx__dots {
+    display: inline-flex;
+    gap: var(--space-1);
+  }
+  .cx__dot {
+    inline-size: var(--space-3);
+    block-size: var(--space-2);
+    border-radius: var(--radius-chip);
+    background: color-mix(in srgb, var(--color-action) 15%, transparent);
+  }
+  .cx__dot--on {
+    background: var(--color-emphasis);
+  }
+  .cx__label {
+    font-size: var(--type-body-sm);
+    font-weight: 500;
+    color: var(--color-text);
+  }
+  .cx__note {
+    font-size: var(--type-caption);
+    color: var(--color-text-muted);
+    margin: 0;
+  }
 </style>

@@ -10,5 +10,7 @@ export const POST: APIRoute = async ({ request }) => {
     return new Response('Unauthorized', { status: 401 });
   }
   // await revalidatePath(body.path)  // wired with the Vercel adapter in the deploy module
-  return new Response(JSON.stringify({ ok: true }), { headers: { 'content-type': 'application/json' } });
+  return new Response(JSON.stringify({ ok: true }), {
+    headers: { 'content-type': 'application/json' },
+  });
 };

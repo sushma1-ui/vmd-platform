@@ -11,11 +11,20 @@ const env = import.meta.env;
 
 export const POST: APIRoute = async ({ request, clientAddress }) => {
   let body: unknown;
-  try { body = await request.json(); } catch { return json({ ok: false }, 400); }
+  try {
+    body = await request.json();
+  } catch {
+    return json({ ok: false }, 400);
+  }
   const parsed = consultationRequest.safeParse(body);
   if (!parsed.success) return json({ ok: false, fieldErrors: errs(parsed.error.issues) }, 422);
 
-  if (!(await rateLimit(`book:${clientAddress}`, 5, 60, { url: env.UPSTASH_REDIS_REST_URL, token: env.UPSTASH_REDIS_REST_TOKEN })))
+  if (
+    !(await rateLimit(`book:${clientAddress}`, 5, 60, {
+      url: env.UPSTASH_REDIS_REST_URL,
+      token: env.UPSTASH_REDIS_REST_TOKEN,
+    }))
+  )
     return json({ ok: false, error: 'Too many requests' }, 429);
 
   const data = parsed.data;
@@ -41,19 +50,51 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
         notes: data.notes,
       });
     }
-  } catch { /* record already saved; practice confirms out of band */ }
+  } catch {
+    /* record already saved; practice confirms out of band */
+  }
 
   // 3) Reconcile the reference back onto our record.
-  if (apiKey && recordId !== 'pending' && providerRef) await patchConsultation(recordId, { providerRef }, apiKey);
+  if (apiKey && recordId !== 'pending' && providerRef)
+    await patchConsultation(recordId, { providerRef }, apiKey);
 
   // 4) A booking is also a high-value lead.
-  if (apiKey) await createLead({ source: 'consultation', score: scoreLead('consultation'), firstName: data.firstName, email: data.email, mobile: data.mobile }, apiKey);
+  if (apiKey)
+    await createLead(
+      {
+        source: 'consultation',
+        score: scoreLead('consultation'),
+        firstName: data.firstName,
+        email: data.email,
+        mobile: data.mobile,
+      },
+      apiKey,
+    );
 
   // 5) Confirmation with the prep checklist (commitment device, §9.4).
   if (env.POSTMARK_SERVER_TOKEN && env.POSTMARK_FROM_EMAIL)
-    await sendTransactional({ to: data.email, template: 'consultation-confirmation', model: { firstName: data.firstName } }, { serverToken: env.POSTMARK_SERVER_TOKEN, from: env.POSTMARK_FROM_EMAIL }).catch(() => {});
+    await sendTransactional(
+      {
+        to: data.email,
+        template: 'consultation-confirmation',
+        model: { firstName: data.firstName },
+      },
+      { serverToken: env.POSTMARK_SERVER_TOKEN, from: env.POSTMARK_FROM_EMAIL },
+    ).catch(() => {});
 
   return json({ ok: true });
 };
-function errs(issues: { path: (string | number)[]; message: string }[]) { const o: Record<string, string> = {}; for (const i of issues) o[i.path.join('.')] = i.message; return o; }
-function json(d: unknown, s = 200) { return new Response(JSON.stringify(d), { status: s, headers: { 'content-type': 'application/json', ...(s === 200 ? { 'cache-control': 'no-store' } : {}) } }); }
+function errs(issues: { path: (string | number)[]; message: string }[]) {
+  const o: Record<string, string> = {};
+  for (const i of issues) o[i.path.join('.')] = i.message;
+  return o;
+}
+function json(d: unknown, s = 200) {
+  return new Response(JSON.stringify(d), {
+    status: s,
+    headers: {
+      'content-type': 'application/json',
+      ...(s === 200 ? { 'cache-control': 'no-store' } : {}),
+    },
+  });
+}

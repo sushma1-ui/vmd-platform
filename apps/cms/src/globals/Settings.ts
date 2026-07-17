@@ -21,6 +21,13 @@ export const Settings: GlobalConfig = {
     },
     { name: 'whatsappNumber', type: 'text' },
     { name: 'bookingEnabled', type: 'checkbox', defaultValue: true },
-    { name: 'migrationManagerUrl', type: 'text', admin: { description: 'Deep link to the Migration Manager practice system (client portal integration).' } },
+    {
+      name: 'migrationManagerUrl',
+      type: 'text',
+      admin: {
+        description:
+          'Deep link to the Migration Manager practice system (client portal integration).',
+      },
+    },
   ],
 };

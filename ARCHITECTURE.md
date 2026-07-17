@@ -40,18 +40,18 @@ Arrows point downward only; dependency-cruiser fails the build on any upward or 
 
 ## Enforcement matrix (every item is a red X on a PR, not an opinion)
 
-| Goal | Enforced by |
-| --- | --- |
-| No duplicated styles | Stylelint disallowed hex/px; `@vmd/tokens` is the only CSS-var source |
-| No duplicated logic | single `@vmd/schema` Zod source |
-| No duplicated code | jscpd (>2% fails) |
-| Modular boundaries | dependency-cruiser + ESLint no-deep-import |
-| Accessible by default | axe-core per route (QA module) |
-| Fast | Lighthouse CI + JS budget (Performance module) |
-| Gold-never-text | `@vmd/tokens` build-time contrast gate |
-| Type-safe | `tsc --noEmit`, strict |
-| No service_role leak | `scripts/check-no-service-role.sh` in CI |
-| Every collection has a read contract | `scripts/check-cms-contract.mjs` (`check:contract`) in CI — ADR-0004 |
+| Goal                                 | Enforced by                                                           |
+| ------------------------------------ | --------------------------------------------------------------------- |
+| No duplicated styles                 | Stylelint disallowed hex/px; `@vmd/tokens` is the only CSS-var source |
+| No duplicated logic                  | single `@vmd/schema` Zod source                                       |
+| No duplicated code                   | jscpd (>2% fails)                                                     |
+| Modular boundaries                   | dependency-cruiser + ESLint no-deep-import                            |
+| Accessible by default                | axe-core per route (QA module)                                        |
+| Fast                                 | Lighthouse CI + JS budget (Performance module)                        |
+| Gold-never-text                      | `@vmd/tokens` build-time contrast gate                                |
+| Type-safe                            | `tsc --noEmit`, strict                                                |
+| No service_role leak                 | `scripts/check-no-service-role.sh` in CI                              |
+| Every collection has a read contract | `scripts/check-cms-contract.mjs` (`check:contract`) in CI — ADR-0004  |
 
 ## Surfaces → deployables
 

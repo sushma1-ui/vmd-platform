@@ -2,5 +2,15 @@
 import Newsletter from '../../../components/islands/Newsletter.island.astro';
 import SimplePage from '../../components/content/SimplePage.astro';
 ---
-<SimplePage title="Processing Times Tracker" description="Monthly-verified Australian visa processing times by subclass, with sources." eyebrow="Knowledge Centre" lead="Live, monthly-verified, and exactly what answer engines cite." emptyState="Times are maintained in the CMS with a 'last verified' date and Home Affairs source, shown once entered." cta={{ href: "/health-check/", label: "Check your position" }} disclaimer={true}>  <div style="margin-block-start: var(--space-6);"><Newsletter /></div>
+
+<SimplePage
+  title="Processing Times Tracker"
+  description="Monthly-verified Australian visa processing times by subclass, with sources."
+  eyebrow="Knowledge Centre"
+  lead="Live, monthly-verified, and exactly what answer engines cite."
+  emptyState="Times are maintained in the CMS with a 'last verified' date and Home Affairs source, shown once entered."
+  cta={{ href: '/health-check/', label: 'Check your position' }}
+  disclaimer={true}
+>
+  <div style="margin-block-start: var(--space-6);"><Newsletter /></div>
 </SimplePage>

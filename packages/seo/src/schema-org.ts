@@ -91,7 +91,12 @@ export function breadcrumbSchema(trail: { name: string; path: string }[]) {
   };
 }
 
-export function serviceSchema(input: { name: string; description: string; path: string; serviceType?: string }) {
+export function serviceSchema(input: {
+  name: string;
+  description: string;
+  path: string;
+  serviceType?: string;
+}) {
   return {
     '@context': 'https://schema.org',
     '@type': 'Service',

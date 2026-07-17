@@ -4,7 +4,15 @@
   "private": true,
   "description": "The shared contract. Zod schemas imported by BOTH apps/web (validation) and apps/cms (collections). One definition of a Lead, a Consultation, a HealthCheck submission. Validation IS schema (ARCHITECTURE.md §2.4).",
   "type": "module",
-  "exports": { ".": "./src/index.ts" },
-  "scripts": { "build": "echo source-only", "typecheck": "tsc --noEmit", "lint": "eslint ." },
-  "dependencies": { "zod": "^3.23.8" }
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "echo source-only",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "zod": "^3.23.8"
+  }
 }

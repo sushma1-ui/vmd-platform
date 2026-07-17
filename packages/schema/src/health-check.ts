@@ -12,7 +12,9 @@ export const healthCheckSubmission = z.object({
   location: z.enum(['australia', 'offshore']), // step 2
   currentVisa: z.string().trim().max(120).optional(),
   ageBracket: z.enum(['under-25', '25-32', '33-39', '40-44', '45-plus']).optional(), // step 3
-  qualification: z.enum(['none', 'certificate', 'diploma', 'bachelor', 'masters', 'doctorate']).optional(),
+  qualification: z
+    .enum(['none', 'certificate', 'diploma', 'bachelor', 'masters', 'doctorate'])
+    .optional(),
   skilledExperienceYears: z.enum(['0', '1-2', '3-4', '5-7', '8-plus']).optional(),
   englishTest: z.enum(['yes', 'no', 'not-sure']).optional(), // step 4
   skillsAssessment: z.enum(['yes', 'no', 'not-sure']).optional(),

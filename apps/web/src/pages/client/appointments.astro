@@ -4,19 +4,50 @@ import { cms } from '../../lib/cms.ts';
 export const prerender = false;
 const user = (Astro.locals as any).user;
 let settings: any = null;
-try { settings = (await (await fetch(`${import.meta.env.PUBLIC_CMS_URL}/api/globals/settings`)).json()); } catch {}
+try {
+  settings = await (await fetch(`${import.meta.env.PUBLIC_CMS_URL}/api/globals/settings`)).json();
+} catch {}
 const mmUrl = settings?.migrationManagerUrl;
 ---
+
 <Client title="Appointments" user={user}>
   <h1>Appointments</h1>
   <p class="cp-lead">Your scheduled consultations.</p>
-  <div class="cp-empty">Your upcoming and past consultations appear here. Booking runs through the practice (ADR-0001); the scheduling provider is configurable.</div>
-  {mmUrl && <p><a class="cp-link" href={mmUrl} rel="noopener" target="_blank">Open in Migration Manager →</a></p>}
+  <div class="cp-empty">
+    Your upcoming and past consultations appear here. Booking runs through the practice (ADR-0001);
+    the scheduling provider is configurable.
+  </div>
+  {
+    mmUrl && (
+      <p>
+        <a class="cp-link" href={mmUrl} rel="noopener" target="_blank">
+          Open in Migration Manager →
+        </a>
+      </p>
+    )
+  }
   <p class="cp-note"><a class="cp-link" href="/book/">Request a new consultation →</a></p>
 </Client>
 <style>
-  h1 { font-size: var(--type-h2); } .cp-lead { color: var(--color-text-muted); margin-block: var(--space-2) var(--space-5); }
-  .cp-empty { border: 1px dashed color-mix(in srgb, var(--color-emphasis) 55%, transparent); border-radius: var(--radius-card); padding: var(--space-5); color: var(--color-text-muted); }
-  .cp-link { color: var(--color-action); border-block-end: 1px solid var(--color-emphasis); text-decoration: none; }
-  .cp-note { margin-block-start: var(--space-4); }
+  h1 {
+    font-size: var(--type-h2);
+  }
+  .cp-lead {
+    color: var(--color-text-muted);
+    margin-block: var(--space-2) var(--space-5);
+  }
+  .cp-empty {
+    border: 1px dashed color-mix(in srgb, var(--color-emphasis) 55%, transparent);
+    border-radius: var(--radius-card);
+    padding: var(--space-5);
+    color: var(--color-text-muted);
+  }
+  .cp-link {
+    color: var(--color-action);
+    border-block-end: 1px solid var(--color-emphasis);
+    text-decoration: none;
+  }
+  .cp-note {
+    margin-block-start: var(--space-4);
+  }
 </style>

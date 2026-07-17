@@ -8,7 +8,12 @@ export const fontFamilies = {
   body: "'Hanken Grotesk', system-ui, -apple-system, Segoe UI, Roboto, sans-serif",
 } as const;
 
-type Step = { face: 'display' | 'body'; weight: number; desktop: [number, number]; mobile: [number, number] };
+type Step = {
+  face: 'display' | 'body';
+  weight: number;
+  desktop: [number, number];
+  mobile: [number, number];
+};
 
 export const typeScale = {
   'display-1': { face: 'display', weight: 600, desktop: [64, 68], mobile: [40, 46] },

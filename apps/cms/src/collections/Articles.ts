@@ -10,7 +10,12 @@ import { seoField, reviewedByField } from '../fields/index.ts';
 export const Articles: CollectionConfig = {
   slug: 'articles',
   admin: { useAsTitle: 'title', defaultColumns: ['title', 'category', 'status', 'publishedAt'] },
-  access: { read: publishedOrEditorial, create: isEditorial, update: isEditorial, delete: isEditorial },
+  access: {
+    read: publishedOrEditorial,
+    create: isEditorial,
+    update: isEditorial,
+    delete: isEditorial,
+  },
   versions: { drafts: true },
   fields: [
     { name: 'title', type: 'text', required: true },
@@ -21,9 +26,15 @@ export const Articles: CollectionConfig = {
       required: true,
       index: true,
       options: [
-        'guide', 'migration-news', 'employer-hub', 'student-hub',
-        'partner-visa-hub', 'visitor-visa-hub', 'refusals-appeals',
-        'moving-to-perth', 'case-study',
+        'guide',
+        'migration-news',
+        'employer-hub',
+        'student-hub',
+        'partner-visa-hub',
+        'visitor-visa-hub',
+        'refusals-appeals',
+        'moving-to-perth',
+        'case-study',
       ],
     },
     {

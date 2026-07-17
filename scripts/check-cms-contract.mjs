@@ -29,17 +29,32 @@ const CMS_LIB = `${ROOT}apps/web/src/lib/cms.ts`;
 
 // --- Classification. Keyed by collection slug; grounded in ADR-0002. ---------------
 const PUBLIC_CONTENT = new Set([
-  'articles', 'services', 'subclasses', 'situations', 'faqs',
-  'testimonials', 'case-studies', 'grant-ledger', 'processing-times', 'pinned-reviews',
+  'articles',
+  'services',
+  'subclasses',
+  'situations',
+  'faqs',
+  'testimonials',
+  'case-studies',
+  'grant-ledger',
+  'processing-times',
+  'pinned-reviews',
 ]);
 const SYSTEM_READ = new Set(['redirects']); // read by getRedirects(), consumed by middleware
 const PRIVATE = new Set(['leads', 'consultations', 'users', 'audit-log', 'media']);
 
 // slug → the primary helper name expected on the `cms` object (informational rungs).
 const HELPER = {
-  articles: 'articles', services: 'services', subclasses: 'subclasses', situations: 'situations',
-  faqs: 'faqs', testimonials: 'testimonials', 'case-studies': 'caseStudies',
-  'grant-ledger': 'grantLedger', 'processing-times': 'processingTimes', 'pinned-reviews': 'pinnedReviews',
+  articles: 'articles',
+  services: 'services',
+  subclasses: 'subclasses',
+  situations: 'situations',
+  faqs: 'faqs',
+  testimonials: 'testimonials',
+  'case-studies': 'caseStudies',
+  'grant-ledger': 'grantLedger',
+  'processing-times': 'processingTimes',
+  'pinned-reviews': 'pinnedReviews',
 };
 
 // --- Read the authoritative slugs straight from the collection sources -------------
@@ -58,10 +73,14 @@ function collectionSlugs() {
 function cmsReadObject(src) {
   const start = src.indexOf('export const cms = {');
   if (start === -1) throw new Error('cms.ts: `export const cms = {` not found');
-  let depth = 0, i = src.indexOf('{', start);
+  let depth = 0,
+    i = src.indexOf('{', start);
   for (; i < src.length; i++) {
     if (src[i] === '{') depth++;
-    else if (src[i] === '}') { depth--; if (depth === 0) break; }
+    else if (src[i] === '}') {
+      depth--;
+      if (depth === 0) break;
+    }
   }
   return src.slice(start, i + 1);
 }
@@ -70,7 +89,9 @@ function webGrep(needle) {
   try {
     execSync(`grep -rlF ${JSON.stringify(needle)} ${ROOT}apps/web/src`, { stdio: 'pipe' });
     return true;
-  } catch { return false; }
+  } catch {
+    return false;
+  }
 }
 
 // --- Run ---------------------------------------------------------------------------
@@ -87,24 +108,38 @@ for (const { file, slug } of slugs) {
   if (PUBLIC_CONTENT.has(slug)) {
     bucket = 'public';
     if (inReadObj) contract = 'ok';
-    else { contract = 'MISSING helper'; failures.push(`${slug}: PUBLIC_CONTENT but no cms.* read helper (add query('${slug}'…))`); }
+    else {
+      contract = 'MISSING helper';
+      failures.push(`${slug}: PUBLIC_CONTENT but no cms.* read helper (add query('${slug}'…))`);
+    }
   } else if (SYSTEM_READ.has(slug)) {
     bucket = 'system';
-    if (inReadObj) { contract = 'EXPOSED'; failures.push(`${slug}: SYSTEM_READ must not sit on the public cms read object`); }
-    else if (!cmsSrc.includes('getRedirects')) { contract = 'no reader'; failures.push(`${slug}: SYSTEM_READ has no dedicated reader (getRedirects)`); }
-    else contract = 'ok (getRedirects)';
+    if (inReadObj) {
+      contract = 'EXPOSED';
+      failures.push(`${slug}: SYSTEM_READ must not sit on the public cms read object`);
+    } else if (!cmsSrc.includes('getRedirects')) {
+      contract = 'no reader';
+      failures.push(`${slug}: SYSTEM_READ has no dedicated reader (getRedirects)`);
+    } else contract = 'ok (getRedirects)';
   } else if (PRIVATE.has(slug)) {
     bucket = 'private';
-    if (inReadObj) { contract = 'EXPOSED'; failures.push(`${slug}: PRIVATE collection must not be readable via the public cms object (ADR-0002)`); }
-    else contract = 'ok (not exposed)';
+    if (inReadObj) {
+      contract = 'EXPOSED';
+      failures.push(
+        `${slug}: PRIVATE collection must not be readable via the public cms object (ADR-0002)`,
+      );
+    } else contract = 'ok (not exposed)';
   } else {
     bucket = 'UNCLASSIFIED';
     contract = '—';
-    failures.push(`${slug}: unclassified collection — decide its read contract in scripts/check-cms-contract.mjs (public / system / private)`);
+    failures.push(
+      `${slug}: unclassified collection — decide its read contract in scripts/check-cms-contract.mjs (public / system / private)`,
+    );
   }
 
   // Informational rungs (not gated here).
-  let renderer = '—', tests = '—';
+  let renderer = '—',
+    tests = '—';
   if (bucket === 'public') {
     renderer = webGrep(`cms.${HELPER[slug]}(`) ? 'wired' : 'pending';
     tests = 'pending';
@@ -115,10 +150,24 @@ for (const { file, slug } of slugs) {
 // --- Report ------------------------------------------------------------------------
 const pad = (s, n) => String(s).padEnd(n);
 console.log('\nCollection read-contract audit (ADR-0004)\n');
-console.log(pad('COLLECTION', 18) + pad('SLUG', 18) + pad('CLASS', 14) + pad('CONTRACT', 20) + pad('RENDERER', 10) + 'TESTS');
+console.log(
+  pad('COLLECTION', 18) +
+    pad('SLUG', 18) +
+    pad('CLASS', 14) +
+    pad('CONTRACT', 20) +
+    pad('RENDERER', 10) +
+    'TESTS',
+);
 console.log('-'.repeat(86));
 for (const r of rows) {
-  console.log(pad(r.collection, 18) + pad(r.slug, 18) + pad(r.bucket, 14) + pad(r.contract, 20) + pad(r.renderer, 10) + r.tests);
+  console.log(
+    pad(r.collection, 18) +
+      pad(r.slug, 18) +
+      pad(r.bucket, 14) +
+      pad(r.contract, 20) +
+      pad(r.renderer, 10) +
+      r.tests,
+  );
 }
 console.log('');
 

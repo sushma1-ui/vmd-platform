@@ -3,7 +3,12 @@ import { getSessionUser } from './lib/supabase.ts';
 import { getRedirects, type Redirect } from './lib/cms.ts';
 
 /** Auth guard for the portal. /client/* requires a session, except login/logout. */
-const PUBLIC_CLIENT = new Set(['/client/login', '/client/login/', '/client/logout', '/client/logout/']);
+const PUBLIC_CLIENT = new Set([
+  '/client/login',
+  '/client/login/',
+  '/client/logout',
+  '/client/logout/',
+]);
 
 /** Canonical form for redirect matching: leading slash, no trailing slash (except root), lower-case. */
 function canon(path: string): string {

@@ -31,31 +31,68 @@ const trail = [
   { name: service.title, path },
 ];
 const schemas = [
-  serviceSchema({ name: service.title, description: service.valueProposition ?? service.summary ?? service.title, path }),
+  serviceSchema({
+    name: service.title,
+    description: service.valueProposition ?? service.summary ?? service.title,
+    path,
+  }),
   breadcrumbSchema(trail),
-  ...(pathways.length ? [{
-    '@context': 'https://schema.org', '@type': 'ItemList',
-    itemListElement: pathways.map((p: any, i: number) => ({ '@type': 'ListItem', position: i + 1, name: p.name, url: new URL(`/visa-services/${service.slug}/${p.slug}/`, `https://${PRACTICE.domain}`).href })),
-  }] : []),
-  ...(faqs.length ? [faqSchema(faqs.map((f: any) => ({ question: f.question, answer: strip(lexicalToHtml(f.answer)) })))] : []),
+  ...(pathways.length
+    ? [
+        {
+          '@context': 'https://schema.org',
+          '@type': 'ItemList',
+          itemListElement: pathways.map((p: any, i: number) => ({
+            '@type': 'ListItem',
+            position: i + 1,
+            name: p.name,
+            url: new URL(`/visa-services/${service.slug}/${p.slug}/`, `https://${PRACTICE.domain}`)
+              .href,
+          })),
+        },
+      ]
+    : []),
+  ...(faqs.length
+    ? [
+        faqSchema(
+          faqs.map((f: any) => ({ question: f.question, answer: strip(lexicalToHtml(f.answer)) })),
+        ),
+      ]
+    : []),
 ];
 ---
+
 <Base
   title={`${service.title} — pathways, eligibility & advice`}
-  description={service.valueProposition ?? service.summary ?? `${service.title} in Australia — the pathways, who each suits, and honest guidance from a Registered Migration Agent in Perth.`}
+  description={service.valueProposition ??
+    service.summary ??
+    `${service.title} in Australia — the pathways, who each suits, and honest guidance from a Registered Migration Agent in Perth.`}
   ogImage={service.heroIllustration?.url}
   schemas={schemas}
 >
   <!-- 1 · HERO -->
   <section class="sv-hero">
     <div class="sv-hero__inner">
-      <nav class="crumbs" aria-label="Breadcrumb">{trail.map((t, i) => <span>{i > 0 && <span aria-hidden="true"> / </span>}<a href={t.path}>{t.name}</a></span>)}</nav>
+      <nav class="crumbs" aria-label="Breadcrumb">
+        {
+          trail.map((t, i) => (
+            <span>
+              {i > 0 && <span aria-hidden="true"> / </span>}
+              <a href={t.path}>{t.name}</a>
+            </span>
+          ))
+        }
+      </nav>
       <div class="sv-hero__grid">
         <div>
           <p class="eyebrow">Visa Services</p>
           <h1 class="sv-hero__title">{service.title}</h1>
           <Rule width="short" />
-          {(service.valueProposition || service.summary) && <p class="sv-hero__lead">{service.valueProposition ?? service.summary}</p>}
+          {
+            (service.valueProposition || service.summary) && (
+              <p class="sv-hero__lead">{service.valueProposition ?? service.summary}</p>
+            )
+          }
           <div class="sv-hero__cta">
             <Button variant="primary" href="/book/">Book a consultation</Button>
             <Button variant="secondary" href="/health-check/">Free Visa Health Check</Button>
@@ -63,10 +100,15 @@ const schemas = [
         </div>
         <div class="sv-hero__illo" aria-hidden="true">
           <svg viewBox="0 0 200 160" width="100%" role="img" aria-label="Pathway illustration">
-            <path d="M20 130 C 70 130, 70 40, 120 40 L 180 40" fill="none" stroke="var(--color-emphasis)" stroke-width="2" stroke-dasharray="4 4"/>
-            <circle cx="20" cy="130" r="6" fill="var(--color-action)"/>
-            <circle cx="120" cy="40" r="6" fill="var(--color-action)"/>
-            <circle cx="180" cy="40" r="7" fill="var(--color-emphasis)"/>
+            <path
+              d="M20 130 C 70 130, 70 40, 120 40 L 180 40"
+              fill="none"
+              stroke="var(--color-emphasis)"
+              stroke-width="2"
+              stroke-dasharray="4 4"></path>
+            <circle cx="20" cy="130" r="6" fill="var(--color-action)"></circle>
+            <circle cx="120" cy="40" r="6" fill="var(--color-action)"></circle>
+            <circle cx="180" cy="40" r="7" fill="var(--color-emphasis)"></circle>
           </svg>
           <span>Your pathway to {service.title.toLowerCase()}</span>
         </div>
@@ -76,130 +118,390 @@ const schemas = [
 
   <div class="sv-body">
     <!-- §2 WHO THIS IS FOR -->
-    {personas.length > 0 && (
-      <section class="sv-sec">
-        <h2 class="sv-h">Who this service is for</h2>
-        <div class="sv-personas">
-          {personas.map((p: any, i: number) => (
-            <details class="sv-disc" open={i === 0}><summary>{p.title}</summary><p>{p.description}</p></details>
-          ))}
-        </div>
-      </section>
-    )}
+    {
+      personas.length > 0 && (
+        <section class="sv-sec">
+          <h2 class="sv-h">Who this service is for</h2>
+          <div class="sv-personas">
+            {personas.map((p: any, i: number) => (
+              <details class="sv-disc" open={i === 0}>
+                <summary>{p.title}</summary>
+                <p>{p.description}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+      )
+    }
 
     <!-- §3 AVAILABLE PATHWAYS -->
     <section class="sv-sec section--bone">
       <div class="sv-sec__inner">
         <h2 class="sv-h">Available visa pathways</h2>
-        <p class="sv-sub">Not sure which is yours? Take the free Health Check, or compare them below.</p>
+        <p class="sv-sub">
+          Not sure which is yours? Take the free Health Check, or compare them below.
+        </p>
         <PathwayGrid pathways={pathways} serviceSlug={service.slug} />
       </div>
     </section>
 
     <!-- §4 WHY CHOOSE -->
-    {(benefits.length > 0 || service.whyChoose?.typicalOutcomes || service.whyChoose?.considerations) && (
-      <section class="sv-sec">
-        <h2 class="sv-h">Why choose this pathway</h2>
-        {benefits.length > 0 && <ul class="sv-benefits">{benefits.map((b: any) => <li><strong>{b.title}</strong>{b.detail && <span> — {b.detail}</span>}</li>)}</ul>}
-        {service.whyChoose?.typicalOutcomes && <div class="sv-block"><h3>Typical outcomes</h3><p>{service.whyChoose.typicalOutcomes}</p></div>}
-        {service.whyChoose?.considerations && <div class="sv-block sv-block--note"><h3>Important considerations</h3><p>{service.whyChoose.considerations}</p></div>}
-        <Disclaimer variant="generalInformation" />
-      </section>
-    )}
+    {
+      (benefits.length > 0 ||
+        service.whyChoose?.typicalOutcomes ||
+        service.whyChoose?.considerations) && (
+        <section class="sv-sec">
+          <h2 class="sv-h">Why choose this pathway</h2>
+          {benefits.length > 0 && (
+            <ul class="sv-benefits">
+              {benefits.map((b: any) => (
+                <li>
+                  <strong>{b.title}</strong>
+                  {b.detail && <span> — {b.detail}</span>}
+                </li>
+              ))}
+            </ul>
+          )}
+          {service.whyChoose?.typicalOutcomes && (
+            <div class="sv-block">
+              <h3>Typical outcomes</h3>
+              <p>{service.whyChoose.typicalOutcomes}</p>
+            </div>
+          )}
+          {service.whyChoose?.considerations && (
+            <div class="sv-block sv-block--note">
+              <h3>Important considerations</h3>
+              <p>{service.whyChoose.considerations}</p>
+            </div>
+          )}
+          <Disclaimer variant="generalInformation" />
+        </section>
+      )
+    }
 
     <!-- §5 JOURNEY -->
-    {journey.length > 0 && (
-      <section class="sv-sec section--bone">
-        <div class="sv-sec__inner">
-          <h2 class="sv-h">The journey, at a glance</h2>
-          <ol class="sv-journey">
-            {journey.map((j: any, i: number) => (
-              <li><span class="sv-jn">{i + 1}</span><div><h3>{j.title}</h3>{j.description && <p>{j.description}</p>}{j.linkedSubclass?.slug && <a href={`/visa-services/${service.slug}/${j.linkedSubclass.slug}/`}>See {j.linkedSubclass.code} →</a>}</div></li>
-            ))}
-          </ol>
-        </div>
-      </section>
-    )}
+    {
+      journey.length > 0 && (
+        <section class="sv-sec section--bone">
+          <div class="sv-sec__inner">
+            <h2 class="sv-h">The journey, at a glance</h2>
+            <ol class="sv-journey">
+              {journey.map((j: any, i: number) => (
+                <li>
+                  <span class="sv-jn">{i + 1}</span>
+                  <div>
+                    <h3>{j.title}</h3>
+                    {j.description && <p>{j.description}</p>}
+                    {j.linkedSubclass?.slug && (
+                      <a href={`/visa-services/${service.slug}/${j.linkedSubclass.slug}/`}>
+                        See {j.linkedSubclass.code} →
+                      </a>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
+      )
+    }
 
     <!-- §7 SUCCESS STORIES -->
     <section class="sv-sec">
       <h2 class="sv-h">Results in this category</h2>
-      <div class="sv-empty">Grants, favourable reviews and client stories appear here as consent is confirmed — dated, anonymised, no success rates. Our verified 5.0★ from 39 Google reviews is on the <a href="/results/reviews/">reviews page</a>.</div>
+      <div class="sv-empty">
+        Grants, favourable reviews and client stories appear here as consent is confirmed — dated,
+        anonymised, no success rates. Our verified 5.0★ from 39 Google reviews is on the <a
+          href="/results/reviews/">reviews page</a
+        >.
+      </div>
       <Disclaimer variant="outcomes" />
     </section>
 
     <!-- §8 FAQ -->
-    {faqs.length > 0 && (
-      <section class="sv-sec section--bone">
-        <div class="sv-sec__inner">
-          <h2 class="sv-h">Frequently asked questions</h2>
-          <div class="sv-faq">{faqs.map((f: any) => (<details class="sv-disc"><summary>{f.question}</summary><div class="sv-rt" set:html={lexicalToHtml(f.answer)} /></details>))}</div>
-        </div>
-      </section>
-    )}
+    {
+      faqs.length > 0 && (
+        <section class="sv-sec section--bone">
+          <div class="sv-sec__inner">
+            <h2 class="sv-h">Frequently asked questions</h2>
+            <div class="sv-faq">
+              {faqs.map((f: any) => (
+                <details class="sv-disc">
+                  <summary>{f.question}</summary>
+                  <div class="sv-rt" set:html={lexicalToHtml(f.answer)} />
+                </details>
+              ))}
+            </div>
+          </div>
+        </section>
+      )
+    }
 
     <!-- §6 + §9 RESOURCES + RELATED SERVICES -->
-    {(resources.length > 0 || relServices.length > 0) && (
-      <section class="sv-sec">
-        <h2 class="sv-h">Keep exploring</h2>
-        <div class="sv-explore">
-          {resources.length > 0 && <div><h3>Resources &amp; guides</h3><ul class="sv-links">{resources.map((r: any) => <li><a href={`/resources/${r.slug}/`}>{r.title}</a></li>)}</ul></div>}
-          {relServices.length > 0 && <div><h3>Related services</h3><ul class="sv-links">{relServices.map((s: any) => <li><a href={`/visa-services/${s.slug}/`}>{s.title}</a></li>)}</ul></div>}
-        </div>
-      </section>
-    )}
+    {
+      (resources.length > 0 || relServices.length > 0) && (
+        <section class="sv-sec">
+          <h2 class="sv-h">Keep exploring</h2>
+          <div class="sv-explore">
+            {resources.length > 0 && (
+              <div>
+                <h3>Resources &amp; guides</h3>
+                <ul class="sv-links">
+                  {resources.map((r: any) => (
+                    <li>
+                      <a href={`/resources/${r.slug}/`}>{r.title}</a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {relServices.length > 0 && (
+              <div>
+                <h3>Related services</h3>
+                <ul class="sv-links">
+                  {relServices.map((s: any) => (
+                    <li>
+                      <a href={`/visa-services/${s.slug}/`}>{s.title}</a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        </section>
+      )
+    }
   </div>
 
   <!-- §10 CONVERSION -->
   <section class="band">
     <div class="band__inner band__inner--center">
       <h2 class="band__h">Not sure which pathway is yours?</h2>
-      <p class="band__lead">An honest read on where you stand — including if this category isn't the right fit.</p>
-      <div class="band__cta"><Button variant="primary" href="/book/">Book a consultation</Button><Button variant="secondary" href="/health-check/">Free Visa Health Check</Button></div>
+      <p class="band__lead">
+        An honest read on where you stand — including if this category isn't the right fit.
+      </p>
+      <div class="band__cta">
+        <Button variant="primary" href="/book/">Book a consultation</Button><Button
+          variant="secondary"
+          href="/health-check/">Free Visa Health Check</Button
+        >
+      </div>
       <p class="band__contact"><a href="/contact/">Or contact the team →</a></p>
     </div>
   </section>
 </Base>
 
 <style>
-  .crumbs { font-size: var(--type-caption); color: var(--color-text-muted); margin-block-end: var(--space-4); }
-  .crumbs a { color: inherit; text-decoration: none; }
-  .eyebrow { font-size: var(--type-caption); letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-text-muted); }
-  .sv-hero { background: var(--color-ground-warm); }
-  .sv-hero__inner { max-inline-size: var(--container-max); margin-inline: auto; padding: var(--space-7) var(--space-4); }
-  .sv-hero__grid { display: grid; gap: var(--space-6); align-items: center; grid-template-columns: 1fr; }
-  .sv-hero__title { font-size: var(--type-display-1); line-height: var(--leading-display-1); margin-block: var(--space-2) 0; }
-  .sv-hero__lead { font-size: var(--type-body-lg); line-height: 1.5; margin-block: var(--space-3) var(--space-4); max-inline-size: 56ch; }
-  .sv-hero__cta { display: flex; flex-wrap: wrap; gap: var(--space-3); }
-  .sv-hero__illo { display: flex; flex-direction: column; gap: var(--space-2); align-items: center; color: var(--color-text-muted); font-size: var(--type-body-sm); }
-  .sv-body { max-inline-size: var(--container-max); margin-inline: auto; }
-  .sv-sec { padding: var(--space-8) var(--space-4); }
-  .section--bone { background: var(--color-ground-warm); }
-  .sv-sec__inner { max-inline-size: var(--container-max); margin-inline: auto; }
-  .sv-h { font-size: var(--type-h2); margin-block-end: var(--space-4); }
-  .sv-sub { font-size: var(--type-body-lg); color: var(--color-text-muted); margin-block-end: var(--space-5); }
-  .sv-disc { border: 1px solid color-mix(in srgb, var(--color-action) 12%, transparent); border-radius: var(--radius-card); padding: var(--space-3) var(--space-4); margin-block-end: var(--space-2); }
-  .sv-disc summary { cursor: pointer; font-weight: 500; font-size: var(--type-h4); color: var(--color-action); }
-  .sv-disc p, .sv-rt { margin-block-start: var(--space-2); line-height: 1.65; }
-  .sv-benefits { padding-inline-start: var(--space-4); line-height: 1.9; }
-  .sv-block { margin-block-start: var(--space-4); } .sv-block h3 { font-size: var(--type-h4); margin-block-end: var(--space-2); }
-  .sv-block--note { border-inline-start: 3px solid var(--color-emphasis); padding-inline-start: var(--space-4); }
-  .sv-journey { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--space-4); }
-  .sv-journey li { display: grid; grid-template-columns: var(--space-6) 1fr; gap: var(--space-3); }
-  .sv-jn { inline-size: var(--space-6); block-size: var(--space-6); border-radius: var(--radius-chip); background: var(--color-action); color: var(--color-text-inverse); display: grid; place-items: center; font-weight: 500; }
-  .sv-journey h3 { font-size: var(--type-h4); margin: 0 0 var(--space-1); color: var(--color-action); font-family: var(--font-display); }
-  .sv-journey a { color: var(--color-action); border-block-end: 1px solid var(--color-emphasis); text-decoration: none; font-size: var(--type-body-sm); }
-  .sv-explore { display: grid; gap: var(--space-5); grid-template-columns: 1fr; }
-  .sv-explore h3 { font-size: var(--type-h4); margin-block-end: var(--space-2); }
-  .sv-links { list-style: none; padding: 0; } .sv-links a { color: var(--color-action); border-block-end: 1px solid var(--color-emphasis); text-decoration: none; }
-  .sv-empty { border: 1px dashed color-mix(in srgb, var(--color-emphasis) 55%, transparent); border-radius: var(--radius-card); padding: var(--space-5); color: var(--color-text-muted); }
-  .sv-empty a { color: var(--color-action); }
-  .band { background: var(--color-ground-deep); color: var(--color-text-inverse); }
-  .band__inner { max-inline-size: var(--container-max); margin-inline: auto; padding: var(--space-9) var(--space-4); }
-  .band__inner--center { text-align: center; display: flex; flex-direction: column; align-items: center; gap: var(--space-3); }
-  .band__h { font-size: var(--type-h2); color: var(--color-text-inverse); }
-  .band__lead { font-size: var(--type-body-lg); color: color-mix(in srgb, var(--color-text-inverse) 86%, transparent); max-inline-size: 52ch; }
-  .band__cta { display: flex; flex-wrap: wrap; gap: var(--space-3); justify-content: center; }
-  .band__contact a { color: var(--color-emphasis); text-decoration: none; }
-  @media (min-width: 900px) { .sv-hero__grid { grid-template-columns: 1.4fr 1fr; } .sv-explore { grid-template-columns: 1fr 1fr; } }
+  .crumbs {
+    font-size: var(--type-caption);
+    color: var(--color-text-muted);
+    margin-block-end: var(--space-4);
+  }
+  .crumbs a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .eyebrow {
+    font-size: var(--type-caption);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+  .sv-hero {
+    background: var(--color-ground-warm);
+  }
+  .sv-hero__inner {
+    max-inline-size: var(--container-max);
+    margin-inline: auto;
+    padding: var(--space-7) var(--space-4);
+  }
+  .sv-hero__grid {
+    display: grid;
+    gap: var(--space-6);
+    align-items: center;
+    grid-template-columns: 1fr;
+  }
+  .sv-hero__title {
+    font-size: var(--type-display-1);
+    line-height: var(--leading-display-1);
+    margin-block: var(--space-2) 0;
+  }
+  .sv-hero__lead {
+    font-size: var(--type-body-lg);
+    line-height: 1.5;
+    margin-block: var(--space-3) var(--space-4);
+    max-inline-size: 56ch;
+  }
+  .sv-hero__cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+  .sv-hero__illo {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    align-items: center;
+    color: var(--color-text-muted);
+    font-size: var(--type-body-sm);
+  }
+  .sv-body {
+    max-inline-size: var(--container-max);
+    margin-inline: auto;
+  }
+  .sv-sec {
+    padding: var(--space-8) var(--space-4);
+  }
+  .section--bone {
+    background: var(--color-ground-warm);
+  }
+  .sv-sec__inner {
+    max-inline-size: var(--container-max);
+    margin-inline: auto;
+  }
+  .sv-h {
+    font-size: var(--type-h2);
+    margin-block-end: var(--space-4);
+  }
+  .sv-sub {
+    font-size: var(--type-body-lg);
+    color: var(--color-text-muted);
+    margin-block-end: var(--space-5);
+  }
+  .sv-disc {
+    border: 1px solid color-mix(in srgb, var(--color-action) 12%, transparent);
+    border-radius: var(--radius-card);
+    padding: var(--space-3) var(--space-4);
+    margin-block-end: var(--space-2);
+  }
+  .sv-disc summary {
+    cursor: pointer;
+    font-weight: 500;
+    font-size: var(--type-h4);
+    color: var(--color-action);
+  }
+  .sv-disc p,
+  .sv-rt {
+    margin-block-start: var(--space-2);
+    line-height: 1.65;
+  }
+  .sv-benefits {
+    padding-inline-start: var(--space-4);
+    line-height: 1.9;
+  }
+  .sv-block {
+    margin-block-start: var(--space-4);
+  }
+  .sv-block h3 {
+    font-size: var(--type-h4);
+    margin-block-end: var(--space-2);
+  }
+  .sv-block--note {
+    border-inline-start: 3px solid var(--color-emphasis);
+    padding-inline-start: var(--space-4);
+  }
+  .sv-journey {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: var(--space-4);
+  }
+  .sv-journey li {
+    display: grid;
+    grid-template-columns: var(--space-6) 1fr;
+    gap: var(--space-3);
+  }
+  .sv-jn {
+    inline-size: var(--space-6);
+    block-size: var(--space-6);
+    border-radius: var(--radius-chip);
+    background: var(--color-action);
+    color: var(--color-text-inverse);
+    display: grid;
+    place-items: center;
+    font-weight: 500;
+  }
+  .sv-journey h3 {
+    font-size: var(--type-h4);
+    margin: 0 0 var(--space-1);
+    color: var(--color-action);
+    font-family: var(--font-display);
+  }
+  .sv-journey a {
+    color: var(--color-action);
+    border-block-end: 1px solid var(--color-emphasis);
+    text-decoration: none;
+    font-size: var(--type-body-sm);
+  }
+  .sv-explore {
+    display: grid;
+    gap: var(--space-5);
+    grid-template-columns: 1fr;
+  }
+  .sv-explore h3 {
+    font-size: var(--type-h4);
+    margin-block-end: var(--space-2);
+  }
+  .sv-links {
+    list-style: none;
+    padding: 0;
+  }
+  .sv-links a {
+    color: var(--color-action);
+    border-block-end: 1px solid var(--color-emphasis);
+    text-decoration: none;
+  }
+  .sv-empty {
+    border: 1px dashed color-mix(in srgb, var(--color-emphasis) 55%, transparent);
+    border-radius: var(--radius-card);
+    padding: var(--space-5);
+    color: var(--color-text-muted);
+  }
+  .sv-empty a {
+    color: var(--color-action);
+  }
+  .band {
+    background: var(--color-ground-deep);
+    color: var(--color-text-inverse);
+  }
+  .band__inner {
+    max-inline-size: var(--container-max);
+    margin-inline: auto;
+    padding: var(--space-9) var(--space-4);
+  }
+  .band__inner--center {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .band__h {
+    font-size: var(--type-h2);
+    color: var(--color-text-inverse);
+  }
+  .band__lead {
+    font-size: var(--type-body-lg);
+    color: color-mix(in srgb, var(--color-text-inverse) 86%, transparent);
+    max-inline-size: 52ch;
+  }
+  .band__cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    justify-content: center;
+  }
+  .band__contact a {
+    color: var(--color-emphasis);
+    text-decoration: none;
+  }
+  @media (min-width: 900px) {
+    .sv-hero__grid {
+      grid-template-columns: 1.4fr 1fr;
+    }
+    .sv-explore {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
 </style>
