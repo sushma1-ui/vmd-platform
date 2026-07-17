@@ -1,10 +1,14 @@
-import type { CollectionAfterChangeHook } from 'payload';
+import type { CollectionAfterChangeHook, TypeWithID } from 'payload';
 
 /**
  * Revalidate hook — pings the web app's on-demand ISR endpoint after a content
- * change so edits go live without a full rebuild.
+ * change so edits go live without a full rebuild. Parameterised with `TypeWithID`
+ * since it runs on every collection and only needs the base document shape.
  */
-export const revalidateAfterChange: CollectionAfterChangeHook = async ({ doc, collection }) => {
+export const revalidateAfterChange: CollectionAfterChangeHook<TypeWithID> = async ({
+  doc,
+  collection,
+}) => {
   const url = process.env.PUBLIC_SITE_URL;
   const secret = process.env.REVALIDATE_SECRET;
   if (!url || !secret) return doc;
