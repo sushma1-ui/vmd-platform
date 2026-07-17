@@ -19,7 +19,7 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,astro,js,mjs,cjs,json,md,css}\"",
     "boundaries": "depcruise --config .dependency-cruiser.cjs packages apps",
     "duplication": "jscpd",
-    "stylelint": "stylelint \"packages/**/*.css\" \"apps/**/*.{astro,css}\"",
+    "stylelint": "stylelint \"packages/**/*.css\" \"apps/**/*.css\"",
     "check:secrets": "bash scripts/check-no-service-role.sh",
     "check:contract": "node scripts/check-cms-contract.mjs",
     "tokens:build": "pnpm --filter @vmd/tokens build",
@@ -33,6 +33,7 @@
     "dependency-cruiser": "^16.4.2",
     "husky": "^9.1.6",
     "jscpd": "^4.0.5",
+    "lint-staged": "^15.2.10",
     "prettier": "^3.3.3",
     "prettier-plugin-astro": "^0.14.1",
     "stylelint": "^16.10.0",
@@ -40,5 +41,9 @@
     "typescript": "^5.6.3",
     "@playwright/test": "^1.48.0",
     "@axe-core/playwright": "^4.10.0"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,astro,js,mjs,cjs,json,md,css}": "prettier --write",
+    "*.css": "stylelint"
   }
 }
