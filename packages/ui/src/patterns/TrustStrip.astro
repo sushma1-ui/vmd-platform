@@ -1,17 +1,16 @@
 ---
 /**
  * TrustStrip — every item CHECKABLE (Blueprint §10). Identity (MARN, location,
- * regulator) is single-sourced from @vmd/config; the rating/count are DATA passed
- * by the caller (from the CMS Settings global), never hardcoded here.
+ * regulator) is single-sourced from @vmd/config. The Google Reviews item shows
+ * "★★★★★ Google Reviews" with NO review count: counts are never hardcoded, and a
+ * live figure will come from the Google Business Profile API when it is wired.
  */
 import { PRACTICE } from '@vmd/config';
 interface Props {
-  rating?: number;
-  reviewCount?: number;
   reviewUrl?: string;
   tone?: 'light' | 'dark';
 }
-const { rating, reviewCount, reviewUrl, tone = 'light' } = Astro.props;
+const { reviewUrl, tone = 'light' } = Astro.props;
 const marnUrl = PRACTICE.regulator.registerUrl;
 ---
 
@@ -24,19 +23,13 @@ const marnUrl = PRACTICE.regulator.registerUrl;
   <li class="trust__sep" aria-hidden="true"></li>
   <li class="trust__item"><a href={marnUrl} rel="noopener" target="_blank">Code of Conduct</a></li>
   {
-    rating != null && reviewCount != null && (
+    reviewUrl != null && (
       <>
         <li class="trust__sep" aria-hidden="true" />
         <li class="trust__item">
-          {reviewUrl ? (
-            <a href={reviewUrl} rel="noopener" target="_blank">
-              {rating.toFixed(1)}★ · {reviewCount} reviews
-            </a>
-          ) : (
-            <span>
-              {rating.toFixed(1)}★ · {reviewCount} reviews
-            </span>
-          )}
+          <a href={reviewUrl} rel="noopener" target="_blank">
+            <span aria-hidden="true">★★★★★</span> Google Reviews
+          </a>
         </li>
       </>
     )

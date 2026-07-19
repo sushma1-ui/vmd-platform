@@ -57,11 +57,7 @@ const tYear = (iso?: string) => {
         Placed here — after the evidence and the person — reviews read as corroboration, not
         advertising. Every one is a real, verified Google review.
       </p>
-      <TrustStrip
-        rating={gr?.rating}
-        reviewCount={gr?.count}
-        reviewUrl={gr?.profileUrl ?? '/results/reviews/'}
-      />
+      <TrustStrip reviewUrl={gr?.profileUrl ?? '/results/reviews/'} />
       {
         gr?.profileUrl && (
           <p class="rv-hero__link">
