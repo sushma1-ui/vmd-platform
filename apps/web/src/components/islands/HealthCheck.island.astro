@@ -7,7 +7,12 @@
  * shows eligibility, a score, an indicative position, or migration advice. On
  * submit it posts to /api/health-check and redirects to the thank-you page with
  * the returned reference. Lightweight vanilla-JS island; progressive per step.
+ *
+ * Abuse protection: a hidden honeypot field, plus a Cloudflare Turnstile widget
+ * rendered only when PUBLIC_TURNSTILE_SITE_KEY is configured. The server also
+ * rate-limits by IP + email; all validation is server-side.
  */
+const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
 ---
 
 <div class="hc" data-hc>
@@ -22,6 +27,11 @@
   </div>
 
   <form data-hc-form novalidate aria-label="Free Visa Health Check">
+    {/* Honeypot — must stay empty. Hidden from users and assistive tech. */}
+    <div class="hc__hp" aria-hidden="true">
+      <label for="hc-website">Do not fill this field</label>
+      <input id="hc-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+    </div>
     <!-- 1 · Situation -->
     <fieldset class="hc__step" data-step="1">
       <legend class="hc__q">What best describes your situation?</legend>
@@ -165,10 +175,24 @@
         I understand this form collects my details so a Registered Migration Agent can review my enquiry,
         and that no migration advice is provided until then.
       </label>
+      {
+        turnstileSiteKey && (
+          <div
+            class="hc__turnstile cf-turnstile"
+            data-sitekey={turnstileSiteKey}
+            data-theme="light"
+          />
+        )
+      }
       <p class="hc__err" data-hc-err role="alert" hidden></p>
       <button class="hc__submit" type="submit" data-submit>Submit my Free Visa Health Check</button>
     </fieldset>
   </form>
+  {
+    turnstileSiteKey && (
+      <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer is:inline />
+    )
+  }
 
   <div class="hc__foot">
     <button type="button" data-hc-back hidden>← Back</button>
@@ -302,6 +326,18 @@
     cursor: pointer;
     font-size: var(--type-body-sm);
   }
+  /* Honeypot: visually and functionally hidden, but present in the DOM for bots. */
+  .hc__hp {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  .hc__turnstile {
+    margin-block: var(--space-4) 0;
+  }
 </style>
 
 <script>
@@ -434,6 +470,10 @@
       if (mobile) state.mobile = mobile;
       state.preferredContact = String(fd.get('preferredContact') ?? 'email');
       state.sensitiveInfoAcknowledged = fd.get('sensitive') === 'on';
+      // Abuse signals: honeypot (must be empty) + Turnstile token (when enabled).
+      state.website = String(fd.get('website') ?? '');
+      const tsToken = String(fd.get('cf-turnstile-response') ?? '');
+      if (tsToken) state.turnstileToken = tsToken;
 
       const emailOk = /.+@.+\..+/.test(String(state.email));
       if (!state.firstName || !emailOk) {

@@ -4,6 +4,7 @@ import { track } from '@vmd/analytics';
 import { PRACTICE } from '@vmd/config';
 import { sendTransactional } from '@vmd/email';
 import { getCrmProvider } from '@vmd/crm';
+import { verifyTurnstile, rateLimit } from '@vmd/forms';
 import { createLead } from '../../lib/cms.ts';
 
 export const prerender = false;
@@ -19,14 +20,33 @@ const env = import.meta.env;
  * Storage is the system of record; email + CRM are best-effort side effects that
  * never block (or fail) the client's success response.
  */
-export const POST: APIRoute = async ({ request }) => {
-  // 1 — Validate the full submission (country/nationality/etc. required).
+export const POST: APIRoute = async ({ request, clientAddress }) => {
   let body: unknown;
   try {
     body = await request.json();
   } catch {
     return json({ ok: false, error: 'invalid-json' }, 400);
   }
+  const raw = (body ?? {}) as Record<string, unknown>;
+
+  // 1a — Honeypot: bots fill the hidden "website" field. Drop silently with a
+  //      generic success so they learn nothing; no lead, no email, no CRM.
+  if (typeof raw.website === 'string' && raw.website.trim() !== '') {
+    return json({ ok: true, submissionId: null, stored: false }, 200);
+  }
+
+  // 1b — Cloudflare Turnstile. Enforced when TURNSTILE_SECRET_KEY is set; in dev
+  //      (no secret) verifyTurnstile returns true so local testing still works.
+  const ip =
+    clientAddress || request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+  const human = await verifyTurnstile(
+    typeof raw.turnstileToken === 'string' ? raw.turnstileToken : undefined,
+    env.TURNSTILE_SECRET_KEY,
+    ip,
+  );
+  if (!human) return json({ ok: false, error: 'verification-failed' }, 403);
+
+  // 1c — Validate the full submission (country/nationality/etc. required).
   const parsed = healthCheckSubmission.safeParse(body);
   if (!parsed.success) {
     return json(
@@ -35,6 +55,15 @@ export const POST: APIRoute = async ({ request }) => {
     );
   }
   const data = parsed.data;
+
+  // 1d — Rate limits (fail OPEN if Upstash unconfigured, so a genuine lead is
+  //      never lost to an infra hiccup): throttle per IP and per email.
+  const upstash = { url: env.UPSTASH_REDIS_REST_URL, token: env.UPSTASH_REDIS_REST_TOKEN };
+  const [ipOk, emailOk] = await Promise.all([
+    rateLimit(`hc:ip:${ip}`, 5, 3600, upstash), // 5 / hour / IP
+    rateLimit(`hc:email:${data.email}`, 3, 86_400, upstash), // 3 / day / email
+  ]);
+  if (!ipOk || !emailOk) return json({ ok: false, error: 'rate-limited' }, 429);
 
   // 2 — Human-friendly, globally-unique reference (uniqueness enforced by the
   //     unique index on leads.submissionId).
