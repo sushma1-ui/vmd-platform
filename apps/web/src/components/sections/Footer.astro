@@ -24,7 +24,10 @@ const cols = [
   {
     h: 'Checkable',
     links: [
-      ['MARN 2318234 · OMARA register', PRACTICE.regulator.registerUrl],
+      [
+        `Registered Migration Agent (RMA): ${PRACTICE.principal.name} · MARN ${PRACTICE.principal.marn} · OMARA register`,
+        PRACTICE.regulator.registerUrl,
+      ],
       ['Code of Conduct', PRACTICE.regulator.registerUrl],
       ['Complaints & Feedback', '/complaints/'],
       ['Client Reviews', '/results/reviews/'],

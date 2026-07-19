@@ -16,7 +16,11 @@ const marnUrl = PRACTICE.regulator.registerUrl;
 
 <ul class:list={['trust', `trust--${tone}`]}>
   <li class="trust__item">
-    <a href={marnUrl} rel="noopener" target="_blank">MARN {PRACTICE.principal.marn}</a>
+    <a href={marnUrl} rel="noopener" target="_blank"
+      >Registered Migration Agent (RMA): {PRACTICE.principal.name} · MARN {
+        PRACTICE.principal.marn
+      }</a
+    >
   </li>
   <li class="trust__sep" aria-hidden="true"></li>
   <li class="trust__item">{PRACTICE.address.locality} CBD</li>
