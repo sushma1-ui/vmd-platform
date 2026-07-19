@@ -2,6 +2,7 @@
 export * from './common.ts';
 export * from './lead.ts';
 export * from './health-check.ts';
+export * from './reference.ts';
 export * from './booking.ts';
 export * from './article.ts';
 export * from './message.ts';

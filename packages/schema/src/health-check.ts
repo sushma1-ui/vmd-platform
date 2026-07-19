@@ -16,6 +16,18 @@ export const healthCheckSubmission = z.object({
   country, // step 2 — country of residence
   nationality, // step 2 — nationality / passport
   currentVisa: z.string().trim().max(120).optional(),
+  // step 2 — what the client wants to achieve (their destination goal)
+  goal: z
+    .enum([
+      'permanent-residence',
+      'temporary-work',
+      'study',
+      'family-partner',
+      'visitor',
+      'business-investment',
+      'not-sure',
+    ])
+    .optional(),
   ageBracket: z.enum(['under-25', '25-32', '33-39', '40-44', '45-plus']).optional(), // step 3
   qualification: z
     .enum(['none', 'certificate', 'diploma', 'bachelor', 'masters', 'doctorate'])
