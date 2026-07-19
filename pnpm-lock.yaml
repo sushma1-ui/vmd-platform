@@ -198,6 +198,15 @@ importers:
         specifier: ^8.11.0
         version: 8.64.0(eslint@9.39.5(jiti@2.6.1))(typescript@5.9.3)
 
+  packages/crm:
+    devDependencies:
+      '@types/node':
+        specifier: ^26.1.1
+        version: 26.1.1
+      '@vmd/config':
+        specifier: workspace:*
+        version: link:../config
+
   packages/database:
     dependencies:
       '@supabase/supabase-js':

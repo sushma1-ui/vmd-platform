@@ -1,0 +1,19 @@
+{
+  "name": "@vmd/crm",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Provider-agnostic CRM capability. The lead pipeline depends on the CrmProvider port, never a concrete provider. V1 ships the manual (no-op) adapter; HubSpot drops in via env with no change to web or business logic.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "echo source-only",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "@vmd/config": "workspace:*",
+    "@types/node": "^26.1.1"
+  }
+}
