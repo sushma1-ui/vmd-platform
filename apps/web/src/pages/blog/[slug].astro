@@ -1,0 +1,351 @@
+---
+import Base from '../../layouts/Base.astro';
+import { articleSchema, breadcrumbSchema, faqSchema } from '@vmd/seo';
+import { PRACTICE } from '@vmd/config';
+import { Disclaimer } from '@vmd/ui';
+import { cms } from '../../lib/cms.ts';
+import { lexicalToHtml } from '../../lib/lexical.ts';
+
+// Static paths from the CMS; zero paths if the CMS is unreachable at build (the
+// /blog listing still renders). Related posts are resolved from the same fetch.
+export async function getStaticPaths() {
+  const posts = await cms.articles();
+  const byId = new Map(posts.map((p) => [p.id, p]));
+  return posts.map((p) => {
+    const related = (p.relatedArticles ?? [])
+      .map((r: unknown) => (r && typeof r === 'object' ? r : byId.get(r as string)))
+      .filter(Boolean)
+      .slice(0, 3);
+    return { params: { slug: p.slug }, props: { post: p, related } };
+  });
+}
+
+const { post, related } = Astro.props;
+const path = Astro.url.pathname;
+const url = `${PRACTICE.domain ? `https://${PRACTICE.domain}` : ''}${path}`;
+
+// Reading time: use the editor value or estimate from the content.
+const rawHtml = lexicalToHtml(post.content);
+const words = rawHtml
+  .replace(/<[^>]+>/g, ' ')
+  .split(/\s+/)
+  .filter(Boolean).length;
+const readingTime = post.readingTime ?? Math.max(1, Math.round(words / 200));
+
+// Add ids to H2/H3 and build a table of contents.
+const toc: { id: string; text: string; level: number }[] = [];
+const bodyHtml = rawHtml.replace(/<(h2|h3)>([\s\S]*?)<\/\1>/g, (_m, tag, inner) => {
+  const text = String(inner).replace(/<[^>]+>/g, '');
+  const id = text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+  toc.push({ id, text, level: tag === 'h2' ? 2 : 3 });
+  return `<${tag} id="${id}">${inner}</${tag}>`;
+});
+
+const faq = (post.faq ?? []).filter(
+  (f: { question?: string; answer?: string }) => f.question && f.answer,
+);
+const tags: string[] = post.tags ?? [];
+const label = (c: string) => String(c).replace(/-/g, ' ');
+const fmtDate = (d?: string | null) =>
+  d
+    ? new Date(d).toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' })
+    : '';
+
+const trail = [
+  { name: 'Home', path: '/' },
+  { name: 'Blog', path: '/blog/' },
+  { name: post.title, path },
+];
+
+const schemas = [
+  articleSchema(post, path),
+  breadcrumbSchema(trail),
+  ...(faq.length ? [faqSchema(faq)] : []),
+];
+const shareText = encodeURIComponent(post.title);
+const shareUrl = encodeURIComponent(url);
+---
+
+<Base
+  title={post.seo?.metaTitle || post.title}
+  description={post.seo?.metaDescription || post.excerpt || post.title}
+  type="article"
+  noindex={post.seo?.noindex ?? false}
+  schemas={schemas}
+>
+  <article class="post">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      {
+        trail.map((t, i) => (
+          <span>
+            {i > 0 && <span aria-hidden="true"> / </span>}
+            {i === trail.length - 1 ? (
+              <span aria-current="page">{t.name}</span>
+            ) : (
+              <a href={t.path}>{t.name}</a>
+            )}
+          </span>
+        ))
+      }
+    </nav>
+
+    <header class="post__head">
+      <p class="post__cat">{label(post.category)}</p>
+      <h1 class="post__title">{post.title}</h1>
+      <p class="post__byline">
+        By {PRACTICE.principal.name}, Registered Migration Agent (RMA) · MARN {
+          PRACTICE.principal.marn
+        }
+        {post.publishedAt && ` · ${fmtDate(post.publishedAt)}`} · {readingTime} min read
+      </p>
+    </header>
+
+    {
+      toc.length > 2 && (
+        <nav class="post__toc" aria-label="On this page">
+          <p class="post__toc-h">On this page</p>
+          <ol>
+            {toc.map((h) => (
+              <li class={`post__toc-l${h.level}`}>
+                <a href={`#${h.id}`}>{h.text}</a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )
+    }
+
+    <div class="post__body" set:html={bodyHtml} />
+
+    {
+      tags.length > 0 && (
+        <ul class="post__tags" aria-label="Tags">
+          {tags.map((t) => (
+            <li>#{t}</li>
+          ))}
+        </ul>
+      )
+    }
+
+    {
+      faq.length > 0 && (
+        <section class="post__faq">
+          <h2>Frequently asked questions</h2>
+          {faq.map((f: { question: string; answer: string }) => (
+            <details>
+              <summary>{f.question}</summary>
+              <p>{f.answer}</p>
+            </details>
+          ))}
+        </section>
+      )
+    }
+
+    <div class="post__share" aria-label="Share">
+      <span>Share:</span>
+      <a
+        href={`https://www.linkedin.com/sharing/share-offsite/?url=${shareUrl}`}
+        rel="noopener"
+        target="_blank">LinkedIn</a
+      >
+      <a
+        href={`https://x.com/intent/tweet?url=${shareUrl}&text=${shareText}`}
+        rel="noopener"
+        target="_blank">X</a
+      >
+      <a
+        href={`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`}
+        rel="noopener"
+        target="_blank">Facebook</a
+      >
+      <a href={`mailto:?subject=${shareText}&body=${shareUrl}`}>Email</a>
+    </div>
+
+    <Disclaimer variant="generalInformation" />
+
+    {
+      related.length > 0 && (
+        <section class="post__related">
+          <h2>Related articles</h2>
+          <div class="grid grid--3">
+            {related.map((r: { slug: string; title: string; excerpt?: string | null }) => (
+              <a class="rel-card" href={`/blog/${r.slug}/`}>
+                <h3>{r.title}</h3>
+                {r.excerpt && <p>{r.excerpt}</p>}
+              </a>
+            ))}
+          </div>
+        </section>
+      )
+    }
+
+    <div class="post__cta">
+      <p>Ready to discuss your migration options?</p>
+      <a class="post__cta-btn" href="/book/">Book a consultation</a>
+      <a class="post__cta-link" href="/health-check/">or take the Free Visa Health Check →</a>
+    </div>
+  </article>
+</Base>
+
+<style>
+  .post {
+    max-inline-size: var(--container-prose);
+    margin-inline: auto;
+    padding: var(--space-7) var(--space-4) var(--space-9);
+  }
+  .crumbs {
+    font-size: var(--type-caption);
+    color: var(--color-text-muted);
+    margin-block-end: var(--space-4);
+  }
+  .crumbs a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .post__cat {
+    font-size: var(--type-caption);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+  .post__title {
+    font-size: var(--type-display-2, var(--type-h1));
+    line-height: 1.15;
+    margin-block: var(--space-2) var(--space-3);
+  }
+  .post__byline {
+    color: var(--color-text-muted);
+    font-size: var(--type-body-sm);
+  }
+  .post__toc {
+    margin-block: var(--space-6);
+    padding: var(--space-4);
+    background: var(--color-ground-warm);
+    border-radius: var(--radius-card);
+  }
+  .post__toc-h {
+    font-weight: 600;
+    margin-block-end: var(--space-2);
+  }
+  .post__toc ol {
+    margin: 0;
+    padding-inline-start: var(--space-4);
+  }
+  .post__toc-l3 {
+    margin-inline-start: var(--space-3);
+    list-style: circle;
+  }
+  .post__toc a {
+    color: var(--color-action);
+    text-decoration: none;
+  }
+  .post__body {
+    margin-block-start: var(--space-6);
+    line-height: 1.7;
+  }
+  .post__body :global(h2) {
+    font-size: var(--type-h3);
+    margin-block: var(--space-6) var(--space-3);
+    scroll-margin-block-start: var(--space-6);
+  }
+  .post__body :global(h3) {
+    font-size: var(--type-h4);
+    margin-block: var(--space-5) var(--space-2);
+    scroll-margin-block-start: var(--space-6);
+  }
+  .post__body :global(p) {
+    margin-block-end: var(--space-4);
+  }
+  .post__body :global(a) {
+    color: var(--color-action);
+  }
+  .post__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    list-style: none;
+    padding: 0;
+    margin-block: var(--space-6);
+    font-size: var(--type-body-sm);
+    color: var(--color-text-muted);
+  }
+  .post__faq {
+    margin-block: var(--space-6);
+  }
+  .post__faq details {
+    border-block-end: 1px solid color-mix(in srgb, var(--color-emphasis) 40%, transparent);
+    padding-block: var(--space-3);
+  }
+  .post__faq summary {
+    cursor: pointer;
+    font-weight: 500;
+  }
+  .post__share {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    align-items: center;
+    margin-block: var(--space-6);
+    font-size: var(--type-body-sm);
+  }
+  .post__share a {
+    color: var(--color-action);
+  }
+  .post__related {
+    margin-block-start: var(--space-8);
+  }
+  .grid {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: 1fr;
+  }
+  .rel-card {
+    display: block;
+    padding: var(--space-4);
+    border: 1px solid color-mix(in srgb, var(--color-action) 12%, transparent);
+    border-radius: var(--radius-card);
+    color: inherit;
+    text-decoration: none;
+  }
+  .rel-card h3 {
+    color: var(--color-action);
+    font-size: var(--type-h4);
+  }
+  .rel-card p {
+    color: var(--color-text-muted);
+    margin-block-start: var(--space-2);
+  }
+  .post__cta {
+    margin-block-start: var(--space-8);
+    padding: var(--space-6);
+    background: var(--color-ground-warm);
+    border-radius: var(--radius-card);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    align-items: flex-start;
+  }
+  .post__cta p {
+    font-size: var(--type-body-lg);
+  }
+  .post__cta-btn {
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-action);
+    color: var(--color-text-inverse);
+    border-radius: var(--radius-control);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .post__cta-link {
+    color: var(--color-action);
+    text-decoration: none;
+  }
+  @media (min-width: 768px) {
+    .grid--3 {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

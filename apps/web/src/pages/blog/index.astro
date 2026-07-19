@@ -1,0 +1,300 @@
+---
+import Base from '../../layouts/Base.astro';
+import { breadcrumbSchema } from '@vmd/seo';
+import { cms } from '../../lib/cms.ts';
+
+// Static + ISR. If the CMS is unreachable at build, `posts` is empty and the page
+// renders its empty state (no crash).
+const posts = await cms.articles();
+const featured = posts.filter((p) => p.featured).slice(0, 3);
+const categories = [...new Set(posts.map((p) => String(p.category)))].sort();
+const label = (c: string) => c.replace(/-/g, ' ');
+const fmtDate = (d?: string | null) =>
+  d
+    ? new Date(d).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' })
+    : '';
+
+const trail = [
+  { name: 'Home', path: '/' },
+  { name: 'Blog', path: '/blog/' },
+];
+---
+
+<Base
+  title="Blog — Australian migration insights"
+  description="Guides and migration news from a Registered Migration Agent in Perth. Practical, current, and authored by a registered professional — never generic advice."
+  schemas={[breadcrumbSchema(trail)]}
+>
+  <section class="bl-hero">
+    <div class="bl-hero__inner">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        {
+          trail.map((t, i) => (
+            <span>
+              {i > 0 && <span aria-hidden="true"> / </span>}
+              <a href={t.path}>{t.name}</a>
+            </span>
+          ))
+        }
+      </nav>
+      <p class="eyebrow">Migration insights</p>
+      <h1 class="bl-hero__title">Blog</h1>
+      <p class="bl-hero__lead">
+        Guides and migration news, authored by a Registered Migration Agent. Every article is
+        general information, not migration advice.
+      </p>
+    </div>
+  </section>
+
+  {
+    posts.length === 0 ? (
+      <section class="bl-body">
+        <div class="bl-empty">
+          Articles appear here as they are published in the CMS — each authored by Sunil Uprety, RMA
+          (MARN 2318234). Check back soon, or take the Free Visa Health Check.
+        </div>
+      </section>
+    ) : (
+      <section class="bl-body">
+        {featured.length > 0 && (
+          <div class="bl-featured">
+            <h2 class="bl-h">Featured</h2>
+            <div class="grid grid--3">
+              {featured.map((p) => (
+                <a class="bl-card bl-card--feat" href={`/blog/${p.slug}/`}>
+                  <p class="bl-card__cat">{label(String(p.category))}</p>
+                  <h3 class="bl-card__title">{p.title}</h3>
+                  {p.excerpt && <p class="bl-card__excerpt">{p.excerpt}</p>}
+                  <p class="bl-card__meta">{fmtDate(p.publishedAt)}</p>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div class="bl-controls">
+          <label class="bl-search">
+            <span class="sr-only">Search articles</span>
+            <input type="search" placeholder="Search articles…" data-bl-search autocomplete="off" />
+          </label>
+          <div class="bl-cats" role="group" aria-label="Filter by category">
+            <button type="button" class="bl-chip" data-bl-cat="" aria-pressed="true">
+              All
+            </button>
+            {categories.map((c) => (
+              <button type="button" class="bl-chip" data-bl-cat={c} aria-pressed="false">
+                {label(c)}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <h2 class="bl-h">Latest</h2>
+        <div class="grid grid--3" data-bl-list>
+          {posts.map((p) => (
+            <a
+              class="bl-card"
+              href={`/blog/${p.slug}/`}
+              data-cat={String(p.category)}
+              data-title={p.title.toLowerCase()}
+              data-tags={(p.tags ?? []).join(' ').toLowerCase()}
+            >
+              <p class="bl-card__cat">{label(String(p.category))}</p>
+              <h3 class="bl-card__title">{p.title}</h3>
+              {p.excerpt && <p class="bl-card__excerpt">{p.excerpt}</p>}
+              <p class="bl-card__meta">
+                {fmtDate(p.publishedAt)}
+                {p.readingTime ? ` · ${p.readingTime} min read` : ''}
+              </p>
+            </a>
+          ))}
+        </div>
+        <p class="bl-noresults" data-bl-noresults hidden>
+          No articles match your search.
+        </p>
+      </section>
+    )
+  }
+</Base>
+
+<script>
+  const root = document.querySelector('[data-bl-list]');
+  if (root) {
+    const cards = Array.from(root.querySelectorAll<HTMLElement>('.bl-card'));
+    const search = document.querySelector<HTMLInputElement>('[data-bl-search]');
+    const chips = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-bl-cat]'));
+    const noresults = document.querySelector<HTMLElement>('[data-bl-noresults]');
+    let cat = '';
+    let q = '';
+
+    const apply = () => {
+      let shown = 0;
+      for (const c of cards) {
+        const matchCat = !cat || c.dataset.cat === cat;
+        const hay = `${c.dataset.title ?? ''} ${c.dataset.tags ?? ''}`;
+        const matchQ = !q || hay.includes(q);
+        const show = matchCat && matchQ;
+        c.hidden = !show;
+        if (show) shown++;
+      }
+      if (noresults) noresults.hidden = shown !== 0;
+    };
+    search?.addEventListener('input', () => {
+      q = search.value.trim().toLowerCase();
+      apply();
+    });
+    for (const chip of chips) {
+      chip.addEventListener('click', () => {
+        cat = chip.dataset.blCat ?? '';
+        for (const c of chips) c.setAttribute('aria-pressed', String(c === chip));
+        apply();
+      });
+    }
+  }
+</script>
+
+<style>
+  .crumbs {
+    font-size: var(--type-caption);
+    color: var(--color-text-muted);
+    margin-block-end: var(--space-4);
+  }
+  .crumbs a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .eyebrow {
+    font-size: var(--type-caption);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+  .sr-only {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  .bl-hero {
+    background: var(--color-ground-warm);
+  }
+  .bl-hero__inner {
+    max-inline-size: var(--container-max);
+    margin-inline: auto;
+    padding: var(--space-7) var(--space-4);
+  }
+  .bl-hero__title {
+    font-size: var(--type-display-1);
+    line-height: var(--leading-display-1);
+    margin-block: var(--space-2) 0;
+  }
+  .bl-hero__lead {
+    font-size: var(--type-body-lg);
+    color: var(--color-text-muted);
+    margin-block-start: var(--space-3);
+    max-inline-size: 60ch;
+  }
+  .bl-body {
+    max-inline-size: var(--container-max);
+    margin-inline: auto;
+    padding: var(--space-8) var(--space-4);
+  }
+  .bl-h {
+    font-size: var(--type-h3);
+    margin-block: var(--space-6) var(--space-4);
+  }
+  .bl-featured .bl-h {
+    margin-block-start: 0;
+  }
+  .grid {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: 1fr;
+  }
+  .bl-card {
+    display: block;
+    padding: var(--space-4);
+    border: 1px solid color-mix(in srgb, var(--color-action) 12%, transparent);
+    border-radius: var(--radius-card);
+    background: var(--color-ground-light);
+    color: inherit;
+    text-decoration: none;
+  }
+  .bl-card:hover,
+  .bl-card:focus-visible {
+    border-color: var(--color-emphasis);
+  }
+  .bl-card--feat {
+    background: var(--color-ground-warm);
+  }
+  .bl-card__cat {
+    font-size: var(--type-caption);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+  .bl-card__title {
+    font-family: var(--font-display);
+    font-size: var(--type-h4);
+    color: var(--color-action);
+    margin-block: var(--space-2);
+  }
+  .bl-card__excerpt {
+    color: var(--color-text-muted);
+    line-height: 1.5;
+  }
+  .bl-card__meta {
+    font-size: var(--type-body-sm);
+    color: var(--color-text-muted);
+    margin-block-start: var(--space-3);
+  }
+  .bl-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    align-items: center;
+    justify-content: space-between;
+    margin-block-start: var(--space-6);
+  }
+  .bl-search input {
+    min-inline-size: 16rem;
+    min-block-size: calc(var(--space-6) + var(--space-1));
+    padding-inline: var(--space-3);
+    border: 1px solid var(--color-text-muted);
+    border-radius: var(--radius-control);
+    font-size: var(--type-body);
+  }
+  .bl-cats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .bl-chip {
+    padding: var(--space-1) var(--space-3);
+    border: 1px solid var(--color-text-muted);
+    border-radius: var(--radius-chip);
+    background: var(--color-ground-light);
+    font-size: var(--type-body-sm);
+    cursor: pointer;
+    text-transform: capitalize;
+  }
+  .bl-chip[aria-pressed='true'] {
+    border-color: var(--color-action);
+    background: color-mix(in srgb, var(--color-action) 10%, var(--color-ground-light));
+    font-weight: 600;
+  }
+  .bl-empty,
+  .bl-noresults {
+    border: 1px dashed color-mix(in srgb, var(--color-emphasis) 55%, transparent);
+    border-radius: var(--radius-card);
+    padding: var(--space-5);
+    color: var(--color-text-muted);
+  }
+  @media (min-width: 768px) {
+    .grid--3 {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>
