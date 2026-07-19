@@ -1,6 +1,7 @@
 ---
 import { PRACTICE } from '@vmd/config';
 import { Disclaimer } from '@vmd/ui';
+import SocialLinks from './SocialLinks.astro';
 const cols = [
   {
     h: 'Visa Services',
@@ -62,6 +63,9 @@ const cols = [
       <p class="footer__nap">
         {PRACTICE.principal.name} · Registered Migration Agent · MARN {PRACTICE.principal.marn}
       </p>
+      <div class="footer__social">
+        <SocialLinks label={`Follow ${PRACTICE.legalName} on social media`} />
+      </div>
     </div>
     {
       cols.map((c) => (
@@ -109,6 +113,9 @@ const cols = [
   }
   .footer__nap a {
     color: inherit;
+  }
+  .footer__social {
+    margin-block-start: var(--space-4);
   }
   .footer__col {
     display: flex;
