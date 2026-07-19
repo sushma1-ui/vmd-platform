@@ -36,6 +36,14 @@ const serverSchema = z.object({
   // Email (Postmark — ARCHITECTURE.md, packages/email)
   POSTMARK_SERVER_TOKEN: z.string().min(1).optional(),
   POSTMARK_FROM_EMAIL: z.string().email().optional(),
+  // Where new-lead admin notifications are sent. Optional: defaults to
+  // PRACTICE.contact.email when unset (apps/web /api/health-check).
+  ADMIN_NOTIFICATION_EMAIL: z.string().email().optional(),
+
+  // CRM (HubSpot — ADR-0005). Server-only Private App token. Optional: when absent
+  // the lead pipeline uses the manual (no-op) adapter; presence activates the
+  // HubSpot Contact upsert with no code change (@vmd/crm).
+  HUBSPOT_ACCESS_TOKEN: z.string().optional(),
 
   // Analytics (server-side GA4 Measurement Protocol)
   GA4_MEASUREMENT_ID: z.string().optional(),
