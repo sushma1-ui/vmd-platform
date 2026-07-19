@@ -71,8 +71,13 @@ Status keys: `[x]` done · `[~]` partial / needs verification · `[ ]` not start
 
 ## 7. Blog
 
-- [ ] Blog Payload collection + `/blog` and `/blog/[slug]` (separate feature; not in this scope).
-- [ ] Article schema.org, FAQ schema, breadcrumb schema, share, reading time, TOC, related.
+- [x] Payload blog engine = the `Articles` collection (extended: tags, FAQ, featured,
+      reading time; drafts/scheduling/versions built in). No WordPress, no hardcoded posts.
+- [x] `/blog` (featured, category filter, search, latest, empty state) and `/blog/[slug]`
+      (TOC, reading time, tags, FAQ, share, related, breadcrumbs, CTA) built; in the sitemap.
+- [x] Article + FAQ + Breadcrumb schema.org, canonical, OG/Twitter via the layout.
+- [ ] Verify with `.env`: publish a post in Payload → renders at `/blog/[slug]`; CRUD/drafts/schedule.
+- [ ] Author byline links to the RMA profile; per-post OG image renders.
 
 ## 8. Analytics
 
