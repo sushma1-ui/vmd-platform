@@ -21,11 +21,11 @@ Status keys: `[x]` done · `[~]` partial / needs verification · `[ ]` not start
   for sanitisation before launch.
 - [~] **CSRF**: public lead POST has no CSRF token (low risk for anonymous lead capture),
   but add an origin check or token if the endpoint is ever authenticated.
-- [ ] **Rate limiting** on `/api/health-check` and other lead endpoints
-      (`@vmd/forms` `rateLimit` + Upstash exists but is **not yet wired** into the route).
-- [ ] **Spam protection** on lead forms — Cloudflare Turnstile
-      (`TURNSTILE_SECRET_KEY` / `PUBLIC_TURNSTILE_SITE_KEY` + `@vmd/forms verifyTurnstile`
-      exist but are **not yet wired** into the Free Visa Health Check).
+- [x] **Rate limiting** on `/api/health-check`: 5/hour per IP + 3/day per email (Upstash,
+      fails open if unconfigured). Set `UPSTASH_REDIS_REST_URL`/`_TOKEN` in prod to enforce.
+- [x] **Spam protection** on the Free Visa Health Check: hidden honeypot (silent drop) +
+      Cloudflare Turnstile (widget when `PUBLIC_TURNSTILE_SITE_KEY` set; server verifies with
+      `TURNSTILE_SECRET_KEY`). Set both keys in prod to enforce the challenge.
 - [x] Security headers / CSP reviewed at the edge (Vercel) — confirm CSP allows only
       required origins (Supabase, Postmark, HubSpot, GA/Plausible).
 - [ ] Dependency audit (`pnpm audit`) clean or triaged.
@@ -140,9 +140,10 @@ Status keys: `[x]` done · `[~]` partial / needs verification · `[ ]` not start
 
 ## 19. Spam protection
 
-- [ ] Cloudflare Turnstile on the Free Visa Health Check (and other lead forms) — wire
-      `verifyTurnstile` server-side + the widget client-side. **Not yet wired.**
-- [ ] Honeypot + rate limiting as defence-in-depth.
+- [x] Cloudflare Turnstile wired on the Free Visa Health Check (server verify + conditional
+      widget). Provide the prod site/secret keys to enforce.
+- [x] Honeypot + IP/email rate limiting wired as defence-in-depth.
+- [ ] Extend the same protection to any other public lead forms (booking, second-opinion, enquiry).
 
 ## 20. Deployment checklist
 
