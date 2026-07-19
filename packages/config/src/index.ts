@@ -54,8 +54,9 @@ export const PRACTICE = {
    * URL here are rendered. Set a value to '' to hide that icon.
    */
   social: {
+    // Confirmed handle. Others below are still placeholders — replace when supplied.
+    instagram: 'https://www.instagram.com/visa_and_migration_doctors',
     facebook: 'https://www.facebook.com/migrationdoctors',
-    instagram: 'https://www.instagram.com/migrationdoctors',
     linkedin: 'https://www.linkedin.com/company/visa-migration-doctors',
     tiktok: 'https://www.tiktok.com/@migrationdoctors',
   },
