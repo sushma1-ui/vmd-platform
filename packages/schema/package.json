@@ -14,5 +14,9 @@
   },
   "dependencies": {
     "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@vmd/config": "workspace:*",
+    "@types/node": "^26.1.1"
   }
 }
