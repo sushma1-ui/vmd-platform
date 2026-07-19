@@ -1,5 +1,14 @@
 import { z } from 'zod';
-import { attribution, email, firstName, marketingConsent, phone, situation } from './common.ts';
+import {
+  attribution,
+  country,
+  email,
+  firstName,
+  marketingConsent,
+  nationality,
+  phone,
+  situation,
+} from './common.ts';
 
 /**
  * ONE definition of a Lead. Lead scoring/routing (Blueprint §9.4) is derived
@@ -17,10 +26,16 @@ export const leadSource = z.enum([
 
 export const leadSchema = z.object({
   source: leadSource,
+  /** Stable, human-readable id generated server-side. Ties the stored lead, the
+   *  admin/client emails and the CRM contact together for support + audit. */
+  submissionId: z.string().trim().max(64).optional(),
   firstName,
   email,
   mobile: phone.optional(),
   situation: situation.optional(),
+  country: country.optional(),
+  nationality: nationality.optional(),
+  currentVisa: z.string().trim().max(120).optional(),
   message: z.string().trim().max(4000).optional(),
   marketingConsent,
   attribution: attribution.optional(),

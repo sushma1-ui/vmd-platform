@@ -9,6 +9,14 @@ export const phone = z
 export const email = z.string().trim().toLowerCase().email('Enter a valid email');
 export const firstName = z.string().trim().min(1, 'Please enter your first name').max(80);
 
+/**
+ * Country of residence and nationality — collected on the Visa Health Check (§9.4)
+ * so the migration team can assess a case. Free text (the form supplies a country
+ * list); trimmed and length-bounded here.
+ */
+export const country = z.string().trim().min(1, 'Select your country of residence').max(80);
+export const nationality = z.string().trim().min(1, 'Select your nationality').max(80);
+
 /** UTM + attribution captured on every submission (Blueprint §9.4). */
 export const attribution = z.object({
   utmSource: z.string().optional(),

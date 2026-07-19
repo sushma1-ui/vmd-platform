@@ -1,15 +1,20 @@
 import { z } from 'zod';
-import { email, firstName, phone, situation } from './common.ts';
+import { attribution, country, email, firstName, nationality, phone, situation } from './common.ts';
 
 /**
- * Visa Health Check — 6 progressive steps (Blueprint §9.3). Bracketed inputs
- * reduce perceived intrusion. Email is NOT collected until step 6.
- * This schema is the contract; the adaptive question flow lives in packages/forms
- * and the island in apps/web (built in a later module).
+ * Visa Health Check — progressive steps (Blueprint §9.3). Bracketed inputs reduce
+ * perceived intrusion. Email is NOT collected until the final step.
+ *
+ * This is a LEAD-CAPTURE questionnaire, not an assessment tool: it collects the
+ * information a registered migration agent needs to review a case. It never
+ * computes or returns an eligibility result — that judgement is human and happens
+ * after submission (Blueprint §9.4).
  */
 export const healthCheckSubmission = z.object({
   situation, // step 1
   location: z.enum(['australia', 'offshore']), // step 2
+  country, // step 2 — country of residence
+  nationality, // step 2 — nationality / passport
   currentVisa: z.string().trim().max(120).optional(),
   ageBracket: z.enum(['under-25', '25-32', '33-39', '40-44', '45-plus']).optional(), // step 3
   qualification: z
@@ -25,5 +30,7 @@ export const healthCheckSubmission = z.object({
   mobile: phone.optional(),
   preferredContact: z.enum(['email', 'phone', 'whatsapp']).default('email'),
   sensitiveInfoAcknowledged: z.boolean().default(false),
+  // Attribution captured client-side (UTM + referrer + landing page + device).
+  attribution: attribution.optional(),
 });
 export type HealthCheckSubmission = z.infer<typeof healthCheckSubmission>;
