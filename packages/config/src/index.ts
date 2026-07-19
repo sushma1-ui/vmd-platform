@@ -54,12 +54,11 @@ export const PRACTICE = {
    * URL here are rendered. Set a value to '' to hide that icon.
    */
   social: {
-    // Confirmed profiles. TikTok is still a placeholder — replace when supplied
-    // (or set it to '' to hide that icon).
+    // All four confirmed. Set any value to '' to hide that icon.
     instagram: 'https://www.instagram.com/visa_and_migration_doctors',
     facebook: 'https://www.facebook.com/profile.php?id=61574457641534',
     linkedin: 'https://www.linkedin.com/company/visa-migration-doctors/',
-    tiktok: 'https://www.tiktok.com/@migrationdoctors',
+    tiktok: 'https://www.tiktok.com/@visa.and.migratio',
   },
 } as const;
 
