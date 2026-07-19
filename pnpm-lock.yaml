@@ -126,9 +126,15 @@ importers:
       '@vmd/config':
         specifier: workspace:*
         version: link:../../packages/config
+      '@vmd/crm':
+        specifier: workspace:*
+        version: link:../../packages/crm
       '@vmd/database':
         specifier: workspace:*
         version: link:../../packages/database
+      '@vmd/email':
+        specifier: workspace:*
+        version: link:../../packages/email
       '@vmd/forms':
         specifier: workspace:*
         version: link:../../packages/forms
