@@ -15,5 +15,8 @@
   "dependencies": {
     "@vmd/schema": "workspace:*",
     "@vmd/config": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1"
   }
 }

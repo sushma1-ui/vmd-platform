@@ -215,6 +215,10 @@ importers:
       '@vmd/schema':
         specifier: workspace:*
         version: link:../schema
+    devDependencies:
+      '@types/node':
+        specifier: ^26.1.1
+        version: 26.1.1
 
   packages/forms:
     dependencies:

@@ -2,6 +2,7 @@ import { renderTemplate } from './templates.ts';
 
 export type TransactionalTemplate =
   | 'health-check-result'
+  | 'health-check-received'
   | 'consultation-confirmation'
   | 'second-opinion-received'
   | 'lead-internal-notification'
