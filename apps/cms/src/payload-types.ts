@@ -252,6 +252,7 @@ export interface Article {
     | 'moving-to-perth'
     | 'case-study';
   status: 'draft' | 'scheduled' | 'published';
+  featured?: boolean | null;
   publishedAt?: string | null;
   excerpt?: string | null;
   heroImage?: (number | null) | Media;
@@ -270,6 +271,21 @@ export interface Article {
     };
     [k: string]: unknown;
   } | null;
+  tags?: string[] | null;
+  /**
+   * Optional Q&A. Rendered on the article and emitted as FAQ schema.
+   */
+  faq?:
+    | {
+        question: string;
+        answer: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Minutes. Leave blank to auto-estimate from the content.
+   */
+  readingTime?: number | null;
   author?: (number | null) | User;
   relatedArticles?: (number | Article)[] | null;
   relatedSubclasses?: (number | Subclass)[] | null;
@@ -1090,10 +1106,20 @@ export interface ArticlesSelect<T extends boolean = true> {
   slug?: T;
   category?: T;
   status?: T;
+  featured?: T;
   publishedAt?: T;
   excerpt?: T;
   heroImage?: T;
   content?: T;
+  tags?: T;
+  faq?:
+    | T
+    | {
+        question?: T;
+        answer?: T;
+        id?: T;
+      };
+  readingTime?: T;
   author?: T;
   relatedArticles?: T;
   relatedSubclasses?: T;
