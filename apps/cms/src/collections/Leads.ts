@@ -4,15 +4,15 @@ import { isEditorial, isAgent } from '../access/index.ts';
 /**
  * Leads (Plane A). Created SERVER-SIDE only (apps/web API routes via the Payload
  * Local API) — never browser-direct — so the write path is auth-controlled and the
- * service-role key never ships to a client. Score derives from source (@vmd/schema
- * scoreLead); it is not client-settable. Health Check answers persist as structured
- * fields, not a blob (Blueprint §9.4).
+ * service-role key never ships to a client. Health Check answers persist as
+ * structured fields, not a blob (Blueprint §9.4). `submissionId` is the globally
+ * unique, human-friendly reference (VMD-YYYYMMDD-NNNNNN) quoted to clients.
  */
 export const Leads: CollectionConfig = {
   slug: 'leads',
   admin: {
     useAsTitle: 'email',
-    defaultColumns: ['email', 'source', 'score', 'status', 'createdAt'],
+    defaultColumns: ['submissionId', 'email', 'source', 'status', 'createdAt'],
   },
   access: {
     read: isEditorial,
@@ -21,6 +21,16 @@ export const Leads: CollectionConfig = {
     delete: isEditorial,
   },
   fields: [
+    {
+      name: 'submissionId',
+      type: 'text',
+      unique: true,
+      index: true,
+      admin: {
+        readOnly: true,
+        description: 'Globally-unique, human-friendly reference: VMD-YYYYMMDD-NNNNNN.',
+      },
+    },
     {
       name: 'source',
       type: 'select',
@@ -40,6 +50,10 @@ export const Leads: CollectionConfig = {
     { name: 'email', type: 'email', required: true, index: true },
     { name: 'mobile', type: 'text' },
     { name: 'situation', type: 'text' },
+    { name: 'country', type: 'text' },
+    { name: 'nationality', type: 'text' },
+    { name: 'currentVisa', type: 'text' },
+    { name: 'goal', type: 'text' },
     { name: 'message', type: 'textarea' },
     { name: 'score', type: 'number', index: true, admin: { readOnly: true } },
     {
@@ -68,5 +82,24 @@ export const Leads: CollectionConfig = {
       ],
     },
     { name: 'marketingConsent', type: 'checkbox', defaultValue: false },
+    {
+      name: 'crm',
+      type: 'group',
+      admin: {
+        description: 'CRM sync state (e.g. HubSpot). Written by the sync, not by staff.',
+      },
+      fields: [
+        { name: 'provider', type: 'text', admin: { readOnly: true } },
+        { name: 'contactId', type: 'text', admin: { readOnly: true } },
+        { name: 'syncedAt', type: 'date', admin: { readOnly: true } },
+        {
+          name: 'status',
+          type: 'select',
+          defaultValue: 'pending',
+          options: ['pending', 'synced', 'skipped', 'error'],
+          admin: { readOnly: true },
+        },
+      ],
+    },
   ],
 };

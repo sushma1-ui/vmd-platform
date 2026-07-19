@@ -769,6 +769,10 @@ export interface ProcessingTime {
  */
 export interface Lead {
   id: number;
+  /**
+   * Globally-unique, human-friendly reference: VMD-YYYYMMDD-NNNNNN.
+   */
+  submissionId?: string | null;
   source:
     | 'health-check'
     | 'second-opinion'
@@ -781,6 +785,10 @@ export interface Lead {
   email: string;
   mobile?: string | null;
   situation?: string | null;
+  country?: string | null;
+  nationality?: string | null;
+  currentVisa?: string | null;
+  goal?: string | null;
   message?: string | null;
   score?: number | null;
   status?: ('new' | 'contacted' | 'qualified' | 'booked' | 'won' | 'lost') | null;
@@ -806,6 +814,15 @@ export interface Lead {
     device?: string | null;
   };
   marketingConsent?: boolean | null;
+  /**
+   * CRM sync state (e.g. HubSpot). Written by the sync, not by staff.
+   */
+  crm?: {
+    provider?: string | null;
+    contactId?: string | null;
+    syncedAt?: string | null;
+    status?: ('pending' | 'synced' | 'skipped' | 'error') | null;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -1438,11 +1455,16 @@ export interface PinnedReviewsSelect<T extends boolean = true> {
  * via the `definition` "leads_select".
  */
 export interface LeadsSelect<T extends boolean = true> {
+  submissionId?: T;
   source?: T;
   firstName?: T;
   email?: T;
   mobile?: T;
   situation?: T;
+  country?: T;
+  nationality?: T;
+  currentVisa?: T;
+  goal?: T;
   message?: T;
   score?: T;
   status?: T;
@@ -1459,6 +1481,14 @@ export interface LeadsSelect<T extends boolean = true> {
         device?: T;
       };
   marketingConsent?: T;
+  crm?:
+    | T
+    | {
+        provider?: T;
+        contactId?: T;
+        syncedAt?: T;
+        status?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
