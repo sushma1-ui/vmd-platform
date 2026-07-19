@@ -1,16 +1,58 @@
 ---
 import SimplePage from '../../components/content/SimplePage.astro';
+import { PRACTICE } from '@vmd/config';
+import { submissionReference } from '@vmd/schema';
+
+// SSR so the reference from the submission redirect (?ref=VMD-YYYYMMDD-NNNNNN) is
+// rendered server-side (no JS required, accessible). Excluded from the sitemap.
+export const prerender = false;
+
+const rawRef = Astro.url.searchParams.get('ref') ?? '';
+const reference = submissionReference.safeParse(rawRef).success ? rawRef : null;
 ---
 
 <SimplePage
-  title="Thank you"
-  description="We've received your enquiry."
+  title="Thank you for completing your Free Visa Health Check"
+  description="Your enquiry has been received. Our Registered Migration Agent (RMA) team will review your information and respond within 1–2 business days by email."
   eyebrow="Received"
-  lead="Here's what happens next."
-  cta={{ href: '/resources/', label: 'Read while you wait' }}
+  lead="Your enquiry has been received successfully."
+  cta={{ href: '/resources/', label: 'Read our guides while you wait' }}
 >
+  <p>Our Registered Migration Agent (RMA) team will personally review your information.</p>
+  <p>You will receive a response within 1–2 business days via email.</p>
+
+  {
+    reference && (
+      <p class="ty-ref">
+        Reference ID: <strong>{reference}</strong>
+        <span class="ty-ref__hint">Please quote this if you contact us about your enquiry.</span>
+      </p>
+    )
+  }
+
   <p>
-    Thank you — we've received your enquiry. Sunil will review it and reply, usually within one to
-    two business days. Priority (refusal) matters are flagged for a one-business-day response.
+    If your matter is urgent, please contact our office directly on{' '}
+    <a href={`tel:${PRACTICE.contact.phone}`}>{PRACTICE.contact.phoneDisplay}</a>.
   </p>
 </SimplePage>
+
+<style>
+  .ty-ref {
+    margin-block: var(--space-4);
+    padding: var(--space-4);
+    border: 1px solid color-mix(in srgb, var(--color-emphasis) 45%, transparent);
+    border-radius: var(--radius-card);
+    background: var(--color-ground-warm);
+    font-size: var(--type-body-lg);
+  }
+  .ty-ref strong {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+  }
+  .ty-ref__hint {
+    display: block;
+    margin-block-start: var(--space-2);
+    font-size: var(--type-body-sm);
+    color: var(--color-text-muted);
+  }
+</style>
