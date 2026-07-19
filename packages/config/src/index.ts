@@ -48,6 +48,17 @@ export const PRACTICE = {
   hoursNote: 'Mon–Fri 9–5 AWST · Appointment-only',
   domain: 'migrationdoctors.com.au',
   timezone: 'Australia/Perth',
+  /**
+   * Official social profiles. Single source of truth for the header/footer icons.
+   * NOTE: confirm these handles are correct before launch; only profiles with a
+   * URL here are rendered. Set a value to '' to hide that icon.
+   */
+  social: {
+    facebook: 'https://www.facebook.com/migrationdoctors',
+    instagram: 'https://www.instagram.com/migrationdoctors',
+    linkedin: 'https://www.linkedin.com/company/visa-migration-doctors',
+    tiktok: 'https://www.tiktok.com/@migrationdoctors',
+  },
 } as const;
 
 /**
