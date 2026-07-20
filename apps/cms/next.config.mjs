@@ -4,6 +4,17 @@ import path from 'node:path';
 
 const dir = path.dirname(fileURLToPath(import.meta.url));
 
+/* Load the MONOREPO-ROOT .env. Next only reads .env from its own app directory,
+   but this repo keeps a single root .env (see README + .env.example), so without
+   this Payload boots with no PAYLOAD_SECRET/DATABASE_URL. Uses Node's built-in
+   loader (no dependency). Missing file is fine — on Vercel the platform supplies
+   the environment, and existing process.env values still win. */
+try {
+  process.loadEnvFile(path.resolve(dir, '../../.env'));
+} catch {
+  /* no root .env (CI / hosted env) — ignore */
+}
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
