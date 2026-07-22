@@ -944,7 +944,7 @@ export interface Lead {
  */
 export interface Consultation {
   id: number;
-  type: 'standard' | 'second-opinion' | 'online' | 'in-person';
+  type: 'initial' | 'second-opinion' | 'follow-up' | 'standard' | 'online' | 'in-person';
   firstName: string;
   email: string;
   mobile: string;
@@ -1767,6 +1767,19 @@ export interface Setting {
   whatsappNumber?: string | null;
   bookingEnabled?: boolean | null;
   /**
+   * Where the two site-wide call-to-action buttons point.
+   */
+  ctaLinks?: {
+    /**
+     * Primary CTA — "Book a Consultation".
+     */
+    bookConsultationUrl?: string | null;
+    /**
+     * Secondary CTA — "Free Visa Health Check".
+     */
+    healthCheckUrl?: string | null;
+  };
+  /**
    * Deep link to the Migration Manager practice system (client portal integration).
    */
   migrationManagerUrl?: string | null;
@@ -1814,6 +1827,12 @@ export interface SettingsSelect<T extends boolean = true> {
       };
   whatsappNumber?: T;
   bookingEnabled?: T;
+  ctaLinks?:
+    | T
+    | {
+        bookConsultationUrl?: T;
+        healthCheckUrl?: T;
+      };
   migrationManagerUrl?: T;
   updatedAt?: T;
   createdAt?: T;

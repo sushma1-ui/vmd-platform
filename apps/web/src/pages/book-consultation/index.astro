@@ -1,0 +1,172 @@
+---
+import Base from '../../layouts/Base.astro';
+import { breadcrumbSchema } from '@vmd/seo';
+import { TrustStrip, Disclaimer } from '@vmd/ui';
+import BookingForm from '../../components/islands/BookingForm.island.astro';
+import { getCtaLinks } from '../../lib/cms.ts';
+
+// Central consultation booking page. The URL (/book-consultation) is stable so the
+// booking system can be integrated later without changing links. Consultation type is
+// chosen here and pre-fills the form; the booking flow itself is provider-agnostic.
+const { healthCheckUrl } = await getCtaLinks();
+
+const types = [
+  {
+    value: 'initial',
+    title: 'Initial Consultation',
+    detail:
+      'Your first conversation with a Registered Migration Agent — talk through your situation and get clear, honest guidance on your options.',
+    href: '/initial-consultation',
+  },
+  {
+    value: 'second-opinion',
+    title: 'Second Opinion',
+    detail:
+      'A fresh, independent review of a matter already underway — or a visa refusal or cancellation you want assessed.',
+    href: null,
+  },
+  {
+    value: 'follow-up',
+    title: 'Follow-up',
+    detail: 'A follow-up session for an existing matter you have already discussed with us.',
+    href: null,
+  },
+];
+
+const trail = [
+  { name: 'Home', path: '/' },
+  { name: 'Book a Consultation', path: '/book-consultation' },
+];
+---
+
+<Base
+  title="Book a Consultation | Visa & Migration Doctors"
+  description="Book a consultation with a Registered Migration Agent in Perth — choose an initial consultation, second opinion or follow-up, in person or online."
+  schemas={[breadcrumbSchema(trail)]}
+>
+  <section class="bkc">
+    <p class="bkc__eyebrow">Advisory · fixed fee</p>
+    <h1 class="bkc__title">Book a Consultation</h1>
+    <p class="bkc__lead">
+      Choose the consultation that fits your situation. We'll confirm your time in AWST and send a
+      preparation checklist by email.
+    </p>
+
+    <div class="bkc__types" role="list">
+      {
+        types.map((t) => (
+          <div class="bkc__type" role="listitem">
+            <h2>{t.title}</h2>
+            <p>{t.detail}</p>
+            <div class="bkc__type-actions">
+              <button type="button" class="bkc__choose" data-bk-choose={t.value}>
+                Choose this
+              </button>
+              {t.href && (
+                <a class="bkc__learn" href={t.href}>
+                  Learn more →
+                </a>
+              )}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="bkc__form" id="booking-form">
+      <h2 class="bkc__form-h">Request your consultation</h2>
+      <TrustStrip reviewUrl="/results/reviews/" />
+      <BookingForm />
+    </div>
+
+    <Disclaimer variant="generalInformation" />
+    <p class="bkc__alt">
+      Not ready to book? <a href={healthCheckUrl}>Take the Free Visa Health Check first →</a>
+    </p>
+  </section>
+</Base>
+
+<script>
+  // Progressive enhancement: a type card pre-selects the form's consultation type and
+  // scrolls to the form. Without JS, the select and form still work on their own.
+  const select = document.querySelector<HTMLSelectElement>('#bk-type');
+  document.querySelectorAll<HTMLButtonElement>('[data-bk-choose]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const value = btn.dataset.bkChoose;
+      if (select && value) select.value = value;
+      document.getElementById('booking-form')?.scrollIntoView({ behavior: 'smooth' });
+      select?.focus();
+    });
+  });
+</script>
+
+<style>
+  .bkc {
+    max-inline-size: var(--container-prose);
+    margin-inline: auto;
+    padding: var(--space-7) var(--space-4) var(--space-9);
+  }
+  .bkc__eyebrow {
+    font-size: var(--type-caption);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+  .bkc__title {
+    font-size: var(--type-display-2, var(--type-h1));
+    margin-block: var(--space-2) var(--space-3);
+  }
+  .bkc__lead {
+    color: var(--color-text-muted);
+    max-inline-size: 60ch;
+  }
+  .bkc__types {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: var(--space-4);
+    margin-block: var(--space-6);
+  }
+  .bkc__type {
+    padding: var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+  }
+  .bkc__type h2 {
+    font-size: var(--type-body-lg, var(--type-body));
+    margin-block-end: var(--space-2);
+  }
+  .bkc__type p {
+    color: var(--color-text-muted);
+    font-size: var(--type-body-sm);
+  }
+  .bkc__type-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    align-items: center;
+    margin-block-start: var(--space-3);
+  }
+  .bkc__choose {
+    background: var(--color-accent, #0a5);
+    color: #fff;
+    border: 0;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-button, 6px);
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .bkc__learn {
+    font-size: var(--type-body-sm);
+    color: var(--color-text-muted);
+  }
+  .bkc__form {
+    margin-block-start: var(--space-7);
+  }
+  .bkc__form-h {
+    margin-block-end: var(--space-3);
+  }
+  .bkc__alt {
+    margin-block-start: var(--space-5);
+    color: var(--color-text-muted);
+  }
+</style>

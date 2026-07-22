@@ -7,6 +7,7 @@
 import Base from '../../layouts/Base.astro';
 import { serviceSchema, breadcrumbSchema, faqSchema } from '@vmd/seo';
 import { lexicalToHtml } from '../../lib/lexical.ts';
+import { getCtaLinks } from '../../lib/cms.ts';
 import { servicePageHref, type ServiceDoc } from '../../lib/servicePages.ts';
 
 interface Props {
@@ -16,6 +17,9 @@ interface Props {
 
 const { page, allPages } = Astro.props;
 const path = Astro.url.pathname;
+
+// CMS-configurable CTA destinations (falls back to @vmd/config defaults).
+const { bookUrl, healthCheckUrl } = await getCtaLinks();
 
 const pageHref = servicePageHref;
 
@@ -75,8 +79,11 @@ const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 function ctaHtml(text: string): string {
   return esc(text)
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\[Book a consultation\]/g, '<a href="/book/">Book a consultation</a>')
-    .replace(/\[Check your eligibility\]/g, '<a href="/health-check/">Check your eligibility</a>');
+    .replace(/\[Book a consultation\]/g, `<a href="${bookUrl}">Book a consultation</a>`)
+    .replace(
+      /\[Check your eligibility\]/g,
+      `<a href="${healthCheckUrl}">Check your eligibility</a>`,
+    );
 }
 const cta = page.cta ?? null;
 
@@ -179,10 +186,10 @@ const schemas = [
           {cta.heading && <h2>{cta.heading}</h2>}
           {cta.body && <p set:html={ctaHtml(cta.body)} />}
           <div class="svc__cta-actions">
-            <a class="svc__cta-btn" href="/book/">
-              Book a consultation
+            <a class="svc__cta-btn" href={bookUrl}>
+              Book a Consultation
             </a>
-            <a class="svc__cta-link" href="/health-check/">
+            <a class="svc__cta-link" href={healthCheckUrl}>
               or take the Free Visa Health Check →
             </a>
           </div>

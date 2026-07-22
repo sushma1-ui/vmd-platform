@@ -72,3 +72,14 @@ export const DISCLAIMERS = {
   generalInformation:
     'This is general information, not migration, legal or financial advice. Speak to a Registered Migration Agent about your circumstances.',
 } as const;
+
+/**
+ * Default call-to-action destinations. These are FALLBACKS only — the CMS Settings
+ * global (`ctaLinks`) overrides them at runtime, so the URLs can change without a
+ * code change. Primary CTA is "Book a Consultation"; secondary is the Free Visa
+ * Health Check lead-gen flow.
+ */
+export const CTA_ROUTES = {
+  bookConsultation: '/book-consultation',
+  healthCheck: '/health-check',
+} as const;

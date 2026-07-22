@@ -15,7 +15,7 @@ export const Consultations: CollectionConfig = {
       name: 'type',
       type: 'select',
       required: true,
-      options: ['standard', 'second-opinion', 'online', 'in-person'],
+      options: ['initial', 'second-opinion', 'follow-up', 'standard', 'online', 'in-person'],
     },
     { name: 'firstName', type: 'text', required: true },
     { name: 'email', type: 'email', required: true, index: true },

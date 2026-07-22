@@ -1,12 +1,13 @@
 ---
 import ServicePageView from '../../components/pages/ServicePageView.astro';
 import Base from '../../layouts/Base.astro';
-import { cms } from '../../lib/cms.ts';
+import { cms, getCtaLinks } from '../../lib/cms.ts';
 import type { ServiceDoc } from '../../lib/servicePages.ts';
 
 // Single root-level service page. Its URL is /initial-consultation (the document's slug).
 const all = (await cms.servicePages()) as unknown as ServiceDoc[];
 const page = all.find((p) => p.slug === 'initial-consultation') ?? null;
+const { bookUrl } = await getCtaLinks();
 ---
 
 {
@@ -20,8 +21,8 @@ const page = all.find((p) => p.slug === 'initial-consultation') ?? null;
       <section class="empty">
         <h1>Initial Consultation</h1>
         <p>This page is being prepared. In the meantime, you can book a consultation.</p>
-        <a class="empty__btn" href="/book/">
-          Book a consultation
+        <a class="empty__btn" href={bookUrl}>
+          Book a Consultation
         </a>
       </section>
     </Base>

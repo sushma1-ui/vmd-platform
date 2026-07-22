@@ -16,6 +16,10 @@ export default defineConfig({
      would otherwise only read apps/web/.env, leaving the API routes without
      PAYLOAD_API_KEY / POSTMARK / TURNSTILE etc. Hosted envs (Vercel) still win. */
   vite: { envDir: path.resolve(dir, '../..') },
+  // Legacy booking URL -> the central consultation page (301).
+  redirects: {
+    '/book': { status: 301, destination: '/book-consultation' },
+  },
   adapter: vercel({ isr: { expiration: 60 * 60 }, webAnalytics: { enabled: false } }),
   integrations: [
     tailwind({ applyBaseStyles: false }),

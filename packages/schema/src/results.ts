@@ -73,5 +73,12 @@ export const siteSettings = z.object({
   whatsappNumber: z.string().optional(),
   bookingEnabled: z.boolean().optional(),
   migrationManagerUrl: z.string().optional(),
+  // Configurable CTA destinations (override the @vmd/config CTA_ROUTES defaults).
+  ctaLinks: z
+    .object({
+      bookConsultationUrl: z.string().optional(),
+      healthCheckUrl: z.string().optional(),
+    })
+    .optional(),
 });
 export type SiteSettings = z.infer<typeof siteSettings>;

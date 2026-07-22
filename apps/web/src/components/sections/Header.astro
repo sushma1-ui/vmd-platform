@@ -2,6 +2,8 @@
 import { PRACTICE } from '@vmd/config';
 import { Button } from '@vmd/ui';
 import SocialLinks from './SocialLinks.astro';
+import { getCtaLinks } from '../../lib/cms.ts';
+const { bookUrl, healthCheckUrl } = await getCtaLinks();
 const nav = [
   { label: 'Home', href: '/' },
   { label: 'About', href: '/about/' },
@@ -51,8 +53,8 @@ const register = PRACTICE.regulator.registerSearchUrl;
       }
     </nav>
     <div class="header__cta">
-      <Button variant="secondary" href="/book/">Book</Button>
-      <Button variant="primary" href="/health-check/">Free Visa Health Check</Button>
+      <Button variant="primary" href={bookUrl}>Book a Consultation</Button>
+      <Button variant="secondary" href={healthCheckUrl}>Free Visa Health Check</Button>
     </div>
     <button
       class="burger"
@@ -73,8 +75,8 @@ const register = PRACTICE.regulator.registerSearchUrl;
   <div class="mnav" id="mobile-nav" data-mobile-nav hidden>
     {nav.map((n) => <a href={n.href}>{n.label}</a>)}
     <div class="mnav__cta">
-      <Button variant="secondary" href="/book/">Book a consultation</Button>
-      <Button variant="primary" href="/health-check/">Free Visa Health Check</Button>
+      <Button variant="primary" href={bookUrl}>Book a Consultation</Button>
+      <Button variant="secondary" href={healthCheckUrl}>Free Visa Health Check</Button>
     </div>
   </div>
 </header>

@@ -15,7 +15,16 @@ export const consultationStatus = z.enum([
   'no_show',
 ]);
 
-export const consultationType = z.enum(['standard', 'second-opinion', 'online', 'in-person']);
+// Consultation types offered on /book-consultation. 'standard'/'online'/'in-person'
+// remain valid for backward compatibility with existing records.
+export const consultationType = z.enum([
+  'initial',
+  'second-opinion',
+  'follow-up',
+  'standard',
+  'online',
+  'in-person',
+]);
 
 export const consultationRequest = z.object({
   type: consultationType,

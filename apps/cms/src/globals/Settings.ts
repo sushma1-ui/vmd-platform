@@ -22,6 +22,27 @@ export const Settings: GlobalConfig = {
     { name: 'whatsappNumber', type: 'text' },
     { name: 'bookingEnabled', type: 'checkbox', defaultValue: true },
     {
+      // Site-wide CTA destinations. Change these to move the URLs without a code
+      // change (Blueprint: future-proof, CMS-configurable CTAs).
+      name: 'ctaLinks',
+      type: 'group',
+      admin: { description: 'Where the two site-wide call-to-action buttons point.' },
+      fields: [
+        {
+          name: 'bookConsultationUrl',
+          type: 'text',
+          defaultValue: '/book-consultation',
+          admin: { description: 'Primary CTA — "Book a Consultation".' },
+        },
+        {
+          name: 'healthCheckUrl',
+          type: 'text',
+          defaultValue: '/health-check',
+          admin: { description: 'Secondary CTA — "Free Visa Health Check".' },
+        },
+      ],
+    },
+    {
       name: 'migrationManagerUrl',
       type: 'text',
       admin: {

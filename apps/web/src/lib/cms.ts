@@ -4,6 +4,7 @@
  * back to an empty result if the CMS is unreachable, so the site builds and renders
  * honest empty states without a live CMS. Types come from @vmd/schema.
  */
+import { CTA_ROUTES } from '@vmd/config';
 import type {
   ArticleMeta,
   CaseStudy,
@@ -78,6 +79,19 @@ export const cms = {
   testimonials: () => query<Testimonial>('testimonials', { sort: '-date' }),
   pinnedReviews: () => query<PinnedReview>('pinned-reviews', { sort: 'pinnedOrder' }),
 };
+
+/**
+ * Resolve the two site-wide CTA destinations. Reads the CMS Settings global and falls
+ * back to the @vmd/config CTA_ROUTES defaults, so the URLs are editable in the CMS but
+ * a build never breaks when the CMS is unreachable.
+ */
+export async function getCtaLinks(): Promise<{ bookUrl: string; healthCheckUrl: string }> {
+  const settings = await getSettings();
+  return {
+    bookUrl: settings?.ctaLinks?.bookConsultationUrl || CTA_ROUTES.bookConsultation,
+    healthCheckUrl: settings?.ctaLinks?.healthCheckUrl || CTA_ROUTES.healthCheck,
+  };
+}
 
 export type Redirect = { from: string; to: string; code: 301 | 302 };
 
