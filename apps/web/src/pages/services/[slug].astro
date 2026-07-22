@@ -1,0 +1,17 @@
+---
+import ServicePageView from '../../components/pages/ServicePageView.astro';
+import { cms } from '../../lib/cms.ts';
+import type { ServiceDoc } from '../../lib/servicePages.ts';
+
+// Non-visa service pages (/services/…, e.g. skills-assessment, art-review-applications).
+export async function getStaticPaths() {
+  const all = (await cms.servicePages()) as unknown as ServiceDoc[];
+  return all
+    .filter((p) => p.section === 'services')
+    .map((p) => ({ params: { slug: p.slug }, props: { page: p, allPages: all } }));
+}
+
+const { page, allPages } = Astro.props;
+---
+
+<ServicePageView page={page} allPages={allPages} />

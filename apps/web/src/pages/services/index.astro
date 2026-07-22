@@ -1,0 +1,111 @@
+---
+import Base from '../../layouts/Base.astro';
+import { breadcrumbSchema } from '@vmd/seo';
+import { cms } from '../../lib/cms.ts';
+import { servicePageHref, type ServiceDoc } from '../../lib/servicePages.ts';
+
+// "Our Services" hub — lists every published service page, linking to each at its exact
+// document URL. Renders an honest empty state if the CMS is unreachable at build.
+const all = (await cms.servicePages()) as unknown as ServiceDoc[];
+const byTitle = (a: ServiceDoc, b: ServiceDoc) => a.title.localeCompare(b.title);
+const visas = all.filter((p) => p.section === 'visas').sort(byTitle);
+const others = all.filter((p) => p.section !== 'visas').sort(byTitle);
+
+const groups = [
+  { heading: 'Visa pathways', items: visas },
+  { heading: 'Other services', items: others },
+].filter((g) => g.items.length > 0);
+
+const blurb = (p: ServiceDoc) => p.seo?.metaDescription || p.subtitle || '';
+
+const trail = [
+  { name: 'Home', path: '/' },
+  { name: 'Our Services', path: '/services/' },
+];
+---
+
+<Base
+  title="Our Services | Visa & Migration Doctors"
+  description="Australian visa and migration services from a Perth Registered Migration Agent — skilled, employer-sponsored, partner, student and visitor visas, skills assessments and reviews."
+  schemas={[breadcrumbSchema(trail)]}
+>
+  <section class="hub">
+    <header class="hub__head">
+      <h1>Our Services</h1>
+      <p>
+        Clear, honest guidance across Australia's visa pathways — prepared by a Registered Migration
+        Agent.
+      </p>
+    </header>
+
+    {
+      groups.length === 0 ? (
+        <p class="hub__empty">Our service pages are being prepared. Please check back soon.</p>
+      ) : (
+        groups.map((g) => (
+          <section class="hub__group">
+            <h2>{g.heading}</h2>
+            <div class="hub__grid">
+              {g.items.map((p) => (
+                <a class="hub__card" href={servicePageHref(p)}>
+                  <h3>{p.title}</h3>
+                  {blurb(p) && <p>{blurb(p)}</p>}
+                </a>
+              ))}
+            </div>
+          </section>
+        ))
+      )
+    }
+  </section>
+</Base>
+
+<style>
+  .hub {
+    max-inline-size: var(--container-wide, 72rem);
+    margin-inline: auto;
+    padding: var(--space-7) var(--space-4) var(--space-9);
+  }
+  .hub__head {
+    margin-block-end: var(--space-6);
+  }
+  .hub__head p {
+    color: var(--color-text-muted);
+    max-inline-size: 48ch;
+  }
+  .hub__group {
+    margin-block-start: var(--space-7);
+  }
+  .hub__group > h2 {
+    margin-block-end: var(--space-4);
+  }
+  .hub__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    gap: var(--space-4);
+  }
+  .hub__card {
+    display: block;
+    padding: var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.15s ease;
+  }
+  .hub__card:hover {
+    border-color: var(--color-accent, #0a5);
+  }
+  .hub__card h3 {
+    font-size: var(--type-body-lg, var(--type-body));
+    margin-block-end: var(--space-2);
+  }
+  .hub__card p {
+    color: var(--color-text-muted);
+    font-size: var(--type-body-sm);
+    margin: 0;
+  }
+  .hub__empty {
+    color: var(--color-text-muted);
+  }
+</style>
