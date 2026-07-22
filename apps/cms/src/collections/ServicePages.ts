@@ -69,15 +69,23 @@ export const ServicePages: CollectionConfig = {
     // Main content — verbatim from the source document (headings, tables, lists…).
     { name: 'content', type: 'richText' },
 
-    // Related information (optional)
+    // Related links — verbatim labels from the source ("Related:" line). Rendered as
+    // internal links where a label resolves to another service page, plain text otherwise.
+    {
+      name: 'relatedLinks',
+      type: 'array',
+      admin: { description: 'Verbatim "Related:" labels from the source document.' },
+      fields: [{ name: 'label', type: 'text', required: true }],
+    },
     {
       name: 'relatedServices',
       type: 'relationship',
       relationTo: 'service-pages',
       hasMany: true,
+      admin: { description: 'Optional resolved internal links for the related labels.' },
     },
 
-    // FAQ (only rendered if provided) — also emitted as FAQ schema.
+    // FAQ — verbatim Q/A. Rendered on the page and emitted as FAQ structured data.
     {
       name: 'faq',
       type: 'array',
@@ -88,16 +96,21 @@ export const ServicePages: CollectionConfig = {
       ],
     },
 
-    // CTA (editable)
+    // CTA ("Ready to get started?") — heading + verbatim body paragraph + action button.
     {
       name: 'cta',
       type: 'group',
       fields: [
         { name: 'heading', type: 'text' },
+        { name: 'body', type: 'textarea', admin: { description: 'Verbatim CTA paragraph.' } },
         { name: 'buttonLabel', type: 'text' },
         { name: 'buttonHref', type: 'text' },
       ],
     },
+
+    // Compliance disclaimer — verbatim, per page (some pages carry variant wording).
+    // Always rendered. MARN is never shown alone (see the source text).
+    { name: 'disclaimer', type: 'textarea' },
 
     // Metadata (auto)
     {

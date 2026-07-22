@@ -711,6 +711,18 @@ export interface ServicePage {
     };
     [k: string]: unknown;
   } | null;
+  /**
+   * Verbatim "Related:" labels from the source document.
+   */
+  relatedLinks?:
+    | {
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Optional resolved internal links for the related labels.
+   */
   relatedServices?: (number | ServicePage)[] | null;
   /**
    * Optional. Only shown when provided.
@@ -724,9 +736,14 @@ export interface ServicePage {
     | null;
   cta?: {
     heading?: string | null;
+    /**
+     * Verbatim CTA paragraph.
+     */
+    body?: string | null;
     buttonLabel?: string | null;
     buttonHref?: string | null;
   };
+  disclaimer?: string | null;
   /**
    * Set automatically on first publish. Never changes.
    */
@@ -1304,6 +1321,12 @@ export interface ServicePagesSelect<T extends boolean = true> {
   heroImage?: T;
   featuredImage?: T;
   content?: T;
+  relatedLinks?:
+    | T
+    | {
+        label?: T;
+        id?: T;
+      };
   relatedServices?: T;
   faq?:
     | T
@@ -1316,9 +1339,11 @@ export interface ServicePagesSelect<T extends boolean = true> {
     | T
     | {
         heading?: T;
+        body?: T;
         buttonLabel?: T;
         buttonHref?: T;
       };
+  disclaimer?: T;
   publishedAt?: T;
   readingTime?: T;
   author?: T;
