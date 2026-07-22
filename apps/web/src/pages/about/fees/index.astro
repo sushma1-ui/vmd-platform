@@ -1,5 +1,7 @@
 ---
 import SimplePage from '../../../components/content/SimplePage.astro';
+import { getCtaLinks } from '../../../lib/cms.ts';
+const { bookUrl } = await getCtaLinks();
 ---
 
 <SimplePage
@@ -8,7 +10,7 @@ import SimplePage from '../../../components/content/SimplePage.astro';
   eyebrow="Our fees"
   lead="We publish fees because the category hides them. Fixed ranges, quoted before you commit."
   emptyState="Fee ranges are published here once confirmed with the practice (§19). We do not display figures we have not verified."
-  cta={{ href: '/book/', label: 'Book a consultation' }}
+  cta={{ href: bookUrl, label: 'Book a Consultation' }}
 >
   <p>
     The Visa Health Check is free. Consultations are a fixed fee, credited toward an engagement.

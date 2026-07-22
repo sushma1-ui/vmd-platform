@@ -1,8 +1,9 @@
 ---
 import Client from '../../layouts/Client.astro';
-import { cms } from '../../lib/cms.ts';
+import { cms, getCtaLinks } from '../../lib/cms.ts';
 export const prerender = false;
 const user = (Astro.locals as any).user;
+const { bookUrl } = await getCtaLinks();
 let settings: any = null;
 try {
   settings = await (await fetch(`${import.meta.env.PUBLIC_CMS_URL}/api/globals/settings`)).json();
@@ -26,7 +27,7 @@ const mmUrl = settings?.migrationManagerUrl;
       </p>
     )
   }
-  <p class="cp-note"><a class="cp-link" href="/book/">Request a new consultation →</a></p>
+  <p class="cp-note"><a class="cp-link" href={bookUrl}>Request a new consultation →</a></p>
 </Client>
 <style>
   h1 {

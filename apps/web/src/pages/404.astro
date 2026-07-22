@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import { Button } from '@vmd/ui';
+import HealthCheckCta from '../components/cta/HealthCheckCta.astro';
 ---
 
 <Base title="Page not found" description="That page doesn't exist." noindex={true}>
@@ -11,6 +11,6 @@ import { Button } from '@vmd/ui';
     <p style="font-size: var(--type-body-lg); margin-block: var(--space-3) var(--space-5);">
       Try the Visa Health Check, or search from the navigation.
     </p>
-    <Button variant="primary" href="/health-check/">Start the Visa Health Check</Button>
+    <HealthCheckCta variant="primary" label="Start the Visa Health Check" />
   </section>
 </Base>

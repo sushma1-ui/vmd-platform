@@ -1,0 +1,19 @@
+---
+/**
+ * Primary CTA — "Book a Consultation". Destination is resolved from the CMS Settings
+ * global (getCtaLinks) with a config fallback, so the URL is never hardcoded and can
+ * change site-wide from one place. Use this instead of a raw <Button href="/book…">.
+ */
+import { Button } from '@vmd/ui';
+import { getCtaLinks } from '../../lib/cms.ts';
+
+interface Props {
+  variant?: 'primary' | 'secondary' | 'tertiary';
+  label?: string;
+  class?: string;
+}
+const { variant = 'primary', label = 'Book a Consultation', class: className = '' } = Astro.props;
+const { bookUrl } = await getCtaLinks();
+---
+
+<Button variant={variant} href={bookUrl} class={className}>{label}</Button>

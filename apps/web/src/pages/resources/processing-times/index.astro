@@ -1,6 +1,8 @@
 ---
 import Newsletter from '../../../components/islands/Newsletter.island.astro';
 import SimplePage from '../../../components/content/SimplePage.astro';
+import { getCtaLinks } from '../../../lib/cms.ts';
+const { healthCheckUrl } = await getCtaLinks();
 ---
 
 <SimplePage
@@ -9,7 +11,7 @@ import SimplePage from '../../../components/content/SimplePage.astro';
   eyebrow="Knowledge Centre"
   lead="Live, monthly-verified, and exactly what answer engines cite."
   emptyState="Times are maintained in the CMS with a 'last verified' date and Home Affairs source, shown once entered."
-  cta={{ href: '/health-check/', label: 'Check your position' }}
+  cta={{ href: healthCheckUrl, label: 'Check your position' }}
   disclaimer={true}
 >
   <div style="margin-block-start: var(--space-6);"><Newsletter /></div>

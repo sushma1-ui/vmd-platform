@@ -1,6 +1,7 @@
 ---
 import ComplexityMeter from './ComplexityMeter.astro';
-import { Button } from '@vmd/ui';
+import BookCta from '../../cta/BookCta.astro';
+import HealthCheckCta from '../../cta/HealthCheckCta.astro';
 interface Props {
   glance?: any;
   govFee?: any;
@@ -60,8 +61,8 @@ const rows = [
   }
   {updated && <p class="sf__upd">Last reviewed {updated}</p>}
   <div class="sf__cta">
-    <Button variant="primary" href="/book/">Book a consultation</Button>
-    <Button variant="secondary" href="/health-check/">Free Visa Health Check</Button>
+    <BookCta variant="primary" label="Book a consultation" />
+    <HealthCheckCta variant="secondary" />
   </div>
 </aside>
 <style>

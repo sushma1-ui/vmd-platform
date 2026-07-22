@@ -3,7 +3,7 @@ import Base from '../../layouts/Base.astro';
 import { articleSchema, breadcrumbSchema, faqSchema } from '@vmd/seo';
 import { PRACTICE } from '@vmd/config';
 import { Disclaimer } from '@vmd/ui';
-import { cms } from '../../lib/cms.ts';
+import { cms, getCtaLinks } from '../../lib/cms.ts';
 import { lexicalToHtml } from '../../lib/lexical.ts';
 
 // Static paths from the CMS; zero paths if the CMS is unreachable at build (the
@@ -22,6 +22,7 @@ export async function getStaticPaths() {
 
 const { post, related } = Astro.props;
 const path = Astro.url.pathname;
+const { bookUrl, healthCheckUrl } = await getCtaLinks();
 const url = `${PRACTICE.domain ? `https://${PRACTICE.domain}` : ''}${path}`;
 
 // Reading time: use the editor value or estimate from the content.
@@ -184,8 +185,8 @@ const shareUrl = encodeURIComponent(url);
 
     <div class="post__cta">
       <p>Ready to discuss your migration options?</p>
-      <a class="post__cta-btn" href="/book/">Book a consultation</a>
-      <a class="post__cta-link" href="/health-check/">or take the Free Visa Health Check →</a>
+      <a class="post__cta-btn" href={bookUrl}>Book a Consultation</a>
+      <a class="post__cta-link" href={healthCheckUrl}>or take the Free Visa Health Check →</a>
     </div>
   </article>
 </Base>

@@ -25,7 +25,7 @@ interface PageSeed {
   metaDescription: string;
   body: string;
   faq: { question: string; answer: string }[];
-  cta: { heading: string; body: string };
+  cta: { heading: string; body: string; buttonHref?: string };
   related: string[];
   disclaimer: string;
 }
@@ -757,6 +757,9 @@ As a Registered Migration Agent, Sunil Uprety is bound by the Migration Agents C
     cta: {
       heading: CTA_HEADING,
       body: "**[Book a consultation]** and let's talk through your options.",
+      // This page IS the default Book destination, so its own button targets the
+      // booking form (avoids a self-link).
+      buttonHref: '/book-consultation',
     },
     related: [
       'ART Review Applications',
@@ -779,7 +782,11 @@ async function upsert(payload: Payload, p: PageSeed) {
     status: 'published' as const,
     content: mdToLexical(p.body) as ServicePage['content'],
     faq: p.faq,
-    cta: { heading: p.cta.heading, body: p.cta.body },
+    cta: {
+      heading: p.cta.heading,
+      body: p.cta.body,
+      ...(p.cta.buttonHref ? { buttonHref: p.cta.buttonHref } : {}),
+    },
     relatedLinks: p.related.map((label) => ({ label })),
     disclaimer: p.disclaimer,
     seo: { metaTitle: p.metaTitle, metaDescription: p.metaDescription, canonicalUrl: canonical },

@@ -1,5 +1,7 @@
 ---
 import SimplePage from '../../components/content/SimplePage.astro';
+import { getCtaLinks } from '../../lib/cms.ts';
+const { healthCheckUrl } = await getCtaLinks();
 ---
 
 <SimplePage
@@ -7,7 +9,7 @@ import SimplePage from '../../components/content/SimplePage.astro';
   description="Guides, the Visa Health Check, processing times and FAQs for Australian migration."
   eyebrow="Knowledge Centre"
   lead="Explain better than Home Affairs, in plainer English."
-  cta={{ href: '/health-check/', label: 'Start the Visa Health Check' }}
+  cta={{ href: healthCheckUrl, label: 'Start the Visa Health Check' }}
 >
   <p>The Free Visa Health Check, migration insights, processing times, FAQs and guides.</p>
 </SimplePage>

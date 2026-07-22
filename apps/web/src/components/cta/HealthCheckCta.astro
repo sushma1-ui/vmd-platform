@@ -1,0 +1,22 @@
+---
+/**
+ * Secondary CTA — "Free Visa Health Check". Destination is resolved from the CMS
+ * Settings global (getCtaLinks) with a config fallback, so the URL is never hardcoded.
+ */
+import { Button } from '@vmd/ui';
+import { getCtaLinks } from '../../lib/cms.ts';
+
+interface Props {
+  variant?: 'primary' | 'secondary' | 'tertiary';
+  label?: string;
+  class?: string;
+}
+const {
+  variant = 'secondary',
+  label = 'Free Visa Health Check',
+  class: className = '',
+} = Astro.props;
+const { healthCheckUrl } = await getCtaLinks();
+---
+
+<Button variant={variant} href={healthCheckUrl} class={className}>{label}</Button>

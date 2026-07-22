@@ -1,7 +1,8 @@
 ---
 import Base from '../../layouts/Base.astro';
 import { breadcrumbSchema } from '@vmd/seo';
-import { Button, Card, Rule } from '@vmd/ui';
+import { Card, Rule } from '@vmd/ui';
+import HealthCheckCta from '../../components/cta/HealthCheckCta.astro';
 import { getSettings } from '../../lib/cms.ts';
 import { pathnameToTrail } from '../../lib/breadcrumbs.ts';
 import type { SiteSettings } from '@vmd/schema';
@@ -74,7 +75,7 @@ const trail = pathnameToTrail(Astro.url.pathname);
 
     <div class="rs-cta">
       <p>Rather see where you stand yourself?</p>
-      <Button variant="primary" href="/health-check/">Take the Free Visa Health Check</Button>
+      <HealthCheckCta variant="primary" label="Take the Free Visa Health Check" />
     </div>
   </section>
 </Base>

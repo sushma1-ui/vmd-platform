@@ -1,5 +1,7 @@
 ---
 import SimplePage from '../../../components/content/SimplePage.astro';
+import { getCtaLinks } from '../../../lib/cms.ts';
+const { bookUrl } = await getCtaLinks();
 ---
 
 <SimplePage
@@ -8,7 +10,7 @@ import SimplePage from '../../../components/content/SimplePage.astro';
   eyebrow="The practitioner"
   lead="The E-E-A-T anchor for the whole practice — verifiable, named, registered."
   emptyState="Working portrait and full profile to be added (§19). Registered Migration Agent (RMA): Sunil Uprety · MARN 2318234 is verifiable on the OMARA register today."
-  cta={{ href: '/book/', label: 'Book a consultation' }}
+  cta={{ href: bookUrl, label: 'Book a Consultation' }}
 >
   <p>
     Sunil Uprety is a Registered Migration Agent (MARN 2318234) practising in Perth, bound by the

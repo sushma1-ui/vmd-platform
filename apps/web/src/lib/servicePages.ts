@@ -9,7 +9,12 @@ export interface ServiceDoc {
   content?: unknown;
   featured?: boolean | null;
   faq?: { question?: string | null; answer?: string | null }[] | null;
-  cta?: { heading?: string | null; body?: string | null } | null;
+  cta?: {
+    heading?: string | null;
+    body?: string | null;
+    buttonLabel?: string | null;
+    buttonHref?: string | null;
+  } | null;
   relatedLinks?: { label?: string | null }[] | null;
   disclaimer?: string | null;
   readingTime?: number | null;

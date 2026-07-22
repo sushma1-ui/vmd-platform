@@ -1,7 +1,8 @@
 ---
 import Base from '../../../layouts/Base.astro';
 import { breadcrumbSchema } from '@vmd/seo';
-import { Button, Chip, Rule, Disclaimer } from '@vmd/ui';
+import { Chip, Rule, Disclaimer } from '@vmd/ui';
+import HealthCheckCta from '../../../components/cta/HealthCheckCta.astro';
 import { cms } from '../../../lib/cms.ts';
 import { pathnameToTrail } from '../../../lib/breadcrumbs.ts';
 import type { GrantLedgerEntry } from '@vmd/schema';
@@ -99,7 +100,7 @@ const codes = [...new Set(entries.map((e) => e.subclassCode))].sort();
 
     <div class="gl-cta">
       <p>Want an honest read on your own position?</p>
-      <Button variant="primary" href="/health-check/">Take the Free Visa Health Check</Button>
+      <HealthCheckCta variant="primary" label="Take the Free Visa Health Check" />
     </div>
   </section>
 </Base>

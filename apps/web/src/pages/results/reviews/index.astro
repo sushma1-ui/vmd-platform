@@ -1,7 +1,8 @@
 ---
 import Base from '../../../layouts/Base.astro';
 import { breadcrumbSchema } from '@vmd/seo';
-import { Button, Rule, TrustStrip } from '@vmd/ui';
+import { Rule, TrustStrip } from '@vmd/ui';
+import BookCta from '../../../components/cta/BookCta.astro';
 import { cms, getSettings } from '../../../lib/cms.ts';
 import { pathnameToTrail } from '../../../lib/breadcrumbs.ts';
 import type { PinnedReview, Testimonial, SiteSettings } from '@vmd/schema';
@@ -101,7 +102,7 @@ const tYear = (iso?: string) => {
 
     <div class="rv-cta">
       <p>Prefer an honest read on your own case first?</p>
-      <Button variant="primary" href="/book/">Book a consultation</Button>
+      <BookCta variant="primary" label="Book a consultation" />
     </div>
   </section>
 

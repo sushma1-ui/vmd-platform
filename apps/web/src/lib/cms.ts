@@ -80,17 +80,27 @@ export const cms = {
   pinnedReviews: () => query<PinnedReview>('pinned-reviews', { sort: 'pinnedOrder' }),
 };
 
+export type CtaLinks = { bookUrl: string; healthCheckUrl: string };
+let ctaLinksCache: Promise<CtaLinks> | null = null;
+
 /**
- * Resolve the two site-wide CTA destinations. Reads the CMS Settings global and falls
- * back to the @vmd/config CTA_ROUTES defaults, so the URLs are editable in the CMS but
- * a build never breaks when the CMS is unreachable.
+ * Resolve the two site-wide CTA destinations — the single source of truth for every
+ * "Book a Consultation" and "Free Visa Health Check" button. Reads the CMS Settings
+ * global and falls back to the @vmd/config CTA_ROUTES defaults, so the URLs are
+ * editable in the CMS but a build never breaks when the CMS is unreachable.
+ *
+ * Memoised per process: many components call this during one build, and settings are
+ * constant within a build. A redeploy picks up changed settings.
  */
-export async function getCtaLinks(): Promise<{ bookUrl: string; healthCheckUrl: string }> {
-  const settings = await getSettings();
-  return {
-    bookUrl: settings?.ctaLinks?.bookConsultationUrl || CTA_ROUTES.bookConsultation,
-    healthCheckUrl: settings?.ctaLinks?.healthCheckUrl || CTA_ROUTES.healthCheck,
-  };
+export function getCtaLinks(): Promise<CtaLinks> {
+  ctaLinksCache ??= (async () => {
+    const settings = await getSettings();
+    return {
+      bookUrl: settings?.ctaLinks?.bookConsultationUrl || CTA_ROUTES.bookConsultation,
+      healthCheckUrl: settings?.ctaLinks?.healthCheckUrl || CTA_ROUTES.healthCheck,
+    };
+  })();
+  return ctaLinksCache;
 }
 
 export type Redirect = { from: string; to: string; code: 301 | 302 };

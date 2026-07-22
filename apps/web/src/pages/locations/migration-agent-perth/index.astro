@@ -1,5 +1,7 @@
 ---
 import SimplePage from '../../../components/content/SimplePage.astro';
+import { getCtaLinks } from '../../../lib/cms.ts';
+const { bookUrl } = await getCtaLinks();
 ---
 
 <SimplePage
@@ -7,7 +9,7 @@ import SimplePage from '../../../components/content/SimplePage.astro';
   description="Registered Migration Agent (RMA): Sunil Uprety in Perth CBD — Visa & Migration Doctors · MARN 2318234."
   eyebrow="Perth"
   lead="The head term. A named, registered agent at 44 St Georges Terrace."
-  cta={{ href: '/book/', label: 'Book in Perth' }}
+  cta={{ href: bookUrl, label: 'Book in Perth' }}
 >
   <p>
     Visa & Migration Doctors is a Registered Migration Agent practice at 44 St Georges Terrace,

@@ -3,6 +3,8 @@ import Base from '../../layouts/Base.astro';
 import { breadcrumbSchema, faqSchema } from '@vmd/seo';
 import { PRACTICE } from '@vmd/config';
 import { Button, Rule, Disclaimer } from '@vmd/ui';
+import BookCta from '../../components/cta/BookCta.astro';
+import HealthCheckCta from '../../components/cta/HealthCheckCta.astro';
 import { cms } from '../../lib/cms.ts';
 import { lexicalToHtml } from '../../lib/lexical.ts';
 import { pathnameToTrail } from '../../lib/breadcrumbs.ts';
@@ -76,8 +78,8 @@ const schemas = [
       <Rule width="short" />
       {situation.empathyLine && <p class="st-hero__lead">{situation.empathyLine}</p>}
       <div class="st-hero__cta">
-        <Button variant="primary" href="/health-check/">Free Visa Health Check</Button>
-        <Button variant="secondary" href="/book/">Book a consultation</Button>
+        <HealthCheckCta variant="primary" />
+        <BookCta variant="secondary" label="Book a consultation" />
       </div>
     </div>
   </section>
@@ -176,7 +178,7 @@ const schemas = [
         speak to {PRACTICE.principal.name}, RMA (MARN {PRACTICE.principal.marn}), not a salesperson.
       </p>
       <div class="band__cta">
-        <Button variant="primary" href="/health-check/">Start your Free Visa Health Check</Button>
+        <HealthCheckCta variant="primary" label="Start your Free Visa Health Check" />
         <Button variant="secondary" href="/contact/">Contact the practice</Button>
       </div>
     </div>

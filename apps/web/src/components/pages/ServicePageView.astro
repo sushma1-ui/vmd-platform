@@ -18,8 +18,12 @@ interface Props {
 const { page, allPages } = Astro.props;
 const path = Astro.url.pathname;
 
-// CMS-configurable CTA destinations (falls back to @vmd/config defaults).
+// CMS-configurable CTA destinations (falls back to @vmd/config defaults). A page may
+// override the primary Book destination via cta.buttonHref (e.g. the initial-
+// consultation page points its own button at the booking form, not at itself).
 const { bookUrl, healthCheckUrl } = await getCtaLinks();
+const pageBookUrl = page.cta?.buttonHref || bookUrl;
+const bookLabel = page.cta?.buttonLabel || 'Book a Consultation';
 
 const pageHref = servicePageHref;
 
@@ -79,7 +83,7 @@ const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 function ctaHtml(text: string): string {
   return esc(text)
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\[Book a consultation\]/g, `<a href="${bookUrl}">Book a consultation</a>`)
+    .replace(/\[Book a consultation\]/g, `<a href="${pageBookUrl}">Book a consultation</a>`)
     .replace(
       /\[Check your eligibility\]/g,
       `<a href="${healthCheckUrl}">Check your eligibility</a>`,
@@ -186,8 +190,8 @@ const schemas = [
           {cta.heading && <h2>{cta.heading}</h2>}
           {cta.body && <p set:html={ctaHtml(cta.body)} />}
           <div class="svc__cta-actions">
-            <a class="svc__cta-btn" href={bookUrl}>
-              Book a Consultation
+            <a class="svc__cta-btn" href={pageBookUrl}>
+              {bookLabel}
             </a>
             <a class="svc__cta-link" href={healthCheckUrl}>
               or take the Free Visa Health Check →

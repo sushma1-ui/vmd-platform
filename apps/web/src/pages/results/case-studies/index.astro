@@ -1,7 +1,8 @@
 ---
 import Base from '../../../layouts/Base.astro';
 import { breadcrumbSchema } from '@vmd/seo';
-import { Button, Chip, Rule, Disclaimer } from '@vmd/ui';
+import { Chip, Rule, Disclaimer } from '@vmd/ui';
+import BookCta from '../../../components/cta/BookCta.astro';
 import { cms } from '../../../lib/cms.ts';
 import { lexicalToHtml } from '../../../lib/lexical.ts';
 import { pathnameToTrail } from '../../../lib/breadcrumbs.ts';
@@ -91,7 +92,7 @@ const subCode = (s: CaseStudy) =>
 
     <div class="cs-cta">
       <p>Wondering how your own matter would be approached?</p>
-      <Button variant="primary" href="/book/">Book a consultation</Button>
+      <BookCta variant="primary" label="Book a consultation" />
     </div>
   </section>
 </Base>
