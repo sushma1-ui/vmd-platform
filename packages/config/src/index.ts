@@ -80,6 +80,6 @@ export const DISCLAIMERS = {
  * Health Check lead-gen flow.
  */
 export const CTA_ROUTES = {
-  bookConsultation: '/initial-consultation',
+  bookConsultation: '/book-consultation',
   healthCheck: '/health-check',
 } as const;

@@ -31,7 +31,7 @@ export const Settings: GlobalConfig = {
         {
           name: 'bookConsultationUrl',
           type: 'text',
-          defaultValue: '/initial-consultation',
+          defaultValue: '/book-consultation',
           admin: { description: 'Primary CTA — "Book a Consultation".' },
         },
         {

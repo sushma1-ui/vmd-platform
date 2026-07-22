@@ -757,9 +757,6 @@ As a Registered Migration Agent, Sunil Uprety is bound by the Migration Agents C
     cta: {
       heading: CTA_HEADING,
       body: "**[Book a consultation]** and let's talk through your options.",
-      // This page IS the default Book destination, so its own button targets the
-      // booking form (avoids a self-link).
-      buttonHref: '/book-consultation',
     },
     related: [
       'ART Review Applications',
