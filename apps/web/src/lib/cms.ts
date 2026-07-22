@@ -52,6 +52,11 @@ export const cms = {
   services: () => query('services'),
   serviceBySlug: async (slug: string) =>
     (await query('services', { 'where[slug][equals]': slug, limit: '1', depth: '2' }))[0] ?? null,
+  // "Our Services" content pages (/visas/…, /services/…, /initial-consultation).
+  servicePages: () => query('service-pages', { depth: '1' }),
+  servicePageBySlug: async (slug: string) =>
+    (await query('service-pages', { 'where[slug][equals]': slug, limit: '1', depth: '1' }))[0] ??
+    null,
   subclassesForService: (serviceId: string) =>
     query('subclasses', { 'where[service][equals]': serviceId, depth: '1' }),
   grantLedger: (subclassCode?: string) =>

@@ -71,6 +71,7 @@ export interface Config {
     media: Media;
     articles: Article;
     services: Service;
+    'service-pages': ServicePage;
     subclasses: Subclass;
     situations: Situation;
     faqs: Faq;
@@ -94,6 +95,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     articles: ArticlesSelect<false> | ArticlesSelect<true>;
     services: ServicesSelect<false> | ServicesSelect<true>;
+    'service-pages': ServicePagesSelect<false> | ServicePagesSelect<true>;
     subclasses: SubclassesSelect<false> | SubclassesSelect<true>;
     situations: SituationsSelect<false> | SituationsSelect<true>;
     faqs: FaqsSelect<false> | FaqsSelect<true>;
@@ -253,6 +255,9 @@ export interface Article {
     | 'case-study';
   status: 'draft' | 'scheduled' | 'published';
   featured?: boolean | null;
+  /**
+   * Set automatically on first publish. Never changes.
+   */
   publishedAt?: string | null;
   excerpt?: string | null;
   heroImage?: (number | null) | Media;
@@ -673,6 +678,80 @@ export interface Testimonial {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "service-pages".
+ */
+export interface ServicePage {
+  id: number;
+  title: string;
+  slug: string;
+  section: 'visas' | 'services' | 'root';
+  status: 'draft' | 'scheduled' | 'published';
+  featured?: boolean | null;
+  /**
+   * Hero subtitle / lead.
+   */
+  subtitle?: string | null;
+  heroImage?: (number | null) | Media;
+  /**
+   * Card + Open Graph image.
+   */
+  featuredImage?: (number | null) | Media;
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  relatedServices?: (number | ServicePage)[] | null;
+  /**
+   * Optional. Only shown when provided.
+   */
+  faq?:
+    | {
+        question: string;
+        answer: string;
+        id?: string | null;
+      }[]
+    | null;
+  cta?: {
+    heading?: string | null;
+    buttonLabel?: string | null;
+    buttonHref?: string | null;
+  };
+  /**
+   * Set automatically on first publish. Never changes.
+   */
+  publishedAt?: string | null;
+  /**
+   * Minutes. Leave blank to auto-estimate from the content.
+   */
+  readingTime?: number | null;
+  author?: (number | null) | User;
+  /**
+   * Search + social metadata. Human-written, unique per page.
+   */
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    ogImage?: (number | null) | Media;
+    canonicalUrl?: string | null;
+    noindex?: boolean | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "case-studies".
  */
 export interface CaseStudy {
@@ -926,6 +1005,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'services';
         value: number | Service;
+      } | null)
+    | ({
+        relationTo: 'service-pages';
+        value: number | ServicePage;
       } | null)
     | ({
         relationTo: 'subclasses';
@@ -1206,6 +1289,51 @@ export interface ServicesSelect<T extends boolean = true> {
       };
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "service-pages_select".
+ */
+export interface ServicePagesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  section?: T;
+  status?: T;
+  featured?: T;
+  subtitle?: T;
+  heroImage?: T;
+  featuredImage?: T;
+  content?: T;
+  relatedServices?: T;
+  faq?:
+    | T
+    | {
+        question?: T;
+        answer?: T;
+        id?: T;
+      };
+  cta?:
+    | T
+    | {
+        heading?: T;
+        buttonLabel?: T;
+        buttonHref?: T;
+      };
+  publishedAt?: T;
+  readingTime?: T;
+  author?: T;
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+        canonicalUrl?: T;
+        noindex?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

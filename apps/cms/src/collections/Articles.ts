@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload';
 import { publishedOrEditorial, isEditorial } from '../access/index.ts';
 import { seoField, reviewedByField } from '../fields/index.ts';
+import { setPublishedAt } from '../hooks/index.ts';
 
 /**
  * Articles — the ONE Knowledge Centre content type (ARCHITECTURE.md §2.2). Blog
@@ -17,6 +18,7 @@ export const Articles: CollectionConfig = {
     delete: isEditorial,
   },
   versions: { drafts: true },
+  hooks: { beforeChange: [setPublishedAt] },
   fields: [
     { name: 'title', type: 'text', required: true },
     { name: 'slug', type: 'text', required: true, unique: true, index: true },
@@ -46,7 +48,16 @@ export const Articles: CollectionConfig = {
       options: ['draft', 'scheduled', 'published'],
     },
     { name: 'featured', type: 'checkbox', defaultValue: false, index: true },
-    { name: 'publishedAt', type: 'date', index: true },
+    {
+      name: 'publishedAt',
+      type: 'date',
+      index: true,
+      admin: {
+        readOnly: true,
+        description: 'Set automatically on first publish. Never changes.',
+        date: { pickerAppearance: 'dayAndTime' },
+      },
+    },
     { name: 'excerpt', type: 'textarea', maxLength: 300 },
     { name: 'heroImage', type: 'upload', relationTo: 'media' },
     { name: 'content', type: 'richText' },

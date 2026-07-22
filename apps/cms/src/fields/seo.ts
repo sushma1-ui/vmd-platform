@@ -8,8 +8,11 @@ export const seoField: Field = {
   type: 'group',
   admin: { description: 'Search + social metadata. Human-written, unique per page.' },
   fields: [
-    { name: 'metaTitle', type: 'text', maxLength: 70 },
-    { name: 'metaDescription', type: 'textarea', maxLength: 160 },
+    // Limits are advisory guidance, kept generous so authoritative, human-written
+    // copy is never truncated (some service pages run ~80-char titles / ~190-char
+    // descriptions). Search engines truncate the *display*, not the stored value.
+    { name: 'metaTitle', type: 'text', maxLength: 120 },
+    { name: 'metaDescription', type: 'textarea', maxLength: 220 },
     { name: 'ogImage', type: 'upload', relationTo: 'media' },
     { name: 'canonicalUrl', type: 'text' },
     { name: 'noindex', type: 'checkbox', defaultValue: false },

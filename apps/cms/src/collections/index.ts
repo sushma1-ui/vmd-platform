@@ -3,6 +3,7 @@ import { Users } from './Users.ts';
 import { Media } from './Media.ts';
 import { Articles } from './Articles.ts';
 import { Services } from './Services.ts';
+import { ServicePages } from './ServicePages.ts';
 import { Subclasses } from './Subclasses.ts';
 import { Situations } from './Situations.ts';
 import { FAQs } from './FAQs.ts';
@@ -21,6 +22,7 @@ export const collections = [
   Media,
   Articles,
   Services,
+  ServicePages,
   Subclasses,
   Situations,
   FAQs,
