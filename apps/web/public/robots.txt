@@ -3,4 +3,5 @@ Allow: /
 Disallow: /lp/
 Disallow: /thank-you/
 Disallow: /search
+Disallow: /client/
 Sitemap: https://migrationdoctors.com.au/sitemap-index.xml

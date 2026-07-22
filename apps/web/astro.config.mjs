@@ -24,8 +24,15 @@ export default defineConfig({
   integrations: [
     tailwind({ applyBaseStyles: false }),
     sitemap({
+      // Keep non-indexable and gated routes out of the sitemap so it never lists a
+      // page that robots.txt disallows or that sets noindex (search, styleguide,
+      // portal, thank-you, landing pages).
       filter: (page) =>
-        !page.includes('/client/') && !page.includes('/thank-you/') && !page.includes('/lp/'),
+        !page.includes('/client/') &&
+        !page.includes('/thank-you/') &&
+        !page.includes('/lp/') &&
+        !page.includes('/search') &&
+        !page.includes('/styleguide'),
     }),
   ],
   build: { inlineStylesheets: 'auto' },
