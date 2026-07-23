@@ -106,7 +106,7 @@ const subclasses = [
 const situations = [
   ['skilled-professional', "I'm a skilled professional"],
   ['student', "I'm a student"],
-  ['partnered-to-australian', "I'm partnered to an Australian"],
+  ['partnered-to-australian', "I'm partnered with an Australian Citizen or Permanent Resident"],
   ['employer', "I'm an employer"],
   ['visa-refused', 'My visa was refused'],
   ['bridging-visa', "I'm on a bridging visa"],

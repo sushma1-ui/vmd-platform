@@ -5,7 +5,7 @@
  * renders identically. Content comes verbatim from the CMS; nothing here rewrites it.
  */
 import Base from '../../layouts/Base.astro';
-import { PRACTICE, RMA_LINE } from '@vmd/config';
+import { PRACTICE, RMA_STATEMENT } from '@vmd/config';
 import { serviceSchema, breadcrumbSchema, faqSchema } from '@vmd/seo';
 import { lexicalToHtml } from '../../lib/lexical.ts';
 import { getCtaLinks } from '../../lib/cms.ts';
@@ -218,7 +218,7 @@ const schemas = [
     <section class="svc__contact" aria-labelledby="svc-contact-h">
       <h2 id="svc-contact-h">Speak to us about your matter</h2>
       <p class="svc__contact-lead">
-        {RMA_LINE}. Based in {PRACTICE.address.locality} CBD, assisting clients Australia-wide.
+        {RMA_STATEMENT} Based in {PRACTICE.address.locality} CBD, assisting clients Australia-wide.
       </p>
       <ul class="svc__contact-list">
         <li>

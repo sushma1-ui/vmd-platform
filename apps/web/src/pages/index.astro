@@ -21,7 +21,7 @@ const situations = [
     '/your-situation/student/',
   ],
   [
-    "I'm partnered to an Australian",
+    "I'm partnered with an Australian Citizen or Permanent Resident",
     'Onshore or offshore, and the evidence a case officer actually weighs.',
     '/your-situation/partnered-to-australian/',
   ],
@@ -61,7 +61,7 @@ try {
 
 <Base
   title="Registered Migration Agent in Perth"
-  description={`Honest migration advice in Perth from ${PRACTICE.principal.name}, RMA (MARN ${PRACTICE.principal.marn}). Know exactly where you stand before you spend a dollar — clear pathways, no false promises.`}
+  description={`Honest migration advice in Perth from Registered Migration Agent (RMA) ${PRACTICE.principal.name} (MARN: ${PRACTICE.principal.marn}). Know exactly where you stand before you spend a dollar — clear pathways, no false promises.`}
   schemas={[localBusinessSchema(), { '@context': 'https://schema.org', ...personSchema() }]}
 >
   <!-- 3 · HERO -->
@@ -268,8 +268,7 @@ try {
           </>
         ) : (
           <div class="ledger-empty ledger-empty--light">
-            Articles appear here once published — each byline links to Sunil Uprety, RMA (MARN{' '}
-            {PRACTICE.principal.marn}).
+            Articles appear here once published — every piece is reviewed by {RMA_LINE}.
           </div>
         )
       }

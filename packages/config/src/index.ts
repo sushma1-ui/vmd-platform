@@ -39,7 +39,7 @@ export const PRACTICE = {
     email: 'sunil@migrationdoctors.com.au',
   },
   address: {
-    street: '44 St Georges Terrace',
+    street: 'Level 27, 44 St Georges Terrace',
     locality: 'Perth',
     region: 'WA',
     postcode: '6000',
@@ -70,6 +70,14 @@ export const PRACTICE = {
  * To change the presentation, change it here only.
  */
 export const RMA_LINE = `Registered Migration Agent (RMA): ${PRACTICE.principal.name} | MARN: ${PRACTICE.principal.marn}`;
+
+/**
+ * Canonical firm-credentials sentence. A BUSINESS cannot be a Registered Migration
+ * Agent — only a person can — so wherever the practice's credentials are described in
+ * prose, use this statement (never wording that implies the practice itself is
+ * registered). Single-sourced here.
+ */
+export const RMA_STATEMENT = `${PRACTICE.legalName} is a migration practice led by Registered Migration Agent (RMA) ${PRACTICE.principal.name} (MARN: ${PRACTICE.principal.marn}).`;
 
 /**
  * The non-negotiable compliance strings. Rendered by the Disclaimer component
