@@ -26,13 +26,19 @@ const { bookUrl, healthCheckUrl } = await getCtaLinks();
 
 // Author from the CMS author relationship (fallback to the principal); Last updated
 // shown only when the article was edited on a later day than it was published.
-const authorName =
-  (post.author && typeof post.author === 'object' && post.author.name) || PRACTICE.principal.name;
+const iso = (v: unknown): string | null => (typeof v === 'string' ? v : null);
+let authorName: string = PRACTICE.principal.name;
+if (post.author && typeof post.author === 'object') {
+  const n = (post.author as { name?: unknown }).name;
+  if (typeof n === 'string' && n) authorName = n;
+}
+const publishedIso = iso(post.publishedAt);
+const updatedIso = iso(post.updatedAt);
 const lastUpdated =
-  post.updatedAt &&
-  post.publishedAt &&
-  new Date(post.updatedAt).toDateString() !== new Date(post.publishedAt).toDateString()
-    ? post.updatedAt
+  updatedIso &&
+  publishedIso &&
+  new Date(updatedIso).toDateString() !== new Date(publishedIso).toDateString()
+    ? updatedIso
     : null;
 const url = `${PRACTICE.domain ? `https://${PRACTICE.domain}` : ''}${path}`;
 
@@ -108,7 +114,7 @@ const shareUrl = encodeURIComponent(url);
       <p class="post__cat">{label(post.category)}</p>
       <h1 class="post__title">{post.title}</h1>
       <p class="post__byline">
-        By {authorName}{post.publishedAt && ` · Published ${fmtDate(post.publishedAt)}`}{
+        By {authorName}{publishedIso && ` · Published ${fmtDate(publishedIso)}`}{
           lastUpdated && ` · Updated ${fmtDate(lastUpdated)}`
         } · {readingTime} min read
       </p>
