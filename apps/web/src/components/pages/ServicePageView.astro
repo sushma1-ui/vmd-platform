@@ -5,6 +5,7 @@
  * renders identically. Content comes verbatim from the CMS; nothing here rewrites it.
  */
 import Base from '../../layouts/Base.astro';
+import { PRACTICE, RMA_LINE } from '@vmd/config';
 import { serviceSchema, breadcrumbSchema, faqSchema } from '@vmd/seo';
 import { lexicalToHtml } from '../../lib/lexical.ts';
 import { getCtaLinks } from '../../lib/cms.ts';
@@ -214,6 +215,32 @@ const schemas = [
       )
     }
 
+    <section class="svc__contact" aria-labelledby="svc-contact-h">
+      <h2 id="svc-contact-h">Speak to us about your matter</h2>
+      <p class="svc__contact-lead">
+        {RMA_LINE}. Based in {PRACTICE.address.locality} CBD, assisting clients Australia-wide.
+      </p>
+      <ul class="svc__contact-list">
+        <li>
+          <span>Phone</span>
+          <a href={`tel:${PRACTICE.contact.phone}`}>{PRACTICE.contact.phoneDisplay}</a>
+        </li>
+        <li>
+          <span>Email</span>
+          <a href={`mailto:${PRACTICE.contact.email}`}>{PRACTICE.contact.email}</a>
+        </li>
+        <li>
+          <span>Office</span>
+          <span>
+            {PRACTICE.address.street}, {PRACTICE.address.locality}
+            {PRACTICE.address.region}
+            {PRACTICE.address.postcode}
+          </span>
+        </li>
+      </ul>
+      <a class="svc__contact-cta" href="/contact/">Contact the practice →</a>
+    </section>
+
     {page.disclaimer && <p class="svc__disclaimer">{page.disclaimer}</p>}
   </article>
 </Base>
@@ -325,6 +352,44 @@ const schemas = [
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-3);
+  }
+  .svc__contact {
+    margin-block-start: var(--space-7);
+    padding: var(--space-5);
+    background: var(--color-ground-warm);
+    border-radius: var(--radius-card);
+  }
+  .svc__contact h2 {
+    margin-block-end: var(--space-2);
+  }
+  .svc__contact-lead {
+    color: var(--color-text-muted);
+    margin-block-end: var(--space-4);
+    max-inline-size: 60ch;
+  }
+  .svc__contact-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--space-4);
+    display: grid;
+    gap: var(--space-2);
+  }
+  .svc__contact-list li {
+    display: flex;
+    gap: var(--space-3);
+    font-size: var(--type-body-sm);
+  }
+  .svc__contact-list span:first-child {
+    min-inline-size: 4rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: var(--type-caption);
+  }
+  .svc__contact-cta {
+    font-weight: 600;
+    color: var(--color-interactive);
+    text-decoration: none;
   }
   .svc__disclaimer {
     margin-block-start: var(--space-7);

@@ -23,6 +23,17 @@ export async function getStaticPaths() {
 const { post, related } = Astro.props;
 const path = Astro.url.pathname;
 const { bookUrl, healthCheckUrl } = await getCtaLinks();
+
+// Author from the CMS author relationship (fallback to the principal); Last updated
+// shown only when the article was edited on a later day than it was published.
+const authorName =
+  (post.author && typeof post.author === 'object' && post.author.name) || PRACTICE.principal.name;
+const lastUpdated =
+  post.updatedAt &&
+  post.publishedAt &&
+  new Date(post.updatedAt).toDateString() !== new Date(post.publishedAt).toDateString()
+    ? post.updatedAt
+    : null;
 const url = `${PRACTICE.domain ? `https://${PRACTICE.domain}` : ''}${path}`;
 
 // Reading time: use the editor value or estimate from the content.
@@ -97,10 +108,9 @@ const shareUrl = encodeURIComponent(url);
       <p class="post__cat">{label(post.category)}</p>
       <h1 class="post__title">{post.title}</h1>
       <p class="post__byline">
-        By {PRACTICE.principal.name}, Registered Migration Agent (RMA) · MARN {
-          PRACTICE.principal.marn
-        }
-        {post.publishedAt && ` · ${fmtDate(post.publishedAt)}`} · {readingTime} min read
+        By {authorName}{post.publishedAt && ` · Published ${fmtDate(post.publishedAt)}`}{
+          lastUpdated && ` · Updated ${fmtDate(lastUpdated)}`
+        } · {readingTime} min read
       </p>
     </header>
 
