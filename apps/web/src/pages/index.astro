@@ -4,6 +4,7 @@ import { PRACTICE } from '@vmd/config';
 import { Button, Card, Chip, Rule, TrustStrip, Disclaimer } from '@vmd/ui';
 import { localBusinessSchema, personSchema } from '@vmd/seo';
 import { cms } from '../lib/cms.ts';
+import { servicePageHref } from '../lib/servicePages.ts';
 import BookCta from '../components/cta/BookCta.astro';
 import HealthCheckCta from '../components/cta/HealthCheckCta.astro';
 
@@ -40,35 +41,21 @@ const situations = [
     '/your-situation/bridging-visa/',
   ],
 ];
-const services = [
-  [
-    'General Skilled Migration',
-    'SC189 · SC190 · SC491',
-    'Points-tested PR, including WA state nomination.',
-    '/visa-services/general-skilled-migration/',
-  ],
-  [
-    'Employer Sponsored',
-    'SC482 · SC186 · SC494',
-    'For employers and skilled workers — sponsorship and compliance.',
-    '/visa-services/employer-sponsored/',
-  ],
-  [
-    'Skills Assessments',
-    'VETASSESS · TRA · ACS',
-    'The upstream step that most often trips people up.',
-    '/visa-services/skills-assessments/',
-  ],
-  [
-    'Family & Partner',
-    'SC820/801 · SC309/100',
-    'Relationship evidence, prepared for how it is assessed.',
-    '/visa-services/family-partner/',
-  ],
-];
+// Featured Services — pulled from the CMS (service pages flagged "featured"), linking
+// to their canonical URLs. Editors curate via the Featured checkbox.
+let featuredServices: any[] = [];
+try {
+  const all = await cms.servicePages();
+  featuredServices = all.filter((s: any) => s.featured).slice(0, 6);
+} catch {}
+const sectionLabel = (s: any) => (s.section === 'visas' ? 'Visa pathway' : 'Service');
+
+// Featured Blogs — featured articles first, then most recent, from the CMS.
 let posts: any[] = [];
 try {
-  posts = (await cms.articles()).slice(0, 3);
+  const all = await cms.articles();
+  const feat = all.filter((p: any) => p.featured);
+  posts = (feat.length ? feat : all).slice(0, 3);
 } catch {}
 ---
 
@@ -166,23 +153,24 @@ try {
   <!-- 7 · WHAT WE DO -->
   <section class="section">
     <div class="section__inner">
-      <h2 class="section__h">What we do</h2>
+      <h2 class="section__h">Featured services</h2>
       <p class="section__sub">
         Find yourself in one scan. Every service is a problem we solve, not a product we sell.
       </p>
       <div class="grid grid--2">
         {
-          services.map(([title, subs, line, href]) => (
-            <Card title={title} href={href} eyebrow={subs}>
-              {line}
+          featuredServices.map((s) => (
+            <Card title={s.title} href={servicePageHref(s)} eyebrow={sectionLabel(s)}>
+              {s.seo?.metaDescription || s.subtitle || ''}
             </Card>
           ))
         }
       </div>
       <p class="section__more">
-        <a href="/visa-services/refusals-and-appeals/"
-          >Visa refused or cancelled? Refusals &amp; Appeals — including the fixed-fee Second
-          Opinion →</a
+        <a href="/services/">See all our services →</a>
+        <br />
+        <a href="/services/art-review-applications"
+          >Visa refused or cancelled? ART Review Applications — act fast, deadlines are strict →</a
         >
       </p>
     </div>
@@ -257,23 +245,28 @@ try {
   <!-- 11 · INSIGHTS -->
   <section class="section">
     <div class="section__inner">
-      <h2 class="section__h">Recent insights</h2>
+      <h2 class="section__h">From our blog</h2>
       <p class="section__sub">
         Migration law changes constantly. Every piece is authored by a Registered Migration Agent.
       </p>
       {
         posts.length > 0 ? (
-          <div class="grid grid--3">
-            {posts.map((p) => (
-              <Card
-                title={p.title}
-                href={`/resources/${p.slug}/`}
-                eyebrow={String(p.category).replace(/-/g, ' ')}
-              >
-                {p.excerpt ?? ''}
-              </Card>
-            ))}
-          </div>
+          <>
+            <div class="grid grid--3">
+              {posts.map((p) => (
+                <Card
+                  title={p.title}
+                  href={`/blog/${p.slug}/`}
+                  eyebrow={String(p.category).replace(/-/g, ' ')}
+                >
+                  {p.excerpt ?? ''}
+                </Card>
+              ))}
+            </div>
+            <p class="section__more">
+              <a href="/blog/">Read the blog →</a>
+            </p>
+          </>
         ) : (
           <div class="ledger-empty ledger-empty--light">
             Articles appear here once published — each byline links to Sunil Uprety, RMA (MARN{' '}

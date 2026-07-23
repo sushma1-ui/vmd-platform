@@ -36,6 +36,17 @@ const STD_DISCLAIMER =
 
 const CTA_HEADING = 'Ready to get started?';
 
+// A representative spread promoted to the homepage "Featured Services" section.
+// Editors can re-curate any time via the Featured checkbox in the CMS.
+const FEATURED_SLUGS = new Set([
+  'subclass-485-temporary-graduate-visa',
+  'subclass-189-skilled-independent-visa',
+  'subclass-190-skilled-nominated-visa',
+  'partner-visa-onshore-820-801',
+  'subclass-482-skills-in-demand-visa',
+  'subclass-500-student-visa',
+]);
+
 const PAGES: PageSeed[] = [
   {
     section: 'visas',
@@ -778,6 +789,7 @@ async function upsert(payload: Payload, p: PageSeed) {
     title: p.title,
     section: p.section,
     status: 'published' as const,
+    featured: FEATURED_SLUGS.has(p.slug),
     content: mdToLexical(p.body) as ServicePage['content'],
     faq: p.faq,
     cta: {
