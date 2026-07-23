@@ -1,0 +1,326 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { breadcrumbSchema } from '@vmd/seo';
+import { Disclaimer } from '@vmd/ui';
+import { cms } from '../../../lib/cms.ts';
+
+/**
+ * Success Stories / Client Results — premium trust section. Content comes entirely
+ * from the CMS (success-stories collection, consent-gated at the query). One modern
+ * scroll-snap carousel per visa category; categories without content simply don't
+ * render. Video embeds are privacy-friendly (youtube-nocookie / vimeo player) and
+ * lazy-loaded.
+ */
+
+interface Story {
+  id: string | number;
+  title: string;
+  type:
+    | 'review-video'
+    | 'testimonial-video'
+    | 'client-photo'
+    | 'grant-letter'
+    | 'written-testimonial'
+    | 'success-story';
+  category: string;
+  description?: string | null;
+  quote?: string | null;
+  clientName?: string | null;
+  image?: { url?: string | null; alt?: string | null } | number | null;
+  videoUrl?: string | null;
+  featured?: boolean | null;
+  order?: number | null;
+}
+
+const CATEGORIES: { key: string; heading: string }[] = [
+  { key: 'employer-sponsored', heading: 'Employer Sponsored Visas' },
+  { key: 'student', heading: 'Student Visas' },
+  { key: 'partner', heading: 'Partner Visas' },
+  { key: 'skilled', heading: 'Skilled Migration' },
+  { key: 'visitor', heading: 'Visitor Visas' },
+  { key: 'other', heading: 'Other Visa Success Stories' },
+];
+
+let stories: Story[] = [];
+try {
+  stories = (await cms.successStories()) as unknown as Story[];
+} catch {}
+
+const groups = CATEGORIES.map((c) => ({
+  ...c,
+  items: stories
+    .filter((s) => s.category === c.key)
+    .sort((a, b) => (a.order ?? 999) - (b.order ?? 999)),
+})).filter((g) => g.items.length > 0);
+
+/** Convert a YouTube/Vimeo URL to a privacy-friendly embed URL; null if unknown. */
+function embedUrl(raw?: string | null): string | null {
+  if (!raw) return null;
+  try {
+    const u = new URL(raw);
+    if (u.hostname.includes('youtu.be')) {
+      const id = u.pathname.slice(1).split('/')[0];
+      return id ? `https://www.youtube-nocookie.com/embed/${id}` : null;
+    }
+    if (u.hostname.includes('youtube.com')) {
+      const id = u.searchParams.get('v') ?? u.pathname.split('/embed/')[1]?.split('/')[0];
+      return id ? `https://www.youtube-nocookie.com/embed/${id}` : null;
+    }
+    if (u.hostname.includes('vimeo.com')) {
+      const id = u.pathname.split('/').filter(Boolean)[0];
+      return id && /^\d+$/.test(id) ? `https://player.vimeo.com/video/${id}` : null;
+    }
+  } catch {}
+  return null;
+}
+
+const imgOf = (s: Story) =>
+  s.image && typeof s.image === 'object' && s.image.url
+    ? { url: s.image.url, alt: s.image.alt || s.title }
+    : null;
+
+const trail = [
+  { name: 'Home', path: '/' },
+  { name: 'Results', path: '/results/' },
+  { name: 'Success Stories', path: '/results/success-stories/' },
+];
+---
+
+<Base
+  title="Success Stories & Client Results"
+  description="Real outcomes from real clients — testimonial videos, client stories and redacted visa grants, shared with permission. Every application is decided on its own merits."
+  schemas={[breadcrumbSchema(trail)]}
+>
+  <section class="ss">
+    <header class="ss__head">
+      <p class="ss__eyebrow">Client results · shared with permission</p>
+      <h1 class="ss__title">Success stories</h1>
+      <p class="ss__lead">
+        Real clients, real outcomes — in their own words and their own grant letters. Every matter
+        is different, and past outcomes never guarantee future results.
+      </p>
+    </header>
+
+    {
+      groups.length === 0 ? (
+        <p class="ss__empty">
+          Client stories are published here with each client's permission. The first stories are
+          being prepared — in the meantime, see our
+          <a href="/results/reviews/">verified Google reviews</a>.
+        </p>
+      ) : (
+        groups.map((g) => (
+          <section class="ss__group" aria-labelledby={`ss-${g.key}`}>
+            <div class="ss__group-head">
+              <h2 id={`ss-${g.key}`}>{g.heading}</h2>
+              <div class="ss__nav">
+                <button class="ss__btn" data-car-prev aria-label={`Previous — ${g.heading}`}>
+                  ←
+                </button>
+                <button class="ss__btn" data-car-next aria-label={`Next — ${g.heading}`}>
+                  →
+                </button>
+              </div>
+            </div>
+            <div class="ss__car" data-carousel>
+              <ul class="ss__track" aria-label={`${g.heading} — client results`}>
+                {g.items.map((s) => {
+                  const video = embedUrl(s.videoUrl);
+                  const img = imgOf(s);
+                  return (
+                    <li class:list={['ss__card', `ss__card--${s.type}`]}>
+                      {video && (
+                        <div class="ss__video">
+                          <iframe
+                            src={video}
+                            title={s.title}
+                            loading="lazy"
+                            allowfullscreen
+                            allow="encrypted-media; picture-in-picture"
+                          />
+                        </div>
+                      )}
+                      {!video && img && (
+                        <img
+                          class="ss__img"
+                          src={img.url}
+                          alt={img.alt}
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      )}
+                      <div class="ss__body">
+                        <h3 class="ss__card-title">{s.title}</h3>
+                        {s.quote && <blockquote class="ss__quote">“{s.quote}”</blockquote>}
+                        {s.description && <p class="ss__desc">{s.description}</p>}
+                        {s.clientName && <p class="ss__client">— {s.clientName}</p>}
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          </section>
+        ))
+      )
+    }
+
+    <Disclaimer variant="outcomes" />
+  </section>
+</Base>
+
+<script>
+  // Carousel controls: buttons scroll the snap-track. Native horizontal scroll,
+  // wheel and keyboard all work without JS; buttons are progressive enhancement.
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll<HTMLElement>('.ss__group').forEach((group) => {
+    const track = group.querySelector<HTMLElement>('.ss__track');
+    if (!track) return;
+    const step = () => Math.max(track.clientWidth * 0.85, 280);
+    const scroll = (dir: number) =>
+      track.scrollBy({ left: dir * step(), behavior: reduced ? 'auto' : 'smooth' });
+    group.querySelector('[data-car-prev]')?.addEventListener('click', () => scroll(-1));
+    group.querySelector('[data-car-next]')?.addEventListener('click', () => scroll(1));
+  });
+</script>
+
+<style>
+  .ss {
+    max-inline-size: var(--container-max);
+    margin-inline: auto;
+    padding: var(--space-7) var(--space-4) var(--space-9);
+  }
+  .ss__head {
+    max-inline-size: var(--container-prose);
+    margin-block-end: var(--space-7);
+  }
+  .ss__eyebrow {
+    font-size: var(--type-caption);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-emphasis);
+    font-weight: 600;
+  }
+  .ss__title {
+    font-size: var(--type-display-2);
+    margin-block: var(--space-2) var(--space-3);
+  }
+  .ss__lead {
+    color: var(--color-text-muted);
+    max-inline-size: 60ch;
+  }
+  .ss__empty {
+    color: var(--color-text-muted);
+    padding: var(--space-6);
+    background: var(--color-ground-warm);
+    border-radius: var(--radius-card);
+  }
+  .ss__group {
+    margin-block-start: var(--space-8);
+  }
+  .ss__group-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-4);
+    margin-block-end: var(--space-4);
+  }
+  .ss__group-head h2 {
+    font-size: var(--type-h2);
+  }
+  .ss__nav {
+    display: flex;
+    gap: var(--space-2);
+  }
+  .ss__btn {
+    inline-size: var(--space-6);
+    block-size: var(--space-6);
+    border-radius: 50%;
+    border: 1px solid color-mix(in srgb, var(--color-action) 20%, transparent);
+    background: transparent;
+    color: var(--color-action);
+    font-size: var(--type-body);
+    cursor: pointer;
+    transition:
+      background-color var(--motion-fast) var(--ease-standard),
+      border-color var(--motion-fast) var(--ease-standard);
+  }
+  .ss__btn:hover {
+    background: var(--color-ground-warm);
+    border-color: var(--color-emphasis);
+  }
+  .ss__btn:focus-visible {
+    outline: 2px solid var(--color-interactive);
+    outline-offset: 2px;
+  }
+  .ss__track {
+    list-style: none;
+    margin: 0;
+    padding: var(--space-1);
+    display: flex;
+    gap: var(--space-4);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+  }
+  .ss__card {
+    flex: 0 0 clamp(16rem, 70vw, 22rem);
+    scroll-snap-align: start;
+    background: var(--color-ground-light, #fff);
+    border: 1px solid color-mix(in srgb, var(--color-action) 9%, transparent);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    box-shadow: var(--shadow-subtle);
+    transition: box-shadow var(--motion-fast) var(--ease-standard);
+  }
+  .ss__card:hover {
+    box-shadow: var(--shadow-raised);
+  }
+  .ss__video {
+    aspect-ratio: 16 / 9;
+    background: var(--color-ground-deep);
+  }
+  .ss__video iframe {
+    inline-size: 100%;
+    block-size: 100%;
+    border: 0;
+    display: block;
+  }
+  .ss__img {
+    inline-size: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    display: block;
+  }
+  .ss__body {
+    padding: var(--space-4);
+  }
+  .ss__card-title {
+    font-size: var(--type-body-lg, var(--type-body));
+    margin-block-end: var(--space-2);
+  }
+  .ss__quote {
+    margin: 0 0 var(--space-2);
+    font-family: var(--font-display);
+    font-size: var(--type-body-lg, var(--type-body));
+    line-height: 1.5;
+    color: var(--color-text);
+  }
+  .ss__desc {
+    color: var(--color-text-muted);
+    font-size: var(--type-body-sm);
+    margin-block-end: var(--space-2);
+  }
+  .ss__client {
+    color: var(--color-text-muted);
+    font-size: var(--type-body-sm);
+    font-style: italic;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ss__card,
+    .ss__btn {
+      transition: none;
+    }
+  }
+</style>

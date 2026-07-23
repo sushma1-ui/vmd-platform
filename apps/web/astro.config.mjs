@@ -21,6 +21,7 @@ export default defineConfig({
   redirects: {
     '/book': { status: 301, destination: '/book-consultation' },
     '/client-portal': { status: 302, destination: '/client/' },
+    '/results/grant-ledger': { status: 301, destination: '/results/success-stories' },
   },
   adapter: vercel({ isr: { expiration: 60 * 60 }, webAnalytics: { enabled: false } }),
   integrations: [

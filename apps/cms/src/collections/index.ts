@@ -12,6 +12,7 @@ import { CaseStudies } from './CaseStudies.ts';
 import { GrantLedger } from './GrantLedger.ts';
 import { ProcessingTimes } from './ProcessingTimes.ts';
 import { PinnedReviews } from './PinnedReviews.ts';
+import { SuccessStories } from './SuccessStories.ts';
 import { Leads } from './Leads.ts';
 import { Consultations } from './Consultations.ts';
 import { Redirects } from './Redirects.ts';
@@ -31,6 +32,7 @@ export const collections = [
   GrantLedger,
   ProcessingTimes,
   PinnedReviews,
+  SuccessStories,
   Leads,
   Consultations,
   Redirects,

@@ -80,6 +80,7 @@ export interface Config {
     'grant-ledger': GrantLedger;
     'processing-times': ProcessingTime;
     'pinned-reviews': PinnedReview;
+    'success-stories': SuccessStory;
     leads: Lead;
     consultations: Consultation;
     redirects: Redirect;
@@ -104,6 +105,7 @@ export interface Config {
     'grant-ledger': GrantLedgerSelect<false> | GrantLedgerSelect<true>;
     'processing-times': ProcessingTimesSelect<false> | ProcessingTimesSelect<true>;
     'pinned-reviews': PinnedReviewsSelect<false> | PinnedReviewsSelect<true>;
+    'success-stories': SuccessStoriesSelect<false> | SuccessStoriesSelect<true>;
     leads: LeadsSelect<false> | LeadsSelect<true>;
     consultations: ConsultationsSelect<false> | ConsultationsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
@@ -877,6 +879,54 @@ export interface ProcessingTime {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "success-stories".
+ */
+export interface SuccessStory {
+  id: number;
+  title: string;
+  status: 'draft' | 'published';
+  type:
+    | 'review-video'
+    | 'testimonial-video'
+    | 'client-photo'
+    | 'grant-letter'
+    | 'written-testimonial'
+    | 'success-story';
+  category: 'employer-sponsored' | 'student' | 'partner' | 'skilled' | 'visitor' | 'other';
+  /**
+   * Short supporting line shown under the title.
+   */
+  description?: string | null;
+  /**
+   * The testimonial or story text (written types).
+   */
+  quote?: string | null;
+  /**
+   * Optional display name — only with the client’s permission.
+   */
+  clientName?: string | null;
+  /**
+   * Client photo or REDACTED grant letter image.
+   */
+  image?: (number | null) | Media;
+  /**
+   * YouTube or Vimeo URL for video types.
+   */
+  videoUrl?: string | null;
+  /**
+   * REQUIRED before this appears publicly: the client has given permission to publish this content. The website only shows entries with consent ticked.
+   */
+  consent?: boolean | null;
+  featured?: boolean | null;
+  /**
+   * Display order within its carousel (lower shows first).
+   */
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "leads".
  */
 export interface Lead {
@@ -1058,6 +1108,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'pinned-reviews';
         value: number | PinnedReview;
+      } | null)
+    | ({
+        relationTo: 'success-stories';
+        value: number | SuccessStory;
       } | null)
     | ({
         relationTo: 'leads';
@@ -1626,6 +1680,26 @@ export interface PinnedReviewsSelect<T extends boolean = true> {
   googleReviewUrl?: T;
   pinnedOrder?: T;
   status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "success-stories_select".
+ */
+export interface SuccessStoriesSelect<T extends boolean = true> {
+  title?: T;
+  status?: T;
+  type?: T;
+  category?: T;
+  description?: T;
+  quote?: T;
+  clientName?: T;
+  image?: T;
+  videoUrl?: T;
+  consent?: T;
+  featured?: T;
+  order?: T;
   updatedAt?: T;
   createdAt?: T;
 }

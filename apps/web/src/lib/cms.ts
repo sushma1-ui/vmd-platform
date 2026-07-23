@@ -53,6 +53,10 @@ export const cms = {
   services: () => query('services'),
   serviceBySlug: async (slug: string) =>
     (await query('services', { 'where[slug][equals]': slug, limit: '1', depth: '2' }))[0] ?? null,
+  // Success Stories / Client Results. Consent is enforced at the query: the public
+  // site never fetches an entry whose consent box is unticked.
+  successStories: () =>
+    query('success-stories', { 'where[consent][equals]': 'true', sort: 'order', depth: '1' }),
   // "Our Services" content pages (/visas/…, /services/…, /initial-consultation).
   servicePages: () => query('service-pages', { depth: '1' }),
   servicePageBySlug: async (slug: string) =>

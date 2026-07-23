@@ -137,15 +137,15 @@ try {
   <!-- 6 · GRANT LEDGER (evidence, navy band) -->
   <section class="band">
     <div class="band__inner">
-      <p class="band__eyebrow">Evidence, not testimony</p>
-      <h2 class="band__h">Grant Ledger</h2>
+      <p class="band__eyebrow">Real clients, real outcomes</p>
+      <h2 class="band__h">Success stories</h2>
       <p class="band__lead">
-        A dated, anonymised, subclass-tagged record of grants and favourable reviews. A testimonial
-        is an opinion we chose; a ledger is a record.
+        Testimonial videos, client stories and redacted visa grants — every one shared with the
+        client's permission, organised by visa type.
       </p>
-      <div class="ledger-empty">
-        Entries appear here as client consent is confirmed — no names, no photos, no success rates.
-      </div>
+      <p class="band__lead">
+        <a class="band__link" href="/results/success-stories/">Browse client success stories →</a>
+      </p>
       <Disclaimer variant="outcomes" />
     </div>
   </section>
@@ -412,6 +412,14 @@ try {
     font-size: var(--type-h2);
     color: var(--color-text-inverse);
     margin-block-start: var(--space-2);
+  }
+  .band__link {
+    color: var(--color-emphasis-on-navy, var(--color-emphasis));
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .band__link:hover {
+    text-decoration: underline;
   }
   .band__lead {
     font-size: var(--type-body-lg);
