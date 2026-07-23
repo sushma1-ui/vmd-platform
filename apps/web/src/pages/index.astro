@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import { PRACTICE } from '@vmd/config';
+import { PRACTICE, RMA_LINE } from '@vmd/config';
 import { Button, Card, Chip, Rule, TrustStrip, Disclaimer } from '@vmd/ui';
 import { localBusinessSchema, personSchema } from '@vmd/seo';
 import { cms } from '../lib/cms.ts';
@@ -215,8 +215,7 @@ try {
         </p>
         <p class="meet__marn">
           <a href={register} rel="noopener" target="_blank"
-            >{PRACTICE.principal.name} · Registered Migration Agent · MARN {PRACTICE.principal.marn} —
-            verify on the OMARA register →</a
+            >{RMA_LINE} — verify on the OMARA register →</a
           >
         </p>
         <Button variant="secondary" href="/about/sunil-uprety/">More about Sunil</Button>

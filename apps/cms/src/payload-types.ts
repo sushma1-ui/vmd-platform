@@ -1767,6 +1767,18 @@ export interface Setting {
   whatsappNumber?: string | null;
   bookingEnabled?: boolean | null;
   /**
+   * The Client Portal button in the site navigation.
+   */
+  clientPortal?: {
+    enabled?: boolean | null;
+    label?: string | null;
+    url?: string | null;
+    /**
+     * Optional hex colour (e.g. #2589BA). Leave blank to use the brand blue. Non-hex values are ignored.
+     */
+    color?: string | null;
+  };
+  /**
    * Where the two site-wide call-to-action buttons point.
    */
   ctaLinks?: {
@@ -1827,6 +1839,14 @@ export interface SettingsSelect<T extends boolean = true> {
       };
   whatsappNumber?: T;
   bookingEnabled?: T;
+  clientPortal?:
+    | T
+    | {
+        enabled?: T;
+        label?: T;
+        url?: T;
+        color?: T;
+      };
   ctaLinks?:
     | T
     | {

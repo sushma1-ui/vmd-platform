@@ -80,5 +80,14 @@ export const siteSettings = z.object({
       healthCheckUrl: z.string().optional(),
     })
     .optional(),
+  // Client Portal navigation button (override @vmd/config CLIENT_PORTAL defaults).
+  clientPortal: z
+    .object({
+      enabled: z.boolean().optional(),
+      label: z.string().optional(),
+      url: z.string().optional(),
+      color: z.string().optional(),
+    })
+    .optional(),
 });
 export type SiteSettings = z.infer<typeof siteSettings>;

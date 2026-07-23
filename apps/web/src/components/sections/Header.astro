@@ -1,7 +1,8 @@
 ---
-import { PRACTICE } from '@vmd/config';
+import { PRACTICE, RMA_LINE } from '@vmd/config';
 import { Button } from '@vmd/ui';
 import SocialLinks from './SocialLinks.astro';
+import ClientPortalButton from './ClientPortalButton.astro';
 import { getCtaLinks } from '../../lib/cms.ts';
 const { bookUrl, healthCheckUrl } = await getCtaLinks();
 const nav = [
@@ -10,7 +11,6 @@ const nav = [
   { label: 'Our Services', href: '/services/' },
   { label: 'Blog', href: '/blog/' },
   { label: 'Contact', href: '/contact/' },
-  { label: 'Client Portal', href: '/client/' },
 ];
 const register = PRACTICE.regulator.registerSearchUrl;
 ---
@@ -31,7 +31,7 @@ const register = PRACTICE.regulator.registerSearchUrl;
         rel="noopener noreferrer"
         target="_blank"
       >
-        RMA {PRACTICE.principal.name} | MARN {PRACTICE.principal.marn}
+        {RMA_LINE}
       </a>
     </div>
     <SocialLinks />
@@ -55,6 +55,7 @@ const register = PRACTICE.regulator.registerSearchUrl;
     <div class="header__cta">
       <Button variant="primary" href={bookUrl}>Book a Consultation</Button>
       <Button variant="secondary" href={healthCheckUrl}>Free Visa Health Check</Button>
+      <ClientPortalButton variant="desktop" />
     </div>
     <button
       class="burger"
@@ -77,6 +78,7 @@ const register = PRACTICE.regulator.registerSearchUrl;
     <div class="mnav__cta">
       <Button variant="primary" href={bookUrl}>Book a Consultation</Button>
       <Button variant="secondary" href={healthCheckUrl}>Free Visa Health Check</Button>
+      <ClientPortalButton variant="mobile" />
     </div>
   </div>
 </header>

@@ -22,6 +22,26 @@ export const Settings: GlobalConfig = {
     { name: 'whatsappNumber', type: 'text' },
     { name: 'bookingEnabled', type: 'checkbox', defaultValue: true },
     {
+      // Client Portal navigation button — label, destination, colour and visibility,
+      // all editable without a code change.
+      name: 'clientPortal',
+      type: 'group',
+      admin: { description: 'The Client Portal button in the site navigation.' },
+      fields: [
+        { name: 'enabled', type: 'checkbox', defaultValue: true },
+        { name: 'label', type: 'text', defaultValue: 'Client Portal' },
+        { name: 'url', type: 'text', defaultValue: '/client-portal' },
+        {
+          name: 'color',
+          type: 'text',
+          admin: {
+            description:
+              'Optional hex colour (e.g. #2589BA). Leave blank to use the brand blue. Non-hex values are ignored.',
+          },
+        },
+      ],
+    },
+    {
       // Site-wide CTA destinations. Change these to move the URLs without a code
       // change (Blueprint: future-proof, CMS-configurable CTAs).
       name: 'ctaLinks',

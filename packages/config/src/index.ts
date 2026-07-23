@@ -63,6 +63,15 @@ export const PRACTICE = {
 } as const;
 
 /**
+ * Canonical RMA identity line — the SINGLE source of truth for how the agent and MARN
+ * are presented. Compliance rules: the MARN is NEVER shown alone, and the wording is
+ * NEVER abbreviated differently between pages. Referenced by the header, footer, trust
+ * strip, author bylines, contact page and anywhere the practitioner is identified.
+ * To change the presentation, change it here only.
+ */
+export const RMA_LINE = `Registered Migration Agent (RMA): ${PRACTICE.principal.name} | MARN: ${PRACTICE.principal.marn}`;
+
+/**
  * The non-negotiable compliance strings. Rendered by the Disclaimer component
  * (packages/ui) so wording is identical everywhere and can be audited in one place.
  */
@@ -82,4 +91,16 @@ export const DISCLAIMERS = {
 export const CTA_ROUTES = {
   bookConsultation: '/book-consultation',
   healthCheck: '/health-check',
+} as const;
+
+/**
+ * Client Portal navigation button — defaults. The CMS Settings global overrides label,
+ * url and visibility so the practice can change them without a code change. Colour is
+ * the brand blue (--color-interactive); an optional CMS colour override is validated
+ * as a hex value before use.
+ */
+export const CLIENT_PORTAL = {
+  label: 'Client Portal',
+  url: '/client-portal',
+  enabled: true,
 } as const;

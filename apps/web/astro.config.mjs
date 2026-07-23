@@ -17,8 +17,10 @@ export default defineConfig({
      PAYLOAD_API_KEY / POSTMARK / TURNSTILE etc. Hosted envs (Vercel) still win. */
   vite: { envDir: path.resolve(dir, '../..') },
   // Legacy booking URL -> the central consultation page (301).
+  // Client Portal friendly URL -> the portal (middleware routes to login if needed).
   redirects: {
     '/book': { status: 301, destination: '/book-consultation' },
+    '/client-portal': { status: 302, destination: '/client/' },
   },
   adapter: vercel({ isr: { expiration: 60 * 60 }, webAnalytics: { enabled: false } }),
   integrations: [

@@ -5,7 +5,7 @@
  * "★★★★★ Google Reviews" with NO review count: counts are never hardcoded, and a
  * live figure will come from the Google Business Profile API when it is wired.
  */
-import { PRACTICE } from '@vmd/config';
+import { PRACTICE, RMA_LINE } from '@vmd/config';
 interface Props {
   reviewUrl?: string;
   tone?: 'light' | 'dark';
@@ -16,11 +16,7 @@ const marnUrl = PRACTICE.regulator.registerUrl;
 
 <ul class:list={['trust', `trust--${tone}`]}>
   <li class="trust__item">
-    <a href={marnUrl} rel="noopener" target="_blank"
-      >Registered Migration Agent (RMA): {PRACTICE.principal.name} · MARN {
-        PRACTICE.principal.marn
-      }</a
-    >
+    <a href={marnUrl} rel="noopener" target="_blank">{RMA_LINE}</a>
   </li>
   <li class="trust__sep" aria-hidden="true"></li>
   <li class="trust__item">{PRACTICE.address.locality} CBD</li>

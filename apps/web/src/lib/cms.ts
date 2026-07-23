@@ -4,7 +4,7 @@
  * back to an empty result if the CMS is unreachable, so the site builds and renders
  * honest empty states without a live CMS. Types come from @vmd/schema.
  */
-import { CTA_ROUTES } from '@vmd/config';
+import { CTA_ROUTES, CLIENT_PORTAL } from '@vmd/config';
 import type {
   ArticleMeta,
   CaseStudy,
@@ -101,6 +101,35 @@ export function getCtaLinks(): Promise<CtaLinks> {
     };
   })();
   return ctaLinksCache;
+}
+
+export type ClientPortalNav = {
+  enabled: boolean;
+  label: string;
+  url: string;
+  color: string | null;
+};
+let clientPortalCache: Promise<ClientPortalNav> | null = null;
+
+/**
+ * Resolve the Client Portal nav button config from the CMS Settings global, falling
+ * back to @vmd/config CLIENT_PORTAL defaults. The optional colour override is validated
+ * as a hex value (defence-in-depth: never inject an arbitrary string into a style).
+ */
+export function getClientPortal(): Promise<ClientPortalNav> {
+  clientPortalCache ??= (async () => {
+    const s = await getSettings();
+    const cp = s?.clientPortal ?? {};
+    const raw = (cp.color ?? '').trim();
+    const color = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(raw) ? raw : null;
+    return {
+      enabled: cp.enabled ?? CLIENT_PORTAL.enabled,
+      label: cp.label || CLIENT_PORTAL.label,
+      url: cp.url || CLIENT_PORTAL.url,
+      color,
+    };
+  })();
+  return clientPortalCache;
 }
 
 export type Redirect = { from: string; to: string; code: 301 | 302 };

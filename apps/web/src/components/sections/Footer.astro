@@ -1,5 +1,5 @@
 ---
-import { PRACTICE } from '@vmd/config';
+import { PRACTICE, RMA_LINE } from '@vmd/config';
 import { Disclaimer } from '@vmd/ui';
 import SocialLinks from './SocialLinks.astro';
 const cols = [
@@ -26,10 +26,7 @@ const cols = [
   {
     h: 'Checkable',
     links: [
-      [
-        `Registered Migration Agent (RMA): ${PRACTICE.principal.name} · MARN ${PRACTICE.principal.marn} · OMARA register`,
-        PRACTICE.regulator.registerUrl,
-      ],
+      [`${RMA_LINE} · OMARA register`, PRACTICE.regulator.registerUrl],
       ['Code of Conduct', PRACTICE.regulator.registerUrl],
       ['Complaints & Feedback', '/complaints/'],
       ['Client Reviews', '/results/reviews/'],
@@ -61,9 +58,7 @@ const cols = [
           href={`mailto:${PRACTICE.contact.email}`}>{PRACTICE.contact.email}</a
         >
       </p>
-      <p class="footer__nap">
-        {PRACTICE.principal.name} · Registered Migration Agent · MARN {PRACTICE.principal.marn}
-      </p>
+      <p class="footer__nap">{RMA_LINE}</p>
       <div class="footer__social">
         <SocialLinks label={`Follow ${PRACTICE.legalName} on social media`} />
       </div>
