@@ -32,7 +32,8 @@ export default defineConfig({
         !page.includes('/thank-you/') &&
         !page.includes('/lp/') &&
         !page.includes('/search') &&
-        !page.includes('/styleguide'),
+        !page.includes('/styleguide') &&
+        !page.includes('/visa-services'),
     }),
   ],
   build: { inlineStylesheets: 'auto' },
