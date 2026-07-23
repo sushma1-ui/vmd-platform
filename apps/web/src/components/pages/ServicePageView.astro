@@ -284,7 +284,7 @@ const schemas = [
     margin-block-start: var(--space-7);
   }
   .svc__faq details {
-    border-block-end: 1px solid var(--color-border);
+    border-block-end: 1px solid color-mix(in srgb, var(--color-action) 10%, transparent);
     padding-block: var(--space-3);
   }
   .svc__faq summary {
@@ -306,12 +306,12 @@ const schemas = [
   }
   .svc__cta-btn {
     display: inline-block;
-    background: var(--color-accent, #0a5);
-    color: #fff;
+    background: var(--color-action);
+    color: var(--color-action-contrast);
     padding: var(--space-2) var(--space-4);
-    border-radius: var(--radius-button, 6px);
+    border-radius: var(--radius-control);
     text-decoration: none;
-    font-weight: 600;
+    font-weight: 500;
   }
   .svc__cta-link {
     color: var(--color-text-muted);
@@ -329,7 +329,7 @@ const schemas = [
   .svc__disclaimer {
     margin-block-start: var(--space-7);
     padding-block-start: var(--space-4);
-    border-block-start: 1px solid var(--color-border);
+    border-block-start: 1px solid color-mix(in srgb, var(--color-action) 10%, transparent);
     font-size: var(--type-caption);
     font-style: italic;
     color: var(--color-text-muted);
