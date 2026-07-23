@@ -10,6 +10,7 @@
  *
  * Run: `pnpm --filter @vmd/cms seed:service-pages` (needs DATABASE_URL).
  */
+import './load-env.ts'; // MUST be first: loads root .env before payload.config is evaluated
 import { getPayload } from 'payload';
 import type { Payload } from 'payload';
 import config from '../payload.config.ts';
