@@ -7,6 +7,7 @@ interface Props {
   consent?: boolean;
 }
 const { source = 'general-enquiry', heading, withMessage = true, consent = true } = Astro.props;
+const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
 ---
 
 <form class="ef" data-ef data-source={source} novalidate>
@@ -66,12 +67,22 @@ const { source = 'general-enquiry', heading, withMessage = true, consent = true 
       </label>
     )
   }
+  {
+    turnstileSiteKey && (
+      <div class="cf-turnstile ef__ts" data-sitekey={turnstileSiteKey} data-size="flexible" />
+    )
+  }
   <p class="ef__err" data-err role="alert" hidden></p>
   <button type="submit">Send enquiry</button>
   <div class="ef__ok" data-ok hidden role="status">
     Thank you — we've received your enquiry and will reply, usually within one to two business days.
   </div>
 </form>
+{
+  turnstileSiteKey && (
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer is:inline />
+  )
+}
 <style>
   .ef__h {
     font-size: var(--type-h3);
@@ -158,6 +169,7 @@ const { source = 'general-enquiry', heading, withMessage = true, consent = true 
         message: fd.get('message') || undefined,
         marketingConsent: fd.get('marketingConsent') === 'on',
         company: fd.get('company') || undefined,
+        turnstileToken: fd.get('cf-turnstile-response') || undefined,
       };
       if (!payload.firstName || !payload.email) {
         err.textContent = 'Please enter your name and email.';

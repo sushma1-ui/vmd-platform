@@ -1,5 +1,6 @@
 ---
 /** Newsletter as an ALERT, not marketing (Blueprint §9.4). Posts to /api/lead. */
+const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
 ---
 
 <form class="nl" data-nl novalidate>
@@ -24,9 +25,19 @@
     aria-hidden="true"
     autocomplete="off"
   />
+  {
+    turnstileSiteKey && (
+      <div class="cf-turnstile nl__ts" data-sitekey={turnstileSiteKey} data-size="flexible" />
+    )
+  }
   <p class="nl__err" data-err role="alert" hidden></p>
   <p class="nl__ok" data-ok hidden role="status">Done — we'll email you when the rules change.</p>
 </form>
+{
+  turnstileSiteKey && (
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer is:inline />
+  )
+}
 <style>
   .nl label {
     display: block;
@@ -84,6 +95,7 @@
       email: fd.get('email'),
       marketingConsent: true,
       company: fd.get('company') || undefined,
+      turnstileToken: fd.get('cf-turnstile-response') || undefined,
     };
     if (!payload.email) return;
     try {
