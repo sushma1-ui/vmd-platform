@@ -1,7 +1,10 @@
 ---
 import Client from '../../layouts/Client.astro';
 export const prerender = false;
-const next = Astro.url.searchParams.get('next') ?? '/client/';
+// Only allow a same-origin path as the post-login target (no protocol-relative "//host"
+// or absolute URLs) — prevents an open redirect via ?next=https://evil.example.
+const rawNext = Astro.url.searchParams.get('next') ?? '/client/';
+const next = /^\/(?!\/)/.test(rawNext) ? rawNext : '/client/';
 ---
 
 <Client title="Sign in">
@@ -89,7 +92,9 @@ const next = Astro.url.searchParams.get('next') ?? '/client/';
   import { browserSupabase } from '../../lib/supabase.ts';
   const form = document.querySelector('[data-login]');
   const err = document.querySelector('[data-err]');
-  const next = document.querySelector('[data-next]')?.value || '/client/';
+  const rawNext = document.querySelector('[data-next]')?.value || '/client/';
+  // Same-origin path only (mirror of the server-side guard).
+  const next = /^\/(?!\/)/.test(rawNext) ? rawNext : '/client/';
   const sb = browserSupabase();
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
