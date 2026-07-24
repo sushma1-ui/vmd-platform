@@ -41,7 +41,7 @@ const cp = await getClientPortal();
 
 <style>
   .cpbtn {
-    --cp-bg: var(--color-interactive);
+    --cp-bg: var(--color-interactive-strong);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -71,7 +71,7 @@ const cp = await getClientPortal();
     box-shadow: 0 4px 14px color-mix(in srgb, var(--cp-bg) 45%, transparent);
   }
   .cpbtn:focus-visible {
-    outline: 2px solid var(--cp-bg);
+    outline: 2px solid var(--color-action);
     outline-offset: 2px;
   }
   .cpbtn svg {

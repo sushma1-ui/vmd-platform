@@ -294,9 +294,11 @@ const schemas = [
   }
   .svc__body :global(h2) {
     margin-block: var(--space-6) var(--space-3);
+    scroll-margin-block-start: var(--space-8);
   }
   .svc__body :global(h3) {
     margin-block: var(--space-4) var(--space-2);
+    scroll-margin-block-start: var(--space-8);
   }
   .svc__body :global(p),
   .svc__body :global(ul),
@@ -388,8 +390,8 @@ const schemas = [
   }
   .svc__contact-cta {
     font-weight: 600;
-    color: var(--color-interactive);
-    text-decoration: none;
+    color: var(--color-action);
+    text-decoration: underline;
   }
   .svc__disclaimer {
     margin-block-start: var(--space-7);

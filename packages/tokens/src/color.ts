@@ -28,6 +28,14 @@ export const semanticExtension = {
   critical: '#B42318',
   // A muted ink for secondary text — asserted AA on white and bone.
   inkMuted: '#3B4A63',
+  // A darkened gold that DOES clear AA on light grounds, for the rare case where the
+  // emphasis colour must carry text (eyebrows, rating stars). Brand gold stays for
+  // non-text/on-navy use; this is its accessible text-on-light sibling.
+  emphasisText: '#8A6A2F',
+  // A darkened azure used as a BUTTON BACKGROUND that carries white text at 5.87:1
+  // (brand azure #2589BA is only 3.91:1 with white — fine for borders/focus rings,
+  // not for a filled button). Used by the Client Portal button.
+  interactiveStrong: '#1A6B94',
 } as const;
 
 /**
@@ -40,7 +48,9 @@ export const colorTokens = {
   'color-action-contrast': { value: palette.white, intent: 'text-on-dark' },
   'color-emphasis': { value: palette.gold, intent: 'non-text' },
   'color-emphasis-on-navy': { value: palette.gold, intent: 'text-on-dark' },
+  'color-emphasis-text': { value: semanticExtension.emphasisText, intent: 'text-on-light' },
   'color-interactive': { value: palette.azure, intent: 'ui-only' },
+  'color-interactive-strong': { value: semanticExtension.interactiveStrong, intent: 'ui-only' },
   'color-text': { value: palette.ink, intent: 'text-on-light' },
   'color-text-muted': { value: semanticExtension.inkMuted, intent: 'text-on-light' },
   'color-text-inverse': { value: palette.white, intent: 'text-on-dark' },

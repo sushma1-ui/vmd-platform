@@ -120,12 +120,30 @@ let clientPortalCache: Promise<ClientPortalNav> | null = null;
  * back to @vmd/config CLIENT_PORTAL defaults. The optional colour override is validated
  * as a hex value (defence-in-depth: never inject an arbitrary string into a style).
  */
+/** WCAG contrast ratio of a hex colour against white — the button always uses white text. */
+function contrastWithWhite(hex: string): number {
+  const h = hex.replace('#', '');
+  const full = h.length === 3 ? h.replace(/(.)/g, '$1$1') : h;
+  const lin = (c: number) => {
+    const s = c / 255;
+    return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+  };
+  const r = lin(parseInt(full.slice(0, 2), 16));
+  const g = lin(parseInt(full.slice(2, 4), 16));
+  const b = lin(parseInt(full.slice(4, 6), 16));
+  const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  return 1.05 / (lum + 0.05);
+}
+
 export function getClientPortal(): Promise<ClientPortalNav> {
   clientPortalCache ??= (async () => {
     const s = await getSettings();
     const cp = s?.clientPortal ?? {};
     const raw = (cp.color ?? '').trim();
-    const color = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(raw) ? raw : null;
+    // Accept a CMS colour only if it is a valid hex AND clears AA (4.5:1) against the
+    // white button text — otherwise ignore it and fall back to the accessible default.
+    const isHex = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(raw);
+    const color = isHex && contrastWithWhite(raw) >= 4.5 ? raw : null;
     return {
       enabled: cp.enabled ?? CLIENT_PORTAL.enabled,
       label: cp.label || CLIENT_PORTAL.label,

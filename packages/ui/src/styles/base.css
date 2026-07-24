@@ -62,3 +62,16 @@ svg {
 .skip-link:focus {
   inset-block-start: var(--space-3);
 }
+
+/* Anchor targets clear the sticky header; smooth scroll respects motion prefs. */
+html {
+  scroll-padding-block-start: var(--space-8);
+}
+
+/* Reserve space for the fixed mobile action bar (shown < 1024px on public pages) so
+   it never obscures the last line of content or a focused control (WCAG 2.4.11). */
+@media (max-width: 1023px) {
+  body {
+    padding-block-end: calc(var(--space-8) + env(safe-area-inset-bottom));
+  }
+}
