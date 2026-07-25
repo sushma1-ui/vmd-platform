@@ -1,9 +1,8 @@
 import type { APIRoute } from 'astro';
 import { consultationRequest, scoreLead } from '@vmd/schema';
 import { getSchedulingProvider } from '@vmd/scheduling';
-import { rateLimit } from '@vmd/forms';
+import { rateLimit, verifyTurnstile } from '@vmd/forms';
 import { sendTransactional } from '@vmd/email';
-import { PRACTICE } from '@vmd/config';
 import { createConsultation, patchConsultation, createLead } from '../../lib/cms.ts';
 
 export const prerender = false;
@@ -16,8 +15,18 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   } catch {
     return json({ ok: false }, 400);
   }
+  const raw = (body ?? {}) as Record<string, unknown>;
+  if (raw.company) return json({ ok: true }); // honeypot
+
   const parsed = consultationRequest.safeParse(body);
   if (!parsed.success) return json({ ok: false, fieldErrors: errs(parsed.error.issues) }, 422);
+
+  const okHuman = await verifyTurnstile(
+    raw.turnstileToken as string | undefined,
+    env.TURNSTILE_SECRET_KEY,
+    clientAddress,
+  );
+  if (!okHuman) return json({ ok: false, error: 'Verification failed' }, 400);
 
   if (
     !(await rateLimit(`book:${clientAddress}`, 5, 60, {

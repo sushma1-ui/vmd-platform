@@ -4,6 +4,7 @@
  * required; free-text is dignity. Posts to /api/second-opinion. No exit-intent, no
  * popups anywhere near this — the person is in distress.
  */
+const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
 ---
 
 <form class="so" id="second-opinion" data-so novalidate>
@@ -68,12 +69,30 @@
     ><input type="checkbox" name="sensitive" /> I understand this may involve sensitive personal information
     and that this is general information, not migration advice until we are engaged.</label
   >
+  <input
+    type="text"
+    name="company"
+    tabindex="-1"
+    autocomplete="off"
+    class="so__hp"
+    aria-hidden="true"
+  />
+  {
+    turnstileSiteKey && (
+      <div class="cf-turnstile so__ts" data-sitekey={turnstileSiteKey} data-size="flexible" />
+    )
+  }
   <p class="so__err" data-so-err role="alert" hidden></p>
   <button class="so__submit" type="submit">Request a Second Opinion</button>
   <div class="so__ok" data-so-ok hidden role="status">
     Received. Sunil will review this and reply — priority matters within one business day.
   </div>
 </form>
+{
+  turnstileSiteKey && (
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer is:inline />
+  )
+}
 <style>
   .so {
     border: 1px solid color-mix(in srgb, var(--color-action) 14%, transparent);
@@ -135,6 +154,10 @@
     font-weight: 500;
     cursor: pointer;
   }
+  .so__hp {
+    position: absolute;
+    left: -9999px;
+  }
   .so__err {
     color: var(--color-critical);
     font-size: var(--type-body-sm);
@@ -163,6 +186,7 @@
       const payload = Object.fromEntries(fd.entries());
       payload.hasDocument = false;
       payload.sensitiveInfoAcknowledged = fd.get('sensitive') === 'on';
+      payload.turnstileToken = fd.get('cf-turnstile-response') || undefined;
       if (!payload.firstName || !payload.email || !payload.mobile) {
         err.textContent = 'Please enter your name, email and mobile so we can respond quickly.';
         err.hidden = false;

@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import { secondOpinionIntake, scoreLead } from '@vmd/schema';
-import { rateLimit } from '@vmd/forms';
+import { rateLimit, verifyTurnstile } from '@vmd/forms';
 import { sendTransactional } from '@vmd/email';
 import { PRACTICE } from '@vmd/config';
 import { createLead } from '../../lib/cms.ts';
@@ -15,8 +15,18 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   } catch {
     return json({ ok: false }, 400);
   }
+  const raw = (body ?? {}) as Record<string, unknown>;
+  if (raw.company) return json({ ok: true }); // honeypot
+
   const parsed = secondOpinionIntake.safeParse(body);
   if (!parsed.success) return json({ ok: false, fieldErrors: fieldErrs(parsed.error.issues) }, 422);
+
+  const okHuman = await verifyTurnstile(
+    raw.turnstileToken as string | undefined,
+    env.TURNSTILE_SECRET_KEY,
+    clientAddress,
+  );
+  if (!okHuman) return json({ ok: false, error: 'Verification failed' }, 400);
 
   const underLimit = await rateLimit(`so:${clientAddress}`, 5, 60, {
     url: env.UPSTASH_REDIS_REST_URL,
