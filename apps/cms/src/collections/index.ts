@@ -9,7 +9,6 @@ import { Situations } from './Situations.ts';
 import { FAQs } from './FAQs.ts';
 import { Testimonials } from './Testimonials.ts';
 import { CaseStudies } from './CaseStudies.ts';
-import { GrantLedger } from './GrantLedger.ts';
 import { ProcessingTimes } from './ProcessingTimes.ts';
 import { PinnedReviews } from './PinnedReviews.ts';
 import { SuccessStories } from './SuccessStories.ts';
@@ -29,7 +28,6 @@ export const collections = [
   FAQs,
   Testimonials,
   CaseStudies,
-  GrantLedger,
   ProcessingTimes,
   PinnedReviews,
   SuccessStories,

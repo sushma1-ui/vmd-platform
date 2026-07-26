@@ -77,7 +77,6 @@ export interface Config {
     faqs: Faq;
     testimonials: Testimonial;
     'case-studies': CaseStudy;
-    'grant-ledger': GrantLedger;
     'processing-times': ProcessingTime;
     'pinned-reviews': PinnedReview;
     'success-stories': SuccessStory;
@@ -102,7 +101,6 @@ export interface Config {
     faqs: FaqsSelect<false> | FaqsSelect<true>;
     testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
     'case-studies': CaseStudiesSelect<false> | CaseStudiesSelect<true>;
-    'grant-ledger': GrantLedgerSelect<false> | GrantLedgerSelect<true>;
     'processing-times': ProcessingTimesSelect<false> | ProcessingTimesSelect<true>;
     'pinned-reviews': PinnedReviewsSelect<false> | PinnedReviewsSelect<true>;
     'success-stories': SuccessStoriesSelect<false> | SuccessStoriesSelect<true>;
@@ -840,25 +838,6 @@ export interface CaseStudy {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "grant-ledger".
- */
-export interface GrantLedger {
-  id: number;
-  subclassCode: string;
-  subclass?: (number | null) | Subclass;
-  outcome: 'granted' | 'nomination-approved' | 'set-aside' | 'favourable-review';
-  decisionDate: string;
-  /**
-   * Coarse, non-identifying, e.g. "RN, offshore". No names.
-   */
-  descriptor: string;
-  consentRecorded: boolean;
-  status?: ('draft' | 'published') | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "processing-times".
  */
 export interface ProcessingTime {
@@ -1096,10 +1075,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'case-studies';
         value: number | CaseStudy;
-      } | null)
-    | ({
-        relationTo: 'grant-ledger';
-        value: number | GrantLedger;
       } | null)
     | ({
         relationTo: 'processing-times';
@@ -1638,21 +1613,6 @@ export interface CaseStudiesSelect<T extends boolean = true> {
         canonicalUrl?: T;
         noindex?: T;
       };
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "grant-ledger_select".
- */
-export interface GrantLedgerSelect<T extends boolean = true> {
-  subclassCode?: T;
-  subclass?: T;
-  outcome?: T;
-  decisionDate?: T;
-  descriptor?: T;
-  consentRecorded?: T;
-  status?: T;
   updatedAt?: T;
   createdAt?: T;
 }

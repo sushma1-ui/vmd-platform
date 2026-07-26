@@ -9,8 +9,8 @@ import type { SiteSettings } from '@vmd/schema';
 
 /**
  * Results hub — the "evidence, not testimony" entry. Three surfaces, ordered by weight of
- * proof: the Grant Ledger (record), Case Studies (worked matters), Reviews (third-party
- * corroboration). The aggregate rating is DATA from Settings, shown only when present.
+ * proof: Success Stories (client results), Case Studies (worked matters), Reviews (third-
+ * party corroboration). The aggregate rating is DATA from Settings, shown only when present.
  */
 const settings: SiteSettings | null = await getSettings();
 const gr = settings?.googleReviews;
@@ -19,7 +19,7 @@ const trail = pathnameToTrail(Astro.url.pathname);
 
 <Base
   title="Results — evidence, not testimony"
-  description="How we show our work: a dated Grant Ledger, anonymised case studies, and verified Google reviews. Evidence you can check — no success rates, no cherry-picked promises."
+  description="How we show our work: client success stories, anonymised case studies, and verified Google reviews. Evidence you can check — no success rates, no cherry-picked promises."
   schemas={[breadcrumbSchema(trail)]}
 >
   <section class="rs-hero">

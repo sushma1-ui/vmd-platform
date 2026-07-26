@@ -5,14 +5,7 @@
  * honest empty states without a live CMS. Types come from @vmd/schema.
  */
 import { CTA_ROUTES, CLIENT_PORTAL } from '@vmd/config';
-import type {
-  ArticleMeta,
-  CaseStudy,
-  Testimonial,
-  PinnedReview,
-  GrantLedgerEntry,
-  SiteSettings,
-} from '@vmd/schema';
+import type { ArticleMeta, CaseStudy, Testimonial, PinnedReview, SiteSettings } from '@vmd/schema';
 
 const BASE = import.meta.env.PUBLIC_CMS_URL ?? 'http://localhost:3000';
 
@@ -64,11 +57,6 @@ export const cms = {
     null,
   subclassesForService: (serviceId: string) =>
     query('subclasses', { 'where[service][equals]': serviceId, depth: '1' }),
-  grantLedger: (subclassCode?: string) =>
-    query<GrantLedgerEntry>(
-      'grant-ledger',
-      subclassCode ? { 'where[subclassCode][equals]': subclassCode } : {},
-    ),
   processingTimes: () => query('processing-times'),
   faqs: (subclass?: string) =>
     query('faqs', subclass ? { 'where[subclass][equals]': subclass } : {}),

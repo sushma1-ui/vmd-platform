@@ -22,7 +22,6 @@ const { sub } = Astro.props;
 const path = Astro.url.pathname;
 const strip = (html: string) => html.replace(/<[^>]+>/g, '').trim();
 const faqs = sub.faqs?.length ? sub.faqs : await cms.faqs(sub.id);
-const ledger = await cms.grantLedger(sub.code);
 const resources = sub.relatedResources ?? [];
 const relServices = sub.relatedServices ?? [];
 const relVisas = sub.relatedVisas ?? [];
@@ -280,24 +279,10 @@ const schemas = [
       <!-- 13 · SUCCESS STORIES (consented, no rates) -->
       <section class="sh-sec">
         <h2 class="sh-h">Results for {sub.code}</h2>
-        {
-          ledger.length > 0 ? (
-            <ul class="sh-ledger">
-              {ledger.map((e: any) => (
-                <li>
-                  <Chip tone="positive">{e.outcome}</Chip>{' '}
-                  {e.decisionDate && new Date(e.decisionDate).toLocaleDateString('en-AU')} —{' '}
-                  {e.descriptor}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <div class="sh-empty">
-              Grants and favourable reviews for {sub.code} appear here as client consent is
-              confirmed — dated, anonymised, no names or success rates.
-            </div>
-          )
-        }
+        <p class="sh-empty">
+          See our <a href="/results/success-stories/">client success stories</a> — testimonials, videos
+          and redacted grant letters, shared with each client's permission.
+        </p>
         {
           testimonials.length > 0 && (
             <div class="sh-testis">
@@ -528,14 +513,6 @@ const schemas = [
   .sh-sec--wrong .sh-mistakes {
     border-inline-start: 3px solid var(--color-emphasis);
     padding-block: var(--space-2);
-  }
-  .sh-ledger {
-    list-style: none;
-    padding: 0;
-  }
-  .sh-ledger li {
-    padding-block: var(--space-2);
-    border-block-end: 1px solid color-mix(in srgb, var(--color-action) 8%, transparent);
   }
   .sh-empty {
     border: 1px dashed color-mix(in srgb, var(--color-emphasis) 55%, transparent);

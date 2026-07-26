@@ -12,24 +12,6 @@ import { z } from 'zod';
 const relationship = z.union([z.string(), z.record(z.string(), z.unknown())]).optional();
 const lexical = z.unknown().optional();
 
-export const grantLedgerOutcome = z.enum([
-  'granted',
-  'nomination-approved',
-  'set-aside',
-  'favourable-review',
-]);
-export type GrantLedgerOutcome = z.infer<typeof grantLedgerOutcome>;
-
-/** Grant Ledger row — dated, anonymised, subclass-tagged. NEVER names or percentages. */
-export const grantLedgerEntry = z.object({
-  id: z.string(),
-  subclassCode: z.string(),
-  outcome: grantLedgerOutcome,
-  decisionDate: z.string(),
-  descriptor: z.string(),
-});
-export type GrantLedgerEntry = z.infer<typeof grantLedgerEntry>;
-
 export const testimonial = z.object({
   id: z.string(),
   name: z.string(),

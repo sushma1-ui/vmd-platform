@@ -11,7 +11,7 @@ const LABELS: Record<string, string> = {
   'visitor-visas': 'Visitor Visas',
   'refusals-and-appeals': 'Refusals & Appeals',
   'sunil-uprety': 'Sunil Uprety, RMA',
-  'grant-ledger': 'Grant Ledger',
+  'success-stories': 'Success Stories',
   'case-studies': 'Case Studies',
   'processing-times': 'Processing Times',
   'moving-to-perth': 'Moving to Perth',
