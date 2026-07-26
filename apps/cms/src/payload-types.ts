@@ -122,12 +122,16 @@ export interface Config {
     homepage: Homepage;
     settings: Setting;
     navigation: Navigation;
+    footer: Footer;
+    'social-media': SocialMedia;
     disclaimers: Disclaimer;
   };
   globalsSelect: {
     homepage: HomepageSelect<false> | HomepageSelect<true>;
     settings: SettingsSelect<false> | SettingsSelect<true>;
     navigation: NavigationSelect<false> | NavigationSelect<true>;
+    footer: FooterSelect<false> | FooterSelect<true>;
+    'social-media': SocialMediaSelect<false> | SocialMediaSelect<true>;
     disclaimers: DisclaimersSelect<false> | DisclaimersSelect<true>;
   };
   locale: 'en';
@@ -2060,6 +2064,49 @@ export interface Navigation {
   createdAt?: string | null;
 }
 /**
+ * The link columns in the site footer. The address, phone and legal line come from Global Settings.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer".
+ */
+export interface Footer {
+  id: number;
+  /**
+   * Each column has a heading and a list of links. Leave empty to use the site defaults.
+   */
+  columns?:
+    | {
+        heading: string;
+        links?:
+          | {
+              label: string;
+              href: string;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Links to your social profiles. Blank fields simply hide that icon on the site.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "social-media".
+ */
+export interface SocialMedia {
+  id: number;
+  facebook?: string | null;
+  instagram?: string | null;
+  linkedin?: string | null;
+  tiktok?: string | null;
+  youtube?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "disclaimers".
  */
@@ -2291,6 +2338,42 @@ export interface NavigationSelect<T extends boolean = true> {
         href?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer_select".
+ */
+export interface FooterSelect<T extends boolean = true> {
+  columns?:
+    | T
+    | {
+        heading?: T;
+        links?:
+          | T
+          | {
+              label?: T;
+              href?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "social-media_select".
+ */
+export interface SocialMediaSelect<T extends boolean = true> {
+  facebook?: T;
+  instagram?: T;
+  linkedin?: T;
+  tiktok?: T;
+  youtube?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
