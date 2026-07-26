@@ -261,6 +261,60 @@ export function getHomepage(): Promise<HomepageContent | null> {
   return homepageCache;
 }
 
+// --- Footer global (link columns) ------------------------------------------
+export type FooterColumn = { heading: string; links: { label: string; href: string }[] };
+let footerCache: Promise<FooterColumn[] | null> | null = null;
+
+/** Footer link columns from the CMS, or null to use the site defaults. Memoised. */
+export function getFooterColumns(): Promise<FooterColumn[] | null> {
+  footerCache ??= (async () => {
+    try {
+      const res = await fetch(`${BASE}/api/globals/footer?depth=0`);
+      if (!res.ok) return null;
+      const data = (await res.json()) as { columns?: FooterColumn[] };
+      const cols = (data.columns ?? []).filter((c) => c?.heading && c.links?.length);
+      return cols.length ? cols : null;
+    } catch {
+      return null;
+    }
+  })();
+  return footerCache;
+}
+
+// --- Social Media global ----------------------------------------------------
+export type SocialLinksMap = {
+  facebook?: string | null;
+  instagram?: string | null;
+  linkedin?: string | null;
+  tiktok?: string | null;
+  youtube?: string | null;
+};
+let socialCache: Promise<SocialLinksMap> | null = null;
+
+/** Social profile URLs from the CMS. Empty object if unreachable, so callers
+ *  fall back to @vmd/config PRACTICE.social. Only http(s) URLs are returned. */
+export function getSocialLinks(): Promise<SocialLinksMap> {
+  socialCache ??= (async () => {
+    try {
+      const res = await fetch(`${BASE}/api/globals/social-media?depth=0`);
+      if (!res.ok) return {};
+      const raw = (await res.json()) as SocialLinksMap;
+      const safe = (v: unknown): string | undefined =>
+        typeof v === 'string' && /^https?:\/\//i.test(v.trim()) ? v.trim() : undefined;
+      return {
+        facebook: safe(raw.facebook),
+        instagram: safe(raw.instagram),
+        linkedin: safe(raw.linkedin),
+        tiktok: safe(raw.tiktok),
+        youtube: safe(raw.youtube),
+      };
+    } catch {
+      return {};
+    }
+  })();
+  return socialCache;
+}
+
 /**
  * Read editor-managed redirects. The Redirects collection is world-readable and has
  * NO status field, so it can't go through query() (which forces where[status]=published).

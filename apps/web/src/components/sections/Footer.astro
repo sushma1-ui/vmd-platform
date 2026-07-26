@@ -2,7 +2,8 @@
 import { PRACTICE, RMA_LINE } from '@vmd/config';
 import { Disclaimer } from '@vmd/ui';
 import SocialLinks from './SocialLinks.astro';
-const cols = [
+import { getFooterColumns } from '../../lib/cms.ts';
+const colsFallback = [
   {
     h: 'Our Services',
     links: [
@@ -42,6 +43,11 @@ const cols = [
     ],
   },
 ];
+// Prefer CMS-managed footer columns; fall back to the built-in defaults.
+const cmsCols = await getFooterColumns();
+const cols = cmsCols
+  ? cmsCols.map((c) => ({ h: c.heading, links: c.links.map((l) => [l.label, l.href] as const) }))
+  : colsFallback;
 ---
 
 <footer class="footer">
