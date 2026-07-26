@@ -54,18 +54,19 @@ Add another project from the **same repo**:
 
 **Environment variables:**
 
-| Key                                                  | Value                                                        | Enables                    |
-| ---------------------------------------------------- | ------------------------------------------------------------ | -------------------------- |
-| `PUBLIC_CMS_URL`                                     | the CMS URL from Project 1 (e.g. `https://<cms>.vercel.app`) | **content** (required)     |
-| `PUBLIC_SITE_URL`                                    | the website URL / final domain                               | canonical URLs             |
-| `PAYLOAD_API_KEY`                                    | see "API key" below                                          | storing leads in the CMS   |
-| `POSTMARK_SERVER_TOKEN` + `POSTMARK_FROM_EMAIL`      | Postmark                                                     | enquiry + team emails      |
-| `ADMIN_NOTIFICATION_EMAIL`                           | your team inbox                                              | team lead alerts           |
-| `TURNSTILE_SECRET_KEY` + `PUBLIC_TURNSTILE_SITE_KEY` | Cloudflare Turnstile                                         | form spam protection       |
-| `PUBLIC_SUPABASE_URL` + `PUBLIC_SUPABASE_ANON_KEY`   | Supabase                                                     | client portal              |
-| `UPSTASH_REDIS_REST_URL` + `_TOKEN`                  | Upstash                                                      | production rate limiting   |
-| `HUBSPOT_ACCESS_TOKEN`                               | HubSpot                                                      | CRM sync (optional)        |
-| `REVALIDATE_SECRET`                                  | any long random string (also set the same in the CMS)        | on-publish content refresh |
+| Key                                                  | Value                                                        | Enables                                                                                       |
+| ---------------------------------------------------- | ------------------------------------------------------------ | --------------------------------------------------------------------------------------------- |
+| `PUBLIC_CMS_URL`                                     | the CMS URL from Project 1 (e.g. `https://<cms>.vercel.app`) | **content** (required)                                                                        |
+| `PUBLIC_SITE_URL`                                    | the website URL / final domain                               | canonical URLs                                                                                |
+| `PAYLOAD_API_KEY`                                    | see "API key" below                                          | storing leads in the CMS                                                                      |
+| `POSTMARK_SERVER_TOKEN` + `POSTMARK_FROM_EMAIL`      | Postmark                                                     | enquiry + team emails                                                                         |
+| `ADMIN_NOTIFICATION_EMAIL`                           | your team inbox                                              | team lead alerts                                                                              |
+| `TURNSTILE_SECRET_KEY` + `PUBLIC_TURNSTILE_SITE_KEY` | Cloudflare Turnstile                                         | form spam protection                                                                          |
+| `PUBLIC_SUPABASE_URL` + `PUBLIC_SUPABASE_ANON_KEY`   | Supabase                                                     | client portal                                                                                 |
+| `UPSTASH_REDIS_REST_URL` + `_TOKEN`                  | Upstash                                                      | production rate limiting                                                                      |
+| `HUBSPOT_ACCESS_TOKEN`                               | HubSpot                                                      | CRM sync (optional)                                                                           |
+| `REVALIDATE_SECRET`                                  | any long random string (also set the same in the CMS)        | on-publish content refresh                                                                    |
+| `GOOGLE_PLACES_API_KEY` + `GOOGLE_PLACE_ID`          | Google Cloud (Places API New) key + your Place ID            | **live Google Reviews** (optional; shows a neutral "read on Google" panel until both are set) |
 
 **API key** (so the website can save leads to the CMS): in the CMS admin → **Users** →
 create a user with role **agent**, tick **Enable API Key**, save, copy the generated key
