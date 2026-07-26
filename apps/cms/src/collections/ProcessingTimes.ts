@@ -5,6 +5,7 @@ import { publishedOrEditorial, isEditorial } from '../access/index.ts';
 export const ProcessingTimes: CollectionConfig = {
   slug: 'processing-times',
   admin: {
+    group: 'Visa Reference',
     useAsTitle: 'subclassCode',
     defaultColumns: ['subclassCode', 'currentEstimate', 'lastVerifiedAt'],
   },

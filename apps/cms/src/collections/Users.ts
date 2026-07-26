@@ -11,6 +11,7 @@ export const Users: CollectionConfig = {
   slug: 'users',
   auth: { useAPIKey: true },
   admin: {
+    group: 'System',
     useAsTitle: 'email',
     // Only staff can open the admin UI at all — a 'client' account cannot reach the
     // Payload dashboard shell (belt-and-braces with per-collection access below).

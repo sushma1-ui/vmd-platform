@@ -18,6 +18,9 @@ export const ServicePages: CollectionConfig = {
   slug: 'service-pages',
   labels: { singular: 'Service Page', plural: 'Service Pages (Our Services)' },
   admin: {
+    group: 'Website Content',
+    description:
+      'The "Our Services" pages (visa and service pages shown on the website). Edit the hero, body, FAQ, CTA and SEO here.',
     useAsTitle: 'title',
     defaultColumns: ['title', 'status', 'featured', 'publishedAt', 'updatedAt'],
   },

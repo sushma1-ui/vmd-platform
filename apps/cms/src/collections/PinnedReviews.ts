@@ -8,7 +8,7 @@ import { publishedOrEditorial, isEditorial } from '../access/index.ts';
  */
 export const PinnedReviews: CollectionConfig = {
   slug: 'pinned-reviews',
-  admin: { useAsTitle: 'reviewerName' },
+  admin: { group: 'Client Results', useAsTitle: 'reviewerName' },
   access: {
     read: publishedOrEditorial,
     create: isEditorial,

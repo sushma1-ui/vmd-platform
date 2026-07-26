@@ -8,6 +8,7 @@ import { isAdmin } from '../access/index.ts';
 export const AuditLog: CollectionConfig = {
   slug: 'audit-log',
   admin: {
+    group: 'System',
     useAsTitle: 'action',
     defaultColumns: ['action', 'collectionSlug', 'docId', 'user', 'createdAt'],
   },

@@ -11,7 +11,11 @@ import { seoField, reviewedByField } from '../fields/index.ts';
  */
 export const Subclasses: CollectionConfig = {
   slug: 'subclasses',
-  admin: { useAsTitle: 'name', defaultColumns: ['code', 'name', 'complexity', 'status'] },
+  admin: {
+    group: 'Visa Reference',
+    useAsTitle: 'name',
+    defaultColumns: ['code', 'name', 'complexity', 'status'],
+  },
   access: {
     read: publishedOrEditorial,
     create: isEditorial,

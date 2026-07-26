@@ -7,6 +7,7 @@ import { anyone, isAdmin } from '../access/index.ts';
  */
 export const Disclaimers: GlobalConfig = {
   slug: 'disclaimers',
+  admin: { group: 'Site Settings' },
   access: { read: anyone, update: isAdmin },
   fields: [
     { name: 'outcomes', type: 'textarea' },

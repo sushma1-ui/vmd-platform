@@ -10,7 +10,13 @@ import { setPublishedAt } from '../hooks/index.ts';
  */
 export const Articles: CollectionConfig = {
   slug: 'articles',
-  admin: { useAsTitle: 'title', defaultColumns: ['title', 'category', 'status', 'publishedAt'] },
+  admin: {
+    group: 'Website Content',
+    description:
+      'Blog posts and resource articles. Draft, then set status to Published to go live.',
+    useAsTitle: 'title',
+    defaultColumns: ['title', 'category', 'status', 'publishedAt'],
+  },
   access: {
     read: publishedOrEditorial,
     create: isEditorial,

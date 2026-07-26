@@ -11,6 +11,7 @@ import { isEditorial, isAgent } from '../access/index.ts';
 export const Leads: CollectionConfig = {
   slug: 'leads',
   admin: {
+    group: 'Enquiries',
     useAsTitle: 'email',
     defaultColumns: ['submissionId', 'email', 'source', 'status', 'createdAt'],
   },

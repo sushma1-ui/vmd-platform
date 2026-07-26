@@ -8,7 +8,11 @@ import { isEditorial, isAgent } from '../access/index.ts';
  */
 export const Consultations: CollectionConfig = {
   slug: 'consultations',
-  admin: { useAsTitle: 'email', defaultColumns: ['email', 'type', 'status', 'createdAt'] },
+  admin: {
+    group: 'Enquiries',
+    useAsTitle: 'email',
+    defaultColumns: ['email', 'type', 'status', 'createdAt'],
+  },
   access: { read: isEditorial, create: isAgent, update: isEditorial, delete: isEditorial },
   fields: [
     {

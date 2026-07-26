@@ -14,6 +14,7 @@ export const SuccessStories: CollectionConfig = {
   slug: 'success-stories',
   labels: { singular: 'Success Story', plural: 'Success Stories (Client Results)' },
   admin: {
+    group: 'Client Results',
     useAsTitle: 'title',
     defaultColumns: ['title', 'type', 'category', 'featured', 'order', 'status'],
   },

@@ -4,7 +4,7 @@ import { publishedOrEditorial, isEditorial } from '../access/index.ts';
 /** Testimonials — name · situation · subclass · date · consented (Blueprint §10.3). */
 export const Testimonials: CollectionConfig = {
   slug: 'testimonials',
-  admin: { useAsTitle: 'name' },
+  admin: { group: 'Client Results', useAsTitle: 'name' },
   access: {
     read: publishedOrEditorial,
     create: isEditorial,

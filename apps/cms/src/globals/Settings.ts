@@ -8,6 +8,7 @@ import { anyone, isAdmin } from '../access/index.ts';
  */
 export const Settings: GlobalConfig = {
   slug: 'settings',
+  admin: { group: 'Site Settings' },
   access: { read: anyone, update: isAdmin },
   fields: [
     {

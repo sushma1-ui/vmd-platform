@@ -10,7 +10,7 @@ import { seoField, reviewedByField } from '../fields/index.ts';
  */
 export const Services: CollectionConfig = {
   slug: 'services',
-  admin: { useAsTitle: 'title', defaultColumns: ['title', 'status'] },
+  admin: { group: 'Visa Reference', useAsTitle: 'title', defaultColumns: ['title', 'status'] },
   access: {
     read: publishedOrEditorial,
     create: isEditorial,
