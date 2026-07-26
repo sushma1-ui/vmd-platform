@@ -1,20 +1,39 @@
 ---
 import SimplePage from '../../components/content/SimplePage.astro';
+import { getAboutPage } from '../../lib/cms.ts';
+
+// CMS-editable About copy, falling back to the built-in text if the global is empty.
+const a = await getAboutPage();
+const bodyParas = (a?.body ?? []).map((p) => p?.text).filter((t): t is string => !!t);
 ---
 
 <SimplePage
-  title="About the Practice"
-  description="A boutique, appointment-only migration practice in Perth, led by a Registered Migration Agent."
-  eyebrow="The practice"
-  lead="Why the clinical frame — Diagnosis, Pathway, Outcome — and what we will not do."
-  cta={{ href: '/about/sunil-uprety/', label: 'Meet Sunil Uprety, RMA' }}
+  title={a?.title || 'About the Practice'}
+  description={a?.seo?.metaDescription ||
+    'A boutique, appointment-only migration practice in Perth, led by a Registered Migration Agent.'}
+  eyebrow={a?.eyebrow || 'The practice'}
+  lead={a?.lead ||
+    'Why the clinical frame — Diagnosis, Pathway, Outcome — and what we will not do.'}
+  cta={{
+    href: a?.ctaHref || '/about/sunil-uprety/',
+    label: a?.ctaLabel || 'Meet Sunil Uprety, RMA',
+  }}
   disclaimer={true}
 >
-  <p>
-    Visa & Migration Doctors is a boutique, appointment-only practice in Perth. You speak to the
-    registered agent, not a salesperson.
-  </p><p>
-    <strong>What we will not do:</strong> guarantee an outcome, quote a success rate, or take a matter
-    we don't believe we can help with.
-  </p>
+  {
+    bodyParas.length > 0 ? (
+      bodyParas.map((t) => <p>{t}</p>)
+    ) : (
+      <>
+        <p>
+          Visa & Migration Doctors is a boutique, appointment-only practice in Perth. You speak to
+          the registered agent, not a salesperson.
+        </p>
+        <p>
+          <strong>What we will not do:</strong> guarantee an outcome, quote a success rate, or take
+          a matter we don't believe we can help with.
+        </p>
+      </>
+    )
+  }
 </SimplePage>

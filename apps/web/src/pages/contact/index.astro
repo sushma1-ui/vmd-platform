@@ -2,39 +2,53 @@
 import Base from '../../layouts/Base.astro';
 import { breadcrumbSchema, localBusinessSchema } from '@vmd/seo';
 import { PRACTICE } from '@vmd/config';
+import { getContactPage } from '../../lib/cms.ts';
 import EnquiryForm from '../../components/islands/EnquiryForm.island.astro';
 const trail = [
   { name: 'Home', path: '/' },
   { name: 'Contact', path: '/contact/' },
 ];
+// CMS-editable Contact copy; phone/email/address stay single-sourced from config.
+const c = await getContactPage();
 ---
 
 <Base
-  title="Contact"
-  description="Contact Visa & Migration Doctors, Perth — phone, email or WhatsApp. Appointment-only, in person in Perth CBD or online."
+  title={c?.title || 'Contact'}
+  description={c?.seo?.metaDescription ||
+    'Contact Visa & Migration Doctors, Perth — phone, email or WhatsApp. Appointment-only, in person in Perth CBD or online.'}
   schemas={[localBusinessSchema(), breadcrumbSchema(trail)]}
 >
   <section class="ct">
     <div class="ct__intro">
-      <p class="ct__eyebrow">Contact</p>
-      <h1 class="ct__title">Talk to a registered agent</h1>
+      <p class="ct__eyebrow">{c?.eyebrow || 'Contact'}</p>
+      <h1 class="ct__title">{c?.title || 'Talk to a registered agent'}</h1>
       <p class="ct__lead">
-        An appointment-only practice — a CBD address you can check, and three ways to reach a human.
+        {
+          c?.lead ||
+            'An appointment-only practice — a CBD address you can check, and three ways to reach a human.'
+        }
       </p>
       <ul class="ct__channels">
         <li>
           <strong>Phone</strong>
-          <a href={`tel:${PRACTICE.contact.phone}`}>{PRACTICE.contact.phoneDisplay}</a> · Mon–Fri 9–5
-          AWST
+          <a href={`tel:${PRACTICE.contact.phone}`}>{PRACTICE.contact.phoneDisplay}</a> · {
+            c?.hoursNote || 'Mon–Fri 9–5 AWST'
+          }
         </li>
         <li>
           <strong>Email</strong>
           <a href={`mailto:${PRACTICE.contact.email}`}>{PRACTICE.contact.email}</a>
         </li>
-        <li>
-          <strong>WhatsApp</strong>
-          <a href="https://wa.me/61493719431" rel="noopener">Message us</a>
-        </li>
+        {
+          (c?.whatsappUrl ?? 'https://wa.me/61493719431') && (
+            <li>
+              <strong>WhatsApp</strong>
+              <a href={c?.whatsappUrl || 'https://wa.me/61493719431'} rel="noopener">
+                Message us
+              </a>
+            </li>
+          )
+        }
         <li>
           <strong>Office</strong>
           {PRACTICE.address.street}, {PRACTICE.address.locality}
@@ -44,7 +58,7 @@ const trail = [
       </ul>
     </div>
     <div class="ct__form">
-      <EnquiryForm source="general-enquiry" heading="Send an enquiry" />
+      <EnquiryForm source="general-enquiry" heading={c?.formHeading || 'Send an enquiry'} />
     </div>
   </section>
 </Base>

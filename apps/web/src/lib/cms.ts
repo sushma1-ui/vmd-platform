@@ -261,6 +261,47 @@ export function getHomepage(): Promise<HomepageContent | null> {
   return homepageCache;
 }
 
+// --- About / Contact page globals ------------------------------------------
+export interface AboutContent {
+  eyebrow?: string | null;
+  title?: string | null;
+  lead?: string | null;
+  body?: { text?: string | null }[] | null;
+  ctaLabel?: string | null;
+  ctaHref?: string | null;
+  seo?: { metaTitle?: string | null; metaDescription?: string | null } | null;
+}
+export interface ContactContent {
+  eyebrow?: string | null;
+  title?: string | null;
+  lead?: string | null;
+  hoursNote?: string | null;
+  whatsappUrl?: string | null;
+  formHeading?: string | null;
+  seo?: { metaTitle?: string | null; metaDescription?: string | null } | null;
+}
+async function getGlobal<T>(slug: string): Promise<T | null> {
+  try {
+    const res = await fetch(`${BASE}/api/globals/${slug}?depth=0`);
+    if (!res.ok) return null;
+    return (await res.json()) as T;
+  } catch {
+    return null;
+  }
+}
+let aboutCache: Promise<AboutContent | null> | null = null;
+let contactCache: Promise<ContactContent | null> | null = null;
+/** About page copy (published), or null to use built-in defaults. Memoised. */
+export function getAboutPage(): Promise<AboutContent | null> {
+  aboutCache ??= getGlobal<AboutContent>('about-page');
+  return aboutCache;
+}
+/** Contact page copy (published), or null to use built-in defaults. Memoised. */
+export function getContactPage(): Promise<ContactContent | null> {
+  contactCache ??= getGlobal<ContactContent>('contact-page');
+  return contactCache;
+}
+
 // --- Footer global (link columns) ------------------------------------------
 export type FooterColumn = { heading: string; links: { label: string; href: string }[] };
 let footerCache: Promise<FooterColumn[] | null> | null = null;
