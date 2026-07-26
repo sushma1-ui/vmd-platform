@@ -15,11 +15,20 @@ import { getGoogleReviews } from '../../lib/google-reviews.ts';
 interface Props {
   /** Fallback Google profile URL (from CMS Settings) if the API omits one. */
   profileUrl?: string | null;
-  /** How many review cards to show (Google exposes up to 5). */
+  /** How many review cards to show (Google exposes up to 5). CMS-controlled. */
   limit?: number;
+  /** Section heading (CMS-controlled). */
+  heading?: string | null;
+  /** Intro line under the heading (CMS-controlled). */
+  intro?: string | null;
 }
 
-const { profileUrl = null, limit = 3 } = Astro.props;
+const {
+  profileUrl = null,
+  limit = 3,
+  heading = 'Google Reviews',
+  intro = 'Placed here, after the evidence and the person, reviews read as corroboration — not advertising.',
+} = Astro.props;
 
 const data = await getGoogleReviews();
 const reviews = data.reviews.slice(0, limit);
@@ -35,7 +44,8 @@ const stars = (n: number) => '★★★★★'.slice(0, n) + '☆☆☆☆☆'.s
     <div>
       <p class="eyebrow">Attested — third parties speak</p>
       <h2 class="section__h" id="reviews-h">
-        <span aria-hidden="true">★★★★★</span> Google Reviews
+        <span aria-hidden="true">★★★★★</span>
+        {heading}
       </h2>
       {
         ratingLabel && data.total != null && (
@@ -45,10 +55,7 @@ const stars = (n: number) => '★★★★★'.slice(0, n) + '☆☆☆☆☆'.s
           </p>
         )
       }
-      <p class="section__sub">
-        Placed here, after the evidence and the person, reviews read as corroboration — not
-        advertising.
-      </p>
+      {intro && <p class="section__sub">{intro}</p>}
       <a
         class="reviews__link"
         href={href}

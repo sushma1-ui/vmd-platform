@@ -159,6 +159,108 @@ export async function getSettings(): Promise<SiteSettings | null> {
   }
 }
 
+// --- Homepage global (tabbed, section-by-section editing) -------------------
+type Link = { label?: string | null; href?: string | null } | null;
+/** Shape of the Homepage global. Every field optional: the page falls back to
+ *  its built-in copy when a field (or the whole global) is absent. */
+export interface HomepageContent {
+  hero?: {
+    eyebrow?: string | null;
+    title?: string | null;
+    lead?: string | null;
+    primaryCta?: Link;
+    secondaryCta?: Link;
+  };
+  situations?: {
+    show?: boolean | null;
+    heading?: string | null;
+    intro?: string | null;
+    items?: { label?: string | null; description?: string | null; href?: string | null }[] | null;
+  };
+  whyChoose?: {
+    show?: boolean | null;
+    heading?: string | null;
+    intro?: string | null;
+    promises?: { text?: string | null }[] | null;
+  };
+  successStories?: {
+    show?: boolean | null;
+    eyebrow?: string | null;
+    heading?: string | null;
+    intro?: string | null;
+    link?: Link;
+  };
+  featuredServices?: {
+    show?: boolean | null;
+    heading?: string | null;
+    intro?: string | null;
+    seeAll?: Link;
+    secondaryLink?: Link;
+  };
+  howWeWork?: {
+    show?: boolean | null;
+    heading?: string | null;
+    intro?: string | null;
+    steps?: { label?: string | null; description?: string | null }[] | null;
+  };
+  practitioner?: {
+    show?: boolean | null;
+    eyebrow?: string | null;
+    heading?: string | null;
+    body?: { text?: string | null }[] | null;
+    button?: Link;
+  };
+  googleReviews?: {
+    show?: boolean | null;
+    heading?: string | null;
+    intro?: string | null;
+    count?: number | null;
+  };
+  featuredBlogs?: {
+    show?: boolean | null;
+    heading?: string | null;
+    intro?: string | null;
+    link?: Link;
+  };
+  faqs?: {
+    show?: boolean | null;
+    heading?: string | null;
+    intro?: string | null;
+    items?: { question?: string | null; answer?: string | null }[] | null;
+  };
+  finalCta?: {
+    show?: boolean | null;
+    heading?: string | null;
+    lead?: string | null;
+    buttonLabel?: string | null;
+    promise?: string | null;
+  };
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    noindex?: boolean | null;
+  } | null;
+}
+let homepageCache: Promise<HomepageContent | null> | null = null;
+
+/**
+ * Read the Homepage global (published version). Memoised per build. Returns null
+ * if unreachable so the homepage renders entirely from its built-in fallback copy
+ * — the CMS being down never breaks the home page.
+ */
+export function getHomepage(): Promise<HomepageContent | null> {
+  homepageCache ??= (async () => {
+    try {
+      const res = await fetch(`${BASE}/api/globals/homepage?depth=1`);
+      if (!res.ok) return null;
+      return (await res.json()) as HomepageContent;
+    } catch {
+      return null;
+    }
+  })();
+  return homepageCache;
+}
+
 /**
  * Read editor-managed redirects. The Redirects collection is world-readable and has
  * NO status field, so it can't go through query() (which forces where[status]=published).

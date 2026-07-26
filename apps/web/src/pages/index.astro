@@ -3,16 +3,22 @@ import Base from '../layouts/Base.astro';
 import { PRACTICE, RMA_LINE } from '@vmd/config';
 import { Button, Card, Chip, Rule, TrustStrip, Disclaimer } from '@vmd/ui';
 import { localBusinessSchema, personSchema } from '@vmd/seo';
-import { cms, getSettings } from '../lib/cms.ts';
+import { cms, getSettings, getHomepage } from '../lib/cms.ts';
 import { servicePageHref } from '../lib/servicePages.ts';
 import BookCta from '../components/cta/BookCta.astro';
 import HealthCheckCta from '../components/cta/HealthCheckCta.astro';
 import GoogleReviews from '../components/sections/GoogleReviews.astro';
 
 const settings = await getSettings();
+// Homepage global (CMS-editable, section by section). Every read falls back to
+// the built-in copy below, so the page is identical until an editor changes it,
+// and never breaks if the CMS is unreachable. `show !== false` keeps a section
+// visible unless an editor has explicitly switched it off.
+const hp = await getHomepage();
+const shown = (s?: { show?: boolean | null }) => s?.show !== false;
 
 const register = PRACTICE.regulator.registerSearchUrl;
-const situations = [
+const situationsFallback = [
   [
     "I'm a skilled professional",
     'Points, nominations and the right subclass — mapped to your occupation.',
@@ -44,6 +50,12 @@ const situations = [
     '/your-situation/bridging-visa/',
   ],
 ];
+// Situation cards come from the CMS when an editor has added them, else the fallback.
+const cmsSituations = (hp?.situations?.items ?? [])
+  .filter((i) => i?.label && i?.href)
+  .map((i) => [i.label as string, i.description ?? '', i.href as string] as const);
+const situations = cmsSituations.length ? cmsSituations : situationsFallback;
+
 // Featured Services — pulled from the CMS (service pages flagged "featured"), linking
 // to their canonical URLs. Editors curate via the Featured checkbox.
 let featuredServices: any[] = [];
@@ -70,17 +82,26 @@ try {
   <!-- 3 · HERO -->
   <section class="hero">
     <div class="hero__copy">
-      <p class="eyebrow">{PRACTICE.descriptor}</p>
-      <h1 class="hero__title">Know exactly where you stand — before you spend a dollar.</h1>
+      <p class="eyebrow">{hp?.hero?.eyebrow || PRACTICE.descriptor}</p>
+      <h1 class="hero__title">
+        {hp?.hero?.title || 'Know exactly where you stand — before you spend a dollar.'}
+      </h1>
       <Rule width="short" />
       <p class="hero__lead">
-        Migration advice in Perth, provided by Registered Migration Agent (RMA) {
-          PRACTICE.principal.name
-        }. Clear pathways, honest answers, no false promises.
+        {
+          hp?.hero?.lead ||
+            `Migration advice in Perth, provided by Registered Migration Agent (RMA) ${PRACTICE.principal.name}. Clear pathways, honest answers, no false promises.`
+        }
       </p>
       <div class="hero__cta">
-        <HealthCheckCta variant="primary" label="Start your Free Visa Health Check" />
-        <BookCta variant="secondary" label="Book a consultation" />
+        <HealthCheckCta
+          variant="primary"
+          label={hp?.hero?.primaryCta?.label || 'Start your Free Visa Health Check'}
+        />
+        <BookCta
+          variant="secondary"
+          label={hp?.hero?.secondaryCta?.label || 'Book a consultation'}
+        />
       </div>
       <TrustStrip reviewUrl="/results/reviews/" />
     </div>
@@ -92,193 +113,318 @@ try {
   </section>
 
   <!-- 4 · SITUATION -->
-  <section class="section section--bone">
-    <div class="section__inner">
-      <h2 class="section__h">Which of these is you?</h2>
-      <p class="section__sub">
-        People don't think in subclass numbers. Start where you are — we'll translate.
-      </p>
-      <div class="grid grid--3">
-        {
-          situations.map(([label, line, href]) => (
-            <Card title={label} href={href} eyebrow="Your situation">
-              {line}
-            </Card>
-          ))
-        }
-      </div>
-    </div>
-  </section>
+  {
+    shown(hp?.situations) && (
+      <section class="section section--bone">
+        <div class="section__inner">
+          <h2 class="section__h">{hp?.situations?.heading || 'Which of these is you?'}</h2>
+          <p class="section__sub">
+            {hp?.situations?.intro ||
+              "People don't think in subclass numbers. Start where you are — we'll translate."}
+          </p>
+          <div class="grid grid--3">
+            {situations.map(([label, line, href]) => (
+              <Card title={label} href={href} eyebrow="Your situation">
+                {line}
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
 
-  <!-- 5 · DIAGNOSIS PROMISE -->
-  <section class="section">
-    <div class="section__inner">
-      <h2 class="section__h">The diagnosis promise</h2>
-      <p class="section__sub">
-        The only differentiation that survives scrutiny is the kind that visibly costs us something.
-      </p>
-      <div class="grid grid--3 promises">
-        <div class="promise">
-          <Rule width="short" /><p>
-            We tell you if you're <strong>not</strong> eligible — including when the honest answer is
-            to wait.
+  <!-- 5 · DIAGNOSIS PROMISE (Why Choose Us) -->
+  {
+    shown(hp?.whyChoose) && (
+      <section class="section">
+        <div class="section__inner">
+          <h2 class="section__h">{hp?.whyChoose?.heading || 'The diagnosis promise'}</h2>
+          <p class="section__sub">
+            {hp?.whyChoose?.intro ||
+              'The only differentiation that survives scrutiny is the kind that visibly costs us something.'}
           </p>
+          <div class="grid grid--3 promises">
+            {hp?.whyChoose?.promises?.length ? (
+              hp.whyChoose.promises.map((p) => (
+                <div class="promise">
+                  <Rule width="short" />
+                  <p>{p.text}</p>
+                </div>
+              ))
+            ) : (
+              <>
+                <div class="promise">
+                  <Rule width="short" />
+                  <p>
+                    We tell you if you're <strong>not</strong> eligible — including when the honest
+                    answer is to wait.
+                  </p>
+                </div>
+                <div class="promise">
+                  <Rule width="short" />
+                  <p>
+                    A <strong>fixed fee</strong>, quoted before you commit. No surprises.
+                  </p>
+                </div>
+                <div class="promise">
+                  <Rule width="short" />
+                  <p>
+                    You deal with the <strong>registered agent</strong> — not a salesperson.
+                  </p>
+                </div>
+              </>
+            )}
+          </div>
         </div>
-        <div class="promise">
-          <Rule width="short" /><p>
-            A <strong>fixed fee</strong>, quoted before you commit. No surprises.
-          </p>
-        </div>
-        <div class="promise">
-          <Rule width="short" /><p>
-            You deal with the <strong>registered agent</strong> — not a salesperson.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
+      </section>
+    )
+  }
 
   <!-- 6 · SUCCESS STORIES (evidence, navy band) -->
-  <section class="band">
-    <div class="band__inner">
-      <p class="band__eyebrow">Real clients, real outcomes</p>
-      <h2 class="band__h">Success stories</h2>
-      <p class="band__lead">
-        Testimonial videos, client stories and redacted visa grants — every one shared with the
-        client's permission, organised by visa type.
-      </p>
-      <p class="band__lead">
-        <a class="band__link" href="/results/success-stories/">Browse client success stories →</a>
-      </p>
-      <Disclaimer variant="outcomes" />
-    </div>
-  </section>
-
-  <!-- 7 · WHAT WE DO -->
-  <section class="section">
-    <div class="section__inner">
-      <h2 class="section__h">Featured services</h2>
-      <p class="section__sub">
-        Find yourself in one scan. Every service is a problem we solve, not a product we sell.
-      </p>
-      <div class="grid grid--2">
-        {
-          featuredServices.map((s) => (
-            <Card title={s.title} href={servicePageHref(s)} eyebrow={sectionLabel(s)}>
-              {s.seo?.metaDescription || s.subtitle || ''}
-            </Card>
-          ))
-        }
-      </div>
-      <p class="section__more">
-        <a href="/services/">See all our services →</a>
-        <br />
-        <a href="/services/art-review-applications"
-          >Visa refused or cancelled? ART Review Applications — act fast, deadlines are strict →</a
-        >
-      </p>
-    </div>
-  </section>
-
-  <!-- 8 · HOW WE WORK -->
-  <section class="section section--bone">
-    <div class="section__inner">
-      <h2 class="section__h">How we work</h2>
-      <div class="grid grid--3 steps">
-        <div class="step">
-          <Chip>1 · Diagnosis</Chip><p>A thorough, evidence-based assessment of where you stand.</p>
+  {
+    shown(hp?.successStories) && (
+      <section class="band">
+        <div class="band__inner">
+          <p class="band__eyebrow">
+            {hp?.successStories?.eyebrow || 'Real clients, real outcomes'}
+          </p>
+          <h2 class="band__h">{hp?.successStories?.heading || 'Success stories'}</h2>
+          <p class="band__lead">
+            {hp?.successStories?.intro ||
+              "Testimonial videos, client stories and redacted visa grants — every one shared with the client's permission, organised by visa type."}
+          </p>
+          <p class="band__lead">
+            <a
+              class="band__link"
+              href={hp?.successStories?.link?.href || '/results/success-stories/'}
+            >
+              {hp?.successStories?.link?.label || 'Browse client success stories →'}
+            </a>
+          </p>
+          <Disclaimer variant="outcomes" />
         </div>
-        <div class="step">
-          <Chip>2 · Pathway</Chip><p>A clear plan matched to your circumstances and the law.</p>
-        </div>
-        <div class="step">
-          <Chip>3 · Outcome</Chip><p>
-            Careful preparation and honest guidance through to decision.
+      </section>
+    )
+  }
+
+  <!-- 7 · WHAT WE DO (Featured Services) -->
+  {
+    shown(hp?.featuredServices) && (
+      <section class="section">
+        <div class="section__inner">
+          <h2 class="section__h">{hp?.featuredServices?.heading || 'Featured services'}</h2>
+          <p class="section__sub">
+            {hp?.featuredServices?.intro ||
+              'Find yourself in one scan. Every service is a problem we solve, not a product we sell.'}
+          </p>
+          <div class="grid grid--2">
+            {featuredServices.map((s) => (
+              <Card title={s.title} href={servicePageHref(s)} eyebrow={sectionLabel(s)}>
+                {s.seo?.metaDescription || s.subtitle || ''}
+              </Card>
+            ))}
+          </div>
+          <p class="section__more">
+            <a href={hp?.featuredServices?.seeAll?.href || '/services/'}>
+              {hp?.featuredServices?.seeAll?.label || 'See all our services →'}
+            </a>
+            <br />
+            <a
+              href={
+                hp?.featuredServices?.secondaryLink?.href || '/services/art-review-applications'
+              }
+            >
+              {hp?.featuredServices?.secondaryLink?.label ||
+                'Visa refused or cancelled? ART Review Applications — act fast, deadlines are strict →'}
+            </a>
           </p>
         </div>
-      </div>
-    </div>
-  </section>
+      </section>
+    )
+  }
 
-  <!-- 9 · MEET SUNIL -->
-  <section class="section">
-    <div class="section__inner meet">
-      <figure class="meet__portrait" aria-hidden="true"><span>Portrait — §19</span></figure>
-      <div class="meet__copy">
-        <p class="eyebrow">The practitioner</p>
-        <h2 class="section__h">You'll speak to {PRACTICE.principal.name}.</h2>
-        <p>
-          I'm a Registered Migration Agent in Perth, bound by the Migration Agents Code of Conduct.
-          When you come to me, you get an honest read on where your case stands — including when the
-          better answer is to wait, take a different pathway, or that I'm not the right person to
-          help.
-        </p>
-        <p>
-          What I won't do: promise an outcome, quote a success rate, or take a matter I don't
-          believe in. That's the whole practice.
-        </p>
-        <p class="meet__marn">
-          <a href={register} rel="noopener" target="_blank"
-            >{RMA_LINE} — verify on the OMARA register →</a
-          >
-        </p>
-        <Button variant="secondary" href="/about/sunil-uprety/">More about Sunil</Button>
-      </div>
-    </div>
-  </section>
+  <!-- 8 · HOW WE WORK -->
+  {
+    shown(hp?.howWeWork) && (
+      <section class="section section--bone">
+        <div class="section__inner">
+          <h2 class="section__h">{hp?.howWeWork?.heading || 'How we work'}</h2>
+          <div class="grid grid--3 steps">
+            {hp?.howWeWork?.steps?.length ? (
+              hp.howWeWork.steps.map((step) => (
+                <div class="step">
+                  <Chip>{step.label}</Chip>
+                  <p>{step.description}</p>
+                </div>
+              ))
+            ) : (
+              <>
+                <div class="step">
+                  <Chip>1 · Diagnosis</Chip>
+                  <p>A thorough, evidence-based assessment of where you stand.</p>
+                </div>
+                <div class="step">
+                  <Chip>2 · Pathway</Chip>
+                  <p>A clear plan matched to your circumstances and the law.</p>
+                </div>
+                <div class="step">
+                  <Chip>3 · Outcome</Chip>
+                  <p>Careful preparation and honest guidance through to decision.</p>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <!-- 9 · MEET SUNIL (Trust & Credentials) -->
+  {
+    shown(hp?.practitioner) && (
+      <section class="section">
+        <div class="section__inner meet">
+          <figure class="meet__portrait" aria-hidden="true">
+            <span>Portrait — §19</span>
+          </figure>
+          <div class="meet__copy">
+            <p class="eyebrow">{hp?.practitioner?.eyebrow || 'The practitioner'}</p>
+            <h2 class="section__h">
+              {hp?.practitioner?.heading || `You'll speak to ${PRACTICE.principal.name}.`}
+            </h2>
+            {hp?.practitioner?.body?.length ? (
+              hp.practitioner.body.map((para) => <p>{para.text}</p>)
+            ) : (
+              <>
+                <p>
+                  I'm a Registered Migration Agent in Perth, bound by the Migration Agents Code of
+                  Conduct. When you come to me, you get an honest read on where your case stands —
+                  including when the better answer is to wait, take a different pathway, or that I'm
+                  not the right person to help.
+                </p>
+                <p>
+                  What I won't do: promise an outcome, quote a success rate, or take a matter I
+                  don't believe in. That's the whole practice.
+                </p>
+              </>
+            )}
+            <p class="meet__marn">
+              <a href={register} rel="noopener" target="_blank">
+                {RMA_LINE} — verify on the OMARA register →
+              </a>
+            </p>
+            <Button
+              variant="secondary"
+              href={hp?.practitioner?.button?.href || '/about/sunil-uprety/'}
+            >
+              {hp?.practitioner?.button?.label || 'More about Sunil'}
+            </Button>
+          </div>
+        </div>
+      </section>
+    )
+  }
 
   <!-- 10 · REVIEWS -->
-  <section class="section section--bone">
-    <div class="section__inner">
-      <GoogleReviews profileUrl={settings?.googleReviews?.profileUrl} />
-    </div>
-  </section>
+  {
+    shown(hp?.googleReviews) && (
+      <section class="section section--bone">
+        <div class="section__inner">
+          <GoogleReviews
+            profileUrl={settings?.googleReviews?.profileUrl}
+            heading={hp?.googleReviews?.heading ?? 'Google Reviews'}
+            intro={
+              hp?.googleReviews?.intro ??
+              'Placed here, after the evidence and the person, reviews read as corroboration — not advertising.'
+            }
+            limit={hp?.googleReviews?.count ?? 3}
+          />
+        </div>
+      </section>
+    )
+  }
 
-  <!-- 11 · INSIGHTS -->
-  <section class="section">
-    <div class="section__inner">
-      <h2 class="section__h">From our blog</h2>
-      <p class="section__sub">
-        Migration law changes constantly. Every piece is authored by a Registered Migration Agent.
-      </p>
-      {
-        posts.length > 0 ? (
-          <>
-            <div class="grid grid--3">
-              {posts.map((p) => (
-                <Card
-                  title={p.title}
-                  href={`/blog/${p.slug}/`}
-                  eyebrow={String(p.category).replace(/-/g, ' ')}
-                >
-                  {p.excerpt ?? ''}
-                </Card>
-              ))}
+  <!-- 11 · INSIGHTS (Featured Blogs) -->
+  {
+    shown(hp?.featuredBlogs) && (
+      <section class="section">
+        <div class="section__inner">
+          <h2 class="section__h">{hp?.featuredBlogs?.heading || 'From our blog'}</h2>
+          <p class="section__sub">
+            {hp?.featuredBlogs?.intro ||
+              'Migration law changes constantly. Every piece is authored by a Registered Migration Agent.'}
+          </p>
+          {posts.length > 0 ? (
+            <>
+              <div class="grid grid--3">
+                {posts.map((p) => (
+                  <Card
+                    title={p.title}
+                    href={`/blog/${p.slug}/`}
+                    eyebrow={String(p.category).replace(/-/g, ' ')}
+                  >
+                    {p.excerpt ?? ''}
+                  </Card>
+                ))}
+              </div>
+              <p class="section__more">
+                <a href={hp?.featuredBlogs?.link?.href || '/blog/'}>
+                  {hp?.featuredBlogs?.link?.label || 'Read the blog →'}
+                </a>
+              </p>
+            </>
+          ) : (
+            <div class="ledger-empty ledger-empty--light">
+              Articles appear here once published — every piece is reviewed by {RMA_LINE}.
             </div>
-            <p class="section__more">
-              <a href="/blog/">Read the blog →</a>
-            </p>
-          </>
-        ) : (
-          <div class="ledger-empty ledger-empty--light">
-            Articles appear here once published — every piece is reviewed by {RMA_LINE}.
-          </div>
-        )
-      }
-    </div>
-  </section>
+          )}
+        </div>
+      </section>
+    )
+  }
 
-  <!-- 12 · CLOSING -->
-  <section class="band band--close">
-    <div class="band__inner band__inner--center">
-      <h2 class="band__h">Not sure where you stand?</h2>
-      <p class="band__lead band__lead--center">
-        Ninety seconds, six questions, a real answer — including if you're not yet eligible.
-      </p>
-      <HealthCheckCta variant="primary" label="Start your Free Visa Health Check" />
-      <p class="band__promise">If we don't think we can help you, we'll say so.</p>
-    </div>
-  </section>
+  <!-- 11b · FAQs (optional; off unless an editor enables it) -->
+  {
+    hp?.faqs?.show && hp.faqs.items && hp.faqs.items.length > 0 && (
+      <section class="section section--bone">
+        <div class="section__inner">
+          <h2 class="section__h">{hp.faqs.heading || 'Frequently asked questions'}</h2>
+          {hp.faqs.intro && <p class="section__sub">{hp.faqs.intro}</p>}
+          <div class="faqs">
+            {hp.faqs.items.map((f) => (
+              <details class="faq">
+                <summary>{f.question}</summary>
+                <p>{f.answer}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <!-- 12 · CLOSING (Final CTA) -->
+  {
+    shown(hp?.finalCta) && (
+      <section class="band band--close">
+        <div class="band__inner band__inner--center">
+          <h2 class="band__h">{hp?.finalCta?.heading || 'Not sure where you stand?'}</h2>
+          <p class="band__lead band__lead--center">
+            {hp?.finalCta?.lead ||
+              "Ninety seconds, six questions, a real answer — including if you're not yet eligible."}
+          </p>
+          <HealthCheckCta
+            variant="primary"
+            label={hp?.finalCta?.buttonLabel || 'Start your Free Visa Health Check'}
+          />
+          <p class="band__promise">
+            {hp?.finalCta?.promise || "If we don't think we can help you, we'll say so."}
+          </p>
+        </div>
+      </section>
+    )
+  }
 </Base>
 
 <style>
@@ -477,6 +623,29 @@ try {
     padding: var(--space-6);
     color: var(--color-text-muted);
     font-size: var(--type-body-sm);
+  }
+
+  .faqs {
+    display: grid;
+    gap: var(--space-2);
+    max-inline-size: 68ch;
+    margin-block-start: var(--space-4);
+  }
+  .faq {
+    border: 1px solid color-mix(in srgb, var(--color-emphasis) 20%, transparent);
+    border-radius: var(--radius-card);
+    padding: var(--space-4);
+    background: var(--color-surface);
+  }
+  .faq summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+  .faq p {
+    margin-block: var(--space-3) 0;
+    color: var(--color-text-muted);
+    line-height: 1.6;
   }
 
   @media (min-width: 768px) {
