@@ -106,3 +106,5 @@ Deploy. The website builds, pulling content from `PUBLIC_CMS_URL`.
   correct. If connection limits bite under load, add a `DATABASE_POOL_URL` (Transaction
   pooler) later; the config already prefers it when present.
 - **Redeploys**: every push to `feat/lead-gen-rework` triggers a deploy on both projects.
+
+> Production tracks the `feat/lead-gen-rework` branch until launch is verified.
