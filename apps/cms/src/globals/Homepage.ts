@@ -1,0 +1,310 @@
+import type { GlobalConfig } from 'payload';
+import { anyone, isEditorial } from '../access/index.ts';
+import { seoField, showToggle, headingIntro, linkGroup } from '../fields/index.ts';
+
+/**
+ * Homepage — the entire home page, section by section, as tabs.
+ *
+ * Editing philosophy: a non-technical editor who sees a paragraph on the site
+ * should know exactly which tab to open. Each tab is ONE visible section of the
+ * homepage, in top-to-bottom page order, and every field defaults to the copy
+ * currently on the live site — so opening this global for the first time shows
+ * the real words, and the page renders identically until someone changes them.
+ *
+ * Draft/Publish is on (versions.drafts): edits are saved as drafts and only go
+ * live when Published, and editors can Preview before publishing.
+ */
+export const Homepage: GlobalConfig = {
+  slug: 'homepage',
+  label: 'Homepage',
+  admin: {
+    group: 'Website Content',
+    description: 'Every section of the home page, top to bottom. Open a tab to edit that section.',
+    preview: () => `${process.env.PUBLIC_SITE_URL || 'http://localhost:4321'}/`,
+    livePreview: {
+      url: () => `${process.env.PUBLIC_SITE_URL || 'http://localhost:4321'}/`,
+    },
+  },
+  versions: { drafts: true },
+  access: { read: anyone, update: isEditorial },
+  fields: [
+    {
+      type: 'tabs',
+      tabs: [
+        // 1 · HERO ------------------------------------------------------------
+        {
+          label: 'Hero',
+          name: 'hero',
+          description: 'The first thing visitors see — headline, intro and the two main buttons.',
+          fields: [
+            {
+              name: 'eyebrow',
+              type: 'text',
+              admin: {
+                placeholder: 'MIGRATION ADVISORY · PERTH (leave blank to use the site default)',
+              },
+            },
+            {
+              name: 'title',
+              type: 'text',
+              defaultValue: 'Know exactly where you stand — before you spend a dollar.',
+            },
+            {
+              name: 'lead',
+              type: 'textarea',
+              defaultValue:
+                'Migration advice in Perth, provided by Registered Migration Agent (RMA) Sunil Uprety. Clear pathways, honest answers, no false promises.',
+              admin: { description: 'The paragraph under the headline.' },
+            },
+            linkGroup('primaryCta', 'Primary button'),
+            linkGroup('secondaryCta', 'Secondary button'),
+          ],
+        },
+
+        // 2 · WHICH OF THESE IS YOU (situations) ------------------------------
+        {
+          label: 'Your Situation',
+          name: 'situations',
+          description: 'The "Which of these is you?" cards that help visitors self-identify.',
+          fields: [
+            showToggle(),
+            ...headingIntro({
+              heading: 'Which of these is you?',
+              intro:
+                "People don't think in subclass numbers. Start where you are — we'll translate.",
+            }),
+            {
+              name: 'items',
+              type: 'array',
+              labels: { singular: 'Situation card', plural: 'Situation cards' },
+              admin: { description: 'Each card links a visitor to their situation hub.' },
+              fields: [
+                {
+                  name: 'label',
+                  type: 'text',
+                  required: true,
+                  admin: { placeholder: "I'm a skilled professional" },
+                },
+                { name: 'description', type: 'textarea', required: true },
+                {
+                  name: 'href',
+                  type: 'text',
+                  label: 'Link',
+                  admin: { placeholder: '/your-situation/…/' },
+                },
+              ],
+            },
+          ],
+        },
+
+        // 3 · WHY CHOOSE US (the diagnosis promise) ---------------------------
+        {
+          label: 'Why Choose Us',
+          name: 'whyChoose',
+          description:
+            'The "diagnosis promise" — the honesty commitments that set the practice apart.',
+          fields: [
+            showToggle(),
+            ...headingIntro({
+              heading: 'The diagnosis promise',
+              intro:
+                'The only differentiation that survives scrutiny is the kind that visibly costs us something.',
+            }),
+            {
+              name: 'promises',
+              type: 'array',
+              labels: { singular: 'Promise', plural: 'Promises' },
+              fields: [{ name: 'text', type: 'textarea', required: true }],
+            },
+          ],
+        },
+
+        // 4 · SUCCESS STORIES -------------------------------------------------
+        {
+          label: 'Success Stories',
+          name: 'successStories',
+          description:
+            'The navy band linking to client success stories. The stories themselves live in the Success Stories collection.',
+          fields: [
+            showToggle(),
+            { name: 'eyebrow', type: 'text', defaultValue: 'Real clients, real outcomes' },
+            ...headingIntro({
+              heading: 'Success stories',
+              intro:
+                "Testimonial videos, client stories and redacted visa grants — every one shared with the client's permission, organised by visa type.",
+            }),
+            linkGroup('link', 'Link to all stories'),
+          ],
+        },
+
+        // 5 · FEATURED SERVICES ----------------------------------------------
+        {
+          label: 'Featured Services',
+          name: 'featuredServices',
+          description:
+            'Heading and links for the featured-services grid. The cards come from Service Pages flagged "Featured".',
+          fields: [
+            showToggle(),
+            ...headingIntro({
+              heading: 'Featured services',
+              intro:
+                'Find yourself in one scan. Every service is a problem we solve, not a product we sell.',
+            }),
+            linkGroup('seeAll', '“See all services” link'),
+            linkGroup('secondaryLink', 'Secondary link (e.g. ART appeals)'),
+          ],
+        },
+
+        // 6 · HOW WE WORK -----------------------------------------------------
+        {
+          label: 'How We Work',
+          name: 'howWeWork',
+          description: 'The three-step "how we work" strip.',
+          fields: [
+            showToggle(),
+            ...headingIntro({ heading: 'How we work' }),
+            {
+              name: 'steps',
+              type: 'array',
+              labels: { singular: 'Step', plural: 'Steps' },
+              fields: [
+                {
+                  name: 'label',
+                  type: 'text',
+                  required: true,
+                  admin: { placeholder: '1 · Diagnosis' },
+                },
+                { name: 'description', type: 'textarea', required: true },
+              ],
+            },
+          ],
+        },
+
+        // 7 · MEET THE AGENT (trust & credentials) ----------------------------
+        {
+          label: 'Trust & Credentials',
+          name: 'practitioner',
+          description:
+            'The "meet the agent" section. The RMA name + MARN line comes from Global Settings and is single-sourced — it is not edited here.',
+          fields: [
+            showToggle(),
+            { name: 'eyebrow', type: 'text', defaultValue: 'The practitioner' },
+            {
+              name: 'heading',
+              type: 'text',
+              defaultValue: "You'll speak to Sunil Uprety.",
+            },
+            {
+              name: 'body',
+              type: 'array',
+              labels: { singular: 'Paragraph', plural: 'Paragraphs' },
+              fields: [{ name: 'text', type: 'textarea', required: true }],
+            },
+            linkGroup('button', 'Button'),
+          ],
+        },
+
+        // 8 · GOOGLE REVIEWS (live) ------------------------------------------
+        {
+          label: 'Google Reviews',
+          name: 'googleReviews',
+          description:
+            'Live Google Business Profile reviews. You control whether the section shows, its heading, its intro and how many reviews appear — the reviews themselves are always pulled live from Google and cannot be edited here.',
+          fields: [
+            showToggle(),
+            ...headingIntro({
+              heading: 'Google Reviews',
+              intro:
+                'Placed here, after the evidence and the person, reviews read as corroboration — not advertising.',
+            }),
+            {
+              name: 'count',
+              type: 'number',
+              label: 'Number of reviews to show',
+              defaultValue: 3,
+              min: 1,
+              max: 5,
+              admin: { description: 'Google exposes up to 5 of the latest reviews.' },
+            },
+          ],
+        },
+
+        // 9 · FEATURED BLOGS --------------------------------------------------
+        {
+          label: 'Featured Blogs',
+          name: 'featuredBlogs',
+          description:
+            'Heading and link for the "from our blog" strip. The articles come from the Blog collection.',
+          fields: [
+            showToggle(),
+            ...headingIntro({
+              heading: 'From our blog',
+              intro:
+                'Migration law changes constantly. Every piece is authored by a Registered Migration Agent.',
+            }),
+            linkGroup('link', '“Read the blog” link'),
+          ],
+        },
+
+        // 10 · FAQs (optional — off by default) -------------------------------
+        {
+          label: 'FAQs',
+          name: 'faqs',
+          description:
+            'An optional frequently-asked-questions section. Turn it on and add questions to show it on the homepage.',
+          fields: [
+            showToggle(false),
+            ...headingIntro({ heading: 'Frequently asked questions' }),
+            {
+              name: 'items',
+              type: 'array',
+              labels: { singular: 'Question', plural: 'Questions' },
+              fields: [
+                { name: 'question', type: 'text', required: true },
+                { name: 'answer', type: 'textarea', required: true },
+              ],
+            },
+          ],
+        },
+
+        // 11 · FINAL CTA ------------------------------------------------------
+        {
+          label: 'Final CTA',
+          name: 'finalCta',
+          description: 'The closing call-to-action band at the bottom of the page.',
+          fields: [
+            showToggle(),
+            {
+              name: 'heading',
+              type: 'text',
+              defaultValue: 'Not sure where you stand?',
+            },
+            {
+              name: 'lead',
+              type: 'textarea',
+              defaultValue:
+                'Ninety seconds, six questions, a real answer — including if you’re not yet eligible.',
+            },
+            {
+              name: 'buttonLabel',
+              type: 'text',
+              defaultValue: 'Start your Free Visa Health Check',
+            },
+            {
+              name: 'promise',
+              type: 'text',
+              defaultValue: "If we don't think we can help you, we'll say so.",
+            },
+          ],
+        },
+
+        // 12 · SEO ------------------------------------------------------------
+        {
+          label: 'SEO',
+          description: 'How the homepage appears in Google and when shared on social.',
+          fields: [seoField],
+        },
+      ],
+    },
+  ],
+};

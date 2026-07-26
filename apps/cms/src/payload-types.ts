@@ -119,11 +119,13 @@ export interface Config {
   };
   fallbackLocale: ('false' | 'none' | 'null') | false | null | 'en' | 'en'[];
   globals: {
+    homepage: Homepage;
     settings: Setting;
     navigation: Navigation;
     disclaimers: Disclaimer;
   };
   globalsSelect: {
+    homepage: HomepageSelect<false> | HomepageSelect<true>;
     settings: SettingsSelect<false> | SettingsSelect<true>;
     navigation: NavigationSelect<false> | NavigationSelect<true>;
     disclaimers: DisclaimersSelect<false> | DisclaimersSelect<true>;
@@ -187,6 +189,8 @@ export interface User {
   collection: 'users';
 }
 /**
+ * Images and files used across the website. Always add descriptive alt text.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
  */
@@ -236,6 +240,8 @@ export interface Media {
   };
 }
 /**
+ * Blog posts and resource articles. Draft, then set status to Published to go live.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "articles".
  */
@@ -677,6 +683,8 @@ export interface Testimonial {
   createdAt: string;
 }
 /**
+ * The "Our Services" pages (visa and service pages shown on the website). Edit the hero, body, FAQ, CTA and SEO here.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "service-pages".
  */
@@ -1788,6 +1796,209 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
+ * Every section of the home page, top to bottom. Open a tab to edit that section.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "homepage".
+ */
+export interface Homepage {
+  id: number;
+  hero?: {
+    eyebrow?: string | null;
+    title?: string | null;
+    /**
+     * The paragraph under the headline.
+     */
+    lead?: string | null;
+    /**
+     * Button text and where it links to.
+     */
+    primaryCta?: {
+      label?: string | null;
+      href?: string | null;
+    };
+    /**
+     * Button text and where it links to.
+     */
+    secondaryCta?: {
+      label?: string | null;
+      href?: string | null;
+    };
+  };
+  situations?: {
+    /**
+     * Show this section on the live page. Uncheck to hide it entirely.
+     */
+    show?: boolean | null;
+    heading?: string | null;
+    intro?: string | null;
+    /**
+     * Each card links a visitor to their situation hub.
+     */
+    items?:
+      | {
+          label: string;
+          description: string;
+          href?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  whyChoose?: {
+    /**
+     * Show this section on the live page. Uncheck to hide it entirely.
+     */
+    show?: boolean | null;
+    heading?: string | null;
+    intro?: string | null;
+    promises?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  successStories?: {
+    /**
+     * Show this section on the live page. Uncheck to hide it entirely.
+     */
+    show?: boolean | null;
+    eyebrow?: string | null;
+    heading?: string | null;
+    intro?: string | null;
+    /**
+     * Button text and where it links to.
+     */
+    link?: {
+      label?: string | null;
+      href?: string | null;
+    };
+  };
+  featuredServices?: {
+    /**
+     * Show this section on the live page. Uncheck to hide it entirely.
+     */
+    show?: boolean | null;
+    heading?: string | null;
+    intro?: string | null;
+    /**
+     * Button text and where it links to.
+     */
+    seeAll?: {
+      label?: string | null;
+      href?: string | null;
+    };
+    /**
+     * Button text and where it links to.
+     */
+    secondaryLink?: {
+      label?: string | null;
+      href?: string | null;
+    };
+  };
+  howWeWork?: {
+    /**
+     * Show this section on the live page. Uncheck to hide it entirely.
+     */
+    show?: boolean | null;
+    heading?: string | null;
+    intro?: string | null;
+    steps?:
+      | {
+          label: string;
+          description: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  practitioner?: {
+    /**
+     * Show this section on the live page. Uncheck to hide it entirely.
+     */
+    show?: boolean | null;
+    eyebrow?: string | null;
+    heading?: string | null;
+    body?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Button text and where it links to.
+     */
+    button?: {
+      label?: string | null;
+      href?: string | null;
+    };
+  };
+  googleReviews?: {
+    /**
+     * Show this section on the live page. Uncheck to hide it entirely.
+     */
+    show?: boolean | null;
+    heading?: string | null;
+    intro?: string | null;
+    /**
+     * Google exposes up to 5 of the latest reviews.
+     */
+    count?: number | null;
+  };
+  featuredBlogs?: {
+    /**
+     * Show this section on the live page. Uncheck to hide it entirely.
+     */
+    show?: boolean | null;
+    heading?: string | null;
+    intro?: string | null;
+    /**
+     * Button text and where it links to.
+     */
+    link?: {
+      label?: string | null;
+      href?: string | null;
+    };
+  };
+  faqs?: {
+    /**
+     * Show this section on the live page. Uncheck to hide it entirely.
+     */
+    show?: boolean | null;
+    heading?: string | null;
+    intro?: string | null;
+    items?:
+      | {
+          question: string;
+          answer: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  finalCta?: {
+    /**
+     * Show this section on the live page. Uncheck to hide it entirely.
+     */
+    show?: boolean | null;
+    heading?: string | null;
+    lead?: string | null;
+    buttonLabel?: string | null;
+    promise?: string | null;
+  };
+  /**
+   * Search + social metadata. Human-written, unique per page.
+   */
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    ogImage?: (number | null) | Media;
+    canonicalUrl?: string | null;
+    noindex?: boolean | null;
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "settings".
  */
@@ -1858,6 +2069,182 @@ export interface Disclaimer {
   generalInformation?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "homepage_select".
+ */
+export interface HomepageSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        lead?: T;
+        primaryCta?:
+          | T
+          | {
+              label?: T;
+              href?: T;
+            };
+        secondaryCta?:
+          | T
+          | {
+              label?: T;
+              href?: T;
+            };
+      };
+  situations?:
+    | T
+    | {
+        show?: T;
+        heading?: T;
+        intro?: T;
+        items?:
+          | T
+          | {
+              label?: T;
+              description?: T;
+              href?: T;
+              id?: T;
+            };
+      };
+  whyChoose?:
+    | T
+    | {
+        show?: T;
+        heading?: T;
+        intro?: T;
+        promises?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+      };
+  successStories?:
+    | T
+    | {
+        show?: T;
+        eyebrow?: T;
+        heading?: T;
+        intro?: T;
+        link?:
+          | T
+          | {
+              label?: T;
+              href?: T;
+            };
+      };
+  featuredServices?:
+    | T
+    | {
+        show?: T;
+        heading?: T;
+        intro?: T;
+        seeAll?:
+          | T
+          | {
+              label?: T;
+              href?: T;
+            };
+        secondaryLink?:
+          | T
+          | {
+              label?: T;
+              href?: T;
+            };
+      };
+  howWeWork?:
+    | T
+    | {
+        show?: T;
+        heading?: T;
+        intro?: T;
+        steps?:
+          | T
+          | {
+              label?: T;
+              description?: T;
+              id?: T;
+            };
+      };
+  practitioner?:
+    | T
+    | {
+        show?: T;
+        eyebrow?: T;
+        heading?: T;
+        body?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+        button?:
+          | T
+          | {
+              label?: T;
+              href?: T;
+            };
+      };
+  googleReviews?:
+    | T
+    | {
+        show?: T;
+        heading?: T;
+        intro?: T;
+        count?: T;
+      };
+  featuredBlogs?:
+    | T
+    | {
+        show?: T;
+        heading?: T;
+        intro?: T;
+        link?:
+          | T
+          | {
+              label?: T;
+              href?: T;
+            };
+      };
+  faqs?:
+    | T
+    | {
+        show?: T;
+        heading?: T;
+        intro?: T;
+        items?:
+          | T
+          | {
+              question?: T;
+              answer?: T;
+              id?: T;
+            };
+      };
+  finalCta?:
+    | T
+    | {
+        show?: T;
+        heading?: T;
+        lead?: T;
+        buttonLabel?: T;
+        promise?: T;
+      };
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+        canonicalUrl?: T;
+        noindex?: T;
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
