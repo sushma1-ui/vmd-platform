@@ -3,10 +3,13 @@ import Base from '../layouts/Base.astro';
 import { PRACTICE, RMA_LINE } from '@vmd/config';
 import { Button, Card, Chip, Rule, TrustStrip, Disclaimer } from '@vmd/ui';
 import { localBusinessSchema, personSchema } from '@vmd/seo';
-import { cms } from '../lib/cms.ts';
+import { cms, getSettings } from '../lib/cms.ts';
 import { servicePageHref } from '../lib/servicePages.ts';
 import BookCta from '../components/cta/BookCta.astro';
 import HealthCheckCta from '../components/cta/HealthCheckCta.astro';
+import GoogleReviews from '../components/sections/GoogleReviews.astro';
+
+const settings = await getSettings();
 
 const register = PRACTICE.regulator.registerSearchUrl;
 const situations = [
@@ -226,19 +229,8 @@ try {
 
   <!-- 10 · REVIEWS -->
   <section class="section section--bone">
-    <div class="section__inner reviews">
-      <div>
-        <p class="eyebrow">Attested — third parties speak</p>
-        <h2 class="section__h"><span aria-hidden="true">★★★★★</span> Google Reviews</h2>
-        <p class="section__sub">
-          Placed here, after the evidence and the person, reviews read as corroboration — not
-          advertising.
-        </p>
-        <a class="reviews__link" href="/results/reviews/">Read the reviews on Google →</a>
-      </div>
-      <div class="reviews__embed">
-        Live Google reviews embed — wired to the CMS Settings and linked to the Business Profile.
-      </div>
+    <div class="section__inner">
+      <GoogleReviews profileUrl={settings?.googleReviews?.profileUrl} />
     </div>
   </section>
 
