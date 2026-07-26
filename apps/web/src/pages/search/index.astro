@@ -1,14 +1,259 @@
 ---
-import SimplePage from '../../components/content/SimplePage.astro';
+import Base from '../../layouts/Base.astro';
 import { getCtaLinks } from '../../lib/cms.ts';
+
 const { healthCheckUrl } = await getCtaLinks();
+// Search runs entirely client-side against /search-index.json, so this page is
+// noindexed (no useful content for crawlers, and no duplicate thin results).
 ---
 
-<SimplePage
+<Base
   title="Search"
-  description="Search Visa & Migration Doctors."
-  eyebrow="Search"
-  lead="Find a page, a subclass, or an answer."
-  emptyState="Site search is wired in the search module."
-  cta={{ href: healthCheckUrl, label: 'Or take the Health Check' }}
-/>
+  description="Search Visa & Migration Doctors — find a visa, a service, or an answer."
+  noindex={true}
+>
+  <section class="section">
+    <div class="section__inner search">
+      <p class="eyebrow">Search</p>
+      <h1 class="search__h">Find a page, a visa, or an answer</h1>
+
+      <form class="search__form" role="search" id="search-form">
+        <label class="visually-hidden" for="search-input">Search the site</label>
+        <input
+          type="search"
+          id="search-input"
+          name="q"
+          class="search__input"
+          placeholder="Try “partner visa”, “fees”, “skilled 190”…"
+          autocomplete="off"
+          autofocus
+          aria-describedby="search-status"
+        />
+      </form>
+
+      <p class="search__status" id="search-status" role="status" aria-live="polite"></p>
+
+      <ul class="search__results" id="search-results" role="list"></ul>
+
+      <p class="search__fallback" id="search-fallback" hidden>
+        Can't find what you need?
+        <a href={healthCheckUrl}>Take the Free Visa Health Check</a> or
+        <a href="/contact/">contact us</a>.
+      </p>
+    </div>
+  </section>
+</Base>
+
+<script>
+  interface Entry {
+    t: string;
+    u: string;
+    k: string;
+    d: string;
+    kw?: string;
+  }
+
+  const input = document.getElementById('search-input') as HTMLInputElement;
+  const form = document.getElementById('search-form') as HTMLFormElement;
+  const results = document.getElementById('search-results') as HTMLUListElement;
+  const status = document.getElementById('search-status') as HTMLParagraphElement;
+  const fallback = document.getElementById('search-fallback') as HTMLParagraphElement;
+
+  let index: Entry[] = [];
+  let loaded = false;
+
+  const esc = (s: string) =>
+    s.replace(
+      /[&<>"']/g,
+      (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c] as string,
+    );
+
+  async function ensureIndex(): Promise<void> {
+    if (loaded) return;
+    try {
+      const res = await fetch('/search-index.json');
+      index = res.ok ? await res.json() : [];
+    } catch {
+      index = [];
+    }
+    loaded = true;
+  }
+
+  /** Token-based ranking: title matches beat description/keyword matches. */
+  function search(q: string): Entry[] {
+    const tokens = q.toLowerCase().split(/\s+/).filter(Boolean);
+    if (!tokens.length) return [];
+    return index
+      .map((e) => {
+        const title = e.t.toLowerCase();
+        const hay = `${e.t} ${e.d} ${e.kw ?? ''} ${e.k}`.toLowerCase();
+        let score = 0;
+        for (const tok of tokens) {
+          if (!hay.includes(tok)) return { e, score: -1 };
+          if (title.includes(tok)) score += 3;
+          if (title.startsWith(tok)) score += 2;
+          score += 1;
+        }
+        return { e, score };
+      })
+      .filter((r) => r.score >= 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 20)
+      .map((r) => r.e);
+  }
+
+  function render(q: string): void {
+    const trimmed = q.trim();
+    if (!trimmed) {
+      results.innerHTML = '';
+      status.textContent = '';
+      fallback.hidden = true;
+      return;
+    }
+    const hits = search(trimmed);
+    if (!hits.length) {
+      results.innerHTML = '';
+      status.textContent = `No results for “${trimmed}”.`;
+      fallback.hidden = false;
+      return;
+    }
+    status.textContent = `${hits.length} result${hits.length === 1 ? '' : 's'} for “${trimmed}”.`;
+    results.innerHTML = hits
+      .map(
+        (e) => `
+      <li class="sr">
+        <a class="sr__link" href="${esc(e.u)}">
+          <span class="sr__kind">${esc(e.k)}</span>
+          <span class="sr__title">${esc(e.t)}</span>
+          ${e.d ? `<span class="sr__desc">${esc(e.d)}</span>` : ''}
+        </a>
+      </li>`,
+      )
+      .join('');
+    fallback.hidden = false;
+  }
+
+  let timer: number | undefined;
+  async function onInput(): Promise<void> {
+    await ensureIndex();
+    window.clearTimeout(timer);
+    timer = window.setTimeout(() => {
+      const q = input.value;
+      render(q);
+      const url = new URL(window.location.href);
+      if (q.trim()) url.searchParams.set('q', q.trim());
+      else url.searchParams.delete('q');
+      window.history.replaceState(null, '', url);
+    }, 120);
+  }
+
+  form.addEventListener('submit', (e) => e.preventDefault());
+  input.addEventListener('input', onInput);
+
+  // Deep-link support: /search?q=partner runs the search on load.
+  (async () => {
+    const q = new URLSearchParams(window.location.search).get('q') ?? '';
+    if (q) {
+      input.value = q;
+      await ensureIndex();
+      render(q);
+    }
+  })();
+</script>
+
+<style>
+  .search__h {
+    font-size: var(--type-display-sm, var(--type-h1));
+    margin-block: var(--space-2) var(--space-5);
+  }
+  .search__form {
+    margin-block-end: var(--space-4);
+  }
+  .search__input {
+    width: 100%;
+    max-width: 40rem;
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--type-body-lg);
+    border: 2px solid color-mix(in srgb, var(--color-emphasis) 35%, transparent);
+    border-radius: var(--radius-control, 0.5rem);
+    background: var(--color-surface);
+    color: var(--color-text);
+  }
+  .search__input:focus-visible {
+    outline: 3px solid var(--color-action);
+    outline-offset: 2px;
+    border-color: var(--color-interactive-strong);
+  }
+  .search__status {
+    color: var(--color-text-muted);
+    margin-block: 0 var(--space-4);
+    min-height: 1.2em;
+  }
+  .search__results {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-2);
+    max-width: 44rem;
+  }
+  .sr__link {
+    display: grid;
+    gap: 0.15rem;
+    padding: var(--space-4);
+    border: 1px solid color-mix(in srgb, var(--color-emphasis) 20%, transparent);
+    border-radius: var(--radius-card, 0.75rem);
+    text-decoration: none;
+    background: var(--color-surface);
+    transition:
+      border-color 0.15s ease,
+      transform 0.15s ease;
+  }
+  .sr__link:hover {
+    border-color: var(--color-interactive-strong);
+  }
+  .sr__link:focus-visible {
+    outline: 3px solid var(--color-action);
+    outline-offset: 2px;
+  }
+  .sr__kind {
+    font-size: var(--type-body-xs, 0.75rem);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-emphasis-text);
+    font-weight: 700;
+  }
+  .sr__title {
+    font-size: var(--type-body-lg);
+    font-weight: 600;
+    color: var(--color-text);
+  }
+  .sr__desc {
+    color: var(--color-text-muted);
+    font-size: var(--type-body-sm);
+  }
+  .search__fallback {
+    margin-block-start: var(--space-6);
+    color: var(--color-text-muted);
+  }
+  .search__fallback a {
+    color: var(--color-interactive-strong);
+    font-weight: 600;
+  }
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sr__link {
+      transition: none;
+    }
+  }
+</style>
