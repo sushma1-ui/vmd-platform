@@ -24,6 +24,8 @@ const jsonLd = [organizationSchema(), ...schemas];
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#16294C" />
     <title>{meta.title}</title>
     <link rel="canonical" href={meta.canonical} />
     {meta.tags.map((t) => <meta name={t.name} property={t.property} content={t.content} />)}
