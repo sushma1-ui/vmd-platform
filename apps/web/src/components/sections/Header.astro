@@ -171,7 +171,9 @@ const register = PRACTICE.regulator.registerSearchUrl;
   }
   .nav {
     display: none;
+    align-items: center;
     gap: var(--space-4);
+    flex-wrap: nowrap;
   }
   .nav__link {
     color: var(--color-action);
@@ -179,6 +181,7 @@ const register = PRACTICE.regulator.registerSearchUrl;
     font-size: var(--type-body);
     padding-block: var(--space-1);
     border-block-end: 1px solid transparent;
+    white-space: nowrap;
   }
   .nav__link:hover {
     border-block-end-color: var(--color-emphasis);
@@ -226,7 +229,10 @@ const register = PRACTICE.regulator.registerSearchUrl;
       display: inline;
     }
   }
-  @media (min-width: 1024px) {
+  /* The header packs brand + full nav + three CTAs, so the horizontal layout only
+     appears once there is comfortable room (~1120px). Below that the burger menu —
+     which carries the same nav and CTAs — takes over, so items never wrap or overlap. */
+  @media (min-width: 1120px) {
     .utility__marn {
       display: inline;
     }
