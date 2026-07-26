@@ -108,3 +108,5 @@ Deploy. The website builds, pulling content from `PUBLIC_CMS_URL`.
 - **Redeploys**: every push to `feat/lead-gen-rework` triggers a deploy on both projects.
 
 > Production tracks the `feat/lead-gen-rework` branch until launch is verified.
+
+<!-- Website (apps/web) deployed as a second Vercel project; see the Website table above. -->
