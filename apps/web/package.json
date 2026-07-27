@@ -4,6 +4,9 @@
   "private": true,
   "description": "The PUBLIC platform. Astro, SSG/ISR, ~0KB JS by default; interactivity is opt-in per island and budgeted in CI (ARCHITECTURE.md \u00a71).",
   "type": "module",
+  "engines": {
+    "node": "20.x"
+  },
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
