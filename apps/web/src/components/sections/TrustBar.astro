@@ -1,0 +1,166 @@
+---
+/**
+ * TrustBar — a calm, verifiable "certification row" placed directly under the hero.
+ *
+ * Every item is a fact a prospective client can check, single-sourced from
+ * @vmd/config (regulatory content is never freely editable). Rendered in the
+ * brand's own navy/gold/serif system so it reads as bespoke, not a generic
+ * grey logo strip. Icons are inline single-path SVGs (no icon library, ~0 JS).
+ */
+import { PRACTICE } from '@vmd/config';
+
+const register = PRACTICE.regulator.registerSearchUrl;
+
+const items = [
+  {
+    label: 'Registered Migration Agent',
+    sub: 'Regulated by the OMARA',
+    // shield + check
+    path: 'M12 3 5 6v5c0 4.5 3 7.6 7 9 4-1.4 7-4.5 7-9V6l-7-3z',
+    extra: 'm9 12 2 2 4-4',
+  },
+  {
+    label: `MARN ${PRACTICE.principal.marn}`,
+    sub: 'Verify on the register →',
+    href: register,
+    // certificate/document
+    path: 'M7 3h7l4 4v14H7zM14 3v4h4',
+  },
+  {
+    label: 'Code of Conduct',
+    sub: 'Bound by the Migration Agents Code',
+    // open book
+    path: 'M12 6c-2-1.3-4.5-1.3-7-0.5v12c2.5-0.8 5-0.8 7 .5 2-1.3 4.5-1.3 7-.5v-12c-2.5-.8-5-.8-7 .5zM12 6v13',
+  },
+  {
+    label: 'Perth CBD',
+    sub: 'Appointment-only · online or in person',
+    // location pin
+    path: 'M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11z',
+    extra: 'M12 10.5m-2.4 0a2.4 2.4 0 1 0 4.8 0a2.4 2.4 0 1 0-4.8 0',
+  },
+];
+---
+
+<section class="trustbar" aria-label="Our credentials">
+  <ul class="trustbar__row" role="list">
+    {
+      items.map((it) => (
+        <li class="trustbar__item">
+          <span class="trustbar__icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d={it.path} stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+              {it.extra && (
+                <path
+                  d={it.extra}
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              )}
+            </svg>
+          </span>
+          <span class="trustbar__text">
+            <span class="trustbar__label">{it.label}</span>
+            {it.href ? (
+              <a
+                class="trustbar__sub trustbar__sub--link"
+                href={it.href}
+                rel="noopener"
+                target="_blank"
+              >
+                {it.sub}
+              </a>
+            ) : (
+              <span class="trustbar__sub">{it.sub}</span>
+            )}
+          </span>
+        </li>
+      ))
+    }
+  </ul>
+</section>
+
+<style>
+  .trustbar {
+    background: var(--color-surface);
+    border-block: 1px solid color-mix(in srgb, var(--color-action) 12%, transparent);
+  }
+  .trustbar__row {
+    max-inline-size: var(--container-max);
+    margin-inline: auto;
+    padding: var(--space-4);
+    list-style: none;
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: 1fr;
+  }
+  .trustbar__item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    min-inline-size: 0;
+  }
+  .trustbar__icon {
+    flex: none;
+    display: grid;
+    place-items: center;
+    inline-size: 2.5rem;
+    block-size: 2.5rem;
+    border-radius: 50%;
+    color: var(--color-emphasis-text); /* AA gold-for-text on the light chip */
+    background: color-mix(in srgb, var(--color-emphasis) 14%, transparent);
+  }
+  .trustbar__text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    min-inline-size: 0;
+  }
+  .trustbar__label {
+    font-weight: 600;
+    font-size: var(--type-body);
+    color: var(--color-text);
+    line-height: 1.2;
+  }
+  .trustbar__sub {
+    font-size: var(--type-body-sm);
+    color: var(--color-text-muted);
+    line-height: 1.3;
+  }
+  .trustbar__sub--link {
+    color: var(--color-interactive-strong);
+    font-weight: 600;
+    text-decoration: none;
+    width: fit-content;
+  }
+  .trustbar__sub--link:hover {
+    text-decoration: underline;
+  }
+
+  @media (min-width: 640px) {
+    .trustbar__row {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-5) var(--space-6);
+      padding-block: var(--space-5);
+    }
+  }
+  @media (min-width: 1024px) {
+    .trustbar__row {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    /* hairline dividers between items on the single row */
+    .trustbar__item + .trustbar__item {
+      position: relative;
+    }
+    .trustbar__item + .trustbar__item::before {
+      content: '';
+      position: absolute;
+      inset-inline-start: calc(var(--space-3) * -1.5);
+      inset-block: 10%;
+      inline-size: 1px;
+      background: color-mix(in srgb, var(--color-action) 12%, transparent);
+    }
+  }
+</style>

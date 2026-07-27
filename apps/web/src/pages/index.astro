@@ -1,13 +1,14 @@
 ---
 import Base from '../layouts/Base.astro';
 import { PRACTICE, RMA_LINE } from '@vmd/config';
-import { Button, Card, Chip, Rule, TrustStrip, Disclaimer } from '@vmd/ui';
+import { Button, Card, Chip, Rule, Disclaimer } from '@vmd/ui';
 import { localBusinessSchema, personSchema } from '@vmd/seo';
 import { cms, getSettings, getHomepage } from '../lib/cms.ts';
 import { servicePageHref } from '../lib/servicePages.ts';
 import BookCta from '../components/cta/BookCta.astro';
 import HealthCheckCta from '../components/cta/HealthCheckCta.astro';
 import GoogleReviews from '../components/sections/GoogleReviews.astro';
+import TrustBar from '../components/sections/TrustBar.astro';
 
 const settings = await getSettings();
 // Homepage global (CMS-editable, section by section). Every read falls back to
@@ -103,7 +104,6 @@ try {
           label={hp?.hero?.secondaryCta?.label || 'Book a consultation'}
         />
       </div>
-      <TrustStrip reviewUrl="/results/reviews/" />
     </div>
     <aside class="hero__cred" aria-label="Registered Migration Agent credentials">
       <p class="hero__cred-eyebrow">Registered Migration Agent (RMA)</p>
@@ -119,6 +119,9 @@ try {
       </a>
     </aside>
   </section>
+
+  <!-- 3b · TRUST BAR (verifiable credentials) -->
+  <TrustBar />
 
   <!-- 4 · SITUATION -->
   {
