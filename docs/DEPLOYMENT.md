@@ -119,3 +119,5 @@ and unreachable from Vercel. Fix: set `DATABASE_URL` to the Session/Transaction
 pooler string in the CMS project, then redeploy.
 
 <!-- rebuild trigger: CMS DB fixed, content now available -->
+
+<!-- rebuild trigger: new blog article published in CMS -->
