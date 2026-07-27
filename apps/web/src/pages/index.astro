@@ -1,7 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import { PRACTICE, RMA_LINE } from '@vmd/config';
-import { Button, Card, Chip, Rule, Disclaimer } from '@vmd/ui';
+import { Button, Card, Rule, Disclaimer } from '@vmd/ui';
 import { localBusinessSchema, personSchema } from '@vmd/seo';
 import { cms, getSettings, getHomepage } from '../lib/cms.ts';
 import { servicePageHref } from '../lib/servicePages.ts';
@@ -9,6 +9,20 @@ import BookCta from '../components/cta/BookCta.astro';
 import HealthCheckCta from '../components/cta/HealthCheckCta.astro';
 import GoogleReviews from '../components/sections/GoogleReviews.astro';
 import TrustBar from '../components/sections/TrustBar.astro';
+import Icon from '../components/Icon.astro';
+
+// "How we work" icons: examine → route → verified outcome (the clinical brand arc).
+const STEP_ICONS = [
+  'M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14z M20 20l-4.3-4.3', // magnifier — diagnosis
+  'M6 21V4 M6 5h11l-2.5 3 2.5 3H6', // signpost — pathway
+  'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z M8.5 12l2.5 2.5 4.5-4.5', // check seal — outcome
+];
+// "Diagnosis promise" icons: transparency → fixed fee → the registered agent.
+const PROMISE_ICONS = [
+  'M2 12s3.5-6.5 10-6.5S22 12 22 12s-3.5 6.5-10 6.5S2 12 2 12z M12 9.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z', // eye
+  'M4 4h8l8 8-8 8-8-8z M8.4 8.4h.01', // price tag
+  'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M5 20a7 7 0 0 1 14 0', // person
+];
 
 const settings = await getSettings();
 // Homepage global (CMS-editable, section by section). Every read falls back to
@@ -171,29 +185,37 @@ try {
           </p>
           <div class="grid grid--3 promises">
             {hp?.whyChoose?.promises?.length ? (
-              hp.whyChoose.promises.map((p) => (
+              hp.whyChoose.promises.map((p, i) => (
                 <div class="promise">
-                  <Rule width="short" />
+                  <span class="promise__icon" aria-hidden="true">
+                    <Icon path={PROMISE_ICONS[i % PROMISE_ICONS.length]} />
+                  </span>
                   <p>{p.text}</p>
                 </div>
               ))
             ) : (
               <>
                 <div class="promise">
-                  <Rule width="short" />
+                  <span class="promise__icon" aria-hidden="true">
+                    <Icon path={PROMISE_ICONS[0]} />
+                  </span>
                   <p>
                     We tell you if you're <strong>not</strong> eligible — including when the honest
                     answer is to wait.
                   </p>
                 </div>
                 <div class="promise">
-                  <Rule width="short" />
+                  <span class="promise__icon" aria-hidden="true">
+                    <Icon path={PROMISE_ICONS[1]} />
+                  </span>
                   <p>
                     A <strong>fixed fee</strong>, quoted before you commit. No surprises.
                   </p>
                 </div>
                 <div class="promise">
-                  <Rule width="short" />
+                  <span class="promise__icon" aria-hidden="true">
+                    <Icon path={PROMISE_ICONS[2]} />
+                  </span>
                   <p>
                     You deal with the <strong>registered agent</strong> — not a salesperson.
                   </p>
@@ -277,25 +299,41 @@ try {
           <h2 class="section__h">{hp?.howWeWork?.heading || 'How we work'}</h2>
           <div class="grid grid--3 steps">
             {hp?.howWeWork?.steps?.length ? (
-              hp.howWeWork.steps.map((step) => (
+              hp.howWeWork.steps.map((step, i) => (
                 <div class="step">
-                  <Chip>{step.label}</Chip>
-                  <p>{step.description}</p>
+                  <span class="step__icon" aria-hidden="true">
+                    <Icon path={STEP_ICONS[i % STEP_ICONS.length]} size={24} />
+                  </span>
+                  <p class="step__label">{step.label}</p>
+                  <p class="step__desc">{step.description}</p>
                 </div>
               ))
             ) : (
               <>
                 <div class="step">
-                  <Chip>1 · Diagnosis</Chip>
-                  <p>A thorough, evidence-based assessment of where you stand.</p>
+                  <span class="step__icon" aria-hidden="true">
+                    <Icon path={STEP_ICONS[0]} size={24} />
+                  </span>
+                  <p class="step__label">1 · Diagnosis</p>
+                  <p class="step__desc">
+                    A thorough, evidence-based assessment of where you stand.
+                  </p>
                 </div>
                 <div class="step">
-                  <Chip>2 · Pathway</Chip>
-                  <p>A clear plan matched to your circumstances and the law.</p>
+                  <span class="step__icon" aria-hidden="true">
+                    <Icon path={STEP_ICONS[1]} size={24} />
+                  </span>
+                  <p class="step__label">2 · Pathway</p>
+                  <p class="step__desc">A clear plan matched to your circumstances and the law.</p>
                 </div>
                 <div class="step">
-                  <Chip>3 · Outcome</Chip>
-                  <p>Careful preparation and honest guidance through to decision.</p>
+                  <span class="step__icon" aria-hidden="true">
+                    <Icon path={STEP_ICONS[2]} size={24} />
+                  </span>
+                  <p class="step__label">3 · Outcome</p>
+                  <p class="step__desc">
+                    Careful preparation and honest guidance through to decision.
+                  </p>
                 </div>
               </>
             )}
@@ -601,15 +639,32 @@ try {
   .section--bone .promise {
     background: var(--color-ground-warm);
   }
+  .promise__icon,
+  .step__icon {
+    display: grid;
+    place-items: center;
+    inline-size: 2.75rem;
+    block-size: 2.75rem;
+    border-radius: 50%;
+    color: var(--color-emphasis-text);
+    background: color-mix(in srgb, var(--color-emphasis) 14%, transparent);
+  }
   .promise p {
     margin-block-start: var(--space-3);
     font-size: var(--type-body-lg);
     line-height: 1.45;
   }
-  .step p {
-    margin-block-start: var(--space-2);
+  .step__label {
+    margin-block-start: var(--space-3);
+    font-family: var(--font-display);
+    font-size: var(--type-h3);
+    color: var(--color-action);
+  }
+  .step__desc {
+    margin-block-start: var(--space-1);
     font-size: var(--type-body);
     line-height: 1.6;
+    color: var(--color-text);
   }
 
   .band {

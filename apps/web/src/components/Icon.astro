@@ -1,0 +1,21 @@
+---
+/**
+ * Icon — a single-path line icon (24x24 viewBox), currentColor, no library, ~0 JS.
+ * Decorative by default (aria-hidden); give it an accessible label via the parent.
+ */
+interface Props {
+  /** SVG path `d` (may contain multiple subpaths). */
+  path: string;
+  size?: number;
+}
+const { path, size = 20 } = Astro.props;
+---
+
+<svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+  <path
+    d={path}
+    stroke="currentColor"
+    stroke-width="1.6"
+    stroke-linecap="round"
+    stroke-linejoin="round"></path>
+</svg>
