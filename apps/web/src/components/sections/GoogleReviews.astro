@@ -83,13 +83,22 @@ const stars = (n: number) => '★★★★★'.slice(0, n) + '☆☆☆☆☆'.s
           ))}
         </ul>
       ) : (
-        <div class="reviews__embed">
-          <p>
-            Our clients' reviews live on our Google Business Profile. Read them in their own words —{' '}
-            <a href={href} rel="noopener" target={href.startsWith('http') ? '_blank' : null}>
-              on Google →
-            </a>
+        <div class="reviews__cta">
+          <p class="reviews__cta-stars" aria-hidden="true">
+            ★★★★★
           </p>
+          <p class="reviews__cta-text">
+            Our clients tell their own stories on our Google Business Profile — in their words,
+            verified by Google.
+          </p>
+          <a
+            class="reviews__cta-btn"
+            href={href}
+            rel="noopener"
+            target={href.startsWith('http') ? '_blank' : null}
+          >
+            Read our Google reviews →
+          </a>
         </div>
       )
     }
@@ -151,16 +160,47 @@ const stars = (n: number) => '★★★★★'.slice(0, n) + '☆☆☆☆☆'.s
     font-weight: 600;
     color: var(--color-text);
   }
-  .reviews__embed {
-    border: 1px dashed color-mix(in srgb, var(--color-emphasis) 50%, transparent);
+  .reviews__cta {
+    border: 1px solid color-mix(in srgb, var(--color-emphasis) 22%, transparent);
     border-radius: var(--radius-card);
     padding: var(--space-6);
-    color: var(--color-text-muted);
-    font-size: var(--type-body-sm);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-subtle);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
   }
-  .reviews__embed a {
-    color: var(--color-interactive-strong);
+  .reviews__cta-stars {
+    margin: 0;
+    color: var(--color-emphasis-text);
+    letter-spacing: 0.15em;
+    font-size: var(--type-h3);
+  }
+  .reviews__cta-text {
+    margin: 0;
+    color: var(--color-text);
+    line-height: 1.5;
+  }
+  .reviews__cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-5);
+    margin-block-start: var(--space-1);
+    background: var(--color-interactive-strong);
+    color: var(--color-text-inverse);
+    border-radius: var(--radius-control);
     font-weight: 600;
+    text-decoration: none;
+    transition: background-color var(--motion-fast, 150ms) var(--ease-standard, ease);
+  }
+  .reviews__cta-btn:hover {
+    background: color-mix(in srgb, var(--color-interactive-strong) 88%, black);
+  }
+  .reviews__cta-btn:focus-visible {
+    outline: 3px solid var(--color-action);
+    outline-offset: 2px;
   }
   @media (min-width: 768px) {
     .reviews__grid {
