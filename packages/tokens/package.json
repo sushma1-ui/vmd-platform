@@ -10,11 +10,12 @@
     "./tokens.css": "./dist/tokens.css"
   },
   "scripts": {
-    "build": "node --experimental-strip-types build.ts",
+    "build": "tsx build.ts",
     "typecheck": "tsc --noEmit",
     "lint": "eslint ."
   },
   "devDependencies": {
+    "tsx": "^4.19.0",
     "typescript": "^5.6.3"
   }
 }
