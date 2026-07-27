@@ -110,3 +110,10 @@ Deploy. The website builds, pulling content from `PUBLIC_CMS_URL`.
 > Production tracks the `feat/lead-gen-rework` branch until launch is verified.
 
 <!-- Website (apps/web) deployed as a second Vercel project; see the Website table above. -->
+
+## Troubleshooting: "cannot connect to Postgres: getaddrinfo ENOTFOUND"
+
+`DATABASE_URL` must use the **pooler** host (`aws-0-<region>.pooler.supabase.com`),
+never the direct connection (`db.<ref>.supabase.co`) — the direct host is IPv6-only
+and unreachable from Vercel. Fix: set `DATABASE_URL` to the Session/Transaction
+pooler string in the CMS project, then redeploy.
