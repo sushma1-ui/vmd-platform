@@ -109,6 +109,9 @@ export const CTA_ROUTES = {
  */
 export const CLIENT_PORTAL = {
   label: 'Client Portal',
-  url: '/client-portal',
+  // Points at the existing Migration Manager DocumentPortal (clients log in there).
+  // The website only provides the entry point; portal functionality stays in MM.
+  // CMS-overridable via Settings → clientPortal.url.
+  url: 'https://studentsavenue.mmportal.cloud/DocumentPortal2/login',
   enabled: true,
 } as const;

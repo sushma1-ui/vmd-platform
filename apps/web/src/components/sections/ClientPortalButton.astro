@@ -13,6 +13,9 @@ interface Props {
 }
 const { variant = 'desktop' } = Astro.props;
 const cp = await getClientPortal();
+// The portal lives on an external system (Migration Manager), so open it in a new
+// tab with rel="noopener noreferrer". Internal URLs (if ever configured) open in place.
+const isExternal = /^https?:\/\//i.test(cp.url);
 ---
 
 {
@@ -20,6 +23,8 @@ const cp = await getClientPortal();
     <a
       class:list={['cpbtn', `cpbtn--${variant}`]}
       href={cp.url}
+      target={isExternal ? '_blank' : undefined}
+      rel={isExternal ? 'noopener noreferrer' : undefined}
       style={cp.color ? `--cp-bg:${cp.color}` : undefined}
     >
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
