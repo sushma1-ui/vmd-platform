@@ -10,7 +10,7 @@
  * A `profileUrl` prop lets the caller supply the CMS-configured Business Profile
  * link as a fallback for the "read on Google" CTA when the API doesn't return one.
  */
-import { getGoogleReviews } from '../../lib/google-reviews.ts';
+import { getGoogleReviews, googleReviewsUrl } from '../../lib/google-reviews.ts';
 
 interface Props {
   /** Fallback Google profile URL (from CMS Settings) if the API omits one. */
@@ -33,7 +33,7 @@ const {
 const data = await getGoogleReviews();
 const reviews = data.reviews.slice(0, limit);
 const hasLive = reviews.length > 0;
-const href = data.profileUrl || profileUrl || '/results/reviews/';
+const href = data.profileUrl || profileUrl || googleReviewsUrl;
 const ratingLabel = data.rating != null ? data.rating.toFixed(1) : null;
 
 const stars = (n: number) => '★★★★★'.slice(0, n) + '☆☆☆☆☆'.slice(0, 5 - n);

@@ -25,6 +25,10 @@ const API_KEY = process.env.GOOGLE_PLACES_API_KEY?.trim() || '';
 const DEFAULT_PLACE_ID = 'ChIJB6Jieqq9MioRVgF05oyBKiA';
 const PLACE_ID = process.env.GOOGLE_PLACE_ID?.trim() || DEFAULT_PLACE_ID;
 
+/** Public link to the business's live Google reviews — used by the "read on Google"
+ *  fallback so the section is useful even without an API key (Option 2). */
+export const googleReviewsUrl = `https://search.google.com/local/reviews?placeid=${PLACE_ID}`;
+
 /** A single normalised Google review, shaped for display. */
 export interface GoogleReview {
   /** Reviewer's display name as attributed by Google. */
