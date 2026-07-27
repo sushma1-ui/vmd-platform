@@ -149,7 +149,7 @@ try {
   <!-- 4 · SITUATION -->
   {
     shown(hp?.situations) && (
-      <section class="section section--bone">
+      <section data-reveal class="section section--bone">
         <div class="section__inner">
           <h2 class="section__h">{hp?.situations?.heading || 'Which of these is you?'}</h2>
           <p class="section__sub">
@@ -176,7 +176,7 @@ try {
   <!-- 5 · DIAGNOSIS PROMISE (Why Choose Us) -->
   {
     shown(hp?.whyChoose) && (
-      <section class="section">
+      <section data-reveal class="section">
         <div class="section__inner">
           <h2 class="section__h">{hp?.whyChoose?.heading || 'The diagnosis promise'}</h2>
           <p class="section__sub">
@@ -231,7 +231,7 @@ try {
   <!-- 6 · SUCCESS STORIES (evidence, navy band) -->
   {
     shown(hp?.successStories) && (
-      <section class="band">
+      <section data-reveal class="band">
         <div class="band__inner">
           <p class="band__eyebrow">
             {hp?.successStories?.eyebrow || 'Real clients, real outcomes'}
@@ -258,7 +258,7 @@ try {
   <!-- 7 · WHAT WE DO (Featured Services) -->
   {
     shown(hp?.featuredServices) && (
-      <section class="section">
+      <section data-reveal class="section">
         <div class="section__inner">
           <h2 class="section__h">{hp?.featuredServices?.heading || 'Featured services'}</h2>
           <p class="section__sub">
@@ -294,7 +294,7 @@ try {
   <!-- 8 · HOW WE WORK -->
   {
     shown(hp?.howWeWork) && (
-      <section class="section section--bone">
+      <section data-reveal class="section section--bone">
         <div class="section__inner">
           <h2 class="section__h">{hp?.howWeWork?.heading || 'How we work'}</h2>
           <div class="grid grid--3 steps">
@@ -346,7 +346,7 @@ try {
   <!-- 9 · MEET SUNIL (Trust & Credentials) -->
   {
     shown(hp?.practitioner) && (
-      <section class="section">
+      <section data-reveal class="section">
         <div class="section__inner meet">
           <figure class="meet__portrait" aria-hidden="true">
             <span class="meet__mono">
@@ -397,7 +397,7 @@ try {
   <!-- 10 · REVIEWS -->
   {
     shown(hp?.googleReviews) && (
-      <section class="section section--bone">
+      <section data-reveal class="section section--bone">
         <div class="section__inner">
           <GoogleReviews
             profileUrl={settings?.googleReviews?.profileUrl}
@@ -416,7 +416,7 @@ try {
   <!-- 11 · INSIGHTS (Featured Blogs) -->
   {
     shown(hp?.featuredBlogs) && (
-      <section class="section">
+      <section data-reveal class="section">
         <div class="section__inner">
           <h2 class="section__h">{hp?.featuredBlogs?.heading || 'From our blog'}</h2>
           <p class="section__sub">
@@ -455,7 +455,7 @@ try {
   <!-- 11b · FAQs (optional; off unless an editor enables it) -->
   {
     hp?.faqs?.show && hp.faqs.items && hp.faqs.items.length > 0 && (
-      <section class="section section--bone">
+      <section data-reveal class="section section--bone">
         <div class="section__inner">
           <h2 class="section__h">{hp.faqs.heading || 'Frequently asked questions'}</h2>
           {hp.faqs.intro && <p class="section__sub">{hp.faqs.intro}</p>}
@@ -475,7 +475,7 @@ try {
   <!-- 12 · CLOSING (Final CTA) -->
   {
     shown(hp?.finalCta) && (
-      <section class="band band--close">
+      <section data-reveal class="band band--close">
         <div class="band__inner band__inner--center">
           <h2 class="band__h">{hp?.finalCta?.heading || 'Not sure where you stand?'}</h2>
           <p class="band__lead band__lead--center">
