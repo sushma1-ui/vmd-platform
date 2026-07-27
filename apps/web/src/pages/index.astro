@@ -105,11 +105,19 @@ try {
       </div>
       <TrustStrip reviewUrl="/results/reviews/" />
     </div>
-    <figure class="hero__portrait" aria-hidden="true">
-      <span
-        >{PRACTICE.principal.name} — working portrait to be commissioned (§19). Real, not stock.</span
-      >
-    </figure>
+    <aside class="hero__cred" aria-label="Registered Migration Agent credentials">
+      <p class="hero__cred-eyebrow">Registered Migration Agent (RMA)</p>
+      <p class="hero__cred-name">{PRACTICE.principal.name}</p>
+      <p class="hero__cred-marn">MARN {PRACTICE.principal.marn}</p>
+      <ul class="hero__cred-points">
+        <li>Bound by the Migration Agents Code of Conduct</li>
+        <li>Fixed fees — quoted before you commit</li>
+        <li>You deal with the agent, not a salesperson</li>
+      </ul>
+      <a class="hero__cred-verify" href={register} rel="noopener" target="_blank">
+        Verify on the OMARA register →
+      </a>
+    </aside>
   </section>
 
   <!-- 4 · SITUATION -->
@@ -286,7 +294,12 @@ try {
       <section class="section">
         <div class="section__inner meet">
           <figure class="meet__portrait" aria-hidden="true">
-            <span>Portrait — §19</span>
+            <span class="meet__mono">
+              {PRACTICE.principal.name
+                .split(' ')
+                .map((w) => w[0])
+                .join('')}
+            </span>
           </figure>
           <div class="meet__copy">
             <p class="eyebrow">{hp?.practitioner?.eyebrow || 'The practitioner'}</p>
@@ -487,18 +500,75 @@ try {
     gap: var(--space-3);
     margin-block-end: var(--space-4);
   }
-  .hero__portrait {
+  /* Hero credentials card — turns the space into a trust + verification asset. */
+  .hero__cred {
     margin: 0;
-    aspect-ratio: 4 / 5;
-    background: var(--color-ground-warm);
-    border: 1px solid color-mix(in srgb, var(--color-action) 12%, transparent);
+    background: var(--color-ground-deep);
+    color: var(--color-text-inverse);
     border-radius: var(--radius-card);
-    display: grid;
-    place-items: center;
-    text-align: center;
-    color: var(--color-text-muted);
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    box-shadow: 0 10px 30px color-mix(in srgb, var(--color-ground-deep) 22%, transparent);
+  }
+  .hero__cred-eyebrow {
+    font-size: var(--type-caption);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-emphasis);
+    margin: 0;
+  }
+  .hero__cred-name {
+    font-family: var(--font-display);
+    font-size: var(--type-h2);
+    line-height: 1.1;
+    color: var(--color-text-inverse);
+    margin: 0;
+  }
+  .hero__cred-marn {
     font-size: var(--type-body-sm);
-    padding: var(--space-5);
+    letter-spacing: 0.04em;
+    color: color-mix(in srgb, var(--color-text-inverse) 80%, transparent);
+    margin: 0;
+  }
+  .hero__cred-points {
+    list-style: none;
+    margin: var(--space-4) 0 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-2);
+  }
+  .hero__cred-points li {
+    position: relative;
+    padding-inline-start: var(--space-4);
+    font-size: var(--type-body-sm);
+    line-height: 1.4;
+    color: color-mix(in srgb, var(--color-text-inverse) 92%, transparent);
+  }
+  .hero__cred-points li::before {
+    content: '✓';
+    position: absolute;
+    inset-inline-start: 0;
+    color: var(--color-emphasis);
+    font-weight: 700;
+  }
+  .hero__cred-verify {
+    margin-block-start: var(--space-4);
+    color: var(--color-emphasis);
+    font-weight: 600;
+    font-size: var(--type-body-sm);
+    text-decoration: none;
+  }
+  .hero__cred-verify:hover {
+    text-decoration: underline;
+  }
+  .meet__mono {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(3rem, 8vw, 5rem);
+    letter-spacing: 0.05em;
+    color: var(--color-action);
   }
 
   .grid {
