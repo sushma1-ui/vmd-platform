@@ -19,7 +19,11 @@
  */
 
 const API_KEY = process.env.GOOGLE_PLACES_API_KEY?.trim() || '';
-const PLACE_ID = process.env.GOOGLE_PLACE_ID?.trim() || '';
+// Visa & Migration Doctors, Perth — a Place ID is public, so it's baked in as the
+// default; only the (secret) API key needs to be set to switch live reviews on.
+// Override with GOOGLE_PLACE_ID if the listing ever changes.
+const DEFAULT_PLACE_ID = 'ChIJB6Jieqq9MioRVgF05oyBKiA';
+const PLACE_ID = process.env.GOOGLE_PLACE_ID?.trim() || DEFAULT_PLACE_ID;
 
 /** A single normalised Google review, shaped for display. */
 export interface GoogleReview {
