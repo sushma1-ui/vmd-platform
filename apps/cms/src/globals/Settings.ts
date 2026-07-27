@@ -31,7 +31,14 @@ export const Settings: GlobalConfig = {
       fields: [
         { name: 'enabled', type: 'checkbox', defaultValue: true },
         { name: 'label', type: 'text', defaultValue: 'Client Portal' },
-        { name: 'url', type: 'text', defaultValue: '/client-portal' },
+        {
+          name: 'url',
+          type: 'text',
+          defaultValue: 'https://studentsavenue.mmportal.cloud/DocumentPortal2/login',
+          admin: {
+            description: 'Where the Client Portal button goes (the Migration Manager portal).',
+          },
+        },
         {
           name: 'color',
           type: 'text',

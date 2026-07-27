@@ -135,7 +135,10 @@ export function getClientPortal(): Promise<ClientPortalNav> {
     return {
       enabled: cp.enabled ?? CLIENT_PORTAL.enabled,
       label: cp.label || CLIENT_PORTAL.label,
-      url: cp.url || CLIENT_PORTAL.url,
+      // Use the CMS URL only when it's a real override — treat the legacy internal
+      // default '/client-portal' as "unset" so it falls through to the configured
+      // (Migration Manager) destination. The CMS can still override with any other URL.
+      url: cp.url && cp.url !== '/client-portal' ? cp.url : CLIENT_PORTAL.url,
       color,
     };
   })();
