@@ -14,7 +14,9 @@ export const Media: CollectionConfig = {
   },
   access: { read: anyone, create: isEditorial, update: isEditorial, delete: isEditorial },
   upload: {
-    mimeTypes: ['image/webp', 'image/avif', 'image/jpeg', 'image/png', 'image/svg+xml'],
+    // Raster formats only. SVG is intentionally excluded — it can carry inline
+    // scripts/foreignObject and would be a stored-XSS vector when served inline.
+    mimeTypes: ['image/webp', 'image/avif', 'image/jpeg', 'image/png'],
     imageSizes: [
       { name: 'thumb', width: 400 },
       { name: 'card', width: 800 },

@@ -25,6 +25,9 @@ const connectionString = process.env.DATABASE_POOL_URL || process.env.DATABASE_U
 export default buildConfig({
   secret: process.env.PAYLOAD_SECRET ?? '',
   editor: lexicalEditor(),
+  // Cap upload size (8 MB) so a hostile or accidental huge file can't exhaust
+  // storage/memory. Comfortably covers high-resolution photography.
+  upload: { limits: { fileSize: 8 * 1024 * 1024 } },
   db: postgresAdapter({ pool: { connectionString } }),
   collections: collections.map((c) => ({
     ...c,
