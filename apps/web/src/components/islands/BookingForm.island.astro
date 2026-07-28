@@ -142,6 +142,8 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
   const form = document.querySelector('[data-bk]');
   const err = form?.querySelector('[data-err]');
   const ok = form?.querySelector('[data-ok]');
+  const submit = form?.querySelector('button[type="submit"]');
+  const submitLabel = submit ? submit.textContent : '';
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     err.hidden = true;
@@ -163,6 +165,11 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
       err.hidden = false;
       return;
     }
+    if (submit) {
+      submit.disabled = true;
+      submit.setAttribute('aria-busy', 'true');
+      submit.textContent = 'Sending…';
+    }
     try {
       const r = await fetch('/api/booking', {
         method: 'POST',
@@ -173,6 +180,11 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
     } catch {
       err.textContent = 'Could not send your request. Please call us on +61 493 719 431.';
       err.hidden = false;
+      if (submit) {
+        submit.disabled = false;
+        submit.removeAttribute('aria-busy');
+        submit.textContent = submitLabel;
+      }
       return;
     }
     form.querySelectorAll('input,select,textarea,button').forEach((el) => (el.disabled = true));

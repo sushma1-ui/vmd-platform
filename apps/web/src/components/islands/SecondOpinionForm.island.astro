@@ -179,6 +179,8 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
   if (form) {
     const err = form.querySelector('[data-so-err]');
     const ok = form.querySelector('[data-so-ok]');
+    const submit = form.querySelector('.so__submit');
+    const submitLabel = submit ? submit.textContent : '';
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       err.hidden = true;
@@ -192,13 +194,31 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
         err.hidden = false;
         return;
       }
+      // Loading state — prevents double-submits and signals the request is in flight.
+      if (submit) {
+        submit.disabled = true;
+        submit.setAttribute('aria-busy', 'true');
+        submit.textContent = 'Sending…';
+      }
       try {
-        await fetch('/api/second-opinion', {
+        const res = await fetch('/api/second-opinion', {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
           body: JSON.stringify(payload),
         });
-      } catch (_) {}
+        if (!res.ok) throw new Error(String(res.status));
+      } catch (_) {
+        // Surface the real failure — never show "Received" when it didn't send.
+        err.textContent =
+          'We could not send that just now. Please call us on +61 493 719 431 — this is a priority.';
+        err.hidden = false;
+        if (submit) {
+          submit.disabled = false;
+          submit.removeAttribute('aria-busy');
+          submit.textContent = submitLabel;
+        }
+        return;
+      }
       form.querySelectorAll('input,select,textarea,button').forEach((el) => (el.disabled = true));
       ok.hidden = false;
     });
