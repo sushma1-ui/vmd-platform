@@ -4,7 +4,12 @@ import { s3Storage } from '@payloadcms/storage-s3';
 import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import { collections } from './src/collections/index.ts';
 import { globals } from './src/globals/index.ts';
-import { auditAfterChange, auditAfterDelete } from './src/hooks/index.ts';
+import {
+  auditAfterChange,
+  auditAfterDelete,
+  revalidateAfterChange,
+  revalidateGlobalAfterChange,
+} from './src/hooks/index.ts';
 
 /**
  * Payload 3 config (Plane A). Postgres via the POOLED Supabase connection (Supavisor)
@@ -25,12 +30,18 @@ export default buildConfig({
     ...c,
     hooks: {
       ...c.hooks,
-      afterChange: [...(c.hooks?.afterChange ?? []), auditAfterChange],
+      afterChange: [...(c.hooks?.afterChange ?? []), auditAfterChange, revalidateAfterChange],
       afterDelete: [...(c.hooks?.afterDelete ?? []), auditAfterDelete],
     },
   })),
   localization: { locales: ['en'], defaultLocale: 'en' }, // add locales later; fields are localization-ready
-  globals,
+  globals: globals.map((g) => ({
+    ...g,
+    hooks: {
+      ...g.hooks,
+      afterChange: [...(g.hooks?.afterChange ?? []), revalidateGlobalAfterChange],
+    },
+  })),
   plugins: [
     s3Storage({
       collections: { media: true },

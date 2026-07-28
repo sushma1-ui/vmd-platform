@@ -7,6 +7,16 @@ import sitemap from '@astrojs/sitemap';
 
 const dir = path.dirname(fileURLToPath(import.meta.url));
 
+// On-demand ISR: /api/revalidate re-requests a path with this token to make Vercel
+// regenerate it after a CMS edit. Vercel requires the token to be >= 32 chars; if
+// REVALIDATE_SECRET is unset or too short we simply omit it (content still refreshes
+// on the 1-hour timer) rather than fail the build.
+const revalidateToken = process.env.REVALIDATE_SECRET;
+const isr =
+  revalidateToken && revalidateToken.length >= 32
+    ? { expiration: 60 * 60, bypassToken: revalidateToken }
+    : { expiration: 60 * 60 };
+
 // Hybrid: pages are static by default; routes with `export const prerender = false`
 // (the API endpoints, client area) run as Vercel serverless functions in Sydney.
 export default defineConfig({
@@ -23,7 +33,7 @@ export default defineConfig({
     '/client-portal': { status: 302, destination: '/client/' },
     '/results/grant-ledger': { status: 301, destination: '/results/success-stories' },
   },
-  adapter: vercel({ isr: { expiration: 60 * 60 }, webAnalytics: { enabled: false } }),
+  adapter: vercel({ isr, webAnalytics: { enabled: false } }),
   integrations: [
     tailwind({ applyBaseStyles: false }),
     sitemap({
