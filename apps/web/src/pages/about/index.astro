@@ -1,10 +1,37 @@
 ---
 import SimplePage from '../../components/content/SimplePage.astro';
-import { getAboutPage } from '../../lib/cms.ts';
+import { PRACTICE } from '@vmd/config';
+import { getAboutPage, type TeamMember } from '../../lib/cms.ts';
 
 // CMS-editable About copy, falling back to the built-in text if the global is empty.
 const a = await getAboutPage();
 const bodyParas = (a?.body ?? []).map((p) => p?.text).filter((t): t is string => !!t);
+
+// "Our team" — CMS-managed (About Page → Team). Falls back to the founding RMA
+// if no members are set yet, so the section is never empty.
+const teamHeading = a?.team?.heading || 'Our team';
+const teamIntro =
+  a?.team?.intro || 'You deal with the people who prepare your case — not a call centre.';
+const cmsMembers = (a?.team?.members ?? []).filter((m): m is TeamMember => !!m?.name);
+const members: TeamMember[] = cmsMembers.length
+  ? cmsMembers
+  : [
+      {
+        name: PRACTICE.principal.name,
+        role: 'Registered Migration Agent (RMA)',
+        credential: `MARN ${PRACTICE.principal.marn}`,
+        bio: 'Leads the practice. You get an honest read on where your case stands — including when the better answer is to wait.',
+      },
+    ];
+const initials = (name: string) =>
+  name
+    .split(/\s+/)
+    .map((w) => w[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
+const photoUrl = (m: TeamMember): string | null =>
+  (m.photo && typeof m.photo === 'object' ? m.photo.url : null) || null;
 ---
 
 <SimplePage
@@ -36,4 +63,111 @@ const bodyParas = (a?.body ?? []).map((p) => p?.text).filter((t): t is string =>
       </>
     )
   }
+
+  <section class="team" aria-label={teamHeading}>
+    <h2 class="team__h">{teamHeading}</h2>
+    {teamIntro && <p class="team__intro">{teamIntro}</p>}
+    <ul class="team__list" role="list">
+      {
+        members.map((m) => (
+          <li class="tm">
+            <div class="tm__avatar">
+              {photoUrl(m) ? (
+                <img src={photoUrl(m)} alt={m.name ?? ''} loading="lazy" />
+              ) : (
+                <span class="tm__mono" aria-hidden="true">
+                  {initials(m.name ?? '')}
+                </span>
+              )}
+            </div>
+            <div class="tm__text">
+              <p class="tm__name">
+                {m.name}
+                {m.credential && <span class="tm__cred"> · {m.credential}</span>}
+              </p>
+              {m.role && <p class="tm__role">{m.role}</p>}
+              {m.specialisations && <p class="tm__spec">{m.specialisations}</p>}
+              {m.bio && <p class="tm__bio">{m.bio}</p>}
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
 </SimplePage>
+
+<style>
+  .team {
+    margin-block-start: var(--space-8);
+    padding-block-start: var(--space-6);
+    border-block-start: 1px solid color-mix(in srgb, var(--color-action) 12%, transparent);
+  }
+  .team__h {
+    font-size: var(--type-h2);
+    margin: 0 0 var(--space-2);
+  }
+  .team__intro {
+    color: var(--color-text-muted);
+    margin: 0 0 var(--space-6);
+  }
+  .team__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-6);
+  }
+  .tm {
+    display: flex;
+    gap: var(--space-4);
+    align-items: flex-start;
+  }
+  .tm__avatar {
+    flex: none;
+    inline-size: 4.5rem;
+    block-size: 4.5rem;
+    border-radius: 50%;
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+    background: var(--color-ground-warm);
+    border: 1px solid color-mix(in srgb, var(--color-action) 12%, transparent);
+  }
+  .tm__avatar img {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+  }
+  .tm__mono {
+    font-family: var(--font-display);
+    font-size: var(--type-h3);
+    color: var(--color-action);
+  }
+  .tm__name {
+    font-family: var(--font-display);
+    font-size: var(--type-h3);
+    margin: 0;
+    color: var(--color-text);
+  }
+  .tm__cred {
+    font-family: var(--font-body);
+    font-size: var(--type-body-sm);
+    font-weight: 600;
+    color: var(--color-emphasis-text);
+  }
+  .tm__role {
+    margin: 0.15rem 0 0;
+    font-weight: 600;
+    color: var(--color-text-muted);
+  }
+  .tm__spec {
+    margin: 0.15rem 0 0;
+    font-size: var(--type-body-sm);
+    color: var(--color-emphasis-text);
+  }
+  .tm__bio {
+    margin-block-start: var(--space-2);
+    line-height: 1.6;
+    color: var(--color-text);
+  }
+</style>

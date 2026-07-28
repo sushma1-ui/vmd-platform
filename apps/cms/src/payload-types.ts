@@ -2028,6 +2028,24 @@ export interface AboutPage {
     | null;
   ctaLabel?: string | null;
   ctaHref?: string | null;
+  team?: {
+    heading?: string | null;
+    intro?: string | null;
+    /**
+     * Add each person. Drag to reorder. A photo is optional (initials show until one is added).
+     */
+    members?:
+      | {
+          name: string;
+          role?: string | null;
+          credential?: string | null;
+          specialisations?: string | null;
+          bio?: string | null;
+          photo?: (number | null) | Media;
+          id?: string | null;
+        }[]
+      | null;
+  };
   /**
    * Search + social metadata. Human-written, unique per page.
    */
@@ -2089,6 +2107,9 @@ export interface Setting {
   clientPortal?: {
     enabled?: boolean | null;
     label?: string | null;
+    /**
+     * Where the Client Portal button goes (the Migration Manager portal).
+     */
     url?: string | null;
     /**
      * Optional hex colour (e.g. #2589BA). Leave blank to use the brand blue. Non-hex values are ignored.
@@ -2377,6 +2398,23 @@ export interface AboutPageSelect<T extends boolean = true> {
       };
   ctaLabel?: T;
   ctaHref?: T;
+  team?:
+    | T
+    | {
+        heading?: T;
+        intro?: T;
+        members?:
+          | T
+          | {
+              name?: T;
+              role?: T;
+              credential?: T;
+              specialisations?: T;
+              bio?: T;
+              photo?: T;
+              id?: T;
+            };
+      };
   seo?:
     | T
     | {

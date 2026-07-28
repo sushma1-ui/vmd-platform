@@ -1,6 +1,6 @@
 import type { GlobalConfig } from 'payload';
 import { anyone, isEditorial } from '../access/index.ts';
-import { seoField } from '../fields/index.ts';
+import { seoField, headingIntro } from '../fields/index.ts';
 
 /**
  * About page — the "/about" page copy. Simple, single-section page: an intro
@@ -53,6 +53,57 @@ export const AboutPage: GlobalConfig = {
               type: 'text',
               label: 'CTA link',
               defaultValue: '/about/sunil-uprety/',
+            },
+          ],
+        },
+        {
+          label: 'Team',
+          name: 'team',
+          description: 'The people shown in the "Our team" section on the About page.',
+          fields: [
+            ...headingIntro({
+              heading: 'Our team',
+              intro: 'You deal with the people who prepare your case — not a call centre.',
+            }),
+            {
+              name: 'members',
+              type: 'array',
+              labels: { singular: 'Team member', plural: 'Team members' },
+              admin: {
+                description:
+                  'Add each person. Drag to reorder. A photo is optional (initials show until one is added).',
+              },
+              fields: [
+                {
+                  name: 'name',
+                  type: 'text',
+                  required: true,
+                  admin: { placeholder: 'Sunil Uprety' },
+                },
+                {
+                  name: 'role',
+                  type: 'text',
+                  admin: {
+                    placeholder: 'e.g. Registered Migration Agent, or Migration Consultant',
+                  },
+                },
+                {
+                  name: 'credential',
+                  type: 'text',
+                  admin: { placeholder: 'e.g. MARN 2318234 (leave blank if not applicable)' },
+                },
+                {
+                  name: 'specialisations',
+                  type: 'text',
+                  admin: { placeholder: 'e.g. Skilled visas · Employer sponsorship' },
+                },
+                {
+                  name: 'bio',
+                  type: 'textarea',
+                  admin: { placeholder: 'A short intro — a few sentences.' },
+                },
+                { name: 'photo', type: 'upload', relationTo: 'media' },
+              ],
             },
           ],
         },

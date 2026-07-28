@@ -265,6 +265,14 @@ export function getHomepage(): Promise<HomepageContent | null> {
 }
 
 // --- About / Contact page globals ------------------------------------------
+export interface TeamMember {
+  name?: string | null;
+  role?: string | null;
+  credential?: string | null;
+  specialisations?: string | null;
+  bio?: string | null;
+  photo?: { url?: string | null; alt?: string | null } | string | null;
+}
 export interface AboutContent {
   eyebrow?: string | null;
   title?: string | null;
@@ -272,6 +280,7 @@ export interface AboutContent {
   body?: { text?: string | null }[] | null;
   ctaLabel?: string | null;
   ctaHref?: string | null;
+  team?: { heading?: string | null; intro?: string | null; members?: TeamMember[] | null } | null;
   seo?: { metaTitle?: string | null; metaDescription?: string | null } | null;
 }
 export interface ContactContent {
@@ -283,9 +292,9 @@ export interface ContactContent {
   formHeading?: string | null;
   seo?: { metaTitle?: string | null; metaDescription?: string | null } | null;
 }
-async function getGlobal<T>(slug: string): Promise<T | null> {
+async function getGlobal<T>(slug: string, depth = 0): Promise<T | null> {
   try {
-    const res = await fetch(`${BASE}/api/globals/${slug}?depth=0`);
+    const res = await fetch(`${BASE}/api/globals/${slug}?depth=${depth}`);
     if (!res.ok) return null;
     return (await res.json()) as T;
   } catch {
@@ -294,9 +303,10 @@ async function getGlobal<T>(slug: string): Promise<T | null> {
 }
 let aboutCache: Promise<AboutContent | null> | null = null;
 let contactCache: Promise<ContactContent | null> | null = null;
-/** About page copy (published), or null to use built-in defaults. Memoised. */
+/** About page copy (published), or null to use built-in defaults. Memoised.
+ *  depth:1 so team-member photos resolve to URLs. */
 export function getAboutPage(): Promise<AboutContent | null> {
-  aboutCache ??= getGlobal<AboutContent>('about-page');
+  aboutCache ??= getGlobal<AboutContent>('about-page', 1);
   return aboutCache;
 }
 /** Contact page copy (published), or null to use built-in defaults. Memoised. */
