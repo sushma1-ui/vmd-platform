@@ -59,52 +59,13 @@ export const AboutPage: GlobalConfig = {
         {
           label: 'Team',
           name: 'team',
-          description: 'The people shown in the "Our team" section on the About page.',
+          description:
+            'The heading and intro for the "Our team" section. The people themselves are now managed in Website Content → Team Members (add, reorder and publish each person there).',
           fields: [
             ...headingIntro({
               heading: 'Our team',
               intro: 'You deal with the people who prepare your case — not a call centre.',
             }),
-            {
-              name: 'members',
-              type: 'array',
-              labels: { singular: 'Team member', plural: 'Team members' },
-              admin: {
-                description:
-                  'Add each person. Drag to reorder. A photo is optional (initials show until one is added).',
-              },
-              fields: [
-                {
-                  name: 'name',
-                  type: 'text',
-                  required: true,
-                  admin: { placeholder: 'Sunil Uprety' },
-                },
-                {
-                  name: 'role',
-                  type: 'text',
-                  admin: {
-                    placeholder: 'e.g. Registered Migration Agent, or Migration Consultant',
-                  },
-                },
-                {
-                  name: 'credential',
-                  type: 'text',
-                  admin: { placeholder: 'e.g. MARN 2318234 (leave blank if not applicable)' },
-                },
-                {
-                  name: 'specialisations',
-                  type: 'text',
-                  admin: { placeholder: 'e.g. Skilled visas · Employer sponsorship' },
-                },
-                {
-                  name: 'bio',
-                  type: 'textarea',
-                  admin: { placeholder: 'A short intro — a few sentences.' },
-                },
-                { name: 'photo', type: 'upload', relationTo: 'media' },
-              ],
-            },
           ],
         },
         { label: 'SEO', fields: [seoField] },

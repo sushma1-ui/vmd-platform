@@ -1,28 +1,41 @@
 ---
 import SimplePage from '../../components/content/SimplePage.astro';
 import { PRACTICE } from '@vmd/config';
-import { getAboutPage, type TeamMember } from '../../lib/cms.ts';
+import { cms, getAboutPage, type TeamMember } from '../../lib/cms.ts';
 
 // CMS-editable About copy, falling back to the built-in text if the global is empty.
 const a = await getAboutPage();
 const bodyParas = (a?.body ?? []).map((p) => p?.text).filter((t): t is string => !!t);
 
-// "Our team" — CMS-managed (About Page → Team). Falls back to the founding RMA
-// if no members are set yet, so the section is never empty.
+// "Our team" — CMS-managed via the Team Members collection (Website Content →
+// Team Members). Section heading/intro come from the About Page global. Falls back
+// to the founding RMA if no members are published yet, so the section is never empty.
 const teamHeading = a?.team?.heading || 'Our team';
 const teamIntro =
   a?.team?.intro || 'You deal with the people who prepare your case — not a call centre.';
-const cmsMembers = (a?.team?.members ?? []).filter((m): m is TeamMember => !!m?.name);
+const cmsMembers = (await cms.teamMembers()).filter((m): m is TeamMember => !!m?.name);
 const members: TeamMember[] = cmsMembers.length
   ? cmsMembers
   : [
       {
         name: PRACTICE.principal.name,
-        role: 'Registered Migration Agent (RMA)',
+        position: 'Registered Migration Agent (RMA)',
         credential: `MARN ${PRACTICE.principal.marn}`,
-        bio: 'Leads the practice. You get an honest read on where your case stands — including when the better answer is to wait.',
+        shortBio:
+          'Leads the practice. You get an honest read on where your case stands — including when the better answer is to wait.',
       },
     ];
+// Normalise new (position/shortBio/expertise) and legacy (role/bio/specialisations)
+// field names so the current card design keeps working with either data source.
+const roleOf = (m: TeamMember) => m.position || m.role || '';
+const bioOf = (m: TeamMember) => m.shortBio || m.bio || '';
+const specOf = (m: TeamMember) =>
+  m.specialisations ||
+  (m.expertise ?? [])
+    .map((e) => e?.item)
+    .filter(Boolean)
+    .join(' · ') ||
+  '';
 const initials = (name: string) =>
   name
     .split(/\s+/)
@@ -85,9 +98,9 @@ const photoUrl = (m: TeamMember): string | null =>
                 {m.name}
                 {m.credential && <span class="tm__cred"> · {m.credential}</span>}
               </p>
-              {m.role && <p class="tm__role">{m.role}</p>}
-              {m.specialisations && <p class="tm__spec">{m.specialisations}</p>}
-              {m.bio && <p class="tm__bio">{m.bio}</p>}
+              {roleOf(m) && <p class="tm__role">{roleOf(m)}</p>}
+              {specOf(m) && <p class="tm__spec">{specOf(m)}</p>}
+              {bioOf(m) && <p class="tm__bio">{bioOf(m)}</p>}
             </div>
           </li>
         ))

@@ -70,6 +70,8 @@ export const cms = {
     ),
   testimonials: () => query<Testimonial>('testimonials', { sort: '-date' }),
   pinnedReviews: () => query<PinnedReview>('pinned-reviews', { sort: 'pinnedOrder' }),
+  // Team Members (About page "Our team"). Published only, ordered by Display order.
+  teamMembers: () => query<TeamMember & Doc>('team-members', { sort: 'displayOrder', depth: '1' }),
 };
 
 export type CtaLinks = { bookUrl: string; healthCheckUrl: string };
@@ -265,13 +267,32 @@ export function getHomepage(): Promise<HomepageContent | null> {
 }
 
 // --- About / Contact page globals ------------------------------------------
+/** A list item ({ item: '…' }) as stored by the Team Members array fields. */
+type ListItem = { item?: string | null };
 export interface TeamMember {
   name?: string | null;
+  position?: string | null;
+  /** Legacy alias for position (older About-global data). */
   role?: string | null;
   credential?: string | null;
-  specialisations?: string | null;
+  shortBio?: string | null;
+  /** Legacy alias for shortBio (older About-global data). */
   bio?: string | null;
+  /** Legacy free-text specialisations (older About-global data). */
+  specialisations?: string | null;
+  fullBio?: unknown; // Lexical rich text — rendered via lexicalToHtml where shown
+  qualifications?: ListItem[] | null;
+  education?: ListItem[] | null;
+  experience?: ListItem[] | null;
+  expertise?: ListItem[] | null;
+  languages?: ListItem[] | null;
+  certifications?: ListItem[] | null;
+  email?: string | null;
+  phone?: string | null;
+  social?: { platform?: string | null; url?: string | null }[] | null;
   photo?: { url?: string | null; alt?: string | null } | string | null;
+  displayOrder?: number | null;
+  featured?: boolean | null;
 }
 export interface AboutContent {
   eyebrow?: string | null;

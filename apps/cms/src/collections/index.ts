@@ -7,6 +7,7 @@ import { ServicePages } from './ServicePages.ts';
 import { Subclasses } from './Subclasses.ts';
 import { Situations } from './Situations.ts';
 import { FAQs } from './FAQs.ts';
+import { TeamMembers } from './TeamMembers.ts';
 import { Testimonials } from './Testimonials.ts';
 import { CaseStudies } from './CaseStudies.ts';
 import { ProcessingTimes } from './ProcessingTimes.ts';
@@ -26,6 +27,7 @@ export const collections = [
   Subclasses,
   Situations,
   FAQs,
+  TeamMembers,
   Testimonials,
   CaseStudies,
   ProcessingTimes,
