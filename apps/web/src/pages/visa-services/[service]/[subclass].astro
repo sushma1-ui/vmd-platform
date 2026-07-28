@@ -2,7 +2,7 @@
 import Base from '../../../layouts/Base.astro';
 import { breadcrumbSchema, faqSchema, serviceSchema } from '@vmd/seo';
 import { Button, Chip, Rule, Disclaimer, Card } from '@vmd/ui';
-import { cms } from '../../../lib/cms.ts';
+import { cms, getCtaLinks } from '../../../lib/cms.ts';
 import { lexicalToHtml } from '../../../lib/lexical.ts';
 import StickyFacts from '../../../components/content/subclass/StickyFacts.astro';
 import BenefitsGrid from '../../../components/content/subclass/BenefitsGrid.astro';
@@ -19,6 +19,7 @@ export async function getStaticPaths() {
     }));
 }
 const { sub } = Astro.props;
+const { bookUrl, healthCheckUrl } = await getCtaLinks();
 const path = Astro.url.pathname;
 const strip = (html: string) => html.replace(/<[^>]+>/g, '').trim();
 const faqs = sub.faqs?.length ? sub.faqs : await cms.faqs(sub.id);
@@ -81,8 +82,8 @@ const schemas = [
           <Rule width="short" />
           {sub.valueProposition && <p class="sh-hero__lead">{sub.valueProposition}</p>}
           <div class="sh-hero__cta">
-            <Button variant="primary" href="/book/">Book a consultation</Button>
-            <Button variant="secondary" href="/health-check/">Free Visa Health Check</Button>
+            <Button variant="primary" href={bookUrl}>Book a consultation</Button>
+            <Button variant="secondary" href={healthCheckUrl}>Free Visa Health Check</Button>
           </div>
         </div>
       </div>
