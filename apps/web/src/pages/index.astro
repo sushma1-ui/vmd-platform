@@ -24,6 +24,23 @@ const PROMISE_ICONS = [
   'M4 4h8l8 8-8 8-8-8z M8.4 8.4h.01', // price tag
   'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M5 20a7 7 0 0 1 14 0', // person
 ];
+// Client-journey fallback (used only if an editor hasn't set the steps in the CMS).
+const DEFAULT_STEPS = [
+  {
+    label: 'Diagnosis',
+    description: 'A thorough, evidence-based assessment of exactly where you stand — no guesswork.',
+  },
+  {
+    label: 'Pathway',
+    description:
+      'A clear plan matched to your circumstances and the law, with fixed fees quoted upfront.',
+  },
+  {
+    label: 'Outcome',
+    description:
+      'Careful preparation and honest guidance, right through to the decision on your case.',
+  },
+];
 
 const settings = await getSettings();
 // Homepage global (CMS-editable, section by section). Every read falls back to
@@ -292,53 +309,29 @@ try {
     )
   }
 
-  <!-- 8 · HOW WE WORK -->
+  <!-- 8 · YOUR JOURNEY (How we work — client journey timeline) -->
   {
     shown(hp?.howWeWork) && (
       <section data-reveal class="section section--bone">
         <div class="section__inner">
           <h2 class="section__h">{hp?.howWeWork?.heading || 'How we work'}</h2>
-          <div class="grid grid--3 steps">
-            {hp?.howWeWork?.steps?.length ? (
-              hp.howWeWork.steps.map((step, i) => (
-                <div class="step">
-                  <span class="step__icon" aria-hidden="true">
-                    <Icon path={STEP_ICONS[i % STEP_ICONS.length]} size={24} />
+          {hp?.howWeWork?.intro && <p class="section__sub">{hp.howWeWork.intro}</p>}
+          <ol class="journey">
+            {(hp?.howWeWork?.steps?.length ? hp.howWeWork.steps : DEFAULT_STEPS).map((step, i) => (
+              <li class="journey__step">
+                <div class="journey__marker">
+                  <span class="journey__icon" aria-hidden="true">
+                    <Icon path={STEP_ICONS[i % STEP_ICONS.length]} size={22} />
                   </span>
-                  <p class="step__label">{step.label}</p>
-                  <p class="step__desc">{step.description}</p>
+                  <span class="journey__num">{i + 1}</span>
                 </div>
-              ))
-            ) : (
-              <>
-                <div class="step">
-                  <span class="step__icon" aria-hidden="true">
-                    <Icon path={STEP_ICONS[0]} size={24} />
-                  </span>
-                  <p class="step__label">1 · Diagnosis</p>
-                  <p class="step__desc">
-                    A thorough, evidence-based assessment of where you stand.
-                  </p>
+                <div class="journey__content">
+                  <p class="journey__label">{step.label}</p>
+                  <p class="journey__desc">{step.description}</p>
                 </div>
-                <div class="step">
-                  <span class="step__icon" aria-hidden="true">
-                    <Icon path={STEP_ICONS[1]} size={24} />
-                  </span>
-                  <p class="step__label">2 · Pathway</p>
-                  <p class="step__desc">A clear plan matched to your circumstances and the law.</p>
-                </div>
-                <div class="step">
-                  <span class="step__icon" aria-hidden="true">
-                    <Icon path={STEP_ICONS[2]} size={24} />
-                  </span>
-                  <p class="step__label">3 · Outcome</p>
-                  <p class="step__desc">
-                    Careful preparation and honest guidance through to decision.
-                  </p>
-                </div>
-              </>
-            )}
-          </div>
+              </li>
+            ))}
+          </ol>
         </div>
       </section>
     )
@@ -640,8 +633,7 @@ try {
   .section--bone .promise {
     background: var(--color-ground-warm);
   }
-  .promise__icon,
-  .step__icon {
+  .promise__icon {
     display: grid;
     place-items: center;
     inline-size: 2.75rem;
@@ -655,17 +647,91 @@ try {
     font-size: var(--type-body-lg);
     line-height: 1.45;
   }
-  .step__label {
-    margin-block-start: var(--space-3);
+
+  /* Client journey timeline (How we work) — a connected path, not just tiles, so
+     visitors can see exactly what happens next and feel oriented, not anxious. */
+  .journey {
+    list-style: none;
+    margin: var(--space-6) 0 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-5);
+  }
+  .journey__step {
+    position: relative;
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    gap: var(--space-4);
+    align-items: start;
+  }
+  .journey__marker {
+    position: relative;
+    inline-size: 3rem;
+    block-size: 3rem;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--color-ground-deep);
+    color: var(--color-emphasis);
+  }
+  .journey__num {
+    position: absolute;
+    inset-block-start: -0.35rem;
+    inset-inline-end: -0.35rem;
+    inline-size: 1.4rem;
+    block-size: 1.4rem;
+    border-radius: 50%;
+    background: var(--color-emphasis);
+    color: var(--color-ground-deep);
+    font-family: var(--font-body);
+    font-size: var(--type-caption);
+    font-weight: 700;
+    display: grid;
+    place-items: center;
+  }
+  /* Connector — vertical on mobile, from this marker down to the next. */
+  .journey__step:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: 1.5rem;
+    inset-block-start: 3rem;
+    transform: translateX(-50%);
+    inline-size: 2px;
+    block-size: calc(100% - 3rem + var(--space-5));
+    background: color-mix(in srgb, var(--color-emphasis) 40%, transparent);
+  }
+  .journey__label {
+    margin: 0;
     font-family: var(--font-display);
     font-size: var(--type-h3);
     color: var(--color-action);
+    line-height: 1.2;
   }
-  .step__desc {
-    margin-block-start: var(--space-1);
+  .journey__desc {
+    margin-block-start: var(--space-2);
     font-size: var(--type-body);
     line-height: 1.6;
     color: var(--color-text);
+    max-inline-size: 40ch;
+  }
+  @media (min-width: 768px) {
+    .journey {
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-6);
+      margin-block-start: var(--space-7);
+    }
+    .journey__step {
+      grid-template-columns: 1fr;
+      gap: var(--space-4);
+    }
+    /* Connector — horizontal on desktop, from this marker across to the next. */
+    .journey__step:not(:last-child)::before {
+      inset-block-start: 1.5rem;
+      inset-inline-start: 3rem;
+      transform: translateY(-50%);
+      inline-size: calc(100% - 3rem + var(--space-6));
+      block-size: 2px;
+    }
   }
 
   .band {

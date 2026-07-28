@@ -159,7 +159,8 @@ export const Homepage: GlobalConfig = {
         {
           label: 'How We Work',
           name: 'howWeWork',
-          description: 'The three-step "how we work" strip.',
+          description:
+            'The client-journey timeline. Each step shows as a numbered stop on a connected path — the step number is added automatically, so just name the stage.',
           fields: [
             showToggle(),
             ...headingIntro({ heading: 'How we work' }),
@@ -167,12 +168,13 @@ export const Homepage: GlobalConfig = {
               name: 'steps',
               type: 'array',
               labels: { singular: 'Step', plural: 'Steps' },
+              admin: { description: 'Drag to reorder. The number (1, 2, 3…) is added for you.' },
               fields: [
                 {
                   name: 'label',
                   type: 'text',
                   required: true,
-                  admin: { placeholder: '1 · Diagnosis' },
+                  admin: { placeholder: 'Diagnosis' },
                 },
                 { name: 'description', type: 'textarea', required: true },
               ],
