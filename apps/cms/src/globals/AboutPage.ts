@@ -66,6 +66,25 @@ export const AboutPage: GlobalConfig = {
               heading: 'Our team',
               intro: 'You deal with the people who prepare your case — not a call centre.',
             }),
+            // Legacy members array — RETAINED (hidden from editors) only so its DB
+            // table isn't dropped. On this push-based setup, dropping it at the same
+            // time the Team Members collection tables are created makes the schema
+            // sync ambiguous (rename vs create) and requires an interactive answer.
+            // The website reads team members from the Team Members collection now;
+            // this field is unused and can be removed once DB migrations are adopted.
+            {
+              name: 'members',
+              type: 'array',
+              admin: { hidden: true },
+              fields: [
+                { name: 'name', type: 'text', required: true },
+                { name: 'role', type: 'text' },
+                { name: 'credential', type: 'text' },
+                { name: 'specialisations', type: 'text' },
+                { name: 'bio', type: 'textarea' },
+                { name: 'photo', type: 'upload', relationTo: 'media' },
+              ],
+            },
           ],
         },
         { label: 'SEO', fields: [seoField] },
