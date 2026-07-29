@@ -30,7 +30,6 @@ export const revalidateAfterChange: CollectionAfterChangeHook<TypeWithID> = asyn
 };
 
 /** Runs on every global; the global slug (e.g. "homepage") drives the path map. */
-export const revalidateGlobalAfterChange: GlobalAfterChangeHook = async ({ doc, global }) => {
+export const revalidateGlobalAfterChange: GlobalAfterChangeHook = async ({ global }) => {
   await ping(global.slug);
-  return doc;
 };
