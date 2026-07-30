@@ -30,6 +30,10 @@ interface Props {
         reviewDate?: string | null;
       }[]
     | null;
+  /** Average rating (CMS Settings) — used when no live API aggregate. */
+  rating?: number | null;
+  /** Total review count (CMS Settings) — used when no live API aggregate. */
+  count?: number | null;
 }
 
 const {
@@ -38,13 +42,18 @@ const {
   heading = 'Google Reviews',
   intro = 'Placed here, after the evidence and the person, reviews read as corroboration — not advertising.',
   pinned = null,
+  rating = null,
+  count = null,
 } = Astro.props;
 
 const data = await getGoogleReviews();
 const reviews = data.reviews.slice(0, limit);
 const hasLive = reviews.length > 0;
 const href = data.profileUrl || profileUrl || googleReviewsUrl;
-const ratingLabel = data.rating != null ? data.rating.toFixed(1) : null;
+// Aggregate: prefer the live API figures, otherwise the CMS-configured rating/count.
+const aggRating =
+  data.rating != null ? data.rating.toFixed(1) : rating != null ? rating.toFixed(1) : null;
+const aggCount = data.total ?? count ?? null;
 
 // Prefer live API reviews; otherwise show the curated pinned reviews from the CMS so
 // the section always shows real content (never an empty placeholder).
@@ -78,10 +87,16 @@ const initials = (name: string) =>
         {heading}
       </h2>
       {
-        ratingLabel && data.total != null && (
+        aggRating && (
           <p class="reviews__agg">
-            <strong>{ratingLabel}</strong> ★ average from{' '}
-            <strong>{data.total.toLocaleString('en-AU')}</strong> Google reviews
+            <strong>{aggRating}</strong> ★{' '}
+            {aggCount != null ? (
+              <>
+                average from <strong>{aggCount.toLocaleString('en-AU')}</strong> Google reviews
+              </>
+            ) : (
+              <>average on Google</>
+            )}
           </p>
         )
       }
