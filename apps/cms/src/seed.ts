@@ -91,7 +91,8 @@ const subclasses = [
     '820/801',
     'Partner (Subclass 820/801)',
     'partner-onshore-820-801',
-    'permanent',
+    // The 820 is the temporary first stage that leads to the permanent 801 (C8).
+    'temporary',
   ],
   ['student-visas', '500', 'Student (Subclass 500)', 'student-500', 'temporary'],
   [

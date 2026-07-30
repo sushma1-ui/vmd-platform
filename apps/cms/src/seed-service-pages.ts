@@ -338,7 +338,7 @@ We begin with an eligibility assessment — reviewing your visa conditions, your
     metaTitle: 'Subclass 186 Employer Nomination Scheme (ENS) Visa | Visa & Migration Doctors',
     metaDescription:
       'The Subclass 186 ENS visa lets employers sponsor skilled workers for permanent residence. Direct Entry and TRT streams explained — Registered Migration Agent, Perth.',
-    body: `The Subclass 186 Employer Nomination Scheme visa gives Australian employers a pathway to employ skilled workers permanently — and gives skilled workers a direct route to permanent residence. There are two streams, and we help both employers and applicants prepare nomination and visa applications that stand up to scrutiny.
+    body: `The Subclass 186 Employer Nomination Scheme visa gives Australian employers a pathway to employ skilled workers permanently — and gives skilled workers a direct route to permanent residence. There are three streams — Direct Entry, Temporary Residence Transition and Labour Agreement — and we help both employers and applicants prepare nomination and visa applications that stand up to scrutiny.
 
 ## What the employer and position must meet
 
@@ -387,7 +387,7 @@ The employer's **nomination** is lodged with the Department for the skilled posi
     metaTitle: 'Subclass 482 Skills in Demand Visa | Visa & Migration Doctors',
     metaDescription:
       'The Subclass 482 Skills in Demand visa lets employers sponsor skilled workers for up to 4 years, with pathways to PR. Requirements explained — Registered Migration Agent, Perth.',
-    body: `The Subclass 482 Skills in Demand visa gives Australian employers a way to sponsor skilled overseas workers for up to four years — and can open a longer-term pathway to permanent residence. We guide employers and workers through sponsorship, nomination and the visa application so each stage is complete and compliant.
+    body: `The Subclass 482 Skills in Demand visa gives Australian employers a way to sponsor skilled overseas workers for up to four years — and can open a longer-term pathway to permanent residence. We guide employers and workers through sponsorship, nomination and the visa application so each stage is complete and compliant. The Skills in Demand visa has three streams — Core Skills, Specialist Skills and Essential Skills — and we confirm which one fits your role before you begin.
 
 ## What the employer and position must meet
 
@@ -551,7 +551,7 @@ As the applicant, you generally need to:
 - Hold Overseas Student Health Cover for your stay
 - Have access to sufficient funds for travel, tuition and living costs (including for any dependants)
 
-Documentary requirements can vary with the assessment level attached to your application, which depends on factors including your education provider and nationality.
+Documentary requirements are set out in the Department's Document Checklist Tool, and can vary depending on factors including your education provider and your country of passport.
 
 ## How the application works
 
