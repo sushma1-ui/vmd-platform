@@ -1,18 +1,21 @@
 ---
 /**
- * "Last reviewed" line (register B2/C9). A single, consistent content-currency signal
- * for pages that don't carry their own per-content review date. Sourced from one
- * editable value (@vmd/config CONTENT_REVIEWED) so the content-currency sweep is a
- * one-line change; a page can override with its own `date`.
+ * "Last updated" + "Last reviewed" line (register B2/C9). A consistent content-currency
+ * signal for pages that don't carry their own per-content dates. Sourced from single
+ * editable values (@vmd/config) so a content sweep is a one-line change; a page can
+ * override either date with `updated` / `date`.
  */
-import { CONTENT_REVIEWED } from '@vmd/config';
+import { CONTENT_REVIEWED, CONTENT_UPDATED } from '@vmd/config';
 interface Props {
+  /** "Last reviewed" date. */
   date?: string;
+  /** "Last updated" date. */
+  updated?: string;
 }
-const { date = CONTENT_REVIEWED } = Astro.props;
+const { date = CONTENT_REVIEWED, updated = CONTENT_UPDATED } = Astro.props;
 ---
 
-<p class="last-reviewed">Last reviewed: {date}</p>
+<p class="last-reviewed">Last updated: {updated} · Last reviewed: {date}</p>
 <style>
   .last-reviewed {
     font-size: var(--type-caption);

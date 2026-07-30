@@ -90,6 +90,12 @@ export const RMA_LINE = `Registered Migration Agent (RMA): ${PRACTICE.principal.
 export const CONTENT_REVIEWED = 'July 2026';
 
 /**
+ * Site-wide "content last updated" date — shown alongside "Last reviewed" as a
+ * freshness signal. Bump this whenever content is meaningfully changed.
+ */
+export const CONTENT_UPDATED = 'July 2026';
+
+/**
  * Canonical firm-credentials sentence. A BUSINESS cannot be a Registered Migration
  * Agent — only a person can — so wherever the practice's credentials are described in
  * prose, use this statement (never wording that implies the practice itself is

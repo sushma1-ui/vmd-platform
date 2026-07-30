@@ -183,7 +183,10 @@ const shareUrl = encodeURIComponent(url);
     </div>
 
     <Disclaimer variant="generalInformation" />
-    <LastReviewed date={lastUpdated ? fmtDate(lastUpdated) : undefined} />
+    <LastReviewed
+      date={lastUpdated ? fmtDate(lastUpdated) : undefined}
+      updated={lastUpdated ? fmtDate(lastUpdated) : undefined}
+    />
 
     {
       related.length > 0 && (
