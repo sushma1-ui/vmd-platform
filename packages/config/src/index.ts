@@ -21,7 +21,10 @@ export { serverEnv, publicEnv, type ServerEnv, type PublicEnv } from './env.ts';
  */
 export const PRACTICE = {
   legalName: 'Visa & Migration Doctors',
-  descriptor: 'MIGRATION ADVISORY · PERTH',
+  // Locked brand wording (30 June / 3 July rulings): the support line/descriptor is
+  // "Registered Migration Agent, Perth" — the descriptor attaches to the person, and
+  // "Migration Advisory · Perth" is prohibited. Do not change without a recorded ruling.
+  descriptor: 'Registered Migration Agent, Perth',
   principal: {
     name: 'Sunil Uprety',
     title: 'Director · Registered Migration Agent',
@@ -36,10 +39,12 @@ export const PRACTICE = {
   contact: {
     phone: '+61493719431',
     phoneDisplay: '+61 493 719 431',
-    email: 'sunil@migrationdoctors.com.au',
+    // Practice-standard shared mailbox (matches client documents). sunil@ is retained
+    // for direct client correspondence only, not shown as the public site contact.
+    email: 'enquiries@migrationdoctors.com.au',
   },
   address: {
-    street: 'Level 27, 44 St Georges Terrace',
+    street: 'Room 2709, Level 27, 44 St Georges Terrace',
     locality: 'Perth',
     region: 'WA',
     postcode: '6000',

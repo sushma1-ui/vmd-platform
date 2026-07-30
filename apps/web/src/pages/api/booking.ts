@@ -3,6 +3,7 @@ import { consultationRequest, scoreLead } from '@vmd/schema';
 import { getSchedulingProvider } from '@vmd/scheduling';
 import { rateLimit, verifyTurnstile } from '@vmd/forms';
 import { sendTransactional } from '@vmd/email';
+import { PRACTICE } from '@vmd/config';
 import { createConsultation, patchConsultation, createLead } from '../../lib/cms.ts';
 
 export const prerender = false;
@@ -80,16 +81,41 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       apiKey,
     );
 
-  // 5) Confirmation with the prep checklist (commitment device, §9.4).
-  if (env.POSTMARK_SERVER_TOKEN && env.POSTMARK_FROM_EMAIL)
+  // 5) Notify the practice (enquiries@) AND confirm to the client with the prep
+  //    checklist (commitment device, §9.4).
+  if (env.POSTMARK_SERVER_TOKEN && env.POSTMARK_FROM_EMAIL) {
+    const postmark = { serverToken: env.POSTMARK_SERVER_TOKEN, from: env.POSTMARK_FROM_EMAIL };
+    // Team alert — a booking is a high-value enquiry; route it to the practice inbox.
+    await sendTransactional(
+      {
+        to: PRACTICE.contact.email,
+        template: 'lead-internal-notification',
+        model: {
+          firstName: data.firstName,
+          email: data.email,
+          mobile: data.mobile,
+          source: 'consultation booking',
+          submissionId: recordId !== 'pending' ? recordId : undefined,
+          healthCheck: {
+            consultationType: data.type,
+            preferredTime: data.requestedStartUtc,
+            timezone: data.timezone,
+            notes: data.notes,
+          },
+        },
+      },
+      postmark,
+    ).catch(() => {});
+    // Client confirmation.
     await sendTransactional(
       {
         to: data.email,
         template: 'consultation-confirmation',
         model: { firstName: data.firstName },
       },
-      { serverToken: env.POSTMARK_SERVER_TOKEN, from: env.POSTMARK_FROM_EMAIL },
+      postmark,
     ).catch(() => {});
+  }
 
   return json({ ok: true });
 };

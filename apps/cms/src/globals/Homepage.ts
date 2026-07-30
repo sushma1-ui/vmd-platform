@@ -41,7 +41,8 @@ export const Homepage: GlobalConfig = {
               name: 'eyebrow',
               type: 'text',
               admin: {
-                placeholder: 'MIGRATION ADVISORY · PERTH (leave blank to use the site default)',
+                placeholder:
+                  'Registered Migration Agent, Perth (leave blank to use the site default)',
               },
             },
             {

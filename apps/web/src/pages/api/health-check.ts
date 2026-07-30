@@ -92,7 +92,8 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   // 4 + 5 — Admin + client emails (best-effort; never block success).
   if (env.POSTMARK_SERVER_TOKEN && env.POSTMARK_FROM_EMAIL) {
     const config = { serverToken: env.POSTMARK_SERVER_TOKEN, from: env.POSTMARK_FROM_EMAIL };
-    const adminTo = env.ADMIN_NOTIFICATION_EMAIL || PRACTICE.contact.email;
+    // Practice inbox (enquiries@) is the single source of truth for form delivery.
+    const adminTo = PRACTICE.contact.email;
     await Promise.allSettled([
       sendTransactional(
         {

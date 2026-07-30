@@ -120,7 +120,7 @@ Before lodging, there are steps to prepare — from confirming your English resu
     title: 'Subclass 189 Skilled Independent Visa (Points-tested stream)',
     metaTitle: 'Subclass 189 Skilled Independent Visa | Visa & Migration Doctors',
     metaDescription:
-      'The Subclass 189 visa offers permanent residence to skilled workers without sponsorship. Points test, skills assessment and EOI — prepared properly by a Perth Registered Migration Agent.',
+      'The Subclass 189 visa offers permanent residence to skilled workers without sponsorship. Points test, skills assessment and EOI — prepared properly by a Registered Migration Agent, Perth.',
     body: `The Subclass 189 Skilled Independent visa offers permanent residence to skilled workers who aren't sponsored by an employer, a state or territory, or a family member. It's an invitation-based visa, so a positive skills assessment, a competitive points score, and an accurate, well-prepared Expression of Interest all matter. We help you present your profile accurately and at its strongest at every step.
 
 ## Who this visa is for
@@ -176,7 +176,7 @@ Because invitations depend on your points ranking and Australia's skill needs at
     title: 'Subclass 190 Skilled Nominated Visa',
     metaTitle: 'Subclass 190 Skilled Nominated Visa | Visa & Migration Doctors',
     metaDescription:
-      'The Subclass 190 visa gives permanent residence to skilled workers nominated by a state or territory. Understand the criteria and nomination strategy — Perth Registered Migration Agent.',
+      'The Subclass 190 visa gives permanent residence to skilled workers nominated by a state or territory. Understand the criteria and nomination strategy — Registered Migration Agent, Perth.',
     body: `The Subclass 190 Skilled Nominated visa gives permanent residence to skilled workers nominated by an Australian state or territory. If your occupation is in demand where you plan to settle, this can be a strong pathway. We help you identify the states where your profile is most competitive, prepare the evidence their criteria require, and lodge a complete application.
 
 ## Who this visa is for
@@ -291,7 +291,7 @@ As a 491 holder you must live, work and study only in designated regional areas,
     metaTitle:
       'Subclass 191 Permanent Residence (Skilled Regional) Visa | Visa & Migration Doctors',
     metaDescription:
-      'Held a 491 or 494 visa for 3 years? The Subclass 191 offers permanent residence. Current requirements explained by a Perth Registered Migration Agent.',
+      'Held a 491 or 494 visa for 3 years? The Subclass 191 offers permanent residence. Current requirements explained by a Registered Migration Agent, Perth.',
     body: `The Subclass 191 visa is the permanent-residence step for skilled migrants who have built their lives in regional Australia. If you've held an eligible regional visa and met its conditions, this is your pathway to becoming a permanent resident. We help you evidence your regional residence and compliance, and lodge a complete application.
 
 ## Who this visa is for
@@ -337,7 +337,7 @@ We begin with an eligibility assessment — reviewing your visa conditions, your
     title: 'Subclass 186 Employer Nomination Scheme (ENS) Visa',
     metaTitle: 'Subclass 186 Employer Nomination Scheme (ENS) Visa | Visa & Migration Doctors',
     metaDescription:
-      'The Subclass 186 ENS visa lets employers sponsor skilled workers for permanent residence. Direct Entry and TRT streams explained — Perth Registered Migration Agent.',
+      'The Subclass 186 ENS visa lets employers sponsor skilled workers for permanent residence. Direct Entry and TRT streams explained — Registered Migration Agent, Perth.',
     body: `The Subclass 186 Employer Nomination Scheme visa gives Australian employers a pathway to employ skilled workers permanently — and gives skilled workers a direct route to permanent residence. There are two streams, and we help both employers and applicants prepare nomination and visa applications that stand up to scrutiny.
 
 ## What the employer and position must meet
@@ -386,7 +386,7 @@ The employer's **nomination** is lodged with the Department for the skilled posi
     title: 'Subclass 482 Skills in Demand Visa',
     metaTitle: 'Subclass 482 Skills in Demand Visa | Visa & Migration Doctors',
     metaDescription:
-      'The Subclass 482 Skills in Demand visa lets employers sponsor skilled workers for up to 4 years, with pathways to PR. Requirements explained — Perth Registered Migration Agent.',
+      'The Subclass 482 Skills in Demand visa lets employers sponsor skilled workers for up to 4 years, with pathways to PR. Requirements explained — Registered Migration Agent, Perth.',
     body: `The Subclass 482 Skills in Demand visa gives Australian employers a way to sponsor skilled overseas workers for up to four years — and can open a longer-term pathway to permanent residence. We guide employers and workers through sponsorship, nomination and the visa application so each stage is complete and compliant.
 
 ## What the employer and position must meet
@@ -440,7 +440,7 @@ There are three stages: the employer's **sponsorship** application, the **nomina
     title: 'Partner Visa (Onshore) — Subclass 820/801',
     metaTitle: 'Partner Visa Onshore (820/801) | Visa & Migration Doctors Perth',
     metaDescription:
-      'The onshore Partner visa (820/801) lets the partner of an Australian live in Australia, leading to PR. Evidence done properly — Perth Registered Migration Agent.',
+      'The onshore Partner visa (820/801) lets the partner of an Australian live in Australia, leading to PR. Evidence done properly — Registered Migration Agent, Perth.',
     body: `If you're the spouse or de facto partner of an Australian citizen, permanent resident, or eligible New Zealand citizen and you're in Australia, the onshore Partner visa lets you stay and build your life together. It's a two-stage visa — a temporary Subclass 820 followed by the permanent Subclass 801 — and strong, well-organised relationship evidence makes a real difference. We help you put it together.
 
 ## Who this visa is for
@@ -490,7 +490,7 @@ You must generally be in Australia when the application is lodged. If you're unl
     title: 'Partner Visa (Offshore) — Subclass 309/100',
     metaTitle: 'Partner Visa Offshore (309/100) | Visa & Migration Doctors Perth',
     metaDescription:
-      'The offshore Partner visa (309/100) lets the partner of an Australian enter and settle in Australia. Well-evidenced applications — Perth Registered Migration Agent.',
+      'The offshore Partner visa (309/100) lets the partner of an Australian enter and settle in Australia. Well-evidenced applications — Registered Migration Agent, Perth.',
     body: `If you're the spouse or de facto partner of an Australian citizen, permanent resident, or eligible New Zealand citizen and you're outside Australia, the offshore Partner visa lets you enter and remain in Australia with your partner. It begins with the provisional Subclass 309 visa and leads to permanent residence. We help you assemble the relationship evidence that gives your application its proper footing.
 
 ## Who this visa is for
@@ -538,7 +538,7 @@ We lodge your application with the Department on behalf of you and your sponsor.
     title: 'Subclass 500 Student Visa',
     metaTitle: 'Subclass 500 Student Visa | Visa & Migration Doctors Perth',
     metaDescription:
-      'The Subclass 500 Student visa lets international students study full-time in Australia. Enrolment, funds, English and the Genuine Student requirement — Perth migration agent.',
+      'The Subclass 500 Student visa lets international students study full-time in Australia. Enrolment, funds, English and the Genuine Student requirement — Registered Migration Agent in Perth.',
     body: `The Subclass 500 Student visa lets international students study full-time in Australia for the length of their course. Getting the application right — especially your enrolment, funds and genuine study intentions — matters, and we help you present a clear, well-supported application.
 
 ## Who this visa is for
@@ -587,7 +587,7 @@ Once you're enrolled and have your Confirmation of Enrolment, we prepare and lod
     title: 'Subclass 600 Visitor Visa (Tourist Stream)',
     metaTitle: 'Subclass 600 Visitor Visa | Visa & Migration Doctors Perth',
     metaDescription:
-      'The Subclass 600 Visitor visa lets you travel to Australia for tourism or to visit family. Requirements and longer parent-stay options — Perth Registered Migration Agent.',
+      'The Subclass 600 Visitor visa lets you travel to Australia for tourism or to visit family. Requirements and longer parent-stay options — Registered Migration Agent, Perth.',
     body: `The Subclass 600 Visitor visa (Tourist stream) lets you travel to Australia for a holiday or to visit family and friends. Whether it's a single trip or regular visits, we help you put forward a clear, well-supported application.
 
 ## Who this visa is for
@@ -636,7 +636,7 @@ Once you've provided your information and supporting documents, we prepare and l
     title: 'Skills Assessment',
     metaTitle: 'Skills Assessment for Australian Skilled Visas | Visa & Migration Doctors',
     metaDescription:
-      "Most skilled visas require a positive skills assessment from the right authority. What's involved and how to get it right first time — Perth Registered Migration Agent.",
+      "Most skilled visas require a positive skills assessment from the right authority. What's involved and how to get it right first time — Registered Migration Agent, Perth.",
     body: `A skills assessment is a key step for most skilled visas — it confirms your qualifications and experience match your nominated occupation. Only an assessment from the assessing authority specified for your occupation will be accepted, so getting it right the first time matters. We identify the correct authority and prepare a thorough application.
 
 ## When you need one
@@ -686,7 +686,7 @@ We start with an eligibility review once your occupation and assessing authority
     metaTitle:
       'ART Review Applications — Visa Refused or Cancelled | Visa & Migration Doctors Perth',
     metaDescription:
-      'Visa refused or cancelled? The Administrative Review Tribunal can review the decision — but deadlines are strict. Act today. Perth Registered Migration Agent.',
+      'Visa refused or cancelled? The Administrative Review Tribunal can review the decision — but deadlines are strict. Act today. Registered Migration Agent, Perth.',
     body: `If the Department of Home Affairs has refused or cancelled your visa, the Administrative Review Tribunal (ART) can review that decision on its merits — and may affirm it, set it aside, or send it back to the Department for reconsideration. The deadlines are strict, so acting quickly is essential. We help you lodge on time and present your case as strongly as the facts allow.
 
 ## Act quickly — the deadlines are strict
@@ -732,7 +732,7 @@ Your review application must generally be lodged within the timeframe stated in 
     title: 'Initial Consultation',
     metaTitle: 'Book a Migration Agent Consultation in Perth | Visa & Migration Doctors',
     metaDescription:
-      'Not sure which visa is right for you? Book an initial consultation with Perth Registered Migration Agent Sunil Uprety (MARN 2318234) — honest advice on your options.',
+      'Not sure which visa is right for you? Book an initial consultation with Registered Migration Agent Sunil Uprety (MARN 2318234) — honest advice on your options.',
     body: `Not sure where to start? An initial consultation with our principal, Sunil Uprety, Registered Migration Agent (MARN: 2318234), is the first step for most people. It's your chance to talk through your situation and get clear, honest guidance on your options before you commit to anything.
 
 ## What to expect
