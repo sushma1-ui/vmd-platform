@@ -3,6 +3,7 @@ import Base from '../../layouts/Base.astro';
 import { breadcrumbSchema, localBusinessSchema } from '@vmd/seo';
 import { PRACTICE } from '@vmd/config';
 import { getContactPage } from '../../lib/cms.ts';
+import LastReviewed from '../../components/content/LastReviewed.astro';
 import EnquiryForm from '../../components/islands/EnquiryForm.island.astro';
 const trail = [
   { name: 'Home', path: '/' },
@@ -59,6 +60,7 @@ const c = await getContactPage();
     </div>
     <div class="ct__form">
       <EnquiryForm source="general-enquiry" heading={c?.formHeading || 'Send an enquiry'} />
+      <LastReviewed />
     </div>
   </section>
 </Base>

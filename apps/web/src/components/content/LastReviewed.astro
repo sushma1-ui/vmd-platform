@@ -1,0 +1,23 @@
+---
+/**
+ * "Last reviewed" line (register B2/C9). A single, consistent content-currency signal
+ * for pages that don't carry their own per-content review date. Sourced from one
+ * editable value (@vmd/config CONTENT_REVIEWED) so the content-currency sweep is a
+ * one-line change; a page can override with its own `date`.
+ */
+import { CONTENT_REVIEWED } from '@vmd/config';
+interface Props {
+  date?: string;
+}
+const { date = CONTENT_REVIEWED } = Astro.props;
+---
+
+<p class="last-reviewed">Last reviewed: {date}</p>
+<style>
+  .last-reviewed {
+    font-size: var(--type-caption);
+    letter-spacing: 0.02em;
+    color: var(--color-text-muted);
+    margin-block-start: var(--space-4);
+  }
+</style>

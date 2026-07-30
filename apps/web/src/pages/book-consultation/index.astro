@@ -4,6 +4,7 @@ import { breadcrumbSchema } from '@vmd/seo';
 import { TrustStrip, Disclaimer } from '@vmd/ui';
 import BookingForm from '../../components/islands/BookingForm.island.astro';
 import { getCtaLinks } from '../../lib/cms.ts';
+import LastReviewed from '../../components/content/LastReviewed.astro';
 
 // Central consultation booking page. The URL (/book-consultation) is stable so the
 // booking system can be integrated later without changing links. Consultation type is
@@ -83,6 +84,7 @@ const trail = [
     <p class="bkc__alt">
       Not ready to book? <a href={healthCheckUrl}>Take the Free Visa Health Check first →</a>
     </p>
+    <LastReviewed />
   </section>
 </Base>
 

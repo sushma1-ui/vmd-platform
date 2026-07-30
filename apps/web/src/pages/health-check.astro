@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import HealthCheck from '../components/islands/HealthCheck.island.astro';
 import { breadcrumbSchema } from '@vmd/seo';
+import LastReviewed from '../components/content/LastReviewed.astro';
 ---
 
 <Base
@@ -22,6 +23,7 @@ import { breadcrumbSchema } from '@vmd/seo';
       eligible.
     </p>
     <HealthCheck />
+    <LastReviewed />
   </section>
 </Base>
 <style>

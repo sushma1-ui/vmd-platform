@@ -82,6 +82,14 @@ export const PRACTICE = {
 export const RMA_LINE = `Registered Migration Agent (RMA): ${PRACTICE.principal.name} | MARN: ${PRACTICE.principal.marn}`;
 
 /**
+ * Site-wide "content last reviewed" date — the single source shown on every page that
+ * doesn't carry its own per-content review date (register B2). Content-currency rule:
+ * reset this at cutover and on each review sweep (the register schedules the first for
+ * January 2027). Kept here as one editable value so a sweep is a one-line change.
+ */
+export const CONTENT_REVIEWED = 'July 2026';
+
+/**
  * Canonical firm-credentials sentence. A BUSINESS cannot be a Registered Migration
  * Agent — only a person can — so wherever the practice's credentials are described in
  * prose, use this statement (never wording that implies the practice itself is

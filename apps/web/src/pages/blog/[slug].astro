@@ -3,6 +3,7 @@ import Base from '../../layouts/Base.astro';
 import { articleSchema, breadcrumbSchema, faqSchema } from '@vmd/seo';
 import { PRACTICE } from '@vmd/config';
 import { Disclaimer } from '@vmd/ui';
+import LastReviewed from '../../components/content/LastReviewed.astro';
 import { cms, getCtaLinks } from '../../lib/cms.ts';
 import { lexicalToHtml } from '../../lib/lexical.ts';
 
@@ -182,6 +183,7 @@ const shareUrl = encodeURIComponent(url);
     </div>
 
     <Disclaimer variant="generalInformation" />
+    <LastReviewed date={lastUpdated ? fmtDate(lastUpdated) : undefined} />
 
     {
       related.length > 0 && (
