@@ -83,6 +83,10 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
     )
   }
   <p class="so__err" data-so-err role="alert" hidden></p>
+  <p class="so__privacy">
+    We collect these details only to review your matter and respond. See our{' '}
+    <a href="/privacy/">Privacy Policy</a>.
+  </p>
   <button class="so__submit" type="submit">Request a Second Opinion</button>
   <div class="so__ok" data-so-ok hidden role="status">
     Received. Sunil will review this and reply — priority matters within one business day.
@@ -161,6 +165,15 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
   .so__err {
     color: var(--color-critical);
     font-size: var(--type-body-sm);
+  }
+  .so__privacy {
+    font-size: var(--type-body-sm);
+    color: var(--color-text-muted);
+    margin-block: var(--space-2) var(--space-3);
+    line-height: 1.5;
+  }
+  .so__privacy a {
+    color: var(--color-action);
   }
   .so__ok {
     margin-block-start: var(--space-4);

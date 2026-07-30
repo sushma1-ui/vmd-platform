@@ -73,6 +73,10 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
     )
   }
   <p class="ef__err" data-err role="alert" hidden></p>
+  <p class="ef__privacy">
+    We collect your contact details only to respond to your enquiry. See our{' '}
+    <a href="/privacy/">Privacy Policy</a>.
+  </p>
   <button type="submit">Send enquiry</button>
   <div class="ef__ok" data-ok hidden role="status">
     Thank you — we've received your enquiry and will reply, usually within one to two business days.
@@ -140,6 +144,15 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
   .ef__err {
     color: var(--color-critical);
     font-size: var(--type-body-sm);
+  }
+  .ef__privacy {
+    font-size: var(--type-body-sm);
+    color: var(--color-text-muted);
+    margin-block: var(--space-2) var(--space-3);
+    line-height: 1.5;
+  }
+  .ef__privacy a {
+    color: var(--color-action);
   }
   .ef__ok {
     margin-block-start: var(--space-4);

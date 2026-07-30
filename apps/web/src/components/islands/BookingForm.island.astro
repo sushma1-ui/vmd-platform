@@ -69,6 +69,10 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
     )
   }
   <p class="bk__err" data-err role="alert" hidden></p>
+  <p class="bk__privacy">
+    We collect these details only to arrange your consultation. See our{' '}
+    <a href="/privacy/">Privacy Policy</a>.
+  </p>
   <button type="submit">Request consultation</button>
   <div class="bk__ok" data-ok hidden role="status">
     Requested. We'll confirm your time (AWST) and send a preparation checklist by email.
@@ -125,6 +129,15 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
   .bk__err {
     color: var(--color-critical);
     font-size: var(--type-body-sm);
+  }
+  .bk__privacy {
+    font-size: var(--type-body-sm);
+    color: var(--color-text-muted);
+    margin-block: var(--space-2) var(--space-3);
+    line-height: 1.5;
+  }
+  .bk__privacy a {
+    color: var(--color-action);
   }
   .bk__ok {
     margin-block-start: var(--space-4);

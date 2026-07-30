@@ -30,6 +30,10 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
       <div class="cf-turnstile nl__ts" data-sitekey={turnstileSiteKey} data-size="flexible" />
     )
   }
+  <p class="nl__privacy">
+    We use your email only to send rule-change alerts, and you can unsubscribe anytime. See our{' '}
+    <a href="/privacy/">Privacy Policy</a>.
+  </p>
   <p class="nl__err" data-err role="alert" hidden></p>
   <p class="nl__ok" data-ok hidden role="status">Done — we'll email you when the rules change.</p>
 </form>
@@ -75,6 +79,15 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
   .nl__err {
     color: var(--color-critical);
     font-size: var(--type-body-sm);
+  }
+  .nl__privacy {
+    font-size: var(--type-body-sm);
+    color: var(--color-text-muted);
+    margin-block: var(--space-2) 0;
+    line-height: 1.5;
+  }
+  .nl__privacy a {
+    color: var(--color-action);
   }
   .nl__ok {
     color: var(--color-success);

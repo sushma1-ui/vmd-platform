@@ -185,6 +185,10 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
         )
       }
       <p class="hc__err" data-hc-err role="alert" hidden></p>
+      <p class="hc__privacy">
+        We collect these details only to review your submission and respond. See our{' '}
+        <a href="/privacy/">Privacy Policy</a>.
+      </p>
       <button class="hc__submit" type="submit" data-submit>Submit my Free Visa Health Check</button>
     </fieldset>
   </form>
@@ -292,6 +296,15 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
     margin-block: var(--space-4);
     font-size: var(--type-body-sm);
     color: var(--color-text-muted);
+  }
+  .hc__privacy {
+    font-size: var(--type-body-sm);
+    color: var(--color-text-muted);
+    margin-block: var(--space-2) 0;
+    line-height: 1.5;
+  }
+  .hc__privacy a {
+    color: var(--color-action);
   }
   .hc__continue,
   .hc__submit {
