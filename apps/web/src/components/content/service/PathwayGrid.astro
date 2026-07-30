@@ -42,10 +42,6 @@ const typeLabel = (t?: string) => (t ? t[0].toUpperCase() + t.slice(1) : '—');
                 <dt>Type</dt>
                 <dd>{typeLabel(s.atAGlance?.visaType)}</dd>
               </div>
-              <div>
-                <dt>Processing</dt>
-                <dd>{s.atAGlance?.processingTime || '—'}</dd>
-              </div>
             </dl>
             <a class="pg__more" href={`/visa-services/${serviceSlug}/${s.slug}/`}>
               See details →
@@ -56,7 +52,8 @@ const typeLabel = (t?: string) => (t ? t[0].toUpperCase() + t.slice(1) : '—');
     </div>
   ) : (
     <div class="pg__empty">
-      Pathways for this service appear here automatically as subclasses are published in the CMS.
+      Every situation is different. Take the Free Visa Health Check or book a consultation and we'll
+      map the right pathway for you.
     </div>
   )
 }

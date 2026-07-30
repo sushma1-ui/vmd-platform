@@ -9,6 +9,7 @@ import { cms } from '../../lib/cms.ts';
 import { lexicalToHtml } from '../../lib/lexical.ts';
 import { pathnameToTrail } from '../../lib/breadcrumbs.ts';
 import PathwayGrid from '../../components/content/service/PathwayGrid.astro';
+import LastReviewed from '../../components/content/LastReviewed.astro';
 
 /**
  * ONE canonical Situation hub for every entry in the Situations collection. The axis is
@@ -27,6 +28,10 @@ export async function getStaticPaths() {
 const { situation } = Astro.props;
 const path = Astro.url.pathname;
 const strip = (h: string) => h.replace(/<[^>]+>/g, '').trim();
+// Slug-aware helpers so the two highest-need situations never dead-end (A6).
+const slug = String(situation.slug ?? '');
+const isRefused = /refus|appeal|cancel/i.test(slug);
+const isBridging = /bridg/i.test(slug);
 
 // Resolve the destination Service to its full record so pathways + FAQs are populated.
 const dest = situation.destinationService;
@@ -105,9 +110,28 @@ const schemas = [
         </section>
       ) : (
         <section class="st-sec">
-          <div class="st-empty">
-            The recommended service for this situation appears here once it's linked in the CMS. In
-            the meantime, the Free Visa Health Check will point you to the right pathway.
+          <div class="st-help">
+            <p class="st-sub">
+              There isn't one visa subclass for this on its own — the right pathway depends on your
+              circumstances. Here's how to get a straight answer:
+            </p>
+            <div class="st-hero__cta">
+              <HealthCheckCta variant="primary" label="Start the Free Visa Health Check" />
+              <BookCta variant="secondary" label="Book a consultation" />
+            </div>
+            {isRefused && (
+              <p class="st-help__note">
+                Facing a refusal or cancellation? Deadlines are strict.{' '}
+                <a href="/services/art-review-applications/">ART review applications →</a> or
+                request a{' '}
+                <a href="/visa-services/refusals-and-appeals/">fixed-fee Second Opinion →</a>
+              </p>
+            )}
+            {isBridging && (
+              <p class="st-help__note">
+                Not sure what you're bridging to? <a href="/contact/">Talk to the practice →</a>
+              </p>
+            )}
           </div>
         </section>
       )
@@ -166,6 +190,7 @@ const schemas = [
 
     <section class="st-sec st-sec--tight">
       <Disclaimer variant="generalInformation" />
+      <LastReviewed />
     </section>
   </div>
 
@@ -328,6 +353,18 @@ const schemas = [
     border-radius: var(--radius-card);
     padding: var(--space-5);
     color: var(--color-text-muted);
+  }
+  .st-help__note {
+    margin-block-start: var(--space-4);
+    font-size: var(--type-body-sm);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+  .st-help__note a {
+    color: var(--color-action);
+    border-block-end: 1px solid var(--color-emphasis);
+    text-decoration: none;
+    white-space: nowrap;
   }
 
   .band {
