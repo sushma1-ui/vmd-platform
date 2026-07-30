@@ -33,8 +33,13 @@ export const PRACTICE = {
   regulator: {
     name: 'OMARA',
     longName: 'Office of the Migration Agents Registration Authority',
+    // Homepage — kept only as a last-resort/general reference. Public "checkable"
+    // links must use the specific destinations below (register A1/B1 ruling).
     registerUrl: 'https://www.mara.gov.au/',
     registerSearchUrl: 'https://portal.mara.gov.au/search-the-register-of-migration-agents/',
+    codeOfConductUrl: 'https://www.mara.gov.au/tools-for-registered-agents/code-of-conduct',
+    complaintsUrl:
+      'https://www.mara.gov.au/get-help-with-a-visa/help-from-registered-agents/steps-to-choose/complain/make-a-complaint',
   },
   contact: {
     phone: '+61493719431',

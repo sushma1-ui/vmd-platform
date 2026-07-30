@@ -18,7 +18,11 @@ export interface MetaTag {
 export function buildMeta(input: MetaInput) {
   const site = `https://${PRACTICE.domain}`;
   const canonical = new URL(input.path, site).href;
-  const title = `${input.title} · ${PRACTICE.legalName}`;
+  // Append the brand only when the page title doesn't already contain it, so titles
+  // like "Our Services | Visa & Migration Doctors" don't double the brand name (B3).
+  const title = input.title.includes(PRACTICE.legalName)
+    ? input.title
+    : `${input.title} · ${PRACTICE.legalName}`;
   const image = input.ogImage ?? `${site}/og-default.png`;
   const tags: MetaTag[] = [
     { name: 'description', content: input.description },

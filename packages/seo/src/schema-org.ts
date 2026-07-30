@@ -49,7 +49,7 @@ export function personSchema() {
       credentialCategory: 'Registered Migration Agent',
       identifier: `MARN ${PRACTICE.principal.marn}`,
     },
-    sameAs: [PRACTICE.regulator.registerUrl],
+    sameAs: [PRACTICE.regulator.registerSearchUrl],
   };
 }
 

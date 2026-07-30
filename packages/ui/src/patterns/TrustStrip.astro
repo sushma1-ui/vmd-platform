@@ -11,17 +11,19 @@ interface Props {
   tone?: 'light' | 'dark';
 }
 const { reviewUrl, tone = 'light' } = Astro.props;
-const marnUrl = PRACTICE.regulator.registerUrl;
+// Checkable links must land on the specific destinations, not the MARA homepage.
+const registerUrl = PRACTICE.regulator.registerSearchUrl;
+const codeUrl = PRACTICE.regulator.codeOfConductUrl;
 ---
 
 <ul class:list={['trust', `trust--${tone}`]}>
   <li class="trust__item">
-    <a href={marnUrl} rel="noopener" target="_blank">{RMA_LINE}</a>
+    <a href={registerUrl} rel="noopener" target="_blank">{RMA_LINE}</a>
   </li>
   <li class="trust__sep" aria-hidden="true"></li>
   <li class="trust__item">{PRACTICE.address.locality} CBD</li>
   <li class="trust__sep" aria-hidden="true"></li>
-  <li class="trust__item"><a href={marnUrl} rel="noopener" target="_blank">Code of Conduct</a></li>
+  <li class="trust__item"><a href={codeUrl} rel="noopener" target="_blank">Code of Conduct</a></li>
   {
     reviewUrl != null && (
       <>
