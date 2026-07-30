@@ -19,6 +19,14 @@ export const PinnedReviews: CollectionConfig = {
     { name: 'reviewerName', type: 'text', required: true },
     { name: 'rating', type: 'number', min: 1, max: 5 },
     { name: 'text', type: 'textarea' },
+    {
+      name: 'reviewDate',
+      type: 'text',
+      admin: {
+        description:
+          'When the review was left, e.g. "July 2026". Reviews must be dated (register A4).',
+      },
+    },
     { name: 'googleReviewUrl', type: 'text' },
     { name: 'pinnedOrder', type: 'number', defaultValue: 0 },
     {

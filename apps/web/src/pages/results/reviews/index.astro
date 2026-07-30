@@ -83,7 +83,10 @@ const tYear = (iso?: string) => {
                 </p>
               )}
               {r.text && <blockquote class="rv-card__quote">{r.text}</blockquote>}
-              <p class="rv-card__by">{r.reviewerName}</p>
+              <p class="rv-card__by">
+                {r.reviewerName}
+                {r.reviewDate && <span class="rv-card__ctx"> · {r.reviewDate}</span>}
+              </p>
               {r.googleReviewUrl && (
                 <a class="rv-card__src" href={r.googleReviewUrl} rel="noopener" target="_blank">
                   View on Google →

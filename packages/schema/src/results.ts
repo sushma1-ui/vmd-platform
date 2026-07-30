@@ -27,6 +27,7 @@ export const pinnedReview = z.object({
   reviewerName: z.string(),
   rating: z.number().min(1).max(5).optional(),
   text: z.string().optional(),
+  reviewDate: z.string().optional(),
   googleReviewUrl: z.string().optional(),
   pinnedOrder: z.number().optional(),
 });
