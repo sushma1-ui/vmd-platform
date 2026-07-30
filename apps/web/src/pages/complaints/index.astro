@@ -1,16 +1,20 @@
 ---
 import SimplePage from '../../components/content/SimplePage.astro';
+import { PRACTICE } from '@vmd/config';
 ---
 
 <SimplePage
   title="Complaints & Feedback"
   description="How to raise a concern about our service, including the OMARA complaint pathway."
   eyebrow="Checkable"
-  lead="Firms with something to hide never publish this page."
+  lead="We publish this because accountability should be easy to find."
   cta={{ href: '/contact/', label: 'Contact the practice' }}
 >
   <p>
     If you have a concern, contact us first and we will respond promptly. You may also complain to
-    OMARA, the regulator, at any time — the pathway is on the OMARA website.
+    OMARA, the regulator, at any time —{' '}
+    <a href={PRACTICE.regulator.complaintsUrl} rel="noopener" target="_blank"
+      >make a complaint on the OMARA website</a
+    >.
   </p>
 </SimplePage>
