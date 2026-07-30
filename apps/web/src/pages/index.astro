@@ -255,29 +255,9 @@ try {
     )
   }
 
-  <!-- 6 · SUCCESS STORIES (evidence, navy band) -->
   {
-    shown(hp?.successStories) && (
-      <section data-reveal class="band">
-        <div class="band__inner">
-          <p class="band__eyebrow">{hp?.successStories?.eyebrow || 'In their words'}</p>
-          <h2 class="band__h">{hp?.successStories?.heading || 'Client testimonials'}</h2>
-          <p class="band__lead">
-            {hp?.successStories?.intro ||
-              "What it's like to work with us, in our clients' own words — every testimonial shared with their permission."}
-          </p>
-          <p class="band__lead">
-            <a
-              class="band__link"
-              href={hp?.successStories?.link?.href || '/results/success-stories/'}
-            >
-              {hp?.successStories?.link?.label || 'Read client testimonials →'}
-            </a>
-          </p>
-          <Disclaimer variant="outcomes" />
-        </div>
-      </section>
-    )
+    /* Client testimonials + visa outcomes are merged into the single "Client stories"
+      section below (reviews + testimonials + outcomes in one place). */
   }
 
   <!-- 7 · WHAT WE DO (Featured Services) -->
@@ -394,7 +374,7 @@ try {
     )
   }
 
-  <!-- 10 · REVIEWS -->
+  <!-- 10 · CLIENT STORIES (reviews + testimonials + outcomes, one place) -->
   {
     shown(hp?.googleReviews) && (
       <section data-reveal class="section section--bone">
@@ -404,13 +384,19 @@ try {
             pinned={pinnedReviews}
             rating={settings?.googleReviews?.rating}
             count={settings?.googleReviews?.count}
-            heading={hp?.googleReviews?.heading ?? 'Google Reviews'}
+            heading={hp?.googleReviews?.heading ?? 'Client stories'}
             intro={
               hp?.googleReviews?.intro ??
-              'Placed here, after the evidence and the person, reviews read as corroboration — not advertising.'
+              'Real clients, real stories — verified Google reviews, testimonials and visa outcomes, all in one place.'
             }
             limit={hp?.googleReviews?.count ?? 3}
           />
+          <p class="section__more">
+            <a href="/results/success-stories/">
+              See all client stories — reviews, testimonials &amp; visa outcomes →
+            </a>
+          </p>
+          <Disclaimer variant="outcomes" />
         </div>
       </section>
     )

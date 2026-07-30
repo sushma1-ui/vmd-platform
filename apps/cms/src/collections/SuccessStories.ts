@@ -44,6 +44,7 @@ export const SuccessStories: CollectionConfig = {
         { label: 'Client testimonial video', value: 'testimonial-video' },
         { label: 'Client photo', value: 'client-photo' },
         { label: 'Visa grant letter (redacted)', value: 'grant-letter' },
+        { label: 'Skills assessment (positive)', value: 'skills-assessment' },
         { label: 'Written testimonial', value: 'written-testimonial' },
         { label: 'Success story', value: 'success-story' },
       ],
@@ -68,6 +69,30 @@ export const SuccessStories: CollectionConfig = {
       admin: { description: 'Short supporting line shown under the title.' },
     },
     {
+      name: 'visaSubclass',
+      type: 'text',
+      admin: {
+        description:
+          'Optional short label shown on the card, e.g. "Subclass 485" or "ANZSCO 411711".',
+      },
+    },
+    {
+      name: 'lodgedDate',
+      type: 'date',
+      admin: {
+        description: 'When the application/assessment was lodged (shown on grant/outcome cards).',
+        date: { pickerAppearance: 'dayOnly', displayFormat: 'd MMM yyyy' },
+      },
+    },
+    {
+      name: 'decisionDate',
+      type: 'date',
+      admin: {
+        description: 'When the decision/outcome was made (shown on grant/outcome cards).',
+        date: { pickerAppearance: 'dayOnly', displayFormat: 'd MMM yyyy' },
+      },
+    },
+    {
       name: 'quote',
       type: 'textarea',
       admin: { description: 'The testimonial or story text (written types).' },
@@ -81,7 +106,18 @@ export const SuccessStories: CollectionConfig = {
       name: 'image',
       type: 'upload',
       relationTo: 'media',
-      admin: { description: 'Client photo or REDACTED grant letter image.' },
+      admin: {
+        description: 'Client photo or REDACTED grant letter image (shown as the card proof).',
+      },
+    },
+    {
+      name: 'graphic',
+      type: 'upload',
+      relationTo: 'media',
+      admin: {
+        description:
+          'Optional branded social graphic (the square "Congratulations" post). Opens full-size when the visitor taps “View”.',
+      },
     },
     {
       name: 'videoUrl',
