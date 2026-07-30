@@ -251,20 +251,18 @@ try {
     shown(hp?.successStories) && (
       <section data-reveal class="band">
         <div class="band__inner">
-          <p class="band__eyebrow">
-            {hp?.successStories?.eyebrow || 'Real clients, real outcomes'}
-          </p>
-          <h2 class="band__h">{hp?.successStories?.heading || 'Success stories'}</h2>
+          <p class="band__eyebrow">{hp?.successStories?.eyebrow || 'In their words'}</p>
+          <h2 class="band__h">{hp?.successStories?.heading || 'Client testimonials'}</h2>
           <p class="band__lead">
             {hp?.successStories?.intro ||
-              "Testimonial videos, client stories and redacted visa grants — every one shared with the client's permission, organised by visa type."}
+              "What it's like to work with us, in our clients' own words — every testimonial shared with their permission."}
           </p>
           <p class="band__lead">
             <a
               class="band__link"
               href={hp?.successStories?.link?.href || '/results/success-stories/'}
             >
-              {hp?.successStories?.link?.label || 'Browse client success stories →'}
+              {hp?.successStories?.link?.label || 'Read client testimonials →'}
             </a>
           </p>
           <Disclaimer variant="outcomes" />

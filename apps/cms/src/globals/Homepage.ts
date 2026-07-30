@@ -122,19 +122,19 @@ export const Homepage: GlobalConfig = {
 
         // 4 · SUCCESS STORIES -------------------------------------------------
         {
-          label: 'Success Stories',
+          label: 'Client Testimonials',
           name: 'successStories',
           description:
-            'The navy band linking to client success stories. The stories themselves live in the Success Stories collection.',
+            'The navy "client testimonials" band. The testimonials themselves live in the Client Results collection. Keep to what clients say about working with us — not case outcomes or success rates.',
           fields: [
             showToggle(),
-            { name: 'eyebrow', type: 'text', defaultValue: 'Real clients, real outcomes' },
+            { name: 'eyebrow', type: 'text', defaultValue: 'In their words' },
             ...headingIntro({
-              heading: 'Success stories',
+              heading: 'Client testimonials',
               intro:
-                "Testimonial videos, client stories and redacted visa grants — every one shared with the client's permission, organised by visa type.",
+                "What it's like to work with us, in our clients' own words — every testimonial shared with their permission.",
             }),
-            linkGroup('link', 'Link to all stories'),
+            linkGroup('link', 'Link to all testimonials'),
           ],
         },
 

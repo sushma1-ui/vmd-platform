@@ -38,7 +38,7 @@ const CATEGORIES: { key: string; heading: string }[] = [
   { key: 'partner', heading: 'Partner Visas' },
   { key: 'skilled', heading: 'Skilled Migration' },
   { key: 'visitor', heading: 'Visitor Visas' },
-  { key: 'other', heading: 'Other Visa Success Stories' },
+  { key: 'other', heading: 'Other visa types' },
 ];
 
 let stories: Story[] = [];
@@ -82,22 +82,22 @@ const imgOf = (s: Story) =>
 const trail = [
   { name: 'Home', path: '/' },
   { name: 'Results', path: '/results/' },
-  { name: 'Success Stories', path: '/results/success-stories/' },
+  { name: 'Client Testimonials', path: '/results/success-stories/' },
 ];
 ---
 
 <Base
-  title="Success Stories & Client Results"
-  description="Real outcomes from real clients — testimonial videos, client stories and redacted visa grants, shared with permission. Every application is decided on its own merits."
+  title="Client Testimonials"
+  description="What our clients say about working with us — testimonials shared with their permission. Every application is decided on its own merits under Australian migration law."
   schemas={[breadcrumbSchema(trail)]}
 >
   <section class="ss">
     <header class="ss__head">
-      <p class="ss__eyebrow">Client results · shared with permission</p>
-      <h1 class="ss__title">Success stories</h1>
+      <p class="ss__eyebrow">In their words · shared with permission</p>
+      <h1 class="ss__title">Client testimonials</h1>
       <p class="ss__lead">
-        Real clients, real outcomes — in their own words and their own grant letters. Every matter
-        is different, and past outcomes never guarantee future results.
+        What it's like to work with us, in our clients' own words. Every matter is different, and
+        past outcomes never indicate or guarantee future results.
       </p>
     </header>
 
