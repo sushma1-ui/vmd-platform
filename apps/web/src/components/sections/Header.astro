@@ -3,12 +3,25 @@ import { PRACTICE, RMA_LINE } from '@vmd/config';
 import { Button } from '@vmd/ui';
 import SocialLinks from './SocialLinks.astro';
 import ClientPortalButton from './ClientPortalButton.astro';
-import { getCtaLinks } from '../../lib/cms.ts';
+import { cms, getCtaLinks } from '../../lib/cms.ts';
+import { buildServiceNav } from '../../lib/serviceNav.ts';
+import type { ServiceDoc } from '../../lib/servicePages.ts';
 const { bookUrl, healthCheckUrl } = await getCtaLinks();
+
+// "Our Services" mega-menu is built from the live CMS service pages (nothing hardcoded);
+// if the CMS is unreachable at build the item degrades to a plain link to /services/.
+let serviceNav = null;
+try {
+  const docs = (await cms.servicePages()) as unknown as ServiceDoc[];
+  if (Array.isArray(docs) && docs.length) serviceNav = buildServiceNav(docs);
+} catch {
+  /* no CMS at build — "Our Services" stays a simple link */
+}
+
 const nav = [
   { label: 'Home', href: '/' },
   { label: 'About', href: '/about/' },
-  { label: 'Our Services', href: '/services/' },
+  { label: 'Our Services', href: '/services/', mega: true },
   { label: 'Blog', href: '/blog/' },
   { label: 'Contact', href: '/contact/' },
 ];
@@ -45,11 +58,78 @@ const register = PRACTICE.regulator.registerSearchUrl;
     </a>
     <nav class="nav" aria-label="Primary">
       {
-        nav.map((n) => (
-          <a class="nav__link" href={n.href}>
-            {n.label}
-          </a>
-        ))
+        nav.map((n) =>
+          n.mega && serviceNav ? (
+            <div class="nav__mega" data-mega>
+              <button
+                class="nav__link nav__trigger"
+                type="button"
+                aria-expanded="false"
+                aria-controls="mega-services"
+                data-mega-trigger
+              >
+                {n.label}
+                <svg
+                  class="nav__chev"
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="m6 9 6 6 6-6"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </button>
+              <div class="mega" id="mega-services" data-mega-panel>
+                <div class="mega__inner">
+                  <a class="mega__feat" href={serviceNav.featured.href}>
+                    <span class="mega__tag">{serviceNav.featured.tag}</span>
+                    <span class="mega__feat-h">{serviceNav.featured.heading}</span>
+                    <span class="mega__feat-blurb">{serviceNav.featured.blurb}</span>
+                    <span class="mega__feat-list">
+                      {serviceNav.featured.items.map((it) => (
+                        <span class="mega__feat-item">{it.label}</span>
+                      ))}
+                    </span>
+                    <span class="mega__feat-cta">Explore employer sponsorship →</span>
+                  </a>
+                  <div class="mega__cols">
+                    {serviceNav.columns.map((col) => (
+                      <div class="mega__col">
+                        <p class="mega__col-h">{col.heading}</p>
+                        <ul class="mega__col-list">
+                          {col.items.map((it) => (
+                            <li>
+                              <a href={it.href}>{it.label}</a>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div class="mega__foot">
+                  <a class="mega__foot-all" href={serviceNav.seeAllHref}>
+                    See all services →
+                  </a>
+                  <a class="mega__foot-hc" href={healthCheckUrl}>
+                    Not sure where you fit? Take the Free Visa Health Check →
+                  </a>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <a class="nav__link" href={n.href}>
+              {n.label}
+            </a>
+          ),
+        )
       }
     </nav>
     <div class="header__cta">
@@ -83,7 +163,37 @@ const register = PRACTICE.regulator.registerSearchUrl;
     </button>
   </div>
   <div class="mnav" id="mobile-nav" data-mobile-nav hidden>
-    {nav.map((n) => <a href={n.href}>{n.label}</a>)}
+    {
+      nav.map((n) =>
+        n.mega && serviceNav ? (
+          <details class="mnav__services">
+            <summary>{n.label}</summary>
+            <div class="mnav__sub">
+              <a class="mnav__feat" href={serviceNav.featured.href}>
+                <span class="mnav__feat-tag">{serviceNav.featured.tag}</span>
+                {serviceNav.featured.heading}
+              </a>
+              {serviceNav.featured.items.map((it) => (
+                <a href={it.href}>{it.label}</a>
+              ))}
+              {serviceNav.columns.map((col) => (
+                <>
+                  <p class="mnav__group-h">{col.heading}</p>
+                  {col.items.map((it) => (
+                    <a href={it.href}>{it.label}</a>
+                  ))}
+                </>
+              ))}
+              <a class="mnav__all" href={serviceNav.seeAllHref}>
+                See all services →
+              </a>
+            </div>
+          </details>
+        ) : (
+          <a href={n.href}>{n.label}</a>
+        ),
+      )
+    }
     <a href="/search/">Search</a>
     <div class="mnav__cta">
       <Button variant="primary" href={bookUrl}>Book a Consultation</Button>
@@ -196,6 +306,171 @@ const register = PRACTICE.regulator.registerSearchUrl;
   .nav__link:hover {
     border-block-end-color: var(--color-emphasis);
   }
+
+  /* ---- Our Services mega-menu (desktop) ------------------------------------ */
+  .nav__mega {
+    display: flex;
+    align-items: center;
+  }
+  .nav__trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: none;
+    border: 0;
+    border-block-end: 1px solid transparent;
+    font: inherit;
+    color: var(--color-action);
+    cursor: pointer;
+  }
+  .nav__chev {
+    transition: transform var(--motion-base, 180ms) var(--ease-standard, ease);
+  }
+  .nav__mega:hover .nav__chev,
+  .nav__mega:focus-within .nav__chev,
+  .nav__trigger[aria-expanded='true'] .nav__chev {
+    transform: rotate(180deg);
+  }
+  .mega {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-start: 100%;
+    background: var(--color-ground-light);
+    border-block: 1px solid color-mix(in srgb, var(--color-action) 10%, transparent);
+    box-shadow: var(--shadow-raised, 0 18px 40px -24px rgba(14, 26, 48, 0.4));
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
+    pointer-events: none;
+    transition:
+      opacity var(--motion-base, 180ms) var(--ease-standard, ease),
+      transform var(--motion-base, 180ms) var(--ease-standard, ease);
+  }
+  .nav__mega:hover .mega,
+  .nav__mega:focus-within .mega,
+  .mega[data-open] {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    pointer-events: auto;
+  }
+  .mega__inner {
+    max-inline-size: var(--container-max);
+    margin-inline: auto;
+    padding: var(--space-6) var(--space-4);
+    display: grid;
+    grid-template-columns: minmax(15rem, 1fr) 2.2fr;
+    gap: var(--space-7);
+  }
+  .mega__feat {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-5);
+    border-radius: var(--radius-card);
+    background: linear-gradient(155deg, var(--color-action), var(--color-ground-deep));
+    color: var(--color-text-inverse);
+    text-decoration: none;
+  }
+  .mega__tag {
+    align-self: flex-start;
+    font-size: var(--type-caption);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-emphasis);
+    font-weight: 700;
+  }
+  .mega__feat-h {
+    font-family: var(--font-display);
+    font-size: var(--type-h4);
+    line-height: 1.15;
+  }
+  .mega__feat-blurb {
+    font-size: var(--type-body-sm);
+    color: color-mix(in srgb, var(--color-text-inverse) 82%, transparent);
+    line-height: 1.5;
+  }
+  .mega__feat-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-block-start: var(--space-2);
+  }
+  .mega__feat-item {
+    font-size: var(--type-caption);
+    font-weight: 600;
+    padding: 0.25rem 0.6rem;
+    border-radius: var(--radius-pill, 999px);
+    background: color-mix(in srgb, var(--color-text-inverse) 14%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-text-inverse) 22%, transparent);
+  }
+  .mega__feat-cta {
+    margin-block-start: auto;
+    padding-block-start: var(--space-2);
+    font-weight: 600;
+    color: var(--color-emphasis);
+  }
+  .mega__feat:hover .mega__feat-cta {
+    text-decoration: underline;
+  }
+  .mega__cols {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-5);
+    align-content: start;
+  }
+  .mega__col-h {
+    font-size: var(--type-caption);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin: 0 0 var(--space-3);
+    padding-block-end: var(--space-2);
+    border-block-end: 1px solid color-mix(in srgb, var(--color-action) 10%, transparent);
+  }
+  .mega__col-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-1);
+  }
+  .mega__col-list a {
+    display: block;
+    padding: 0.3rem 0;
+    color: var(--color-action);
+    text-decoration: none;
+    font-size: var(--type-body-sm);
+    border-radius: var(--radius-control);
+  }
+  .mega__col-list a:hover {
+    color: var(--color-emphasis-text);
+  }
+  .mega__foot {
+    border-block-start: 1px solid color-mix(in srgb, var(--color-action) 10%, transparent);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-6);
+    align-items: center;
+    justify-content: space-between;
+    max-inline-size: var(--container-max);
+    margin-inline: auto;
+    padding: var(--space-3) var(--space-4);
+  }
+  .mega__foot-all {
+    font-weight: 600;
+    color: var(--color-emphasis-text);
+    text-decoration: none;
+  }
+  .mega__foot-hc {
+    color: var(--color-text-muted);
+    text-decoration: none;
+    font-size: var(--type-body-sm);
+  }
+  .mega__foot a:hover {
+    text-decoration: underline;
+  }
+
   .header__cta {
     display: none;
     gap: var(--space-2);
@@ -253,6 +528,67 @@ const register = PRACTICE.regulator.registerSearchUrl;
     gap: var(--space-2);
     margin-block-start: var(--space-3);
   }
+  /* ---- Our Services group (mobile) ---------------------------------------- */
+  .mnav__services > summary {
+    list-style: none;
+    cursor: pointer;
+    color: var(--color-action);
+    font-size: var(--type-body-lg);
+    padding-block: var(--space-2);
+    border-block-end: 1px solid color-mix(in srgb, var(--color-action) 6%, transparent);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .mnav__services > summary::-webkit-details-marker {
+    display: none;
+  }
+  .mnav__services > summary::after {
+    content: '+';
+    font-size: 1.1em;
+    color: var(--color-text-muted);
+  }
+  .mnav__services[open] > summary::after {
+    content: '–';
+  }
+  .mnav__sub {
+    display: flex;
+    flex-direction: column;
+    padding-inline-start: var(--space-3);
+    margin-block-end: var(--space-2);
+    border-inline-start: 2px solid color-mix(in srgb, var(--color-emphasis) 40%, transparent);
+  }
+  .mnav__sub a {
+    font-size: var(--type-body);
+    border-block-end: 0;
+    padding-block: var(--space-1);
+  }
+  .mnav__feat {
+    font-weight: 600;
+    color: var(--color-emphasis-text) !important;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .mnav__feat-tag {
+    font-size: var(--type-caption);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    font-weight: 700;
+  }
+  .mnav__group-h {
+    font-size: var(--type-caption);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin: var(--space-3) 0 var(--space-1);
+  }
+  .mnav__all {
+    font-weight: 600;
+    color: var(--color-emphasis-text) !important;
+    margin-block-start: var(--space-2);
+  }
   @media (min-width: 640px) {
     .utility__email {
       display: inline;
@@ -294,5 +630,34 @@ const register = PRACTICE.regulator.registerSearchUrl;
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') toggle(false);
     });
+  }
+
+  // Our Services mega-menu: hover/focus reveal is pure CSS. This adds click/tap
+  // toggling (touch devices have no hover) plus Escape and outside-click to close.
+  const mega = document.querySelector('[data-mega]');
+  const trigger = mega?.querySelector('[data-mega-trigger]');
+  const megaPanel = mega?.querySelector('[data-mega-panel]');
+  if (mega && trigger && megaPanel) {
+    const setMega = (open) => {
+      trigger.setAttribute('aria-expanded', String(open));
+      if (open) megaPanel.setAttribute('data-open', '');
+      else megaPanel.removeAttribute('data-open');
+    };
+    trigger.addEventListener('click', () => {
+      setMega(trigger.getAttribute('aria-expanded') !== 'true');
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        setMega(false);
+        if (trigger instanceof HTMLElement) trigger.blur();
+      }
+    });
+    document.addEventListener('click', (e) => {
+      if (!mega.contains(e.target)) setMega(false);
+    });
+    // Close after choosing a destination so the panel doesn't linger over the new page.
+    megaPanel
+      .querySelectorAll('a')
+      .forEach((a) => a.addEventListener('click', () => setMega(false)));
   }
 </script>
