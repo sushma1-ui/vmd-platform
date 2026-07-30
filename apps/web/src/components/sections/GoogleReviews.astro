@@ -21,6 +21,15 @@ interface Props {
   heading?: string | null;
   /** Intro line under the heading (CMS-controlled). */
   intro?: string | null;
+  /** Curated real reviews (CMS pinned reviews) shown when no live API data. */
+  pinned?:
+    | {
+        reviewerName?: string | null;
+        rating?: number | null;
+        text?: string | null;
+        reviewDate?: string | null;
+      }[]
+    | null;
 }
 
 const {
@@ -28,6 +37,7 @@ const {
   limit = 3,
   heading = 'Google Reviews',
   intro = 'Placed here, after the evidence and the person, reviews read as corroboration — not advertising.',
+  pinned = null,
 } = Astro.props;
 
 const data = await getGoogleReviews();
@@ -35,6 +45,18 @@ const reviews = data.reviews.slice(0, limit);
 const hasLive = reviews.length > 0;
 const href = data.profileUrl || profileUrl || googleReviewsUrl;
 const ratingLabel = data.rating != null ? data.rating.toFixed(1) : null;
+
+// Prefer live API reviews; otherwise show the curated pinned reviews from the CMS so
+// the section always shows real content (never an empty placeholder).
+const cards = hasLive
+  ? reviews.map((r) => ({ author: r.author, rating: r.rating, text: r.text, when: r.when }))
+  : (pinned ?? []).slice(0, limit).map((p) => ({
+      author: p.reviewerName ?? '',
+      rating: p.rating ?? 5,
+      text: p.text ?? '',
+      when: p.reviewDate ?? '',
+    }));
+const hasCards = cards.length > 0;
 
 const stars = (n: number) => '★★★★★'.slice(0, n) + '☆☆☆☆☆'.slice(0, 5 - n);
 ---
@@ -67,9 +89,9 @@ const stars = (n: number) => '★★★★★'.slice(0, n) + '☆☆☆☆☆'.s
     </div>
 
     {
-      hasLive ? (
+      hasCards ? (
         <ul class="reviews__list" role="list">
-          {reviews.map((r) => (
+          {cards.map((r) => (
             <li class="rev-card">
               <div class="rev-card__top">
                 <p class="rev-card__stars" aria-label={`${r.rating} out of 5`}>

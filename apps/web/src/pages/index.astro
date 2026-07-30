@@ -114,6 +114,13 @@ try {
   const feat = all.filter((p: any) => p.featured);
   posts = (feat.length ? feat : all).slice(0, 3);
 } catch {}
+
+// Curated Google reviews (pinned) — shown in the homepage reviews section when the
+// live Google API isn't configured, so the section shows real content, not a placeholder.
+let pinnedReviews: any[] = [];
+try {
+  pinnedReviews = await cms.pinnedReviews();
+} catch {}
 ---
 
 <Base
@@ -393,6 +400,7 @@ try {
         <div class="section__inner">
           <GoogleReviews
             profileUrl={settings?.googleReviews?.profileUrl}
+            pinned={pinnedReviews}
             heading={hp?.googleReviews?.heading ?? 'Google Reviews'}
             intro={
               hp?.googleReviews?.intro ??
