@@ -125,7 +125,7 @@ try {
 
 <Base
   title="Registered Migration Agent in Perth"
-  description={`Honest migration advice in Perth from Registered Migration Agent (RMA) ${PRACTICE.principal.name} (MARN: ${PRACTICE.principal.marn}). Know exactly where you stand before you spend a dollar — clear pathways, no false promises.`}
+  description={`Honest migration advice in Perth from Registered Migration Agent (RMA) ${PRACTICE.principal.name} (MARN: ${PRACTICE.principal.marn}). Know exactly where you stand before you spend a dollar — with clear pathways and honest, reliable guidance.`}
   schemas={[localBusinessSchema(), { '@context': 'https://schema.org', ...personSchema() }]}
 >
   <!-- 3 · HERO -->
@@ -139,7 +139,7 @@ try {
       <p class="hero__lead">
         {
           hp?.hero?.lead ||
-            `Migration advice in Perth, provided by Registered Migration Agent (RMA) ${PRACTICE.principal.name}. Clear pathways, honest answers, no false promises.`
+            `Migration advice in Perth, provided by Registered Migration Agent (RMA) ${PRACTICE.principal.name}. Clear pathways and honest, reliable answers.`
         }
       </p>
       <div class="hero__cta">
@@ -160,7 +160,7 @@ try {
       <ul class="hero__cred-points">
         <li>Bound by the Migration Agents Code of Conduct</li>
         <li>Fixed fees — quoted before you commit</li>
-        <li>You deal with the agent, not a salesperson</li>
+        <li>You work directly with the Registered Migration Agent</li>
       </ul>
       <a class="hero__cred-verify" href={register} rel="noopener" target="_blank">
         Verify on the OMARA register →
@@ -225,8 +225,8 @@ try {
                     <Icon path={PROMISE_ICONS[0]} />
                   </span>
                   <p>
-                    We tell you if you're <strong>not</strong> eligible — including when the honest
-                    answer is to wait.
+                    An <strong>honest read</strong> on your eligibility — including the right time
+                    to apply.
                   </p>
                 </div>
                 <div class="promise">
@@ -234,7 +234,8 @@ try {
                     <Icon path={PROMISE_ICONS[1]} />
                   </span>
                   <p>
-                    A <strong>fixed fee</strong>, quoted before you commit. No surprises.
+                    A <strong>fixed fee</strong>, quoted before you commit — so you always know the
+                    cost.
                   </p>
                 </div>
                 <div class="promise">
@@ -242,7 +243,8 @@ try {
                     <Icon path={PROMISE_ICONS[2]} />
                   </span>
                   <p>
-                    You deal with the <strong>registered agent</strong> — not a salesperson.
+                    You work directly with the <strong>registered agent</strong>, from start to
+                    finish.
                   </p>
                 </div>
               </>
@@ -286,7 +288,7 @@ try {
           <h2 class="section__h">{hp?.featuredServices?.heading || 'Featured services'}</h2>
           <p class="section__sub">
             {hp?.featuredServices?.intro ||
-              'Find yourself in one scan. Every service is a problem we solve, not a product we sell.'}
+              'Find yourself in one scan. Every service is a real problem we help you solve.'}
           </p>
           <div class="grid grid--2">
             {featuredServices.map((s) => (
@@ -367,12 +369,11 @@ try {
                 <p>
                   I'm a Registered Migration Agent in Perth, bound by the Migration Agents Code of
                   Conduct. When you come to me, you get an honest read on where your case stands —
-                  including when the better answer is to wait, take a different pathway, or that I'm
-                  not the right person to help.
+                  including when the better answer is to wait or to take a different pathway.
                 </p>
                 <p>
-                  What I won't do: promise an outcome, quote a success rate, or take a matter I
-                  don't believe in. That's the whole practice.
+                  What you can count on: a straight assessment, careful preparation, and honesty
+                  about whether I'm the right person to help. That's the whole practice.
                 </p>
               </>
             )}

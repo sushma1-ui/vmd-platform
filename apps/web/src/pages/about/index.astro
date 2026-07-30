@@ -11,8 +11,7 @@ const bodyParas = (a?.body ?? []).map((p) => p?.text).filter((t): t is string =>
 // Team Members). Section heading/intro come from the About Page global. Falls back
 // to the founding RMA if no members are published yet, so the section is never empty.
 const teamHeading = a?.team?.heading || 'Our team';
-const teamIntro =
-  a?.team?.intro || 'You deal with the people who prepare your case — not a call centre.';
+const teamIntro = a?.team?.intro || 'You deal directly with the people who prepare your case.';
 const cmsMembers = (await cms.teamMembers()).filter((m): m is TeamMember => !!m?.name);
 const members: TeamMember[] = cmsMembers.length
   ? cmsMembers
@@ -53,7 +52,7 @@ const photoUrl = (m: TeamMember): string | null =>
     'A boutique, appointment-only migration practice in Perth, led by a Registered Migration Agent.'}
   eyebrow={a?.eyebrow || 'The practice'}
   lead={a?.lead ||
-    'Why the clinical frame — Diagnosis, Pathway, Outcome — and what we will not do.'}
+    'Why the clinical frame — Diagnosis, Pathway, Outcome — and what you can count on.'}
   cta={{
     href: a?.ctaHref || '/about/sunil-uprety/',
     label: a?.ctaLabel || 'Meet Sunil Uprety, RMA',
@@ -66,12 +65,12 @@ const photoUrl = (m: TeamMember): string | null =>
     ) : (
       <>
         <p>
-          Visa & Migration Doctors is a boutique, appointment-only practice in Perth. You speak to
-          the registered agent, not a salesperson.
+          Visa & Migration Doctors is a boutique, appointment-only practice in Perth. You speak
+          directly with the registered agent.
         </p>
         <p>
-          <strong>What we will not do:</strong> guarantee an outcome, quote a success rate, or take
-          a matter we don't believe we can help with.
+          <strong>What you can count on:</strong> a straight assessment, careful preparation, and
+          honesty about whether we're the right people to help with your matter.
         </p>
       </>
     )

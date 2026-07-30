@@ -54,7 +54,7 @@ export const Homepage: GlobalConfig = {
               name: 'lead',
               type: 'textarea',
               defaultValue:
-                'Migration advice in Perth, provided by Registered Migration Agent (RMA) Sunil Uprety. Clear pathways, honest answers, no false promises.',
+                'Migration advice in Perth, provided by Registered Migration Agent (RMA) Sunil Uprety. Clear pathways and honest, reliable answers.',
               admin: { description: 'The paragraph under the headline.' },
             },
             linkGroup('primaryCta', 'Primary button'),
@@ -108,8 +108,7 @@ export const Homepage: GlobalConfig = {
             showToggle(),
             ...headingIntro({
               heading: 'The diagnosis promise',
-              intro:
-                'The only differentiation that survives scrutiny is the kind that visibly costs us something.',
+              intro: 'The commitments that set us apart are the ones we are glad to be held to.',
             }),
             {
               name: 'promises',
@@ -149,7 +148,7 @@ export const Homepage: GlobalConfig = {
             ...headingIntro({
               heading: 'Featured services',
               intro:
-                'Find yourself in one scan. Every service is a problem we solve, not a product we sell.',
+                'Find yourself in one scan. Every service is a real problem we help you solve.',
             }),
             linkGroup('seeAll', '“See all services” link'),
             linkGroup('secondaryLink', 'Secondary link (e.g. ART appeals)'),

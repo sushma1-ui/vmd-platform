@@ -34,7 +34,7 @@ export const AboutPage: GlobalConfig = {
               name: 'lead',
               type: 'textarea',
               defaultValue:
-                'Why the clinical frame — Diagnosis, Pathway, Outcome — and what we will not do.',
+                'Why the clinical frame — Diagnosis, Pathway, Outcome — and what you can count on.',
             },
             {
               name: 'body',
@@ -64,7 +64,7 @@ export const AboutPage: GlobalConfig = {
           fields: [
             ...headingIntro({
               heading: 'Our team',
-              intro: 'You deal with the people who prepare your case — not a call centre.',
+              intro: 'You deal directly with the people who prepare your case.',
             }),
             // Legacy members array — RETAINED (hidden from editors) only so its DB
             // table isn't dropped. On this push-based setup, dropping it at the same
