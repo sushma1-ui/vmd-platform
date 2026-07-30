@@ -32,6 +32,8 @@ export default defineConfig({
     '/book': { status: 301, destination: '/book-consultation' },
     '/client-portal': { status: 302, destination: '/client/' },
     '/results/grant-ledger': { status: 301, destination: '/results/success-stories' },
+    // The Our Fees page was retired; the consultation fee now lives on the booking page.
+    '/about/fees': { status: 301, destination: '/book-consultation' },
   },
   adapter: vercel({ isr, webAnalytics: { enabled: false } }),
   integrations: [
