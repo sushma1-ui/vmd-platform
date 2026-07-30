@@ -11,12 +11,35 @@ const byTitle = (a: ServiceDoc, b: ServiceDoc) => a.title.localeCompare(b.title)
 const visas = all.filter((p) => p.section === 'visas').sort(byTitle);
 const others = all.filter((p) => p.section !== 'visas').sort(byTitle);
 
-const groups = [
-  { heading: 'Visa pathways', items: visas },
-  { heading: 'Other services', items: others },
-].filter((g) => g.items.length > 0);
-
 const blurb = (p: ServiceDoc) => p.seo?.metaDescription || p.subtitle || '';
+type Card = { title: string; href: string; blurb: string };
+const toCard = (p: ServiceDoc): Card => ({
+  title: p.title,
+  href: servicePageHref(p),
+  blurb: blurb(p),
+});
+
+// Named service lines (dedicated pages, not CMS service pages) — the strategy pillars.
+const named: Card[] = [
+  {
+    title: 'Second Opinion',
+    href: '/services/second-opinion/',
+    blurb:
+      'A fixed-fee, independent review of a matter already underway — or a visa refusal you want assessed.',
+  },
+  {
+    title: 'Refusal Recovery',
+    href: '/services/refusal-recovery/',
+    blurb:
+      'Visa refused or cancelled? Understand the deadline, then a Second Opinion and, if worthwhile, an ART review.',
+  },
+];
+
+const groups = [
+  { heading: 'When something has gone wrong', items: named },
+  { heading: 'Visa pathways', items: visas.map(toCard) },
+  { heading: 'Other services', items: others.map(toCard) },
+].filter((g) => g.items.length > 0);
 
 const trail = [
   { name: 'Home', path: '/' },
@@ -47,9 +70,9 @@ const trail = [
             <h2>{g.heading}</h2>
             <div class="hub__grid">
               {g.items.map((p) => (
-                <a class="hub__card" href={servicePageHref(p)}>
+                <a class="hub__card" href={p.href}>
                   <h3>{p.title}</h3>
-                  {blurb(p) && <p>{blurb(p)}</p>}
+                  {p.blurb && <p>{p.blurb}</p>}
                 </a>
               ))}
             </div>
