@@ -94,7 +94,9 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     const config = { serverToken: env.POSTMARK_SERVER_TOKEN, from: env.POSTMARK_FROM_EMAIL };
     // Practice inbox (enquiries@) is the single source of truth for form delivery.
     const adminTo = PRACTICE.contact.email;
-    await Promise.allSettled([
+    const cmsBase = env.PUBLIC_CMS_URL || '';
+    const adminUrl = stored && cmsBase ? `${cmsBase}/admin/collections/leads/${stored.id}` : '';
+    const results = await Promise.allSettled([
       sendTransactional(
         {
           to: adminTo,
@@ -114,6 +116,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
             preferredContact: data.preferredContact,
             healthCheck: data,
             attribution: data.attribution,
+            adminUrl,
           },
         },
         config,
@@ -127,6 +130,12 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
         config,
       ),
     ]);
+    results.forEach((r, i) => {
+      if (r.status === 'rejected')
+        console.error(`[health-check] ${i === 0 ? 'admin' : 'client'} email failed:`, r.reason);
+    });
+  } else {
+    console.warn('[health-check] Postmark not configured — no email sent');
   }
 
   // 6 — CRM upsert. Only calls out when a HubSpot token is configured; otherwise a

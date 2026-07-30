@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import { validateLead, verifyTurnstile, rateLimit } from '@vmd/forms';
-import { scoreLead } from '@vmd/schema';
+import { scoreLead, formatSubmissionReference } from '@vmd/schema';
 import { sendTransactional } from '@vmd/email';
 import { track } from '@vmd/analytics';
 import { PRACTICE } from '@vmd/config';
@@ -35,14 +35,31 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   });
   if (!underLimit) return json({ ok: false, error: 'Too many requests' }, 429);
 
-  const lead = { ...result.data, score: scoreLead(result.data.source) };
+  const now = new Date();
+  const submissionId = formatSubmissionReference(now, referenceSequence());
+  const lead = { ...result.data, submissionId, score: scoreLead(result.data.source) };
 
-  if (env.PAYLOAD_API_KEY) await createLead(lead, env.PAYLOAD_API_KEY);
-  if (env.POSTMARK_SERVER_TOKEN && env.POSTMARK_FROM_EMAIL)
+  // Store first so the notification email can link straight to the saved lead.
+  const stored = env.PAYLOAD_API_KEY ? await createLead(lead, env.PAYLOAD_API_KEY) : null;
+  if (env.PAYLOAD_API_KEY && !stored)
+    console.error('[lead] createLead failed — lead not saved to CMS', { submissionId });
+
+  if (env.POSTMARK_SERVER_TOKEN && env.POSTMARK_FROM_EMAIL) {
+    const cmsBase = env.PUBLIC_CMS_URL || '';
+    const adminUrl = stored && cmsBase ? `${cmsBase}/admin/collections/leads/${stored.id}` : '';
     await sendTransactional(
-      { to: PRACTICE.contact.email, template: 'lead-internal-notification', model: lead },
+      {
+        to: PRACTICE.contact.email,
+        template: 'lead-internal-notification',
+        model: { ...lead, receivedAt: now.toISOString(), adminUrl },
+      },
       { serverToken: env.POSTMARK_SERVER_TOKEN, from: env.POSTMARK_FROM_EMAIL },
-    ).catch(() => {});
+    ).catch((e) => console.error('[lead] admin notification email failed:', e));
+  } else {
+    console.warn(
+      '[lead] Postmark not configured (POSTMARK_SERVER_TOKEN / POSTMARK_FROM_EMAIL) — no email sent',
+    );
+  }
   await track(
     {
       event: 'consultation_requested',
@@ -59,6 +76,12 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
 
   return json({ ok: true });
 };
+/** Cryptographically-random 0–999999 for the human-friendly reference suffix. */
+function referenceSequence(): number {
+  const buf = new Uint32Array(1);
+  crypto.getRandomValues(buf);
+  return (buf[0] ?? 0) % 1_000_000;
+}
 function json(d: unknown, status = 200) {
   return new Response(JSON.stringify(d), {
     status,

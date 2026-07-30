@@ -105,7 +105,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
         },
       },
       postmark,
-    ).catch(() => {});
+    ).catch((e) => console.error('[booking] practice notification email failed:', e));
     // Client confirmation.
     await sendTransactional(
       {
@@ -114,7 +114,9 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
         model: { firstName: data.firstName },
       },
       postmark,
-    ).catch(() => {});
+    ).catch((e) => console.error('[booking] client confirmation email failed:', e));
+  } else {
+    console.warn('[booking] Postmark not configured — no email sent');
   }
 
   return json({ ok: true });

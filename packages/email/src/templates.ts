@@ -62,12 +62,15 @@ export function renderTemplate(t: TransactionalTemplate, m: Record<string, unkno
           line('Nationality', m.nationality) +
           line('Current visa', m.currentVisa) +
           line('Situation', m.situation) +
+          line('Message', m.message) +
           line('Preferred contact', m.preferredContact) +
           `\nQuestionnaire\n` +
           formatAnswers(m.healthCheck) +
           `\nAttribution\n` +
           formatAnswers(m.attribution) +
-          `\nReview and action this lead in the CMS.`,
+          (str(m.adminUrl)
+            ? `\nOpen this lead in the CMS:\n  ${str(m.adminUrl)}\n`
+            : `\nReview and action this lead in the CMS.\n`),
       };
     case 'consultation-confirmation':
       return {

@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { secondOpinionIntake, scoreLead } from '@vmd/schema';
+import { secondOpinionIntake, scoreLead, formatSubmissionReference } from '@vmd/schema';
 import { rateLimit, verifyTurnstile } from '@vmd/forms';
 import { sendTransactional } from '@vmd/email';
 import { PRACTICE } from '@vmd/config';
@@ -35,8 +35,11 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   if (!underLimit) return json({ ok: false, error: 'Too many requests' }, 429);
 
   const source = 'second-opinion' as const;
+  const now = new Date();
+  const submissionId = formatSubmissionReference(now, referenceSequence());
   const lead = {
     source,
+    submissionId,
     score: scoreLead(source),
     firstName: parsed.data.firstName,
     email: parsed.data.email,
@@ -44,19 +47,37 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     message: parsed.data.message,
     healthCheck: parsed.data,
   };
-  if (env.PAYLOAD_API_KEY) await createLead(lead, env.PAYLOAD_API_KEY);
+  const stored = env.PAYLOAD_API_KEY ? await createLead(lead, env.PAYLOAD_API_KEY) : null;
+  if (env.PAYLOAD_API_KEY && !stored)
+    console.error('[second-opinion] createLead failed — lead not saved to CMS', { submissionId });
+
   if (env.POSTMARK_SERVER_TOKEN && env.POSTMARK_FROM_EMAIL) {
+    const postmark = { serverToken: env.POSTMARK_SERVER_TOKEN, from: env.POSTMARK_FROM_EMAIL };
+    const cmsBase = env.PUBLIC_CMS_URL || '';
+    const adminUrl = stored && cmsBase ? `${cmsBase}/admin/collections/leads/${stored.id}` : '';
     await sendTransactional(
-      { to: PRACTICE.contact.email, template: 'lead-internal-notification', model: lead },
-      { serverToken: env.POSTMARK_SERVER_TOKEN, from: env.POSTMARK_FROM_EMAIL },
-    ).catch(() => {});
+      {
+        to: PRACTICE.contact.email,
+        template: 'lead-internal-notification',
+        model: { ...lead, receivedAt: now.toISOString(), adminUrl },
+      },
+      postmark,
+    ).catch((e) => console.error('[second-opinion] admin notification email failed:', e));
     await sendTransactional(
       { to: parsed.data.email, template: 'second-opinion-received', model: parsed.data },
-      { serverToken: env.POSTMARK_SERVER_TOKEN, from: env.POSTMARK_FROM_EMAIL },
-    ).catch(() => {});
+      postmark,
+    ).catch((e) => console.error('[second-opinion] client confirmation email failed:', e));
+  } else {
+    console.warn('[second-opinion] Postmark not configured — no email sent');
   }
   return json({ ok: true });
 };
+/** Cryptographically-random 0–999999 for the human-friendly reference suffix. */
+function referenceSequence(): number {
+  const buf = new Uint32Array(1);
+  crypto.getRandomValues(buf);
+  return (buf[0] ?? 0) % 1_000_000;
+}
 function fieldErrs(issues: { path: (string | number)[]; message: string }[]) {
   const o: Record<string, string> = {};
   for (const i of issues) o[i.path.join('.')] = i.message;
