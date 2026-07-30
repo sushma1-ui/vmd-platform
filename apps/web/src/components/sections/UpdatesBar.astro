@@ -1,0 +1,159 @@
+---
+/**
+ * Important Updates bar — a slim strip above the header that surfaces the latest
+ * migration update (the most recent published article) with a link to read it and a
+ * subscribe CTA. Migration rules change constantly, so a dated "latest update" signals
+ * currency and pulls visitors into the blog. Fully CMS-driven: it shows the newest
+ * article automatically and hides itself if there are none.
+ */
+import { cms } from '../../lib/cms.ts';
+
+let latest: {
+  title?: string;
+  slug?: string;
+  category?: string;
+  publishedAt?: string;
+  date?: string;
+} | null = null;
+try {
+  const arts = (await cms.articles()) as unknown as (typeof latest)[];
+  latest =
+    [...(arts ?? [])]
+      .filter((a) => a?.title && a?.slug)
+      .sort(
+        (a, b) =>
+          new Date(b?.publishedAt ?? b?.date ?? 0).getTime() -
+          new Date(a?.publishedAt ?? a?.date ?? 0).getTime(),
+      )[0] ?? null;
+} catch {
+  /* no CMS at build — the bar simply doesn't render */
+}
+
+const fmtDate = (iso?: string) => {
+  if (!iso) return '';
+  const d = new Date(iso);
+  return isNaN(d.getTime())
+    ? ''
+    : d.toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
+};
+const date = latest ? fmtDate(latest.publishedAt ?? latest.date) : '';
+---
+
+{
+  latest && (
+    <aside class="upd" aria-label="Important updates">
+      <div class="upd__in">
+        <span class="upd__label">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.9"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
+            <path d="M13.7 21a2 2 0 0 1-3.4 0" />
+          </svg>
+          Important Updates
+        </span>
+        <a class="upd__item" href={`/blog/${latest.slug}/`}>
+          {date && <span class="upd__date">{date}</span>}
+          <span class="upd__title">{latest.title}</span>
+        </a>
+        <a class="upd__sub" href="/blog/">
+          Subscribe →
+        </a>
+      </div>
+    </aside>
+  )
+}
+
+<style>
+  .upd {
+    background: var(--color-ground-warm);
+    border-block-end: 1px solid color-mix(in srgb, var(--color-action) 10%, transparent);
+    font-size: var(--type-body-sm);
+  }
+  .upd__in {
+    max-inline-size: var(--container-max);
+    margin-inline: auto;
+    padding: var(--space-2) var(--space-4);
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .upd__label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex: none;
+    font-weight: 700;
+    color: var(--color-action);
+    white-space: nowrap;
+  }
+  .upd__label svg {
+    color: var(--color-emphasis-text);
+  }
+  .upd__item {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    min-inline-size: 0;
+    flex: 1;
+    color: var(--color-text);
+    text-decoration: none;
+    border-inline-start: 1px solid color-mix(in srgb, var(--color-action) 14%, transparent);
+    padding-inline-start: var(--space-3);
+  }
+  .upd__item:hover .upd__title {
+    text-decoration: underline;
+    text-decoration-color: var(--color-emphasis);
+  }
+  .upd__date {
+    flex: none;
+    color: var(--color-text-muted);
+    white-space: nowrap;
+  }
+  .upd__title {
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 500;
+  }
+  .upd__sub {
+    flex: none;
+    font-weight: 600;
+    color: var(--color-text-inverse);
+    background: var(--color-action);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-pill, 999px);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .upd__sub:hover {
+    background: color-mix(in srgb, var(--color-action) 88%, black);
+  }
+  .upd__sub:focus-visible,
+  .upd__item:focus-visible {
+    outline: 2px solid var(--color-interactive);
+    outline-offset: 2px;
+  }
+  /* On small screens, drop the label + date and let the headline truncate. */
+  @media (max-width: 640px) {
+    .upd__label {
+      display: none;
+    }
+    .upd__item {
+      border-inline-start: 0;
+      padding-inline-start: 0;
+    }
+    .upd__date {
+      display: none;
+    }
+  }
+</style>
