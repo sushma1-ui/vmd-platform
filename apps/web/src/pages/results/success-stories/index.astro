@@ -5,6 +5,10 @@ import { Disclaimer } from '@vmd/ui';
 import { cms, getSettings } from '../../../lib/cms.ts';
 import type { PinnedReview, Testimonial, SiteSettings } from '@vmd/schema';
 
+// Server-rendered so staff-added client stories (and their dates) appear live from
+// the CMS immediately, without waiting for a site rebuild.
+export const prerender = false;
+
 /**
  * Client Stories — ONE place for every kind of real, consented client story:
  * verified Google reviews, written testimonials, and individual visa/skills
