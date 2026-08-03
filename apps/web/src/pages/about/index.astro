@@ -76,7 +76,7 @@ const photoUrl = (m: TeamMember): string | null =>
     )
   }
 
-  <section class="team" aria-label={teamHeading}>
+  <section class="team" id="team" aria-label={teamHeading} style="scroll-margin-top: 6rem">
     <h2 class="team__h">{teamHeading}</h2>
     {teamIntro && <p class="team__intro">{teamIntro}</p>}
     <ul class="team__list" role="list">
