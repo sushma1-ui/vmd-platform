@@ -4,6 +4,29 @@ import { breadcrumbSchema } from '@vmd/seo';
 import { Disclaimer } from '@vmd/ui';
 import { cms, getSettings } from '../../../lib/cms.ts';
 import type { PinnedReview, Testimonial, SiteSettings } from '@vmd/schema';
+import GrantCertificate from '../../../components/sections/GrantCertificate.astro';
+
+// Featured "Visa granted" certificates — native reproductions of the shared
+// success graphics (see GrantCertificate.astro). Real, consented client grants
+// with the client's name removed. Kept in-page for now because they are hand-
+// curated showpieces; they can move to the CMS once collection writes are
+// restored. Each object maps 1:1 to one certificate.
+const grantCerts = [
+  {
+    visaLine: 'Temporary Graduate visa (subclass 485) — 2nd PHEW (Regional)',
+    lodged: '21 APR 2026',
+    decision: '21 JUL 2026',
+    grantDate: '21 July 2026',
+    stayUntil: '24 July 2028',
+  },
+  {
+    visaLine: 'Temporary Graduate visa (subclass 485) — 2nd PHEW (Regional)',
+    lodged: '21 APR 2026',
+    decision: '23 JUL 2026',
+    grantDate: '23 July 2026',
+    stayUntil: '10 November 2028',
+  },
+];
 
 // Server-rendered so staff-added client stories (and their dates) appear live from
 // the CMS immediately, without waiting for a site rebuild.
@@ -168,6 +191,23 @@ const trail = [
         )
       }
     </header>
+
+    {/* ---- 0 · FEATURED GRANT CERTIFICATES ------------------------------- */}
+    {
+      grantCerts.length > 0 && (
+        <div class="cs__block cs__block--certs">
+          <p class="cs__k">Recent grants</p>
+          <h2 class="cs__h">Celebrating our clients' visa grants</h2>
+          <ul class="cs__certs" role="list">
+            {grantCerts.map((c) => (
+              <li>
+                <GrantCertificate {...c} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      )
+    }
 
     {/* ---- 1 · VISA & SKILLS OUTCOMES (native cards) ---------------------- */}
     {
@@ -381,6 +421,29 @@ const trail = [
 
   .cs__block {
     margin-block-start: var(--space-9);
+  }
+  .cs__block--certs {
+    margin-block-start: var(--space-8);
+  }
+  .cs__certs {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-5);
+    grid-template-columns: 1fr;
+  }
+  .cs__certs > li {
+    display: flex;
+  }
+  .cs__certs > li > :global(.cert) {
+    inline-size: 100%;
+  }
+  @media (min-width: 820px) {
+    .cs__certs {
+      grid-template-columns: 1fr 1fr;
+      align-items: start;
+    }
   }
   .cs__k {
     font-size: var(--type-caption);
