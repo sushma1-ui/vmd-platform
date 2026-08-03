@@ -25,6 +25,12 @@ export interface FeaturedMember extends TeamMember {
   philosophy?: string | null;
   /** "View full profile" target, when the person has a dedicated page. */
   profileHref?: string | null;
+  /**
+   * Other names the same person may appear under in the CMS (e.g. an earlier or
+   * mistyped entry). A CMS member matching an alias is treated as THIS person —
+   * absorbed into their card rather than shown as a separate one.
+   */
+  aliases?: string[];
 }
 
 const li = (arr: string[]) => arr.map((item) => ({ item }));
@@ -51,6 +57,8 @@ export const FEATURED_TEAM: FeaturedMember[] = [
   {
     name: 'Sushma Bartaula',
     position: 'Data & Compliance Officer',
+    // Absorb the earlier CMS entry for the same person (to be renamed in the CMS).
+    aliases: ['Sudeep Bartaula'],
     shortBio:
       'Sushma keeps every client file accurate, secure and complete. She manages the documentation and data behind each application, so nothing is missed and every deadline is tracked — the quiet, careful work that keeps a case moving.',
     philosophy:
@@ -67,27 +75,28 @@ export const FEATURED_TEAM: FeaturedMember[] = [
 
 const norm = (s?: string | null) => (s ?? '').toLowerCase().replace(/\s+/g, ' ').trim();
 
-/** Drop null/undefined/empty-array fields so CMS data never blanks a good default. */
-const clean = <T extends object>(o: T): Partial<T> =>
-  Object.fromEntries(
-    Object.entries(o).filter(([, v]) => v != null && !(Array.isArray(v) && v.length === 0)),
-  ) as Partial<T>;
+/** All names (canonical + aliases) a featured person may appear under in the CMS. */
+const matchNames = (d: FeaturedMember) => [d.name, ...(d.aliases ?? [])].map(norm);
 
 /**
  * Merge CMS team members over the featured defaults:
- *  - the two featured pros are always shown, CMS fields (incl. real photos)
- *    merged over them by matching name;
- *  - any other CMS members append, ordered by displayOrder.
+ *  - the two featured pros are always shown with their curated identity and copy;
+ *    from a matching CMS entry (by name OR alias) we adopt only the professional
+ *    PHOTO — never the CMS name/title/bio, so a stale or mistyped entry can't
+ *    corrupt the card;
+ *  - any genuinely new CMS members append, ordered by displayOrder — so people
+ *    can be added later without touching this file.
  */
 export function resolveTeam(cmsMembers: TeamMember[] = []): FeaturedMember[] {
-  const byName = new Map(cmsMembers.map((m) => [norm(m.name), m]));
   const featured = FEATURED_TEAM.map((d) => {
-    const c = byName.get(norm(d.name));
-    return c ? ({ ...d, ...clean(c) } as FeaturedMember) : d;
+    const names = matchNames(d);
+    const c = cmsMembers.find((m) => names.includes(norm(m.name)));
+    // Adopt only the uploaded photo; keep every other field curated.
+    return c?.photo ? ({ ...d, photo: c.photo } as FeaturedMember) : d;
   });
-  const featuredNames = new Set(FEATURED_TEAM.map((d) => norm(d.name)));
+  const consumed = new Set(FEATURED_TEAM.flatMap(matchNames));
   const extras = cmsMembers
-    .filter((m) => !featuredNames.has(norm(m.name)))
+    .filter((m) => !consumed.has(norm(m.name)))
     .sort((a, b) => (a.displayOrder ?? 999) - (b.displayOrder ?? 999)) as FeaturedMember[];
   return [...featured, ...extras];
 }
