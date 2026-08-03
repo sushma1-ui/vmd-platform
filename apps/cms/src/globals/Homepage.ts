@@ -54,7 +54,7 @@ export const Homepage: GlobalConfig = {
               name: 'lead',
               type: 'textarea',
               defaultValue:
-                'Migration advice in Perth, provided by Registered Migration Agent (RMA) Sunil Uprety. Clear pathways and honest, reliable answers.',
+                'Honest, expert guidance on Australian migration from a Registered Migration Agent — for people already in Australia and around the world.',
               admin: { description: 'The paragraph under the headline.' },
             },
             linkGroup('primaryCta', 'Primary button'),

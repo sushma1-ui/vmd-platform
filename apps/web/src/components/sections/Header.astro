@@ -6,7 +6,7 @@ import ClientPortalButton from './ClientPortalButton.astro';
 import { cms, getCtaLinks } from '../../lib/cms.ts';
 import { buildServiceNav } from '../../lib/serviceNav.ts';
 import type { ServiceDoc } from '../../lib/servicePages.ts';
-const { bookUrl, healthCheckUrl } = await getCtaLinks();
+const { bookUrl } = await getCtaLinks();
 
 // "Our Services" mega-menu is built from the live CMS service pages (nothing hardcoded);
 // if the CMS is unreachable at build the item degrades to a plain link to /services/.
@@ -54,7 +54,7 @@ const register = PRACTICE.regulator.registerSearchUrl;
   <div class="header__inner">
     <a class="brand" href="/">
       <span class="brand__mark" aria-hidden="true">VMD</span>
-      <span class="brand__name">{PRACTICE.legalName}<small>{PRACTICE.descriptor}</small></span>
+      <span class="brand__name">{PRACTICE.legalName}</span>
     </a>
     <nav class="nav" aria-label="Primary">
       {
@@ -118,8 +118,8 @@ const register = PRACTICE.regulator.registerSearchUrl;
                   <a class="mega__foot-all" href={serviceNav.seeAllHref}>
                     See all services →
                   </a>
-                  <a class="mega__foot-hc" href={healthCheckUrl}>
-                    Not sure where you fit? Take the Free Visa Health Check →
+                  <a class="mega__foot-hc" href="/#start">
+                    Not sure where you fit? Start the free assessment →
                   </a>
                 </div>
               </div>
@@ -143,7 +143,6 @@ const register = PRACTICE.regulator.registerSearchUrl;
         >
       </a>
       <Button variant="primary" href={bookUrl}>Book a Consultation</Button>
-      <Button variant="secondary" href={healthCheckUrl}>Free Visa Health Check</Button>
       <ClientPortalButton variant="desktop" />
     </div>
     <button
@@ -197,7 +196,6 @@ const register = PRACTICE.regulator.registerSearchUrl;
     <a href="/search/">Search</a>
     <div class="mnav__cta">
       <Button variant="primary" href={bookUrl}>Book a Consultation</Button>
-      <Button variant="secondary" href={healthCheckUrl}>Free Visa Health Check</Button>
       <ClientPortalButton variant="mobile" />
     </div>
   </div>

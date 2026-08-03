@@ -10,6 +10,7 @@ import BookCta from '../components/cta/BookCta.astro';
 import HealthCheckCta from '../components/cta/HealthCheckCta.astro';
 import GoogleReviews from '../components/sections/GoogleReviews.astro';
 import TrustBar from '../components/sections/TrustBar.astro';
+import HealthCheck from '../components/islands/HealthCheck.island.astro';
 import Icon from '../components/Icon.astro';
 
 // "How we work" icons: examine → route → verified outcome (the clinical brand arc).
@@ -51,52 +52,6 @@ const hp = await getHomepage();
 const shown = (s?: { show?: boolean | null }) => s?.show !== false;
 
 const register = PRACTICE.regulator.registerSearchUrl;
-const situationsFallback = [
-  [
-    "I'm a skilled professional",
-    'Points, nominations and the right subclass — mapped to your occupation.',
-    '/your-situation/skilled-professional/',
-  ],
-  [
-    "I'm a student",
-    'The genuine-student test, working rights and what comes after study.',
-    '/your-situation/student/',
-  ],
-  [
-    "I'm partnered with an Australian Citizen or Permanent Resident",
-    'Onshore or offshore, and the evidence a case officer actually weighs.',
-    '/your-situation/partnered-to-australian/',
-  ],
-  [
-    "I'm an employer",
-    'Whether you can sponsor, your obligations, and the compliance exposure.',
-    '/your-situation/employer/',
-  ],
-  [
-    'My visa was refused',
-    'Deadlines are short. A fixed-fee Second Opinion on whether review is worth it.',
-    '/your-situation/visa-refused/',
-  ],
-  [
-    "I'm on a bridging visa",
-    "What you can and can't do, and what you're actually bridging to.",
-    '/your-situation/bridging-visa/',
-  ],
-];
-// Situation cards come from the CMS when an editor has added them, else the fallback.
-const cmsSituations = (hp?.situations?.items ?? [])
-  .filter((i) => i?.label && i?.href)
-  .map((i) => [i.label as string, i.description ?? '', i.href as string] as const);
-const situations = cmsSituations.length ? cmsSituations : situationsFallback;
-// Wayfinding icons for the situation cards (SVG path `d`, 24x24, single path w/ subpaths).
-const SITUATION_ICONS = [
-  'M3 8h18v11H3z M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2', // briefcase — skilled
-  'M12 5 2 9l10 4 10-4-10-4z M6 11.5V16c0 1 2.7 2.5 6 2.5s6-1.5 6-2.5v-4.5', // cap — student
-  'M12 20s-6.5-4.4-6.5-9A3.5 3.5 0 0 1 12 8a3.5 3.5 0 0 1 6.5 3c0 4.6-6.5 9-6.5 9z', // heart — partner
-  'M5 21V4h9v17 M14 21V9h5v12 M3 21h18', // buildings — employer
-  'M12 4 2 20h20z M12 10v4 M12 17h.01', // warning — refused
-  'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z M12 7v5l3 2', // clock — bridging
-];
 
 // Featured Services — pulled from the CMS (service pages flagged "featured"), linking
 // to their canonical URLs. Editors curate via the Featured checkbox.
@@ -124,14 +79,16 @@ try {
 ---
 
 <Base
-  title="Registered Migration Agent in Perth"
-  description={`Honest migration advice in Perth from Registered Migration Agent (RMA) ${PRACTICE.principal.name} (MARN: ${PRACTICE.principal.marn}). Know exactly where you stand before you spend a dollar — with clear pathways and honest, reliable guidance.`}
+  title="Australian Visa & Migration Experts — Registered Migration Agents"
+  description={`Honest, expert guidance on Australian visas from Registered Migration Agent ${PRACTICE.principal.name} (MARN ${PRACTICE.principal.marn}). Start a free assessment — for people already in Australia and around the world.`}
   schemas={[localBusinessSchema(), { '@context': 'https://schema.org', ...personSchema() }]}
 >
-  <!-- 3 · HERO -->
-  <section class="hero">
+  <!-- 3 · HERO — the free assessment leads -->
+  <section class="hero" id="start">
     <div class="hero__copy">
-      <p class="eyebrow">{hp?.hero?.eyebrow || PRACTICE.descriptor}</p>
+      <p class="eyebrow">
+        {hp?.hero?.eyebrow || 'Australian visas · trusted guidance, wherever you are'}
+      </p>
       <h1 class="hero__title">
         {hp?.hero?.title || 'Know exactly where you stand — before you spend a dollar.'}
       </h1>
@@ -139,63 +96,33 @@ try {
       <p class="hero__lead">
         {
           hp?.hero?.lead ||
-            `Migration advice in Perth, provided by Registered Migration Agent (RMA) ${PRACTICE.principal.name}. Clear pathways and honest, reliable answers.`
+            `Honest, expert guidance on Australian migration from a Registered Migration Agent — for people already in Australia and around the world.`
         }
       </p>
-      <div class="hero__cta">
-        <HealthCheckCta
-          variant="primary"
-          label={hp?.hero?.primaryCta?.label || 'Start your Free Visa Health Check'}
-        />
-        <BookCta
-          variant="secondary"
-          label={hp?.hero?.secondaryCta?.label || 'Book a consultation'}
-        />
-      </div>
+      <p class="hero__alt">
+        Prefer to talk it through first?
+        <BookCta variant="secondary" label="Book a consultation" />
+      </p>
     </div>
-    <aside class="hero__cred" aria-label="Registered Migration Agent credentials">
-      <p class="hero__cred-eyebrow">Registered Migration Agent (RMA)</p>
-      <p class="hero__cred-name">{PRACTICE.principal.name}</p>
-      <p class="hero__cred-marn">MARN {PRACTICE.principal.marn}</p>
-      <ul class="hero__cred-points">
-        <li>Bound by the Migration Agents Code of Conduct</li>
-        <li>Fixed fees — quoted before you commit</li>
-        <li>You work directly with the Registered Migration Agent</li>
-      </ul>
-      <a class="hero__cred-verify" href={register} rel="noopener" target="_blank">
-        Verify on the OMARA register →
-      </a>
-    </aside>
+    <div class="hero__form">
+      <div class="hero__form-head">
+        <p class="hero__form-eyebrow">Free · 90 seconds · your first step</p>
+        <h2 class="hero__form-title">Start your free visa assessment</h2>
+        <p class="hero__form-sub">
+          Six quick questions. A Registered Migration Agent reviews your answers and comes back to
+          you — free, and yours to act on when you're ready.
+        </p>
+      </div>
+      <HealthCheck />
+    </div>
   </section>
 
   <!-- 3b · TRUST BAR (verifiable credentials) -->
   <TrustBar />
 
-  <!-- 4 · SITUATION -->
   {
-    shown(hp?.situations) && (
-      <section data-reveal class="section section--bone">
-        <div class="section__inner">
-          <h2 class="section__h">{hp?.situations?.heading || 'Which of these is you?'}</h2>
-          <p class="section__sub">
-            {hp?.situations?.intro ||
-              "People don't think in subclass numbers. Start where you are — we'll translate."}
-          </p>
-          <div class="grid grid--3">
-            {situations.map(([label, line, href], i) => (
-              <Card
-                title={label}
-                href={href}
-                eyebrow="Your situation"
-                icon={SITUATION_ICONS[i % SITUATION_ICONS.length]}
-              >
-                {line}
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-    )
+    /* The "Which of these is you?" cards were removed — the hero assessment now
+      captures the same six situations as its first step, so the section was redundant. */
   }
 
   <!-- 5 · DIAGNOSIS PROMISE (Why Choose Us) -->
@@ -347,16 +274,22 @@ try {
             ) : (
               <>
                 <p>
-                  I'm a Registered Migration Agent in Perth, bound by the Migration Agents Code of
-                  Conduct. When you come to me, you get an honest read on where your case stands —
-                  including when the better answer is to wait or to take a different pathway.
+                  A Registered Migration Agent bound by the Migration Agents Code of Conduct,
+                  helping people with Australian visas from onshore and around the world. When you
+                  come to us, you get an honest read on where your case stands — including the best
+                  time and way to move forward.
                 </p>
                 <p>
                   What you can count on: a straight assessment, careful preparation, and honesty
-                  about whether I'm the right person to help. That's the whole practice.
+                  about whether we're the right people to help. That's the whole practice.
                 </p>
               </>
             )}
+            <ul class="meet__points">
+              <li>Bound by the Migration Agents Code of Conduct</li>
+              <li>Fixed fees, quoted before you commit</li>
+              <li>You work directly with the Registered Migration Agent</li>
+            </ul>
             <p class="meet__marn">
               <a href={register} rel="noopener" target="_blank">
                 {RMA_LINE} — verify on the OMARA register →
@@ -538,74 +471,45 @@ try {
     margin-block: var(--space-3) var(--space-4);
     max-inline-size: 52ch;
   }
-  .hero__cta {
+  .hero__alt {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-3);
+    align-items: center;
+    gap: var(--space-2) var(--space-3);
+    margin-block-start: var(--space-4);
+    font-size: var(--type-body);
+    color: var(--color-text-muted);
+  }
+  /* Hero assessment card — the primary lead-generation experience. */
+  .hero__form {
+    background: var(--color-surface);
+    border: 1px solid color-mix(in srgb, var(--color-action) 12%, transparent);
+    border-radius: var(--radius-card);
+    padding: clamp(var(--space-4), 4vw, var(--space-6));
+    box-shadow: var(--shadow-raised, 0 22px 48px -30px rgba(14, 26, 48, 0.45));
+  }
+  .hero__form-head {
     margin-block-end: var(--space-4);
   }
-  /* Hero credentials card — turns the space into a trust + verification asset. */
-  .hero__cred {
-    margin: 0;
-    background: var(--color-ground-deep);
-    color: var(--color-text-inverse);
-    border-radius: var(--radius-card);
-    padding: var(--space-6);
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-1);
-    box-shadow: 0 10px 30px color-mix(in srgb, var(--color-ground-deep) 22%, transparent);
-  }
-  .hero__cred-eyebrow {
+  .hero__form-eyebrow {
     font-size: var(--type-caption);
-    letter-spacing: 0.08em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: var(--color-emphasis);
-    margin: 0;
-  }
-  .hero__cred-name {
-    font-family: var(--font-display);
-    font-size: var(--type-h2);
-    line-height: 1.1;
-    color: var(--color-text-inverse);
-    margin: 0;
-  }
-  .hero__cred-marn {
-    font-size: var(--type-body-sm);
-    letter-spacing: 0.04em;
-    color: color-mix(in srgb, var(--color-text-inverse) 80%, transparent);
-    margin: 0;
-  }
-  .hero__cred-points {
-    list-style: none;
-    margin: var(--space-4) 0 0;
-    padding: 0;
-    display: grid;
-    gap: var(--space-2);
-  }
-  .hero__cred-points li {
-    position: relative;
-    padding-inline-start: var(--space-4);
-    font-size: var(--type-body-sm);
-    line-height: 1.4;
-    color: color-mix(in srgb, var(--color-text-inverse) 92%, transparent);
-  }
-  .hero__cred-points li::before {
-    content: '✓';
-    position: absolute;
-    inset-inline-start: 0;
-    color: var(--color-emphasis);
-    font-weight: 700;
-  }
-  .hero__cred-verify {
-    margin-block-start: var(--space-4);
-    color: var(--color-emphasis);
+    color: var(--color-emphasis-text);
     font-weight: 600;
-    font-size: var(--type-body-sm);
-    text-decoration: none;
+    margin: 0;
   }
-  .hero__cred-verify:hover {
-    text-decoration: underline;
+  .hero__form-title {
+    font-size: var(--type-h3);
+    margin-block: var(--space-1) var(--space-2);
+    color: var(--color-action);
+  }
+  .hero__form-sub {
+    font-size: var(--type-body-sm);
+    color: var(--color-text-muted);
+    line-height: 1.55;
+    margin: 0;
+    max-inline-size: 44ch;
   }
   .meet__mono {
     font-family: var(--font-display);
@@ -810,6 +714,34 @@ try {
     margin-block-end: var(--space-3);
     line-height: 1.65;
   }
+  .meet__points {
+    list-style: none;
+    margin: var(--space-4) 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-2);
+  }
+  .meet__points li {
+    position: relative;
+    padding-inline-start: var(--space-5);
+    font-size: var(--type-body-sm);
+    line-height: 1.4;
+    color: var(--color-text);
+  }
+  .meet__points li::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block-start: 0.15em;
+    inline-size: 1.1rem;
+    block-size: 1.1rem;
+    border-radius: 50%;
+    background: var(--color-emphasis-text);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z'/%3E%3C/svg%3E")
+      center / 0.8rem no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z'/%3E%3C/svg%3E")
+      center / 0.8rem no-repeat;
+  }
   .meet__marn a {
     color: var(--color-action);
     border-block-end: 1px solid var(--color-emphasis);
@@ -857,7 +789,9 @@ try {
       grid-template-columns: 1fr 1fr;
     }
     .hero {
-      grid-template-columns: 1.25fr 1fr;
+      grid-template-columns: 1fr 1.02fr;
+      align-items: start;
+      gap: var(--space-8);
     }
     .meet {
       grid-template-columns: 1fr 1.4fr;
