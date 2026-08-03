@@ -136,6 +136,7 @@ const cols = cmsCols
     color: color-mix(in srgb, var(--color-text-inverse) 88%, transparent);
     text-decoration: none;
     font-size: var(--type-body-sm);
+    overflow-wrap: anywhere;
   }
   .footer__link:hover {
     color: var(--color-text-inverse);
@@ -150,7 +151,14 @@ const cols = cmsCols
     color: color-mix(in srgb, var(--color-text-inverse) 70%, transparent);
     margin-block-start: var(--space-3);
   }
-  @media (min-width: 768px) {
+  /* Tablet: a roomy 2-column layout. The tight 5-column row only kicks in once
+     there is genuinely room for it, so nothing overflows around 768px. */
+  @media (min-width: 560px) {
+    .footer__inner {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (min-width: 960px) {
     .footer__inner {
       grid-template-columns: 1.4fr repeat(4, 1fr);
     }

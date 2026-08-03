@@ -1,37 +1,32 @@
 ---
 /**
- * GrantCertificate — a native, on-brand reproduction of the "Visa Granted /
- * Congratulations" success graphics, rendered in HTML/CSS/SVG rather than as a
- * raster image. Advantages over an uploaded PNG:
- *   • loads fast, stays crisp at every size, and is fully theme-independent;
- *   • the client's name is a rendered redaction bar — there is no real document
- *     file that could ever leak a name or details;
- *   • prop-driven, so new grants are added by passing data (and can move to the
- *     CMS once collection writes are restored).
+ * GrantCertificate — a compact, on-brand card celebrating a real client visa
+ * grant, rendered in HTML/CSS/SVG rather than as a raster image. It echoes the
+ * shared "Visa Granted / Congratulations" graphic but is sized for a GALLERY:
+ * many grants tile cleanly, load fast, and stay crisp at any size.
  *
- * The embedded notice is a REPRESENTATIVE facsimile of a Home Affairs grant
- * letter — never a scan of a real client's document. Sunil's name and MARN are
+ * Privacy: the client's name is a rendered redaction bar and the grant notice
+ * is a REPRESENTATIVE facsimile — never a scan of a real client's document, so
+ * nothing here can leak a name or personal detail. Sunil's name and MARN are
  * single-sourced from @vmd/config and always shown together.
  *
- * Compliance: this shows a single, consented, real client outcome. The page it
- * sits on carries the standing "every case is decided on its own merits — not a
- * guarantee" disclaimer; this component makes no success-rate claim.
+ * Compliance: shows a single, consented, real outcome. The page carries the
+ * standing "decided on its own merits — not a guarantee" disclaimer; this makes
+ * no success-rate claim.
  */
 import { PRACTICE } from '@vmd/config';
 
 interface Props {
-  /** e.g. "Temporary Graduate visa (subclass 485) — 2nd PHEW (Regional)" */
+  /** e.g. "Temporary Graduate (subclass 485) · 2nd PHEW-Regional" */
   visaLine: string;
-  /** The subclass label used inside the notice body, e.g. "subclass 485". */
+  /** The subclass label used inside the notice, e.g. "subclass 485". */
   subclass?: string;
-  /** The letter's short visa label, e.g. "Temporary Graduate". */
+  /** The short visa label used inside the notice, e.g. "Temporary Graduate". */
   visaShort?: string;
   lodged: string; // "21 APR 2026"
   decision: string; // "21 JUL 2026"
   grantDate: string; // "21 July 2026"
   stayUntil: string; // "24 July 2028"
-  /** Visa conditions as "code — description" strings. */
-  conditions?: string[];
 }
 
 const {
@@ -42,36 +37,30 @@ const {
   decision,
   grantDate,
   stayUntil,
-  conditions = [
-    '8501 — Maintain health insurance',
-    '8610 — Must stay in a designated regional area',
-  ],
 } = Astro.props;
 
-const { principal, address, contact } = PRACTICE;
-const line1 = `${address.street}, ${address.locality} ${address.region} ${address.postcode}`;
+const { principal } = PRACTICE;
 ---
 
 <figure
   class="cert"
   role="img"
-  aria-label={`Visa granted — ${visaLine}. Lodged ${lodged}, decision ${decision}. Congratulations from ${principal.name}, Registered Migration Agent, MARN ${principal.marn}.`}
+  aria-label={`Visa granted — ${visaLine}. Lodged ${lodged}, decision ${decision}. Registered Migration Agent ${principal.name}, MARN ${principal.marn}.`}
 >
-  {/* Brand monogram */}
-  <span class="cert__logo" aria-hidden="true">
-    <b>VMD</b>
-    <i></i>
-  </span>
+  <div class="cert__head">
+    <span class="cert__logo" aria-hidden="true">
+      <b>VMD</b>
+      <i></i>
+    </span>
+    <p class="cert__eyebrow" aria-hidden="true">Visa granted</p>
+    <h3 class="cert__title" aria-hidden="true">Congratulations.</h3>
+    <p class="cert__visa" aria-hidden="true">{visaLine}</p>
+  </div>
 
-  <p class="cert__eyebrow" aria-hidden="true">Visa granted</p>
-  <h3 class="cert__title" aria-hidden="true">Congratulations.</h3>
-  <p class="cert__visa" aria-hidden="true">{visaLine} <span>— approved.</span></p>
-  <span class="cert__rule" aria-hidden="true"></span>
-
-  {/* Representative grant-notice facsimile — no real document, name redacted. */}
+  {/* Compact, representative grant-notice snippet — no real document. */}
   <div class="doc" aria-hidden="true">
     <div class="doc__band">
-      <svg class="doc__crest" viewBox="0 0 32 32" width="26" height="26">
+      <svg class="doc__crest" viewBox="0 0 32 32" width="22" height="22">
         <circle cx="16" cy="16" r="15" fill="#fff" opacity="0.14"></circle>
         <path
           d="M16 5l2.6 6.7L25 12l-5 4.4L21.4 23 16 19.3 10.6 23 12 16.4 7 12l6.4-.3z"
@@ -84,33 +73,21 @@ const line1 = `${address.street}, ${address.locality} ${address.region} ${addres
     </div>
     <div class="doc__body">
       <p class="doc__ln">
-        Dear <span class="doc__redact" style="inline-size:52px"></span>
+        Dear <span class="doc__redact" style="inline-size:48px"></span>
       </p>
       <p class="doc__ln">
-        We have granted you a {visaShort} ({subclass}) visa on
-        <mark>{grantDate}</mark>.
+        We have granted you a {visaShort} ({subclass}) visa on <mark>{grantDate}</mark>.
       </p>
-
       <div class="doc__status">
         <span class="doc__status-l">Application status</span>
         <span class="doc__status-r">Granted</span>
       </div>
-      <p class="doc__sub">{visaShort} ({subclass})</p>
-
-      <p class="doc__h">Visa conditions</p>
-      <ul class="doc__cond">
-        {conditions.map((c) => <li>{c}</li>)}
-      </ul>
-
-      <p class="doc__h">Visa duration and travel</p>
       <dl class="doc__grid">
         <div><dt>Date of grant</dt><dd><mark>{grantDate}</mark></dd></div>
         <div><dt>Stay until</dt><dd><mark>{stayUntil}</mark></dd></div>
-        <div><dt>Must not arrive after</dt><dd>{stayUntil}</dd></div>
-        <div><dt>Travel</dt><dd>Multiple entries</dd></div>
       </dl>
+      <p class="doc__note">Client details removed for privacy</p>
     </div>
-    <p class="doc__note">Client details removed for privacy</p>
   </div>
 
   <p class="cert__meta" aria-hidden="true">
@@ -118,20 +95,15 @@ const line1 = `${address.street}, ${address.locality} ${address.region} ${addres
     <span class="cert__dot">·</span> Decision {decision}
   </p>
 
-  <p class="cert__thanks" aria-hidden="true">Thank you for trusting us with your journey.</p>
-
   <figcaption class="cert__sign">
-    <span class="cert__agent">
-      {principal.name}
-      <span class="cert__dot">·</span> Registered Migration Agent (MARN {principal.marn})
-    </span>
-    <span class="cert__addr">{line1} <span class="cert__dot">·</span> {contact.phoneDisplay}</span>
+    {principal.name}
+    <span class="cert__dot">·</span> Registered Migration Agent (MARN {principal.marn})
   </figcaption>
 </figure>
 
 <style>
-  /* A fixed-brand navy showpiece — deliberately theme-independent so it always
-     matches the shared graphic, in light or dark mode. */
+  /* Fixed-brand navy card — theme-independent so it always matches the shared
+     graphic, in light or dark mode. */
   .cert {
     --navy: #14284d;
     --navy-2: #0f1f3e;
@@ -145,94 +117,87 @@ const line1 = `${address.street}, ${address.locality} ${address.region} ${addres
     flex-direction: column;
     align-items: center;
     text-align: center;
-    padding: clamp(1.75rem, 4vw, 2.75rem) clamp(1.25rem, 4vw, 2.5rem) clamp(1.5rem, 3.5vw, 2.25rem);
+    padding: clamp(1.1rem, 2.5vw, 1.5rem) clamp(1rem, 2.5vw, 1.35rem);
     background: radial-gradient(120% 90% at 50% 0%, var(--navy) 0%, var(--navy-2) 100%);
     border: 1px solid color-mix(in srgb, var(--gold) 26%, transparent);
     border-radius: var(--radius-card, 14px);
-    box-shadow: var(--shadow-raised, 0 18px 50px -24px rgba(0, 0, 0, 0.55));
+    box-shadow: var(--shadow-subtle, 0 8px 24px -12px rgba(0, 0, 0, 0.45));
     color: var(--ink-1);
     overflow: hidden;
   }
 
+  .cert__head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
   .cert__logo {
     display: inline-grid;
     place-items: center;
-    gap: 4px;
-    inline-size: 3.25rem;
-    block-size: 3.25rem;
-    border-radius: 12px;
+    gap: 3px;
+    inline-size: 2.1rem;
+    block-size: 2.1rem;
+    border-radius: 8px;
     background: var(--navy-2);
     border: 1.5px solid color-mix(in srgb, var(--ink-1) 55%, transparent);
-    margin-block-end: 1rem;
+    margin-block-end: 0.55rem;
   }
   .cert__logo b {
     font-family: var(--font-display, Georgia, serif);
-    font-size: 0.95rem;
+    font-size: 0.62rem;
     font-weight: 700;
     letter-spacing: 0.04em;
     color: var(--ink-1);
     line-height: 1;
   }
   .cert__logo i {
-    inline-size: 1.1rem;
-    block-size: 3px;
+    inline-size: 0.75rem;
+    block-size: 2px;
     border-radius: 2px;
     background: var(--gold);
   }
-
   .cert__eyebrow {
     margin: 0;
-    font-size: 0.78rem;
+    font-size: 0.62rem;
     font-weight: 700;
-    letter-spacing: 0.32em;
+    letter-spacing: 0.24em;
     text-transform: uppercase;
     color: var(--gold);
   }
   .cert__title {
-    margin: 0.4rem 0 0;
+    margin: 0.2rem 0 0;
     font-family: var(--font-display, Georgia, serif);
     font-weight: 600;
-    font-size: clamp(2.1rem, 6vw, 3rem);
+    font-size: clamp(1.35rem, 3vw, 1.65rem);
     line-height: 1.05;
     letter-spacing: -0.01em;
     color: var(--ink-1);
   }
   .cert__visa {
-    margin: 0.6rem 0 0;
-    font-size: clamp(0.95rem, 2.4vw, 1.15rem);
+    margin: 0.3rem 0 0.9rem;
+    font-size: 0.8rem;
+    line-height: 1.3;
     color: var(--ink-2);
-    max-inline-size: 34ch;
-  }
-  .cert__visa span {
-    color: var(--ink-3);
-  }
-  .cert__rule {
-    inline-size: 3.25rem;
-    block-size: 3px;
-    border-radius: 2px;
-    background: var(--gold);
-    margin-block: 1.1rem 1.4rem;
+    max-inline-size: 28ch;
   }
 
-  /* ---- Grant-notice facsimile -------------------------------------------- */
+  /* ---- Compact grant-notice snippet -------------------------------------- */
   .doc {
-    position: relative;
-    inline-size: min(100%, 22rem);
+    inline-size: min(100%, 15rem);
     background: #fff;
     color: #2b2f36;
-    border-radius: 10px;
+    border-radius: 8px;
     overflow: hidden;
     text-align: start;
     box-shadow:
-      0 24px 44px -18px rgba(0, 0, 0, 0.55),
-      0 4px 10px rgba(0, 0, 0, 0.25);
-    transform: rotate(-1.6deg);
+      0 14px 30px -14px rgba(0, 0, 0, 0.5),
+      0 3px 8px rgba(0, 0, 0, 0.22);
   }
   .doc__band {
     display: flex;
     align-items: center;
-    gap: 0.55rem;
-    padding: 0.7rem 0.85rem;
+    gap: 0.45rem;
+    padding: 0.45rem 0.6rem;
     background: linear-gradient(180deg, #1f5a97 0%, #17416e 100%);
     color: #fff;
   }
@@ -245,22 +210,22 @@ const line1 = `${address.street}, ${address.locality} ${address.region} ${addres
     line-height: 1.15;
   }
   .doc__gov b {
-    font-size: 0.72rem;
+    font-size: 0.64rem;
     font-weight: 700;
   }
   .doc__gov i {
-    font-size: 0.64rem;
+    font-size: 0.56rem;
     font-style: normal;
     opacity: 0.9;
   }
   .doc__body {
-    padding: 0.85rem 0.95rem 0.6rem;
-    font-size: 0.62rem;
-    line-height: 1.5;
+    padding: 0.55rem 0.65rem 0.5rem;
+    font-size: 0.56rem;
+    line-height: 1.4;
     color: #3a3f47;
   }
   .doc__ln {
-    margin: 0 0 0.5rem;
+    margin: 0 0 0.3rem;
     display: flex;
     align-items: center;
     gap: 0.3rem;
@@ -268,7 +233,7 @@ const line1 = `${address.street}, ${address.locality} ${address.region} ${addres
   }
   .doc__redact {
     display: inline-block;
-    block-size: 0.62rem;
+    block-size: 0.6rem;
     border-radius: 2px;
     background: #b9bec6;
   }
@@ -284,15 +249,15 @@ const line1 = `${address.street}, ${address.locality} ${address.region} ${addres
     align-items: center;
     justify-content: space-between;
     gap: 0.5rem;
-    margin: 0.55rem 0 0.15rem;
-    padding: 0.3rem 0.45rem;
+    margin: 0.35rem 0 0.4rem;
+    padding: 0.25rem 0.4rem;
     border: 1.5px solid #111;
     border-radius: 3px;
   }
   .doc__status-l {
     font-weight: 700;
     color: #111;
-    font-size: 0.6rem;
+    font-size: 0.56rem;
   }
   .doc__status-r {
     font-weight: 800;
@@ -300,57 +265,35 @@ const line1 = `${address.street}, ${address.locality} ${address.region} ${addres
     background: #fbe6b0;
     padding: 0 4px;
     border-radius: 2px;
-    font-size: 0.62rem;
-  }
-  .doc__sub {
-    margin: 0 0 0.5rem;
-    font-size: 0.58rem;
-    color: #565c66;
-  }
-  .doc__h {
-    margin: 0.55rem 0 0.25rem;
-    font-weight: 700;
-    color: #22262c;
-    font-size: 0.62rem;
-  }
-  .doc__cond {
-    margin: 0 0 0.3rem;
-    padding-inline-start: 0.9rem;
-    display: grid;
-    gap: 2px;
-  }
-  .doc__cond li {
     font-size: 0.58rem;
   }
   .doc__grid {
-    margin: 0.15rem 0 0;
+    margin: 0;
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.2rem 0.6rem;
+    gap: 1px;
   }
   .doc__grid div {
     display: flex;
     justify-content: space-between;
     gap: 0.4rem;
     border-block-end: 1px dotted #d7dbe1;
-    padding-block: 1px;
+    padding-block: 2px;
   }
   .doc__grid dt {
     color: #6b7280;
-    font-size: 0.56rem;
+    font-size: 0.54rem;
   }
   .doc__grid dd {
     margin: 0;
-    font-size: 0.56rem;
+    font-size: 0.54rem;
     font-weight: 600;
     color: #2b2f36;
     text-align: end;
   }
   .doc__note {
-    margin: 0;
-    padding: 0.35rem 0.6rem 0.5rem;
+    margin: 0.4rem 0 0;
     text-align: center;
-    font-size: 0.52rem;
+    font-size: 0.48rem;
     letter-spacing: 0.04em;
     text-transform: uppercase;
     color: #9aa0aa;
@@ -358,46 +301,22 @@ const line1 = `${address.street}, ${address.locality} ${address.region} ${addres
 
   /* ---- Footer lines ------------------------------------------------------ */
   .cert__meta {
-    margin: 1.5rem 0 0;
-    font-size: 0.82rem;
+    margin: 0.9rem 0 0;
+    font-size: 0.7rem;
     letter-spacing: 0.02em;
     color: var(--ink-3);
     font-variant-numeric: tabular-nums;
   }
-  .cert__thanks {
-    margin: 1.1rem 0 0;
-    font-family: var(--font-display, Georgia, serif);
-    font-style: italic;
-    font-size: clamp(1.05rem, 2.8vw, 1.4rem);
-    color: var(--ink-1);
-  }
   .cert__sign {
-    margin: 1.1rem 0 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    font-size: 0.8rem;
-    color: var(--ink-2);
-  }
-  .cert__agent {
+    margin: 0.55rem 0 0;
+    font-size: 0.68rem;
     font-weight: 600;
+    line-height: 1.35;
     color: var(--ink-2);
-  }
-  .cert__addr {
-    color: var(--ink-3);
-    font-size: 0.76rem;
+    max-inline-size: 30ch;
   }
   .cert__dot {
     color: var(--gold);
     padding-inline: 0.15rem;
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .doc {
-      transition: transform 220ms ease;
-    }
-    .cert:hover .doc {
-      transform: rotate(0deg);
-    }
   }
 </style>

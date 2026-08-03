@@ -13,14 +13,14 @@ import GrantCertificate from '../../../components/sections/GrantCertificate.astr
 // restored. Each object maps 1:1 to one certificate.
 const grantCerts = [
   {
-    visaLine: 'Temporary Graduate visa (subclass 485) — 2nd PHEW (Regional)',
+    visaLine: 'Temporary Graduate (subclass 485) · 2nd PHEW-Regional',
     lodged: '21 APR 2026',
     decision: '21 JUL 2026',
     grantDate: '21 July 2026',
     stayUntil: '24 July 2028',
   },
   {
-    visaLine: 'Temporary Graduate visa (subclass 485) — 2nd PHEW (Regional)',
+    visaLine: 'Temporary Graduate (subclass 485) · 2nd PHEW-Regional',
     lodged: '21 APR 2026',
     decision: '23 JUL 2026',
     grantDate: '23 July 2026',
@@ -430,20 +430,18 @@ const trail = [
     margin: 0;
     padding: 0;
     display: grid;
-    gap: var(--space-5);
-    grid-template-columns: 1fr;
+    gap: var(--space-4);
+    align-items: start;
+    /* Dense auto-fill: cards keep a compact ~19rem min and pack as many per row
+       as fit — 1 on mobile, 2 on tablet, 3–4 on wide screens — so the grid
+       scales cleanly as more grants are added. */
+    grid-template-columns: repeat(auto-fill, minmax(min(19rem, 100%), 1fr));
   }
   .cs__certs > li {
     display: flex;
   }
   .cs__certs > li > :global(.cert) {
     inline-size: 100%;
-  }
-  @media (min-width: 820px) {
-    .cs__certs {
-      grid-template-columns: 1fr 1fr;
-      align-items: start;
-    }
   }
   .cs__k {
     font-size: var(--type-caption);
