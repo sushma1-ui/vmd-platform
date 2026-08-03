@@ -98,6 +98,14 @@ try {
             `Honest, expert guidance from a Registered Migration Agent — clear answers and a plan you can trust, entirely at your pace.`
         }
       </p>
+      <ul class="hero__trust" aria-label="Why clients trust us">
+        <li>
+          <span class="hero__trust-stars" aria-hidden="true">★★★★★</span>
+          <span>Rated 5.0 on Google</span>
+        </li>
+        <li>Registered Migration Agent</li>
+        <li>Clients worldwide</li>
+      </ul>
       <p class="hero__alt">
         Prefer to talk it through first?
         <BookCta variant="secondary" label="Book a consultation" />
@@ -105,11 +113,11 @@ try {
     </div>
     <div class="hero__form">
       <div class="hero__form-head">
-        <p class="hero__form-eyebrow">Free · 90 seconds · your first step</p>
-        <h2 class="hero__form-title">Start your free visa assessment</h2>
+        <p class="hero__form-eyebrow">Free · takes 90 seconds</p>
+        <h2 class="hero__form-title">Answer six quick questions</h2>
         <p class="hero__form-sub">
-          Six quick questions. A Registered Migration Agent reviews your answers and comes back to
-          you — free, and yours to act on when you're ready.
+          A Registered Migration Agent reviews your answers and comes back with your clear next
+          steps — free, and yours to act on when you're ready.
         </p>
       </div>
       <HealthCheck />
@@ -458,16 +466,36 @@ try {
     align-items: center;
   }
   .hero__title {
-    font-size: clamp(2.05rem, 6vw, var(--type-display-1));
-    line-height: 1.08;
+    font-size: clamp(2rem, 4.4vw, 2.7rem);
+    line-height: 1.12;
     letter-spacing: -0.015em;
     text-wrap: balance;
   }
   .hero__lead {
     font-size: var(--type-body-lg);
     line-height: 1.5;
-    margin-block: var(--space-3) var(--space-4);
-    max-inline-size: 52ch;
+    margin-block: var(--space-3) 0;
+    max-inline-size: 48ch;
+  }
+  .hero__trust {
+    list-style: none;
+    margin: var(--space-4) 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-4);
+    font-size: var(--type-body-sm);
+    color: var(--color-text-muted);
+  }
+  .hero__trust li {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .hero__trust-stars {
+    color: var(--color-emphasis-text);
+    letter-spacing: 0.04em;
   }
   .hero__alt {
     display: flex;
@@ -796,12 +824,9 @@ try {
       grid-template-columns: 1fr 1fr;
     }
     .hero {
-      grid-template-columns: 1fr 1.02fr;
+      grid-template-columns: 1.1fr 0.9fr;
       align-items: start;
       gap: var(--space-8);
-    }
-    .hero__title {
-      max-inline-size: 15ch;
     }
     .meet {
       grid-template-columns: 1fr 1.4fr;
