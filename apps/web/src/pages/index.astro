@@ -2,12 +2,12 @@
 // build-bust: team members collection live
 import Base from '../layouts/Base.astro';
 import { PRACTICE, RMA_LINE } from '@vmd/config';
-import { Button, Card, Rule, Disclaimer } from '@vmd/ui';
+import { Button, Card, Rule } from '@vmd/ui';
 import { localBusinessSchema, personSchema } from '@vmd/seo';
 import { cms, getSettings, getHomepage } from '../lib/cms.ts';
 import { servicePageHref } from '../lib/servicePages.ts';
 import BookCta from '../components/cta/BookCta.astro';
-import GoogleReviews from '../components/sections/GoogleReviews.astro';
+import TrustGateway from '../components/sections/TrustGateway.astro';
 import TrustBar from '../components/sections/TrustBar.astro';
 import HealthCheck from '../components/islands/HealthCheck.island.astro';
 import Icon from '../components/Icon.astro';
@@ -314,31 +314,15 @@ try {
     )
   }
 
-  <!-- 10 · CLIENT STORIES (reviews + testimonials + outcomes, one place) -->
+  <!-- 10 · TRUST & SUCCESS (gateway cards → dedicated Client Stories hub) -->
   {
     shown(hp?.googleReviews) && (
-      <section data-reveal class="section section--bone">
-        <div class="section__inner">
-          <GoogleReviews
-            profileUrl={settings?.googleReviews?.profileUrl}
-            pinned={pinnedReviews}
-            rating={settings?.googleReviews?.rating}
-            count={settings?.googleReviews?.count}
-            heading={hp?.googleReviews?.heading ?? 'Client stories'}
-            intro={
-              hp?.googleReviews?.intro ??
-              'Real clients, real stories — verified Google reviews, testimonials and visa outcomes, all in one place.'
-            }
-            limit={hp?.googleReviews?.count ?? 3}
-          />
-          <p class="section__more">
-            <a href="/results/success-stories/">
-              See all client stories — reviews, testimonials &amp; visa outcomes →
-            </a>
-          </p>
-          <Disclaimer variant="outcomes" />
-        </div>
-      </section>
+      <TrustGateway
+        rating={settings?.googleReviews?.rating}
+        count={settings?.googleReviews?.count}
+        review={pinnedReviews?.[0] ?? null}
+        href="/results/success-stories/"
+      />
     )
   }
 
