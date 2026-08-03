@@ -86,16 +86,16 @@ try {
   <section class="hero" id="start">
     <div class="hero__copy">
       <p class="eyebrow">
-        {hp?.hero?.eyebrow || 'Australian visas · trusted guidance, wherever you are'}
+        {hp?.hero?.eyebrow || 'Assisting clients worldwide with Australian migration'}
       </p>
       <h1 class="hero__title">
-        {hp?.hero?.title || 'Know exactly where you stand — before you spend a dollar.'}
+        {hp?.hero?.title || 'Find the Right Australian Visa Pathway — Before You Spend a Dollar'}
       </h1>
       <Rule width="short" />
       <p class="hero__lead">
         {
           hp?.hero?.lead ||
-            `Honest, expert guidance on Australian migration from a Registered Migration Agent — for people already in Australia and around the world.`
+            `Honest, expert guidance from a Registered Migration Agent — clear answers and a plan you can trust, entirely at your pace.`
         }
       </p>
       <p class="hero__alt">
@@ -458,8 +458,10 @@ try {
     align-items: center;
   }
   .hero__title {
-    font-size: var(--type-display-1);
-    line-height: var(--leading-display-1);
+    font-size: clamp(2.05rem, 6vw, var(--type-display-1));
+    line-height: 1.08;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
   }
   .hero__lead {
     font-size: var(--type-body-lg);
@@ -797,6 +799,9 @@ try {
       grid-template-columns: 1fr 1.02fr;
       align-items: start;
       gap: var(--space-8);
+    }
+    .hero__title {
+      max-inline-size: 15ch;
     }
     .meet {
       grid-template-columns: 1fr 1.4fr;

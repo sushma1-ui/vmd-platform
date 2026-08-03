@@ -133,15 +133,6 @@ const register = PRACTICE.regulator.registerSearchUrl;
       }
     </nav>
     <div class="header__cta">
-      <a class="header__search" href="/search/" aria-label="Search the site">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"
-          ><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.75"></circle><path
-            d="m20 20-3.2-3.2"
-            stroke="currentColor"
-            stroke-width="1.75"
-            stroke-linecap="round"></path></svg
-        >
-      </a>
       <Button variant="primary" href={bookUrl}>Book a Consultation</Button>
       <ClientPortalButton variant="desktop" />
     </div>
@@ -193,7 +184,6 @@ const register = PRACTICE.regulator.registerSearchUrl;
         ),
       )
     }
-    <a href="/search/">Search</a>
     <div class="mnav__cta">
       <Button variant="primary" href={bookUrl}>Book a Consultation</Button>
       <ClientPortalButton variant="mobile" />
@@ -473,24 +463,6 @@ const register = PRACTICE.regulator.registerSearchUrl;
     display: none;
     gap: var(--space-2);
     align-items: center;
-  }
-  .header__search {
-    display: inline-grid;
-    place-items: center;
-    inline-size: 2.5rem;
-    block-size: 2.5rem;
-    border-radius: var(--radius-control);
-    color: var(--color-action);
-    border: 1px solid color-mix(in srgb, var(--color-action) 20%, transparent);
-    text-decoration: none;
-    flex: 0 0 auto;
-  }
-  .header__search:hover {
-    background: color-mix(in srgb, var(--color-action) 8%, transparent);
-  }
-  .header__search:focus-visible {
-    outline: 3px solid var(--color-action);
-    outline-offset: 2px;
   }
   .burger {
     display: inline-grid;

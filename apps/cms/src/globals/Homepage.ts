@@ -42,19 +42,19 @@ export const Homepage: GlobalConfig = {
               type: 'text',
               admin: {
                 placeholder:
-                  'Registered Migration Agent, Perth (leave blank to use the site default)',
+                  'Assisting clients worldwide with Australian migration (leave blank for the site default)',
               },
             },
             {
               name: 'title',
               type: 'text',
-              defaultValue: 'Know exactly where you stand — before you spend a dollar.',
+              defaultValue: 'Find the Right Australian Visa Pathway — Before You Spend a Dollar',
             },
             {
               name: 'lead',
               type: 'textarea',
               defaultValue:
-                'Honest, expert guidance on Australian migration from a Registered Migration Agent — for people already in Australia and around the world.',
+                'Honest, expert guidance from a Registered Migration Agent — clear answers and a plan you can trust, entirely at your pace.',
               admin: { description: 'The paragraph under the headline.' },
             },
             linkGroup('primaryCta', 'Primary button'),
