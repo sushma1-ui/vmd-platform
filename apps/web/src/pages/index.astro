@@ -7,7 +7,6 @@ import { localBusinessSchema, personSchema } from '@vmd/seo';
 import { cms, getSettings, getHomepage } from '../lib/cms.ts';
 import { servicePageHref } from '../lib/servicePages.ts';
 import BookCta from '../components/cta/BookCta.astro';
-import HealthCheckCta from '../components/cta/HealthCheckCta.astro';
 import GoogleReviews from '../components/sections/GoogleReviews.astro';
 import TrustBar from '../components/sections/TrustBar.astro';
 import HealthCheck from '../components/islands/HealthCheck.island.astro';
@@ -133,7 +132,7 @@ try {
           <h2 class="section__h">{hp?.whyChoose?.heading || 'The diagnosis promise'}</h2>
           <p class="section__sub">
             {hp?.whyChoose?.intro ||
-              'The only differentiation that survives scrutiny is the kind that visibly costs us something.'}
+              'The commitments that set us apart are the ones we are glad to be held to.'}
           </p>
           <div class="grid grid--3 promises">
             {hp?.whyChoose?.promises?.length ? (
@@ -399,17 +398,14 @@ try {
     shown(hp?.finalCta) && (
       <section data-reveal class="band band--close">
         <div class="band__inner band__inner--center">
-          <h2 class="band__h">{hp?.finalCta?.heading || 'Not sure where you stand?'}</h2>
+          <h2 class="band__h">{hp?.finalCta?.heading || 'Ready to get clear on your options?'}</h2>
           <p class="band__lead band__lead--center">
             {hp?.finalCta?.lead ||
-              "Ninety seconds, six questions, a real answer — including if you're not yet eligible."}
+              'Book a consultation for a straight, honest read on your case — with a Registered Migration Agent, and a fixed fee quoted before you commit.'}
           </p>
-          <HealthCheckCta
-            variant="primary"
-            label={hp?.finalCta?.buttonLabel || 'Start your Free Visa Health Check'}
-          />
+          <BookCta variant="primary" label={hp?.finalCta?.buttonLabel || 'Book a consultation'} />
           <p class="band__promise">
-            {hp?.finalCta?.promise || "If we don't think we can help you, we'll say so."}
+            <a href="/#start">Prefer to start free? Take the visa assessment →</a>
           </p>
         </div>
       </section>
@@ -689,7 +685,16 @@ try {
   }
   .band--close .band__promise {
     color: var(--color-emphasis);
-    font-size: var(--type-body-lg);
+    font-size: var(--type-body);
+  }
+  .band--close .band__promise a {
+    color: inherit;
+    text-decoration: none;
+    border-block-end: 1px solid color-mix(in srgb, var(--color-emphasis) 50%, transparent);
+    padding-block-end: 2px;
+  }
+  .band--close .band__promise a:hover {
+    border-block-end-color: var(--color-emphasis);
   }
 
   .meet,

@@ -64,9 +64,10 @@ export const Homepage: GlobalConfig = {
 
         // 2 · WHICH OF THESE IS YOU (situations) ------------------------------
         {
-          label: 'Your Situation',
+          label: 'Your Situation (inactive)',
           name: 'situations',
-          description: 'The "Which of these is you?" cards that help visitors self-identify.',
+          description:
+            'NOT CURRENTLY SHOWN on the homepage. The hero assessment now captures these same situations as its first step, so this section was retired. Kept here only to preserve saved content.',
           fields: [
             showToggle(),
             ...headingIntro({
@@ -279,23 +280,26 @@ export const Homepage: GlobalConfig = {
             {
               name: 'heading',
               type: 'text',
-              defaultValue: 'Not sure where you stand?',
+              defaultValue: 'Ready to get clear on your options?',
             },
             {
               name: 'lead',
               type: 'textarea',
               defaultValue:
-                'Ninety seconds, six questions, a real answer — including if you’re not yet eligible.',
+                'Book a consultation for a straight, honest read on your case — with a Registered Migration Agent, and a fixed fee quoted before you commit.',
             },
             {
               name: 'buttonLabel',
               type: 'text',
-              defaultValue: 'Start your Free Visa Health Check',
+              defaultValue: 'Book a consultation',
             },
             {
               name: 'promise',
               type: 'text',
-              defaultValue: "If we don't think we can help you, we'll say so.",
+              admin: {
+                description:
+                  'Not shown on the homepage anymore (the closing band links to the free assessment instead).',
+              },
             },
           ],
         },
