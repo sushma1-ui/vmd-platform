@@ -1,0 +1,296 @@
+---
+/**
+ * TeamCard — a premium "leadership" card for one professional. Large portrait,
+ * clear hierarchy, generous whitespace. Photo-ready: renders an elegant monogram
+ * placeholder until a real portrait is uploaded to the CMS, then swaps to the
+ * photo automatically. Subtle CSS-only microinteractions (gentle image zoom +
+ * card lift, ≤200ms), reduced-motion respected.
+ *
+ * Compliance: the professional title and credential (e.g. MARN) are rendered on
+ * one line, together — never separated.
+ */
+import type { FeaturedMember } from '../../lib/team.ts';
+import { roleOf, bioOf, listItems, photoUrlOf, initialsOf } from '../../lib/team.ts';
+
+interface Props {
+  member: FeaturedMember;
+  /** First cards sit near the top of the page — load their portraits eagerly. */
+  index?: number;
+}
+const { member: m, index = 0 } = Astro.props;
+
+const title = roleOf(m);
+const bio = bioOf(m);
+const expertise = listItems(m.expertise);
+const languages = listItems(m.languages);
+const experience = listItems(m.experience);
+const photo = photoUrlOf(m);
+const eager = index < 2;
+---
+
+<article class="lc" data-reveal>
+  <figure class="lc__portrait">
+    {
+      photo ? (
+        <img
+          class="lc__img"
+          src={photo}
+          alt={`${m.name} — ${title}`}
+          loading={eager ? 'eager' : 'lazy'}
+          decoding="async"
+          width="640"
+          height="800"
+        />
+      ) : (
+        <span class="lc__mono" aria-hidden="true">
+          {initialsOf(m.name)}
+        </span>
+      )
+    }
+    {m.badge && <span class="lc__badge">{m.badge}</span>}
+  </figure>
+
+  <div class="lc__body">
+    <h2 class="lc__name">{m.name}</h2>
+    {/* Title + credential on ONE line — never separated. */}
+    <p class="lc__role">
+      {title}{m.credential && <span class="lc__cred"> • {m.credential}</span>}
+    </p>
+
+    {bio && <p class="lc__bio">{bio}</p>}
+    {m.philosophy && <p class="lc__phil">“{m.philosophy}”</p>}
+
+    {
+      expertise.length > 0 && (
+        <div class="lc__section">
+          <p class="lc__k">Areas of focus</p>
+          <ul class="lc__chips" role="list">
+            {expertise.map((e) => (
+              <li>{e}</li>
+            ))}
+          </ul>
+        </div>
+      )
+    }
+
+    {
+      (languages.length > 0 || experience.length > 0) && (
+        <dl class="lc__facts">
+          {experience.length > 0 && (
+            <div>
+              <dt>Experience</dt>
+              <dd>{experience.join(' · ')}</dd>
+            </div>
+          )}
+          {languages.length > 0 && (
+            <div>
+              <dt>Languages</dt>
+              <dd>{languages.join(' · ')}</dd>
+            </div>
+          )}
+        </dl>
+      )
+    }
+
+    {
+      m.profileHref && (
+        <a class="lc__cta" href={m.profileHref}>
+          View full profile <span aria-hidden="true">→</span>
+        </a>
+      )
+    }
+  </div>
+</article>
+
+<style>
+  .lc {
+    display: flex;
+    flex-direction: column;
+    block-size: 100%;
+    background: var(--color-surface, #ffffff);
+    border: 1px solid color-mix(in srgb, var(--color-action) 12%, transparent);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    box-shadow: var(--shadow-subtle, 0 8px 24px -14px rgba(16, 30, 60, 0.28));
+    transition:
+      transform var(--motion-fast, 180ms) var(--ease-standard, ease),
+      box-shadow var(--motion-fast, 180ms) var(--ease-standard, ease);
+  }
+
+  /* ---- Portrait ---------------------------------------------------------- */
+  .lc__portrait {
+    position: relative;
+    margin: 0;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: radial-gradient(
+      120% 120% at 50% 12%,
+      color-mix(in srgb, var(--color-ground-deep) 92%, black) 0%,
+      var(--color-ground-deep) 100%
+    );
+    display: grid;
+    place-items: center;
+  }
+  .lc__img {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+    transition: transform var(--motion-base, 220ms) var(--ease-standard, ease);
+  }
+  .lc__mono {
+    font-family: var(--font-display);
+    font-size: clamp(3.5rem, 12vw, 5.5rem);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--color-emphasis-text);
+    inline-size: clamp(6rem, 22vw, 8.5rem);
+    block-size: clamp(6rem, 22vw, 8.5rem);
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    border: 2px solid color-mix(in srgb, var(--color-emphasis, #c99a52) 45%, transparent);
+    background: color-mix(in srgb, var(--color-text-inverse) 6%, transparent);
+  }
+  .lc__badge {
+    position: absolute;
+    inset-block-start: var(--space-3);
+    inset-inline-start: var(--space-3);
+    font-size: var(--type-caption);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-ground-deep);
+    background: var(--color-emphasis, #c99a52);
+    padding: 0.3rem 0.6rem;
+    border-radius: var(--radius-chip, 999px);
+    box-shadow: 0 2px 8px rgba(16, 30, 60, 0.25);
+  }
+
+  /* ---- Body -------------------------------------------------------------- */
+  .lc__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-6);
+    flex: 1;
+  }
+  .lc__name {
+    font-family: var(--font-display);
+    font-size: var(--type-h3);
+    line-height: 1.1;
+    margin: 0;
+    color: var(--color-text);
+  }
+  .lc__role {
+    margin: calc(var(--space-1) * -1) 0 0;
+    font-weight: 600;
+    color: var(--color-emphasis-text);
+    line-height: 1.35;
+  }
+  .lc__cred {
+    white-space: nowrap;
+  }
+  .lc__bio {
+    margin: 0;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+  .lc__phil {
+    margin: 0;
+    padding-inline-start: var(--space-4);
+    border-inline-start: 2px solid var(--color-emphasis, #c99a52);
+    font-family: var(--font-display);
+    font-size: var(--type-body-lg);
+    font-style: italic;
+    line-height: 1.45;
+    color: var(--color-text);
+  }
+  .lc__section {
+    margin-block-start: var(--space-1);
+  }
+  .lc__k {
+    font-size: var(--type-caption);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    font-weight: 600;
+    margin: 0 0 var(--space-2);
+  }
+  .lc__chips {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .lc__chips li {
+    font-size: var(--type-body-sm);
+    font-weight: 600;
+    color: var(--color-action);
+    background: color-mix(in srgb, var(--color-action) 6%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-action) 16%, transparent);
+    padding: 0.28rem 0.65rem;
+    border-radius: var(--radius-chip, 999px);
+  }
+  .lc__facts {
+    display: grid;
+    gap: var(--space-2);
+    margin: var(--space-1) 0 0;
+  }
+  .lc__facts div {
+    display: flex;
+    gap: var(--space-3);
+  }
+  .lc__facts dt {
+    flex: none;
+    inline-size: 6.5rem;
+    font-size: var(--type-body-sm);
+    color: var(--color-text-muted);
+  }
+  .lc__facts dd {
+    margin: 0;
+    font-size: var(--type-body-sm);
+    font-weight: 600;
+    color: var(--color-text);
+  }
+  .lc__cta {
+    margin-block-start: auto;
+    padding-block-start: var(--space-3);
+    align-self: flex-start;
+    font-weight: 600;
+    color: var(--color-interactive-strong);
+    text-decoration: none;
+    border-block-end: 1px solid transparent;
+    transition: border-color var(--motion-fast, 180ms) var(--ease-standard, ease);
+  }
+  .lc__cta span {
+    transition: transform var(--motion-fast, 180ms) var(--ease-standard, ease);
+    display: inline-block;
+  }
+
+  /* ---- Microinteractions (subtle, CSS-only) ------------------------------ */
+  @media (prefers-reduced-motion: no-preference) {
+    .lc:hover,
+    .lc:focus-within {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-raised, 0 22px 48px -22px rgba(16, 30, 60, 0.4));
+    }
+    .lc:hover .lc__img,
+    .lc:focus-within .lc__img {
+      transform: scale(1.04);
+    }
+  }
+  .lc__cta:hover,
+  .lc__cta:focus-visible {
+    border-block-end-color: currentColor;
+  }
+  .lc__cta:hover span {
+    transform: translateX(3px);
+  }
+  .lc__cta:focus-visible {
+    outline: 2px solid var(--color-interactive);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+</style>

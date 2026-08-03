@@ -1,0 +1,197 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { breadcrumbSchema } from '@vmd/seo';
+import { Disclaimer } from '@vmd/ui';
+import { cms } from '../../../lib/cms.ts';
+import { resolveTeam } from '../../../lib/team.ts';
+import TeamCard from '../../../components/sections/TeamCard.astro';
+import BookCta from '../../../components/cta/BookCta.astro';
+
+// Server-rendered so team members added in the CMS (with real portraits) appear
+// live without waiting for a rebuild.
+export const prerender = false;
+
+let cmsMembers: Awaited<ReturnType<typeof cms.teamMembers>> = [];
+try {
+  cmsMembers = await cms.teamMembers();
+} catch {
+  /* fall back to the featured defaults */
+}
+const team = resolveTeam(cmsMembers);
+
+const trail = [
+  { name: 'Home', path: '/' },
+  { name: 'About', path: '/about/' },
+  { name: 'Meet the Team', path: '/about/team/' },
+];
+---
+
+<Base
+  title="Meet the Team"
+  description="Meet the professionals at Visa & Migration Doctors — a Registered Migration Agent and support team helping clients navigate Australia's migration system with clear, ethical, personalised advice."
+  schemas={[breadcrumbSchema(trail)]}
+>
+  <section class="tm-hero">
+    <div class="tm-hero__inner" data-reveal>
+      <p class="eyebrow">Our people</p>
+      <h1 class="tm-hero__h">Meet the Team</h1>
+      <p class="tm-hero__lead">
+        Behind every successful migration journey is a team committed to providing clear advice,
+        ethical guidance, and personalised support. Meet the professionals helping clients navigate
+        Australia's migration system with confidence.
+      </p>
+      <ul class="tm-hero__trust" role="list">
+        <li>OMARA-registered practice</li>
+        <li>Bound by the Migration Agents Code of Conduct</li>
+        <li>You work directly with your agent</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="tm" aria-label="Our team">
+    <ul class="tm__grid" role="list">
+      {
+        team.map((m, i) => (
+          <li>
+            <TeamCard member={m} index={i} />
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="tm-cta" data-reveal>
+    <div class="tm-cta__inner">
+      <h2 class="tm-cta__h">Work directly with the people who prepare your case.</h2>
+      <p class="tm-cta__p">
+        Book a consultation for an honest read on your options — with a Registered Migration Agent,
+        and a fixed fee quoted before you commit.
+      </p>
+      <BookCta variant="primary" label="Book a consultation" />
+    </div>
+  </section>
+
+  <div class="tm-foot">
+    <Disclaimer variant="generalInformation" />
+  </div>
+</Base>
+
+<style>
+  .eyebrow {
+    font-size: var(--type-caption);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-emphasis-text);
+    font-weight: 600;
+    margin: 0;
+  }
+
+  /* ---- Hero -------------------------------------------------------------- */
+  .tm-hero {
+    max-inline-size: var(--container-max);
+    margin-inline: auto;
+    padding: clamp(var(--space-7), 6vw, var(--space-10)) var(--space-4) var(--space-6);
+  }
+  .tm-hero__inner {
+    max-inline-size: 60ch;
+  }
+  .tm-hero__h {
+    font-size: var(--type-display-2);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin: var(--space-2) 0 var(--space-4);
+    color: var(--color-text);
+  }
+  .tm-hero__lead {
+    font-size: var(--type-body-lg);
+    line-height: 1.6;
+    color: var(--color-text-muted);
+    max-inline-size: 56ch;
+  }
+  .tm-hero__trust {
+    list-style: none;
+    margin: var(--space-6) 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-5);
+  }
+  .tm-hero__trust li {
+    position: relative;
+    padding-inline-start: var(--space-4);
+    font-size: var(--type-body-sm);
+    color: var(--color-text);
+  }
+  .tm-hero__trust li::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block-start: 0.5em;
+    inline-size: 0.5rem;
+    block-size: 0.5rem;
+    border-radius: 50%;
+    background: var(--color-emphasis, #c99a52);
+  }
+
+  /* ---- Team grid --------------------------------------------------------- */
+  .tm {
+    max-inline-size: var(--container-max);
+    margin-inline: auto;
+    padding: var(--space-4) var(--space-4) var(--space-9);
+  }
+  .tm__grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: clamp(var(--space-5), 4vw, var(--space-7));
+    /* Equal-importance cards that gracefully expand as more people are added. */
+    grid-template-columns: repeat(auto-fit, minmax(min(20rem, 100%), 1fr));
+    align-items: stretch;
+  }
+  .tm__grid > li {
+    display: flex;
+  }
+  /* Keep two featured pros comfortably wide (never stretched full-bleed on a
+     large screen) while still centring the row. */
+  @media (min-width: 900px) {
+    .tm__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      max-inline-size: 62rem;
+      margin-inline: auto;
+    }
+  }
+
+  /* ---- Closing CTA ------------------------------------------------------- */
+  .tm-cta {
+    background: var(--color-ground-warm);
+    border-block: 1px solid color-mix(in srgb, var(--color-action) 10%, transparent);
+  }
+  .tm-cta__inner {
+    max-inline-size: var(--container-prose);
+    margin-inline: auto;
+    padding: clamp(var(--space-7), 6vw, var(--space-9)) var(--space-4);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-4);
+  }
+  .tm-cta__h {
+    font-size: var(--type-h2);
+    line-height: 1.15;
+    max-inline-size: 24ch;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .tm-cta__p {
+    color: var(--color-text-muted);
+    max-inline-size: 52ch;
+    margin: 0;
+  }
+  .tm-foot {
+    max-inline-size: var(--container-max);
+    margin-inline: auto;
+    padding: var(--space-6) var(--space-4);
+  }
+</style>

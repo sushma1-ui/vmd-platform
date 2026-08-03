@@ -9,6 +9,7 @@ import { servicePageHref } from '../lib/servicePages.ts';
 import BookCta from '../components/cta/BookCta.astro';
 import TrustGateway from '../components/sections/TrustGateway.astro';
 import TrustBar from '../components/sections/TrustBar.astro';
+import MeetTeam from '../components/sections/MeetTeam.astro';
 import HealthCheck from '../components/islands/HealthCheck.island.astro';
 import Icon from '../components/Icon.astro';
 
@@ -384,6 +385,9 @@ try {
       </section>
     )
   }
+
+  <!-- 11c · MEET YOUR TEAM (homepage glimpse → full team page) -->
+  <MeetTeam />
 
   <!-- 12 · CLOSING (Final CTA) -->
   {

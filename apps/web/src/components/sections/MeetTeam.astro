@@ -1,0 +1,190 @@
+---
+/**
+ * MeetTeam — a homepage glimpse of the featured professionals, placed just
+ * before the final CTA to create an immediate human connection and lead visitors
+ * to the full "Meet the Team" page. Shares the same data source as /about/team/,
+ * so it stays in sync as the team grows. Portraits are photo-ready with an
+ * elegant monogram placeholder until real photos are uploaded to the CMS.
+ */
+import { cms } from '../../lib/cms.ts';
+import { resolveTeam, roleOf, photoUrlOf, initialsOf } from '../../lib/team.ts';
+
+let cmsMembers: Awaited<ReturnType<typeof cms.teamMembers>> = [];
+try {
+  cmsMembers = await cms.teamMembers();
+} catch {
+  /* fall back to featured defaults */
+}
+const team = resolveTeam(cmsMembers).slice(0, 2);
+---
+
+<section data-reveal class="mt section--bone" aria-labelledby="mt-h">
+  <div class="mt__inner">
+    <header class="mt__head">
+      <p class="eyebrow">Meet your team</p>
+      <h2 class="mt__h" id="mt-h">The people guiding your migration journey</h2>
+    </header>
+
+    <ul class="mt__grid" role="list">
+      {
+        team.map((m, i) => {
+          const photo = photoUrlOf(m);
+          const title = roleOf(m);
+          return (
+            <li class="mtc">
+              <figure class="mtc__portrait">
+                {photo ? (
+                  <img
+                    class="mtc__img"
+                    src={photo}
+                    alt={`${m.name} — ${title}`}
+                    loading="lazy"
+                    decoding="async"
+                    width="480"
+                    height="600"
+                  />
+                ) : (
+                  <span class="mtc__mono" aria-hidden="true">
+                    {initialsOf(m.name)}
+                  </span>
+                )}
+              </figure>
+              <p class="mtc__name">{m.name}</p>
+              <p class="mtc__role">
+                {title}
+                {m.credential && <span class="mtc__cred"> • {m.credential}</span>}
+              </p>
+            </li>
+          );
+        })
+      }
+    </ul>
+
+    <a class="mt__more" href="/about/team/"
+      >Meet the entire team <span aria-hidden="true">→</span></a
+    >
+  </div>
+</section>
+
+<style>
+  .mt__inner {
+    max-inline-size: var(--container-max);
+    margin-inline: auto;
+    padding: clamp(var(--space-7), 5vw, var(--space-9)) var(--space-4);
+    text-align: center;
+  }
+  .eyebrow {
+    font-size: var(--type-caption);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-emphasis-text);
+    font-weight: 600;
+    margin: 0;
+  }
+  .mt__h {
+    font-size: var(--type-h2);
+    line-height: 1.15;
+    margin: var(--space-2) auto 0;
+    max-inline-size: 22ch;
+    text-wrap: balance;
+  }
+  .mt__grid {
+    list-style: none;
+    margin: var(--space-7) 0 0;
+    padding: 0;
+    display: grid;
+    gap: clamp(var(--space-5), 5vw, var(--space-7));
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 620px) {
+    .mt__grid {
+      grid-template-columns: repeat(2, 15rem);
+      justify-content: center;
+    }
+  }
+  .mtc {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    inline-size: 100%;
+    max-inline-size: 18rem;
+    margin-inline: auto;
+  }
+  .mtc__portrait {
+    position: relative;
+    margin: 0 0 var(--space-4);
+    inline-size: 100%;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border-radius: var(--radius-image, 12px);
+    background: radial-gradient(
+      120% 120% at 50% 12%,
+      color-mix(in srgb, var(--color-ground-deep) 92%, black) 0%,
+      var(--color-ground-deep) 100%
+    );
+    display: grid;
+    place-items: center;
+    box-shadow: var(--shadow-subtle, 0 8px 24px -14px rgba(16, 30, 60, 0.28));
+  }
+  .mtc__img {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+    transition: transform var(--motion-base, 220ms) var(--ease-standard, ease);
+  }
+  .mtc__mono {
+    font-family: var(--font-display);
+    font-size: clamp(2.75rem, 9vw, 3.75rem);
+    font-weight: 600;
+    color: var(--color-emphasis-text);
+    inline-size: clamp(4.5rem, 16vw, 6rem);
+    block-size: clamp(4.5rem, 16vw, 6rem);
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    border: 2px solid color-mix(in srgb, var(--color-emphasis, #c99a52) 45%, transparent);
+    background: color-mix(in srgb, var(--color-text-inverse) 6%, transparent);
+  }
+  .mtc__name {
+    font-family: var(--font-display);
+    font-size: var(--type-h4);
+    margin: 0;
+    color: var(--color-text);
+  }
+  .mtc__role {
+    margin: var(--space-1) 0 0;
+    font-size: var(--type-body-sm);
+    font-weight: 600;
+    color: var(--color-emphasis-text);
+    line-height: 1.35;
+  }
+  .mtc__cred {
+    white-space: nowrap;
+  }
+  .mt__more {
+    display: inline-block;
+    margin-block-start: var(--space-7);
+    font-weight: 600;
+    color: var(--color-interactive-strong);
+    text-decoration: none;
+    border-block-end: 1px solid transparent;
+    transition: border-color var(--motion-fast, 180ms) var(--ease-standard, ease);
+  }
+  .mt__more span {
+    display: inline-block;
+    transition: transform var(--motion-fast, 180ms) var(--ease-standard, ease);
+  }
+  .mt__more:hover,
+  .mt__more:focus-visible {
+    border-block-end-color: currentColor;
+  }
+  .mt__more:hover span {
+    transform: translateX(3px);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .mtc:hover .mtc__img {
+      transform: scale(1.04);
+    }
+  }
+</style>
