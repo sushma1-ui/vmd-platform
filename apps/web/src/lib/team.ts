@@ -55,12 +55,10 @@ export const FEATURED_TEAM: FeaturedMember[] = [
     ]),
   },
   {
-    name: 'Sushma Bartaula',
+    name: 'Sudeep Bartaula',
     position: 'Data & Compliance Officer',
-    // Absorb the earlier CMS entry for the same person (to be renamed in the CMS).
-    aliases: ['Sudeep Bartaula'],
     shortBio:
-      'Sushma keeps every client file accurate, secure and complete. She manages the documentation and data behind each application, so nothing is missed and every deadline is tracked — the quiet, careful work that keeps a case moving.',
+      'Sudeep keeps every client file accurate, secure and complete — managing the documentation and data behind each application, so nothing is missed and every deadline is tracked. It is the quiet, careful work that keeps a case moving.',
     philosophy:
       'Behind every smooth application is careful preparation — getting the detail right, so your case is ready when it matters.',
     expertise: li([
