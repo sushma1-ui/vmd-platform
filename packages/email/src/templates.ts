@@ -11,6 +11,16 @@ function line(label: string, v: unknown): string {
   const value = str(v);
   return value ? `  ${label}: ${value}\n` : '';
 }
+/** A human subject label from the lead source, so each form is distinguishable. */
+function sourceLabel(source: unknown): string {
+  const s = str(source).toLowerCase();
+  if (s.includes('health')) return 'Free Visa Health Check';
+  if (s.includes('second')) return 'Second Opinion request';
+  if (s.includes('consultation') || s.includes('booking')) return 'consultation booking';
+  if (s.includes('guide')) return 'guide download';
+  if (s.includes('newsletter')) return 'newsletter signup';
+  return 'website enquiry';
+}
 /** Format arbitrary Health Check / attribution answers as readable lines. */
 function formatAnswers(answers: unknown): string {
   if (!answers || typeof answers !== 'object') return '  (none captured)\n';
@@ -45,7 +55,7 @@ export function renderTemplate(t: TransactionalTemplate, m: Record<string, unkno
       };
     case 'lead-internal-notification':
       return {
-        subject: `New Visa Health Check lead — ${name}${
+        subject: `New ${sourceLabel(m.source)} — ${name}${
           str(m.submissionId) ? ` (${str(m.submissionId)})` : ''
         }`,
         text:
