@@ -325,6 +325,9 @@ try {
               </li>
             ))}
           </ol>
+          <p class="section__more section__more--center">
+            <a href="/#start">Start with a free diagnosis →</a>
+          </p>
         </div>
       </section>
     )
@@ -742,6 +745,10 @@ try {
     line-height: 1.45;
   }
 
+  .section__more--center {
+    text-align: center;
+    margin-block-start: var(--space-7);
+  }
   /* Client journey timeline (How we work) — a connected path, not just tiles, so
      visitors can see exactly what happens next and feel oriented, not anxious. */
   .journey {
@@ -760,6 +767,7 @@ try {
   }
   .journey__marker {
     position: relative;
+    z-index: 1;
     inline-size: 3rem;
     block-size: 3rem;
     border-radius: 50%;
@@ -803,10 +811,11 @@ try {
   }
   .journey__desc {
     margin-block-start: var(--space-2);
+    margin-inline: auto;
     font-size: var(--type-body);
     line-height: 1.6;
     color: var(--color-text);
-    max-inline-size: 40ch;
+    max-inline-size: 38ch;
   }
   @media (min-width: 768px) {
     .journey {
@@ -817,13 +826,17 @@ try {
     .journey__step {
       grid-template-columns: 1fr;
       gap: var(--space-4);
+      justify-items: center;
+      text-align: center;
     }
-    /* Connector — horizontal on desktop, from this marker across to the next. */
+    /* Connector — a single hairline from each marker's centre to the next
+       marker's centre (the last step has none), so the nodes read as one
+       clean, precisely-joined path. */
     .journey__step:not(:last-child)::before {
       inset-block-start: 1.5rem;
-      inset-inline-start: 3rem;
+      inset-inline-start: 50%;
       transform: translateY(-50%);
-      inline-size: calc(100% - 3rem + var(--space-6));
+      inline-size: calc(100% + var(--space-6));
       block-size: 2px;
     }
   }
