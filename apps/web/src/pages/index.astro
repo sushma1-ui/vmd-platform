@@ -5,7 +5,6 @@ import { PRACTICE, RMA_LINE } from '@vmd/config';
 import { Button, Card, Rule } from '@vmd/ui';
 import { localBusinessSchema, personSchema } from '@vmd/seo';
 import { cms, getSettings, getHomepage } from '../lib/cms.ts';
-import { servicePageHref } from '../lib/servicePages.ts';
 import BookCta from '../components/cta/BookCta.astro';
 import TrustGateway from '../components/sections/TrustGateway.astro';
 import TrustBar from '../components/sections/TrustBar.astro';
@@ -84,14 +83,54 @@ const whyChooseIntro =
     ? hp.whyChoose.intro
     : "The commitments we're glad to be held to.";
 
-// Featured Services — pulled from the CMS (service pages flagged "featured"), linking
-// to their canonical URLs. Editors curate via the Featured checkbox.
-let featuredServices: any[] = [];
-try {
-  const all = await cms.servicePages();
-  featuredServices = all.filter((s: any) => s.featured).slice(0, 6);
-} catch {}
-const sectionLabel = (s: any) => (s.section === 'visas' ? 'Visa pathway' : 'Service');
+// "Where are you in your journey?" — situation-first navigation that speaks the
+// client's language (not subclass numbers) and routes to the most relevant hub.
+// It complements the hero: the hero's assessment gives a personal answer; this
+// grid is the "browse straight to your pathway" path. Mirrors the six situations
+// the hero assessment opens with.
+const SITUATIONS = [
+  {
+    label: "I'm a skilled professional",
+    desc: 'Turn your qualifications and experience into a skilled visa.',
+    href: '/visas/subclass-189-skilled-independent-visa',
+    icon: 'M4 8h16v11H4z',
+    extra: 'M9 8V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2 M4 13h16',
+  },
+  {
+    label: "I'm a student",
+    desc: 'Study in Australia, with clear post-study work options.',
+    href: '/visas/subclass-500-student-visa',
+    icon: 'M12 4 2 9l10 5 10-5-10-5z',
+    extra: 'M6 11.5V16c0 1 2.7 2 6 2s6-1 6-2v-4.5',
+  },
+  {
+    label: "I'm partnered with an Australian",
+    desc: 'Build your life together — partner visas, prepared properly.',
+    href: '/visas/partner-visa-onshore-820-801',
+    icon: 'M12 20s-7-4.5-7-9.5A3.5 3.5 0 0 1 12 8a3.5 3.5 0 0 1 7 1.5c0 5-7 10-7 10z',
+  },
+  {
+    label: "I'm an employer",
+    desc: 'Sponsor the skilled workers your business needs.',
+    href: '/visas/subclass-482-skills-in-demand-visa',
+    icon: 'M4 21V4h10v17',
+    extra: 'M14 9h6v12 M7 8h1 M7 12h1 M7 16h1',
+  },
+  {
+    label: 'My visa was refused',
+    desc: "A refusal isn't the end — understand your review options.",
+    href: '/services/refusal-recovery/',
+    icon: 'M3 12a9 9 0 1 0 3-6.7',
+    extra: 'M3 4v4h4',
+  },
+  {
+    label: "I'm on a bridging visa",
+    desc: 'Unsure where you stand? Get a clear read on your next step.',
+    href: '/services/second-opinion/',
+    icon: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z',
+    extra: 'M12 7.5V12l3 2',
+  },
+];
 
 // Featured Blogs — featured articles first, then most recent, from the CMS.
 let posts: any[] = [];
@@ -213,41 +252,55 @@ try {
       section below (reviews + testimonials + outcomes in one place). */
   }
 
-  <!-- 7 · WHAT WE DO (Featured Services) -->
-  {
-    shown(hp?.featuredServices) && (
-      <section data-reveal class="section">
-        <div class="section__inner">
-          <h2 class="section__h">{hp?.featuredServices?.heading || 'Featured services'}</h2>
-          <p class="section__sub">
-            {hp?.featuredServices?.intro ||
-              'Find yourself in one scan. Every service is a real problem we help you solve.'}
-          </p>
-          <div class="grid grid--2">
-            {featuredServices.map((s) => (
-              <Card title={s.title} href={servicePageHref(s)} eyebrow={sectionLabel(s)}>
-                {s.seo?.metaDescription || s.subtitle || ''}
-              </Card>
-            ))}
-          </div>
-          <p class="section__more">
-            <a href={hp?.featuredServices?.seeAll?.href || '/services/'}>
-              {hp?.featuredServices?.seeAll?.label || 'See all our services →'}
-            </a>
-            <br />
-            <a
-              href={
-                hp?.featuredServices?.secondaryLink?.href || '/services/art-review-applications'
-              }
-            >
-              {hp?.featuredServices?.secondaryLink?.label ||
-                'Visa refused or cancelled? ART Review Applications — act fast, deadlines are strict →'}
-            </a>
-          </p>
-        </div>
-      </section>
-    )
-  }
+  <!-- 7 · WHERE ARE YOU IN YOUR JOURNEY? (situation-first navigation) -->
+  <section data-reveal class="section section--bone">
+    <div class="section__inner">
+      <p class="eyebrow">Explore your pathway</p>
+      <h2 class="section__h">Where are you in your journey?</h2>
+      <p class="section__sub">
+        Prefer to look around first? Choose what fits and go straight to the right pathway — or take
+        the free assessment above for a personal answer.
+      </p>
+      <ul class="sit__grid" role="list">
+        {
+          SITUATIONS.map((s) => (
+            <li>
+              <a class="sit__card" href={s.href}>
+                <span class="sit__icon" aria-hidden="true">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d={s.icon}
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    {s.extra && (
+                      <path
+                        d={s.extra}
+                        stroke="currentColor"
+                        stroke-width="1.6"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    )}
+                  </svg>
+                </span>
+                <span class="sit__label">{s.label}</span>
+                <span class="sit__desc">{s.desc}</span>
+                <span class="sit__cta">
+                  Explore <span aria-hidden="true">→</span>
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="section__more">
+        <a href="/services/">See all services →</a>
+      </p>
+    </div>
+  </section>
 
   <!-- 8 · YOUR JOURNEY (How we work — client journey timeline) -->
   {
@@ -531,6 +584,92 @@ try {
   }
   .hero__cta {
     margin-block-start: var(--space-6);
+  }
+
+  /* "Where are you in your journey?" — situation-first navigation cards. */
+  .sit__grid {
+    list-style: none;
+    margin: var(--space-6) 0 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: 1fr;
+  }
+  .sit__grid > li {
+    display: flex;
+  }
+  .sit__card {
+    display: flex;
+    flex-direction: column;
+    inline-size: 100%;
+    gap: var(--space-2);
+    padding: var(--space-5);
+    background: var(--color-surface, #fff);
+    border: 1px solid color-mix(in srgb, var(--color-action) 12%, transparent);
+    border-radius: var(--radius-card);
+    text-decoration: none;
+    color: var(--color-text);
+    box-shadow: var(--shadow-subtle, 0 8px 24px -14px rgba(16, 30, 60, 0.22));
+    transition:
+      transform var(--motion-fast, 180ms) var(--ease-standard, ease),
+      box-shadow var(--motion-fast, 180ms) var(--ease-standard, ease);
+  }
+  .sit__icon {
+    display: grid;
+    place-items: center;
+    inline-size: 2.6rem;
+    block-size: 2.6rem;
+    border-radius: 50%;
+    color: var(--color-emphasis-text);
+    background: color-mix(in srgb, var(--color-emphasis) 18%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-emphasis) 30%, transparent);
+    margin-block-end: var(--space-1);
+  }
+  .sit__label {
+    font-family: var(--font-display);
+    font-size: var(--type-h4);
+    line-height: 1.2;
+    color: var(--color-text);
+  }
+  .sit__desc {
+    font-size: var(--type-body-sm);
+    color: var(--color-text-muted);
+    line-height: 1.5;
+  }
+  .sit__cta {
+    margin-block-start: auto;
+    padding-block-start: var(--space-3);
+    font-weight: 600;
+    font-size: var(--type-body-sm);
+    color: var(--color-action);
+  }
+  .sit__cta span {
+    display: inline-block;
+    transition: transform var(--motion-fast, 180ms) var(--ease-standard, ease);
+  }
+  .sit__card:focus-visible {
+    outline: 2px solid var(--color-interactive);
+    outline-offset: 3px;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .sit__card:hover,
+    .sit__card:focus-visible {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-raised, 0 22px 48px -22px rgba(16, 30, 60, 0.4));
+    }
+    .sit__card:hover .sit__cta span {
+      transform: translateX(3px);
+    }
+  }
+  @media (min-width: 640px) {
+    .sit__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (min-width: 1024px) {
+    .sit__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
   }
   /* Hero assessment card — the primary lead-generation experience. Capped and
      centred in its column so it stays compact without harming usability. */
