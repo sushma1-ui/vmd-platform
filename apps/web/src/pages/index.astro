@@ -51,6 +51,21 @@ const settings = await getSettings();
 const hp = await getHomepage();
 const shown = (s?: { show?: boolean | null }) => s?.show !== false;
 
+// Hero copy: the deployed CMS still serves the PREVIOUS hero default, and CMS
+// writes are pending, so treat those exact old strings as "unset" — the current
+// copy wins until an editor sets a genuinely new value (which is still honoured).
+const OLD_HERO_TITLE = 'Find the Right Australian Visa Pathway — Before You Spend a Dollar';
+const OLD_HERO_LEAD =
+  'Honest, expert guidance from a Registered Migration Agent — clear answers and a plan you can trust, entirely at your pace.';
+const heroTitle =
+  hp?.hero?.title && hp.hero.title.trim() !== OLD_HERO_TITLE
+    ? hp.hero.title
+    : 'Find the Right Australian Visa Pathway with Expert Guidance';
+const heroLead =
+  hp?.hero?.lead && hp.hero.lead.trim() !== OLD_HERO_LEAD
+    ? hp.hero.lead
+    : "Helping individuals, families, and businesses navigate Australia's migration system with ethical, personalised advice from a Registered Migration Agent.";
+
 const register = PRACTICE.regulator.registerSearchUrl;
 
 // Featured Services — pulled from the CMS (service pages flagged "featured"), linking
@@ -86,16 +101,9 @@ try {
   <!-- 3 · HERO — the free assessment leads -->
   <section class="hero" id="start">
     <div class="hero__copy">
-      <h1 class="hero__title">
-        {hp?.hero?.title || 'Find the Right Australian Visa Pathway with Expert Guidance'}
-      </h1>
+      <h1 class="hero__title">{heroTitle}</h1>
       <Rule width="short" />
-      <p class="hero__lead">
-        {
-          hp?.hero?.lead ||
-            `Helping individuals, families, and businesses navigate Australia's migration system with ethical, personalised advice from a Registered Migration Agent.`
-        }
-      </p>
+      <p class="hero__lead">{heroLead}</p>
       <ul class="hero__checks" aria-label="What you can count on">
         <li>Registered Migration Agent</li>
         <li>Personalised Migration Advice</li>
