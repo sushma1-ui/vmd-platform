@@ -74,6 +74,16 @@ const heroRating = googleRating
   ? `Rated ${googleRating.toFixed(1)} on Google`
   : 'Trusted by clients across multiple countries';
 
+// "Diagnosis promise" intro: the deployed CMS still serves the previous
+// (comparative) default, so treat that exact string as "unset" — positive,
+// simpler copy wins until an editor sets a genuinely new value.
+const OLD_WHYCHOOSE_INTRO =
+  'The commitments that set us apart are the ones we are glad to be held to.';
+const whyChooseIntro =
+  hp?.whyChoose?.intro && hp.whyChoose.intro.trim() !== OLD_WHYCHOOSE_INTRO
+    ? hp.whyChoose.intro
+    : "The commitments we're glad to be held to.";
+
 // Featured Services — pulled from the CMS (service pages flagged "featured"), linking
 // to their canonical URLs. Editors curate via the Featured checkbox.
 let featuredServices: any[] = [];
@@ -150,10 +160,7 @@ try {
       <section data-reveal class="section">
         <div class="section__inner">
           <h2 class="section__h">{hp?.whyChoose?.heading || 'The diagnosis promise'}</h2>
-          <p class="section__sub">
-            {hp?.whyChoose?.intro ||
-              'The commitments that set us apart are the ones we are glad to be held to.'}
-          </p>
+          <p class="section__sub">{whyChooseIntro}</p>
           <div class="grid grid--3 promises">
             {hp?.whyChoose?.promises?.length ? (
               hp.whyChoose.promises.map((p, i) => (
@@ -189,8 +196,8 @@ try {
                     <Icon path={PROMISE_ICONS[2]} />
                   </span>
                   <p>
-                    You work directly with the <strong>registered agent</strong>, from start to
-                    finish.
+                    You work directly with the <strong>Registered Migration Agent</strong>, from
+                    start to finish.
                   </p>
                 </div>
               </>

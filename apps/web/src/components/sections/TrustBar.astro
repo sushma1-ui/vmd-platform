@@ -11,30 +11,27 @@ import { PRACTICE } from '@vmd/config';
 
 const register = PRACTICE.regulator.registerSearchUrl;
 
+// Three consolidated, non-duplicative credentials. The agent's name and MARN
+// are kept on ONE line (never separated). OMARA + the Code sit together, and
+// location is framed by reach ("online or in person") rather than "Perth-only".
 const items = [
   {
-    label: 'Registered Migration Agent',
-    sub: 'Regulated by the OMARA',
+    label: `${PRACTICE.principal.name}, RMA · MARN ${PRACTICE.principal.marn}`,
+    sub: 'Verify on the register →',
+    href: register,
     // shield + check
     path: 'M12 3 5 6v5c0 4.5 3 7.6 7 9 4-1.4 7-4.5 7-9V6l-7-3z',
     extra: 'm9 12 2 2 4-4',
   },
   {
-    label: `MARN ${PRACTICE.principal.marn}`,
-    sub: 'Verify on the register →',
-    href: register,
-    // certificate/document
-    path: 'M7 3h7l4 4v14H7zM14 3v4h4',
-  },
-  {
-    label: 'Code of Conduct',
-    sub: 'Bound by the Migration Agents Code',
+    label: 'Regulated by OMARA',
+    sub: 'Bound by the Migration Agents Code of Conduct',
     // open book
     path: 'M12 6c-2-1.3-4.5-1.3-7-0.5v12c2.5-0.8 5-0.8 7 .5 2-1.3 4.5-1.3 7-.5v-12c-2.5-.8-5-.8-7 .5zM12 6v13',
   },
   {
-    label: 'Perth CBD',
-    sub: 'Appointment-only · online or in person',
+    label: 'Online or in person',
+    sub: 'Appointment-only · Perth CBD',
     // location pin
     path: 'M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11z',
     extra: 'M12 10.5m-2.4 0a2.4 2.4 0 1 0 4.8 0a2.4 2.4 0 1 0-4.8 0',
@@ -110,7 +107,8 @@ const items = [
     block-size: 2.5rem;
     border-radius: 50%;
     color: var(--color-emphasis-text); /* AA gold-for-text on the light chip */
-    background: color-mix(in srgb, var(--color-emphasis) 14%, transparent);
+    background: color-mix(in srgb, var(--color-emphasis) 20%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-emphasis) 32%, transparent);
   }
   .trustbar__text {
     display: flex;
@@ -129,28 +127,28 @@ const items = [
     color: var(--color-text-muted);
     line-height: 1.3;
   }
+  /* On-brand link (navy + gold underline), not the off-system teal. */
   .trustbar__sub--link {
-    color: var(--color-interactive-strong);
+    color: var(--color-action);
     font-weight: 600;
-    text-decoration: none;
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--color-emphasis) 55%, transparent);
+    text-underline-offset: 2px;
     width: fit-content;
   }
-  .trustbar__sub--link:hover {
-    text-decoration: underline;
+  .trustbar__sub--link:hover,
+  .trustbar__sub--link:focus-visible {
+    text-decoration-color: var(--color-emphasis);
   }
 
   @media (min-width: 640px) {
     .trustbar__row {
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(3, 1fr);
       gap: var(--space-5) var(--space-6);
       padding-block: var(--space-5);
+      align-items: center;
     }
-  }
-  @media (min-width: 1024px) {
-    .trustbar__row {
-      grid-template-columns: repeat(4, 1fr);
-    }
-    /* hairline dividers between items on the single row */
+    /* hairline dividers between the items on the single row */
     .trustbar__item + .trustbar__item {
       position: relative;
     }

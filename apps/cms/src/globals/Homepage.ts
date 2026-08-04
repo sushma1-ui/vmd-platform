@@ -109,7 +109,7 @@ export const Homepage: GlobalConfig = {
             showToggle(),
             ...headingIntro({
               heading: 'The diagnosis promise',
-              intro: 'The commitments that set us apart are the ones we are glad to be held to.',
+              intro: "The commitments we're glad to be held to.",
             }),
             {
               name: 'promises',
