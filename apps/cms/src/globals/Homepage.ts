@@ -48,13 +48,13 @@ export const Homepage: GlobalConfig = {
             {
               name: 'title',
               type: 'text',
-              defaultValue: 'Find the Right Australian Visa Pathway — Before You Spend a Dollar',
+              defaultValue: 'Find the Right Australian Visa Pathway with Expert Guidance',
             },
             {
               name: 'lead',
               type: 'textarea',
               defaultValue:
-                'Honest, expert guidance from a Registered Migration Agent — clear answers and a plan you can trust, entirely at your pace.',
+                "Helping individuals, families, and businesses navigate Australia's migration system with ethical, personalised advice from a Registered Migration Agent.",
               admin: { description: 'The paragraph under the headline.' },
             },
             linkGroup('primaryCta', 'Primary button'),
