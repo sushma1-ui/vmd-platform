@@ -67,6 +67,12 @@ const heroLead =
     : "Helping individuals, families, and businesses navigate Australia's migration system with ethical, personalised advice from a Registered Migration Agent.";
 
 const register = PRACTICE.regulator.registerSearchUrl;
+// A concrete, verifiable trust line beats a vague claim. Use the live Google
+// rating when available, falling back to a worldwide-reach line.
+const googleRating = settings?.googleReviews?.rating;
+const heroRating = googleRating
+  ? `Rated ${googleRating.toFixed(1)} on Google`
+  : 'Trusted by clients across multiple countries';
 
 // Featured Services — pulled from the CMS (service pages flagged "featured"), linking
 // to their canonical URLs. Editors curate via the Featured checkbox.
@@ -111,16 +117,16 @@ try {
       </ul>
       <p class="hero__rating">
         <span class="hero__rating-stars" aria-hidden="true">★★★★★</span>
-        <span>Trusted by clients across multiple countries</span>
+        <span>{heroRating}</span>
       </p>
       <div class="hero__cta">
-        <BookCta variant="primary" label="Book Consultation" />
+        <BookCta variant="primary" label="Book a Consultation" />
       </div>
     </div>
     <div class="hero__form">
       <div class="hero__form-head">
         <p class="hero__form-eyebrow">Free · takes 90 seconds</p>
-        <h2 class="hero__form-title">Answer six quick questions</h2>
+        <h2 class="hero__form-title">Answer a few quick questions</h2>
         <p class="hero__form-sub">
           A Registered Migration Agent reviews your answers and comes back with your clear next
           steps — free, and yours to act on when you're ready.
@@ -494,11 +500,12 @@ try {
     block-size: 1.4rem;
     display: grid;
     place-items: center;
-    font-size: 0.82rem;
-    font-weight: 700;
+    font-size: 0.86rem;
+    font-weight: 800;
     line-height: 1;
-    color: var(--color-emphasis-text);
-    background: color-mix(in srgb, var(--color-emphasis, #c99a52) 16%, transparent);
+    color: var(--color-action);
+    background: color-mix(in srgb, var(--color-emphasis, #c99a52) 24%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-emphasis, #c99a52) 40%, transparent);
     border-radius: 50%;
   }
   .hero__rating {
@@ -840,10 +847,11 @@ try {
       grid-template-columns: 1fr 1fr;
     }
     .hero {
-      /* Left column a little wider (headline + trust), form column trimmed;
-         vertically centred so the two read as one balanced composition. */
+      /* Left column a little wider (headline + trust), form column trimmed.
+         Columns share a top baseline so the two read as one composition — the
+         form is taller, and the whitespace sits below the copy, not above it. */
       grid-template-columns: 1.3fr 0.85fr;
-      align-items: center;
+      align-items: start;
       gap: var(--space-9);
     }
     .meet {
