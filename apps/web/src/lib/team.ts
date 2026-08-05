@@ -42,6 +42,7 @@ export const FEATURED_TEAM: FeaturedMember[] = [
     credential: `MARN ${PRACTICE.principal.marn}`,
     badge: 'OMARA-registered',
     profileHref: '/about/sunil-uprety/',
+    photo: { url: '/team/sunil.jpg', alt: 'Sunil Uprety, Registered Migration Agent' },
     shortBio:
       'Sunil leads the practice and personally assesses every matter. You get an honest read on where your case stands — including the best time and way to move forward — from the Registered Migration Agent, not a caseworker.',
     philosophy:
