@@ -155,24 +155,6 @@ try {
 >
   <!-- 3 · HERO — the free assessment leads -->
   <section class="hero" id="start">
-    {
-      /* Atmosphere, not imagery: a warm, sunlit wash lives on the section
-       background; here a faint, mask-faded suggestion of the Opera House sails
-       dissolves into that light as distant, hazy architecture — never a focal
-       point. Decorative and hidden on mobile. */
-    }
-    <div class="hero__atmos" aria-hidden="true">
-      <svg
-        class="hero__sails"
-        viewBox="0 0 240 130"
-        preserveAspectRatio="xMidYMax meet"
-        focusable="false"
-      >
-        <path
-          d="M8 130 C10 66 42 34 70 130 Z M52 130 C55 52 90 22 118 130 Z M98 130 C101 58 134 30 162 130 Z M144 130 C147 74 174 50 198 130 Z M186 130 C188 96 206 84 222 130 Z"
-        ></path>
-      </svg>
-    </div>
     <div class="hero__copy">
       <h1 class="hero__title">{heroTitle}</h1>
       <Rule width="short" />
@@ -541,69 +523,42 @@ try {
   }
 
   .hero {
-    position: relative;
     max-inline-size: var(--container-max);
     margin-inline: auto;
     padding: var(--space-8) var(--space-4);
     display: grid;
     gap: var(--space-6);
     align-items: center;
-    /* Warm, sunlit atmosphere — brighter and airier than flat white, with a
-       golden-hour glow, a soft light "passing through" highlight, a warm base
-       and a whisper of navy for depth. All radial + edge-faded, so it dissolves
-       into the page with no visible box. Tunable here without touching layout. */
+    /* A luxury-architectural LIGHT quality — morning haze, not a landmark.
+       Directional left→right: bright and clean on the left (behind the copy, so
+       the headline stays crisply readable), warming to a soft golden haze toward
+       the centre-right. Airy whites, warm neutrals only (no grey/blue), edge-
+       faded so there's no visible box. All values tunable here; layout untouched. */
     background:
-      radial-gradient(55% 48% at 20% 8%, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0) 60%),
-      radial-gradient(120% 115% at 48% 26%, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0) 78%),
+      /* clean bright highlight over the copy — airy + high readability */
+      radial-gradient(44% 42% at 15% 4%, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0) 62%),
+      /* directional morning light: bright-clean left → warm gold right */
+      linear-gradient(
+          100deg,
+          rgba(255, 255, 255, 0.9) 0%,
+          rgba(255, 255, 255, 0.34) 36%,
+          color-mix(in srgb, var(--color-ground-warm) 42%, transparent) 74%,
+          color-mix(in srgb, var(--color-emphasis) 11%, transparent) 100%
+        ),
+      /* soft golden haze emerging toward the centre-right */
       radial-gradient(
-        70% 64% at 26% 20%,
-        color-mix(in srgb, var(--color-emphasis) 8%, transparent),
-        transparent 58%
-      ),
+          56% 66% at 82% 40%,
+          color-mix(in srgb, var(--color-emphasis) 13%, transparent),
+          transparent 66%
+        ),
+      /* morning-haze veil — airiness, lifts any muddiness */
+      radial-gradient(120% 112% at 48% 16%, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0) 82%),
+      /* warm base glow rising — grounding warmth + depth */
       radial-gradient(
-        130% 92% at 44% 112%,
-        color-mix(in srgb, var(--color-ground-warm) 62%, transparent),
-        transparent 62%
-      ),
-      radial-gradient(
-        52% 58% at 101% -6%,
-        color-mix(in srgb, var(--color-action) 5%, transparent),
-        transparent 55%
-      );
-  }
-  .hero__copy,
-  .hero__form {
-    position: relative;
-    z-index: 1;
-  }
-  /* Opera House as pure atmosphere — a faint, cool, hazy suggestion of the sails
-     that dissolves upward into the light (distant architecture, never a subject).
-     Fill opacity + mask are the tuning knobs; remove this block to keep only the
-     light. Hidden on mobile to keep the stacked hero clean and fast. */
-  .hero__atmos {
-    position: absolute;
-    z-index: 0;
-    inset-block-end: 0;
-    inset-inline-start: 5%;
-    inline-size: min(30%, 19rem);
-    opacity: 0.55;
-    pointer-events: none;
-    user-select: none;
-    -webkit-mask-image: linear-gradient(180deg, transparent 8%, #000 58%);
-    mask-image: linear-gradient(180deg, transparent 8%, #000 58%);
-  }
-  .hero__sails {
-    display: block;
-    inline-size: 100%;
-    block-size: auto;
-  }
-  .hero__sails path {
-    fill: color-mix(in srgb, var(--color-action) 9%, transparent);
-  }
-  @media (max-width: 767px) {
-    .hero__atmos {
-      display: none;
-    }
+          130% 84% at 46% 114%,
+          color-mix(in srgb, var(--color-ground-warm) 52%, transparent),
+          transparent 62%
+        );
   }
   .hero__title {
     font-size: clamp(2rem, 4.4vw, 2.7rem);
