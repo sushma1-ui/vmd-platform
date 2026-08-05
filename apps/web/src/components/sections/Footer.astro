@@ -48,6 +48,13 @@ const cmsCols = await getFooterColumns();
 const cols = cmsCols
   ? cmsCols.map((c) => ({ h: c.heading, links: c.links.map((l) => [l.label, l.href] as const) }))
   : colsFallback;
+
+// Acknowledgement of Country — single source of truth. Update this wording here
+// if the practice relocates or opens offices on other Country; the relevant
+// Traditional Custodians differ by location (the practice currently sits on
+// Whadjuk Noongar Country, Perth WA). No layout change is needed to edit it.
+const ACKNOWLEDGEMENT =
+  'We acknowledge and respect the Traditional Custodians of the lands, seas, skies and waterways where we are privileged to live and work, including the Whadjuk Noongar people on whose land our practice sits.';
 ---
 
 <footer class="footer">
@@ -82,6 +89,12 @@ const cols = cmsCols
       ))
     }
   </div>
+  <section class="ack" aria-label="Acknowledgement of Country">
+    <div class="ack__inner">
+      <p class="ack__label">Acknowledgement of Country</p>
+      <p class="ack__body">{ACKNOWLEDGEMENT}</p>
+    </div>
+  </section>
   <div class="footer__legal">
     <Disclaimer variant="outcomes" />
     <p class="footer__copy">
@@ -140,6 +153,32 @@ const cols = cmsCols
   }
   .footer__link:hover {
     color: var(--color-text-inverse);
+  }
+  /* Acknowledgement of Country — a considered statement between the footer nav
+     and the copyright. Understated, readable, generously spaced; a single thin
+     divider separates it from the navigation above. No icons, no heavy borders. */
+  .ack {
+    border-block-start: 1px solid color-mix(in srgb, var(--color-text-inverse) 12%, transparent);
+  }
+  .ack__inner {
+    max-inline-size: var(--container-max);
+    margin-inline: auto;
+    padding: var(--space-7) var(--space-4);
+  }
+  .ack__label {
+    margin: 0 0 var(--space-2);
+    font-size: var(--type-caption);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--color-emphasis-text);
+  }
+  .ack__body {
+    margin: 0;
+    max-inline-size: 72ch;
+    font-size: 0.85rem;
+    line-height: 1.75;
+    color: color-mix(in srgb, var(--color-text-inverse) 90%, transparent);
   }
   .footer__legal {
     max-inline-size: var(--container-max);
