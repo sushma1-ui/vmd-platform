@@ -417,17 +417,25 @@ export async function createLead(
   lead: Record<string, unknown>,
   apiKey: string,
 ): Promise<{ id: string } | null> {
+  // Storing the lead is best-effort: the notification email is the critical
+  // delivery. Abort after 4s so a slow or unreachable CMS can never delay (or
+  // hang) the API response — which would leave the client stuck on "Sending…".
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 4000);
   try {
     const res = await fetch(`${BASE}/api/leads`, {
       method: 'POST',
       headers: { 'content-type': 'application/json', Authorization: `users API-Key ${apiKey}` },
       body: JSON.stringify(lead),
+      signal: controller.signal,
     });
     if (!res.ok) return null;
     const data = (await res.json()) as { doc?: { id: string } };
     return data.doc ? { id: data.doc.id } : null;
   } catch {
     return null;
+  } finally {
+    clearTimeout(timer);
   }
 }
 

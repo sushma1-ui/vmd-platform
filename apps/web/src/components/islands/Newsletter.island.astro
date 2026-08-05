@@ -135,7 +135,11 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
       }
       return;
     }
-    form.querySelectorAll('input,button').forEach((el) => (el.disabled = true));
+    if (submit) {
+      submit.hidden = true;
+      submit.removeAttribute('aria-busy');
+    }
+    form.querySelectorAll('input').forEach((el) => (el.disabled = true));
     ok.hidden = false;
   });
 </script>

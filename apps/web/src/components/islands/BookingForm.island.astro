@@ -200,7 +200,15 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
       }
       return;
     }
-    form.querySelectorAll('input,select,textarea,button').forEach((el) => (el.disabled = true));
+    // Success: drop the "Sending…" button so it never reads as stuck, lock the
+    // fields, and surface the confirmation clearly.
+    if (submit) {
+      submit.hidden = true;
+      submit.removeAttribute('aria-busy');
+    }
+    form.querySelectorAll('input,select,textarea').forEach((el) => (el.disabled = true));
     ok.hidden = false;
+    ok.setAttribute('tabindex', '-1');
+    ok.focus();
   });
 </script>
