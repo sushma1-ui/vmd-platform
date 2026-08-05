@@ -58,6 +58,7 @@ export const FEATURED_TEAM: FeaturedMember[] = [
   {
     name: 'Sudeep Bartaula',
     position: 'Data & Compliance Officer',
+    profileHref: '/about/sudeep-bartaula/',
     shortBio:
       'Sudeep keeps every client file accurate, secure and complete — managing the documentation and data behind each application, so nothing is missed and every deadline is tracked. It is the quiet, careful work that keeps a case moving.',
     philosophy:

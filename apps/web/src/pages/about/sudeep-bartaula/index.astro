@@ -1,0 +1,102 @@
+---
+import SimplePage from '../../../components/content/SimplePage.astro';
+import { getCtaLinks } from '../../../lib/cms.ts';
+const { bookUrl } = await getCtaLinks();
+
+// Placeholder-but-professional copy, structured so specifics (experience,
+// qualifications) can be dropped in later without changing the layout. Mirrors
+// the design system of the Sunil Uprety profile page.
+const responsibilities = [
+  'Document management and organisation across every matter',
+  'Application compliance and quality checks before lodgement',
+  'Data accuracy, security and privacy',
+  'Client file integrity, from first enquiry to decision',
+  'Deadline and lodgement tracking',
+];
+---
+
+<SimplePage
+  title="Sudeep Bartaula, Data & Compliance Officer"
+  description="Meet Sudeep Bartaula, Data & Compliance Officer at Visa & Migration Doctors — keeping every client file accurate, secure and complete on the way to a decision."
+  eyebrow="The team"
+  lead="The person who keeps every client file accurate, secure and complete — so nothing is missed on the way to a decision."
+  cta={{ href: bookUrl, label: 'Book a Consultation' }}
+  disclaimer={true}
+>
+  <p>
+    Sudeep Bartaula is the Data &amp; Compliance Officer at Visa &amp; Migration Doctors. Behind
+    every application is a great deal of documentation and data, and Sudeep makes sure it is
+    organised, accurate and handled with care — the quiet, meticulous work that keeps a matter
+    moving and gives clients confidence their information is in safe hands.
+  </p>
+
+  <h2 class="pf__h">The role</h2>
+  <p>
+    Sudeep manages the documentation, records and deadlines that sit behind each matter, working
+    closely with the Registered Migration Agent so that every application is complete, consistent
+    and lodged on time. It is a role built on precision, discretion and follow-through.
+  </p>
+
+  <h2 class="pf__h">Areas of responsibility</h2>
+  <ul class="pf__list">
+    {responsibilities.map((item) => <li>{item}</li>)}
+  </ul>
+
+  <h2 class="pf__h">Experience</h2>
+  <p>
+    Sudeep brings a detail-oriented background in data management, documentation and administrative
+    compliance, with a focus on accuracy, confidentiality and dependable process. Every client's
+    information is treated with the same standard of care and privacy.
+  </p>
+
+  <h2 class="pf__h">Professional philosophy</h2>
+  <blockquote class="pf__quote">
+    “Behind every smooth application is careful preparation. Getting the detail right — quietly and
+    consistently — is what lets a client focus on their future instead of their paperwork.”
+  </blockquote>
+
+  <p>
+    Have a question about your documents or where your matter stands? You're welcome to get in
+    touch, or book a consultation to talk it through with the team.
+  </p>
+</SimplePage>
+
+<style>
+  .pf__h {
+    font-size: var(--type-h3);
+    margin-block: var(--space-6) var(--space-2);
+    color: var(--color-action);
+  }
+  .pf__list {
+    margin: 0 0 var(--space-3);
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: var(--space-2);
+  }
+  .pf__list li {
+    position: relative;
+    padding-inline-start: var(--space-5);
+    line-height: 1.6;
+  }
+  .pf__list li::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block-start: 0.6em;
+    inline-size: 0.5rem;
+    block-size: 0.5rem;
+    border-radius: 50%;
+    background: var(--color-emphasis, #c99a52);
+  }
+  .pf__quote {
+    margin: var(--space-3) 0;
+    padding-inline-start: var(--space-4);
+    border-inline-start: 3px solid var(--color-emphasis, #c99a52);
+    font-family: var(--font-display);
+    font-size: var(--type-body-lg);
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--color-text);
+  }
+</style>
