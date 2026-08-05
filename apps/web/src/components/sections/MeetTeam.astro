@@ -32,7 +32,7 @@ const team = resolveTeam(cmsMembers).slice(0, 2);
           const title = roleOf(m);
           return (
             <li class="mtc">
-              <figure class="mtc__portrait">
+              <figure class:list={['mtc__portrait', photo && 'mtc__portrait--photo']}>
                 {photo ? (
                   <img
                     class="mtc__img"
@@ -131,6 +131,23 @@ const team = resolveTeam(cmsMembers).slice(0, 2);
     block-size: 100%;
     object-fit: cover;
     transition: transform var(--motion-base, 220ms) var(--ease-standard, ease);
+  }
+  /* Real photo: light, warm frame + gentle unifying treatment (see TeamCard). */
+  .mtc__portrait--photo {
+    background: linear-gradient(180deg, #f4f0e8 0%, #e7dfcf 100%);
+  }
+  .mtc__portrait--photo .mtc__img {
+    object-position: top center;
+    filter: saturate(0.94) contrast(1.03);
+  }
+  .mtc__portrait--photo::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    box-shadow:
+      inset 0 0 0 1px color-mix(in srgb, var(--color-emphasis, #c99a52) 24%, transparent),
+      inset 0 -40px 40px -30px color-mix(in srgb, var(--color-ground-deep) 40%, transparent);
   }
   .mtc__mono {
     font-family: var(--font-display);
