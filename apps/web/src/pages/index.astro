@@ -155,6 +155,23 @@ try {
 >
   <!-- 3 · HERO — the free assessment leads -->
   <section class="hero" id="start">
+    {
+      /* Atmospheric Opera House — the real photo, treated to a whisper: low
+       opacity, brightened, warm-toned, low-contrast, masked so it lives centre-
+       right and dissolves into the light. Behind the content only; hidden intent
+       is "feel Australia before you notice the landmark". Decorative. */
+    }
+    <div class="hero__photo" aria-hidden="true">
+      <img
+        src="/opera-house.avif"
+        alt=""
+        width="1600"
+        height="1000"
+        loading="eager"
+        fetchpriority="low"
+        decoding="async"
+      />
+    </div>
     <div class="hero__copy">
       <h1 class="hero__title">{heroTitle}</h1>
       <Rule width="short" />
@@ -564,6 +581,7 @@ try {
   }
 
   .hero {
+    position: relative;
     max-inline-size: var(--container-max);
     margin-inline: auto;
     padding: var(--space-8) var(--space-4);
@@ -600,6 +618,49 @@ try {
           color-mix(in srgb, var(--color-ground-warm) 52%, transparent),
           transparent 62%
         );
+  }
+  /* Keep the copy and form above the atmospheric photo. */
+  .hero__copy,
+  .hero__form {
+    position: relative;
+    z-index: 1;
+  }
+  /* The Opera House photo, treated as atmosphere: it sits BEHIND the content,
+     within the hero only, and is deliberately faint. Opacity + filter + mask are
+     the tuning knobs; readability always wins, so keep it low. */
+  .hero__photo {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+    user-select: none;
+    /* Live centre-right; dissolve toward the copy (left) and all edges so it
+       never touches the headline, the nav above, or the section below. */
+    -webkit-mask-image: radial-gradient(115% 105% at 68% 44%, #000 20%, transparent 68%);
+    mask-image: radial-gradient(115% 105% at 68% 44%, #000 20%, transparent 68%);
+  }
+  .hero__photo img {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+    object-position: 70% 42%;
+    /* ~10% strength, brightened, warm-toned, low-contrast — atmospheric, not
+       photographic. */
+    opacity: 0.1;
+    filter: brightness(1.12) contrast(0.84) saturate(0.82) sepia(0.14);
+  }
+  /* Mobile: a different, lighter treatment — focal point moved up and away from
+     the stacked copy/form, and visibility reduced so the hero stays clean. */
+  @media (max-width: 767px) {
+    .hero__photo {
+      -webkit-mask-image: radial-gradient(120% 70% at 62% 20%, #000 14%, transparent 70%);
+      mask-image: radial-gradient(120% 70% at 62% 20%, #000 14%, transparent 70%);
+    }
+    .hero__photo img {
+      object-position: 60% 22%;
+      opacity: 0.06;
+    }
   }
   .hero__title {
     font-size: clamp(2rem, 4.4vw, 2.7rem);
