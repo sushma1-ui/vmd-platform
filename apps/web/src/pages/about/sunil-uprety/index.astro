@@ -1,24 +1,128 @@
 ---
 import SimplePage from '../../../components/content/SimplePage.astro';
 import { getCtaLinks } from '../../../lib/cms.ts';
+import { PRACTICE } from '@vmd/config';
 const { bookUrl } = await getCtaLinks();
+const register = PRACTICE.regulator.registerSearchUrl;
+
+const expertise = [
+  'Skilled migration — points-tested and state/territory nominated pathways',
+  'Employer-sponsored visas',
+  'Student and graduate visas',
+  'Partner and family visas',
+  'Visa refusals and ART (merits) review',
+];
 ---
 
 <SimplePage
   title="Sunil Uprety, Registered Migration Agent"
   description="Registered Migration Agent (RMA): Sunil Uprety · MARN 2318234 — Principal of Visa & Migration Doctors, Perth, bound by the OMARA Code of Conduct."
   eyebrow="The practitioner"
-  lead="A named, registered and verifiable Registered Migration Agent you can rely on."
+  lead="A named, registered and verifiable Registered Migration Agent you can rely on — who reads your case personally."
   cta={{ href: bookUrl, label: 'Book a Consultation' }}
+  disclaimer={true}
 >
   <p>
-    Sunil Uprety is a Registered Migration Agent (MARN 2318234) practising in Perth, bound by the
-    Migration Agents Code of Conduct administered by OMARA. His registration is verifiable on the
-    OMARA register today.
+    Sunil Uprety is a Registered Migration Agent (MARN 2318234) practising in Perth and the
+    principal of Visa &amp; Migration Doctors. He is bound by the Migration Agents Code of Conduct
+    administered by OMARA, and his registration is verifiable on the public register today.
+  </p>
+
+  <h2 class="pf__h">The role</h2>
+  <p>
+    As principal, Sunil personally assesses each matter — you work directly with the Registered
+    Migration Agent, not a caseworker. From your first conversation he gives you an honest read on
+    where your case stands, the pathway that genuinely fits, and the best time and way to move
+    forward.
+  </p>
+
+  <h2 class="pf__h">Areas of expertise</h2>
+  <ul class="pf__list">
+    {expertise.map((item) => <li>{item}</li>)}
+  </ul>
+
+  <h2 class="pf__h">Experience</h2>
+  <p>
+    Sunil leads every matter with a considered, evidence-based approach — from a first honest
+    assessment through to lodgement and the decision on your case. He is known for straight advice,
+    careful preparation, and telling clients where they genuinely stand, including when the best
+    move is to wait or strengthen a case before applying.
+  </p>
+
+  <h2 class="pf__h">Areas of responsibility</h2>
+  <ul class="pf__list">
+    <li>Personal assessment and strategy for every matter</li>
+    <li>Preparation and lodgement of applications</li>
+    <li>Honest, transparent advice and fixed fees, quoted before you commit</li>
+    <li>Compliance with the Migration Agents Code of Conduct</li>
+  </ul>
+
+  <h2 class="pf__h">Registration &amp; accountability</h2>
+  <p>
+    Sunil Uprety (MARN 2318234) is a Registered Migration Agent bound by the OMARA Code of Conduct.
+    His registration is public and checkable at any time — a level of accountability you can verify
+    before you commit.
   </p>
   <p>
-    As the principal of the practice, he personally assesses each matter — you work directly with
-    the Registered Migration Agent — and gives you an honest read on where your case stands,
-    including the best time to apply.
+    <a class="pf__verify" href={register} rel="noopener" target="_blank">
+      Verify Sunil on the OMARA register →
+    </a>
+  </p>
+
+  <h2 class="pf__h">Professional philosophy</h2>
+  <blockquote class="pf__quote">
+    “Good migration advice starts with an honest diagnosis — even when the honest answer is to
+    wait.”
+  </blockquote>
+
+  <p>
+    Ready for a straight read on your options? Book a consultation and you'll speak directly with
+    Sunil about where you stand and what comes next.
   </p>
 </SimplePage>
+
+<style>
+  .pf__h {
+    font-size: var(--type-h3);
+    margin-block: var(--space-6) var(--space-2);
+    color: var(--color-action);
+  }
+  .pf__list {
+    margin: 0 0 var(--space-3);
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: var(--space-2);
+  }
+  .pf__list li {
+    position: relative;
+    padding-inline-start: var(--space-5);
+    line-height: 1.6;
+  }
+  .pf__list li::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block-start: 0.6em;
+    inline-size: 0.5rem;
+    block-size: 0.5rem;
+    border-radius: 50%;
+    background: var(--color-emphasis, #c99a52);
+  }
+  .pf__verify {
+    color: var(--color-action);
+    border-block-end: 1px solid var(--color-emphasis);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .pf__quote {
+    margin: var(--space-3) 0;
+    padding-inline-start: var(--space-4);
+    border-inline-start: 3px solid var(--color-emphasis, #c99a52);
+    font-family: var(--font-display);
+    font-size: var(--type-body-lg);
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--color-text);
+  }
+</style>
