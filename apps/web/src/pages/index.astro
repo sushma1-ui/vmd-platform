@@ -333,6 +333,47 @@ try {
     )
   }
 
+  <!-- 8b · WHY CHOOSE VMD (reasons to choose — trust + conversion) -->
+  <section data-reveal class="section">
+    <div class="section__inner">
+      <p class="eyebrow">Why choose us</p>
+      <h2 class="section__h">Why clients choose Visa &amp; Migration Doctors</h2>
+      <p class="section__sub">
+        Practical reasons people trust us with one of the biggest decisions of their lives.
+      </p>
+      <ul class="why__grid" role="list">
+        <li class="why__item">
+          <h3 class="why__t">A registered agent you can verify</h3>
+          <p class="why__d">
+            Your matter is handled by a Registered Migration Agent (MARN {PRACTICE.principal.marn}),
+            bound by the OMARA Code of Conduct — and checkable on the public register.
+          </p>
+        </li>
+        <li class="why__item">
+          <h3 class="why__t">One point of contact, start to finish</h3>
+          <p class="why__d">
+            You work directly with the agent and a dedicated team — the same people, from your first
+            assessment through to the decision.
+          </p>
+        </li>
+        <li class="why__item">
+          <h3 class="why__t">Honest, personalised advice</h3>
+          <p class="why__d">
+            A straight read on your situation and the pathway that actually fits — including the
+            best time to act.
+          </p>
+        </li>
+        <li class="why__item">
+          <h3 class="why__t">Support wherever you are</h3>
+          <p class="why__d">
+            Perth-based and assisting clients across Australia and around the world, in person or
+            online.
+          </p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
   <!-- 9 · MEET SUNIL (Trust & Credentials) -->
   {
     shown(hp?.practitioner) && (
@@ -773,6 +814,40 @@ try {
   .section__more--center {
     text-align: center;
     margin-block-start: var(--space-7);
+  }
+
+  /* "Why choose VMD" — concise, icon-free reasons; a thin gold top-rule keeps it
+     premium and editorial, and distinct from the icon-based diagnosis promise. */
+  .why__grid {
+    list-style: none;
+    margin: var(--space-6) 0 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-5);
+    grid-template-columns: 1fr;
+  }
+  .why__item {
+    padding-block-start: var(--space-3);
+    border-block-start: 2px solid color-mix(in srgb, var(--color-emphasis) 45%, transparent);
+  }
+  .why__t {
+    font-family: var(--font-display);
+    font-size: var(--type-h4);
+    color: var(--color-action);
+    margin: 0 0 var(--space-1);
+    line-height: 1.2;
+  }
+  .why__d {
+    margin: 0;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    max-inline-size: 46ch;
+  }
+  @media (min-width: 680px) {
+    .why__grid {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-5) var(--space-7);
+    }
   }
   /* Client journey timeline (How we work) — a connected path, not just tiles, so
      visitors can see exactly what happens next and feel oriented, not anxious. */
