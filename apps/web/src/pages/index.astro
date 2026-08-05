@@ -155,40 +155,6 @@ try {
 >
   <!-- 3 · HERO — the free assessment leads -->
   <section class="hero" id="start">
-    {
-      /* A future in Australia, felt not pointed at: a low-opacity line-art skyline
-       — modern towers, construction cranes (a city being built), and the Opera
-       House sails as one small silhouette — grounds the lighter left column. */
-    }
-    <div class="hero__skyline" aria-hidden="true">
-      <svg viewBox="0 0 640 240" preserveAspectRatio="xMinYMax meet" focusable="false">
-        <line class="sky-h" x1="0" y1="238" x2="640" y2="238"></line>
-        <g class="sky-b">
-          <rect x="6" y="150" width="30" height="90"></rect>
-          <rect x="40" y="110" width="22" height="130"></rect>
-          <rect x="66" y="90" width="34" height="150"></rect>
-          <rect x="80" y="74" width="4" height="16"></rect>
-          <rect x="104" y="140" width="26" height="100"></rect>
-          <rect x="134" y="60" width="30" height="180"></rect>
-          <rect x="147" y="46" width="3" height="14"></rect>
-          <rect x="168" y="120" width="24" height="120"></rect>
-          <rect x="196" y="150" width="30" height="90"></rect>
-          <rect x="250" y="168" width="26" height="72"></rect>
-          <rect x="280" y="128" width="30" height="112"></rect>
-          <rect x="314" y="160" width="22" height="80"></rect>
-          <rect x="360" y="182" width="24" height="58"></rect>
-          <rect x="392" y="198" width="20" height="42"></rect>
-        </g>
-        <path
-          class="sky-o"
-          d="M424 240h84v-4h-84z M428 240 C430 224 440 214 452 240 Z M444 240 C446 220 458 209 470 240 Z M460 240 C462 218 476 206 490 240 Z M478 240 C480 222 492 213 502 240 Z"
-        ></path>
-        <path
-          class="sky-c"
-          d="M226 240V68 M200 76H268 M254 76V102 M226 68L268 76 M226 68L206 73 M344 240V150 M328 156H380 M368 156V174 M344 150L380 156"
-        ></path>
-      </svg>
-    </div>
     <div class="hero__copy">
       <h1 class="hero__title">{heroTitle}</h1>
       <Rule width="short" />
@@ -557,56 +523,12 @@ try {
   }
 
   .hero {
-    position: relative;
     max-inline-size: var(--container-max);
     margin-inline: auto;
     padding: var(--space-8) var(--space-4);
     display: grid;
     gap: var(--space-6);
     align-items: center;
-  }
-  .hero__copy,
-  .hero__form {
-    position: relative;
-    z-index: 1;
-  }
-  /* Australian skyline motif — behind the content, anchored bottom-left so it
-     grounds the lighter copy column without touching the form. Opacity is kept
-     to a whisper via token-based color-mix (easy to tune here). */
-  .hero__skyline {
-    position: absolute;
-    z-index: 0;
-    inset-block-end: 0;
-    inset-inline-start: var(--space-4);
-    inline-size: min(52%, 34rem);
-    pointer-events: none;
-    user-select: none;
-  }
-  .hero__skyline svg {
-    display: block;
-    inline-size: 100%;
-    block-size: auto;
-  }
-  .hero__skyline .sky-b {
-    fill: color-mix(in srgb, var(--color-action) 8%, transparent);
-  }
-  .hero__skyline .sky-o {
-    fill: color-mix(in srgb, var(--color-action) 9%, transparent);
-  }
-  .hero__skyline .sky-c {
-    fill: none;
-    stroke: color-mix(in srgb, var(--color-action) 12%, transparent);
-    stroke-width: 1.4;
-    stroke-linecap: round;
-  }
-  .hero__skyline .sky-h {
-    stroke: color-mix(in srgb, var(--color-emphasis) 34%, transparent);
-    stroke-width: 1;
-  }
-  @media (max-width: 767px) {
-    .hero__skyline {
-      display: none;
-    }
   }
   .hero__title {
     font-size: clamp(2rem, 4.4vw, 2.7rem);
