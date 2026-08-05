@@ -49,7 +49,7 @@ export const PRACTICE = {
     email: 'enquiries@migrationdoctors.com.au',
   },
   address: {
-    street: 'Room 2709, Level 27, 44 St Georges Terrace',
+    street: 'Level 27, 44 St Georges Terrace',
     locality: 'Perth',
     region: 'WA',
     postcode: '6000',
