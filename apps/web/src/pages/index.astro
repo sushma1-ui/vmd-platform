@@ -338,13 +338,16 @@ try {
     shown(hp?.practitioner) && (
       <section data-reveal class="section">
         <div class="section__inner meet">
-          <figure class="meet__portrait" aria-hidden="true">
-            <span class="meet__mono">
-              {PRACTICE.principal.name
-                .split(' ')
-                .map((w) => w[0])
-                .join('')}
-            </span>
+          <figure class="meet__portrait meet__portrait--photo">
+            <img
+              class="meet__img"
+              src="/team/sunil.jpg"
+              alt={`${PRACTICE.principal.name}, Registered Migration Agent`}
+              width="640"
+              height="640"
+              loading="lazy"
+              decoding="async"
+            />
           </figure>
           <div class="meet__copy">
             <p class="eyebrow">{hp?.practitioner?.eyebrow || 'The practitioner'}</p>
@@ -709,14 +712,6 @@ try {
     margin: 0;
     max-inline-size: 44ch;
   }
-  .meet__mono {
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: clamp(3rem, 8vw, 5rem);
-    letter-spacing: 0.05em;
-    color: var(--color-action);
-  }
-
   .grid {
     display: grid;
     gap: var(--space-4);
@@ -919,6 +914,7 @@ try {
   .meet__portrait {
     margin: 0;
     aspect-ratio: 1 / 1;
+    overflow: hidden;
     background: var(--color-ground-warm);
     border: 1px solid color-mix(in srgb, var(--color-action) 12%, transparent);
     border-radius: var(--radius-card);
@@ -926,6 +922,29 @@ try {
     place-items: center;
     color: var(--color-text-muted);
     font-size: var(--type-body-sm);
+  }
+  /* Real photo: light, warm frame + gold hairline + soft grounding (matches the
+     team cards) so the bright studio headshot reads premium and on-brand. */
+  .meet__portrait--photo {
+    position: relative;
+    background: linear-gradient(180deg, #f4f0e8 0%, #e7dfcf 100%);
+  }
+  .meet__img {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+    object-position: center 12%;
+    display: block;
+    filter: saturate(0.94) contrast(1.03);
+  }
+  .meet__portrait--photo::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    box-shadow:
+      inset 0 0 0 1px color-mix(in srgb, var(--color-emphasis, #c99a52) 24%, transparent),
+      inset 0 -52px 48px -36px color-mix(in srgb, var(--color-ground-deep) 40%, transparent);
   }
   .meet__copy p {
     margin-block-end: var(--space-3);
