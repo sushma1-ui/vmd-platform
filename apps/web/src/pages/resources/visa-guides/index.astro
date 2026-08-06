@@ -1,0 +1,106 @@
+---
+import SimplePage from '../../../components/content/SimplePage.astro';
+import { getCtaLinks } from '../../../lib/cms.ts';
+const { bookUrl, healthCheckUrl } = await getCtaLinks();
+
+const pathways: [string, string, string][] = [
+  [
+    'Skilled migration',
+    'Points-tested skilled visas (subclasses 189, 190 and 491), state and territory nomination, and skills assessment.',
+    '/visas/subclass-189-skilled-independent-visa',
+  ],
+  [
+    'Employer-sponsored',
+    'Sponsorship, nomination and visas for employers and the people they sponsor.',
+    '/visas/subclass-482-skills-in-demand-visa',
+  ],
+  [
+    'Partner & family',
+    'Partner, prospective marriage and family visas — presented carefully and completely.',
+    '/visas/partner-visa-onshore-820-801',
+  ],
+  [
+    'Student & graduate',
+    'Study pathways and post-study work, with an eye on your longer-term plans.',
+    '/visas/subclass-500-student-visa',
+  ],
+];
+---
+
+<SimplePage
+  title="Visa Guides"
+  description="Plain-English, step-by-step guidance for Australia's main visa pathways — skilled, employer-sponsored, partner, student and review — from a registered practice."
+  eyebrow="Knowledge Centre"
+  lead="Step-by-step guidance for Australia's main visa pathways — in plainer English than the rule book."
+  cta={{ href: healthCheckUrl, label: 'Start the free Visa Health Check' }}
+  disclaimer={true}
+>
+  <p>
+    Every pathway begins the same way: an honest look at where you stand. These guides explain the
+    main routes to Australia in plain language — what each visa is for, who it suits, and what to
+    prepare — so you can walk into a consultation already understanding your options.
+  </p>
+
+  <ul class="rg__list">
+    {
+      pathways.map(([title, desc, href]) => (
+        <li class="rg__item">
+          <a href={href}>
+            <b>{title}</b>
+            <small>{desc}</small>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+
+  <p>
+    Not sure which pathway fits? <a href={healthCheckUrl}>Start the free Visa Health Check</a> for a personal
+    read on your options, or <a href={bookUrl}>book a consultation</a> to talk it through with a Registered
+    Migration Agent. You can also <a href="/services/">browse all services</a>.
+  </p>
+</SimplePage>
+
+<style>
+  .rg__list {
+    list-style: none;
+    margin: var(--space-5) 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-3);
+  }
+  .rg__item a {
+    display: block;
+    padding: var(--space-4);
+    border: 1px solid color-mix(in srgb, var(--color-action) 12%, transparent);
+    border-radius: var(--radius-card);
+    text-decoration: none;
+    color: var(--color-text);
+    transition:
+      border-color 0.16s var(--ease-standard, ease),
+      background-color 0.16s var(--ease-standard, ease);
+  }
+  .rg__item a:hover {
+    border-color: color-mix(in srgb, var(--color-emphasis) 45%, transparent);
+    background: color-mix(in srgb, var(--color-action) 4%, transparent);
+  }
+  .rg__item b {
+    display: block;
+    font-family: var(--font-display);
+    font-size: var(--type-h4);
+    color: var(--color-action);
+    line-height: 1.2;
+  }
+  .rg__item small {
+    display: block;
+    margin-block-start: var(--space-1);
+    color: var(--color-text-muted);
+    font-size: var(--type-body-sm);
+    line-height: 1.5;
+  }
+  @media (min-width: 640px) {
+    .rg__list {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>

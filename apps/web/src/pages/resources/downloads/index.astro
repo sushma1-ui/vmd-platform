@@ -1,0 +1,30 @@
+---
+import SimplePage from '../../../components/content/SimplePage.astro';
+import { getCtaLinks } from '../../../lib/cms.ts';
+const { bookUrl, healthCheckUrl } = await getCtaLinks();
+---
+
+<SimplePage
+  title="Forms & Downloads"
+  description="Helpful resources and downloadable guides for your Australian migration journey, from Visa & Migration Doctors."
+  eyebrow="Knowledge Centre"
+  lead="Helpful resources and downloadable guides for your journey to Australia."
+  cta={{ href: healthCheckUrl, label: 'Start the free Visa Health Check' }}
+  disclaimer={true}
+>
+  <p>
+    We're preparing a set of practical downloads — plain-English guides and preparation resources to
+    help you move forward with confidence. They'll appear here as they're published.
+  </p>
+  <p>
+    For official government forms, always use the source directly:
+    <a href="https://immi.homeaffairs.gov.au/" rel="noopener" target="_blank"
+      >the Department of Home Affairs</a
+    >. For advice on which forms apply to your situation — and how to complete them correctly —
+    speak to a Registered Migration Agent:
+  </p>
+  <ul>
+    <li><a href={healthCheckUrl}>Start the free Visa Health Check</a>.</li>
+    <li><a href={bookUrl}>Book a consultation</a> for guidance tailored to your matter.</li>
+  </ul>
+</SimplePage>

@@ -1,0 +1,34 @@
+---
+import SimplePage from '../../../components/content/SimplePage.astro';
+import { getCtaLinks } from '../../../lib/cms.ts';
+const { bookUrl, healthCheckUrl } = await getCtaLinks();
+---
+
+<SimplePage
+  title="Checklists"
+  description="Practical document checklists and preparation resources for Australian visa and skills-assessment applications."
+  eyebrow="Knowledge Centre"
+  lead="Well-prepared applications start with the right documents — gathered early, in the right order."
+  cta={{ href: bookUrl, label: 'Book a consultation' }}
+  disclaimer={true}
+>
+  <p>
+    Much of a strong application is preparation: the right evidence, assembled carefully and lodged
+    on time. Because every matter is different, the documents you need depend on your visa and your
+    circumstances — so at Visa &amp; Migration Doctors your checklist is prepared for your specific
+    case, not a generic list.
+  </p>
+  <p>
+    We're adding downloadable, pathway-specific checklists to this page. In the meantime, the
+    fastest way to know exactly what to prepare is a personal assessment:
+  </p>
+  <ul>
+    <li>
+      <a href={healthCheckUrl}>Start the free Visa Health Check</a> — a quick read on where you stand
+      and what matters most.
+    </li>
+    <li>
+      <a href={bookUrl}>Book a consultation</a> — leave with a clear, written list tailored to your matter.
+    </li>
+  </ul>
+</SimplePage>
