@@ -654,13 +654,19 @@ try {
   /* Mobile: a different, lighter treatment — focal point moved up and away from
      the stacked copy/form, and visibility reduced so the hero stays clean. */
   @media (max-width: 767px) {
+    /* Mobile: the landscape photo can't fill the tall, stacked hero without
+       zooming into an unrecognisable slice. So constrain it to a landscape BAND
+       at the top (behind the headline), keep the Opera House in frame, and fade
+       it out before the form — clearly visible, still readable. */
     .hero__photo {
-      -webkit-mask-image: radial-gradient(120% 72% at 62% 12%, #000 14%, transparent 70%);
-      mask-image: radial-gradient(120% 72% at 62% 12%, #000 14%, transparent 70%);
+      inset-block-end: auto;
+      block-size: min(48vh, 360px);
+      -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 58%, transparent 100%);
+      mask-image: linear-gradient(180deg, #000 0%, #000 58%, transparent 100%);
     }
     .hero__photo img {
-      object-position: 60% 12%;
-      opacity: 0.15;
+      object-position: 55% center;
+      opacity: 0.34;
     }
   }
   .hero__title {
