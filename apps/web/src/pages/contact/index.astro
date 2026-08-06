@@ -57,6 +57,18 @@ const c = await getContactPage();
           {PRACTICE.address.postcode}
         </li>
       </ul>
+      <div class="ct__details">
+        <p class="ct__details-h">Practice details</p>
+        <p>{PRACTICE.legalEntity} trading as {PRACTICE.legalName} · ABN {PRACTICE.abn}</p>
+        <p>
+          Registered Migration Agent: {PRACTICE.principal.name} · MARN {PRACTICE.principal.marn} · registered
+          since 19 September 2023
+        </p>
+        <p>
+          Client information is handled in accordance with the Privacy Act 1988 (Cth), and the
+          practice is conducted in accordance with the Migration Agents Code of Conduct.
+        </p>
+      </div>
     </div>
     <div class="ct__form">
       <EnquiryForm source="general-enquiry" heading={c?.formHeading || 'Send an enquiry'} />
@@ -96,6 +108,24 @@ const c = await getContactPage();
     color: var(--color-action);
     border-block-end: 1px solid var(--color-emphasis);
     text-decoration: none;
+  }
+  .ct__details {
+    margin-block-start: var(--space-5);
+    padding-block-start: var(--space-4);
+    border-block-start: 1px solid color-mix(in srgb, var(--color-action) 12%, transparent);
+    font-size: var(--type-body-sm);
+    line-height: 1.65;
+    color: var(--color-text-muted);
+  }
+  .ct__details p {
+    margin-block: 0 var(--space-2);
+  }
+  .ct__details-h {
+    font-size: var(--type-caption);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--color-emphasis-text);
   }
   @media (min-width: 900px) {
     .ct {

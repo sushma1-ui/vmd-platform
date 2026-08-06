@@ -48,6 +48,24 @@ const METHOD: { term: string; description: string }[] = [
   },
 ];
 
+const CORE_VALUE: { term: string; description: string }[] = [
+  {
+    term: 'Care.',
+    description:
+      'Every matter is received with attention to the person behind it — including honest advice when the honest answer is to wait.',
+  },
+  {
+    term: 'Clarity.',
+    description:
+      'Advice in plain language, a written strategy for every engagement, and transparent scope and fees from the outset.',
+  },
+  {
+    term: 'Consistency.',
+    description:
+      'Documented processes and careful record-keeping, so every matter is handled to the same professional standard.',
+  },
+];
+
 const BELIEFS: { term: string; description: string }[] = [
   {
     term: 'Integrity.',
@@ -60,7 +78,12 @@ const BELIEFS: { term: string; description: string }[] = [
   },
   {
     term: 'Client-centred service.',
-    description: 'Clear communication, regular updates and support at every stage.',
+    description: 'Clear communication, regular updates and support at every stage of the process.',
+  },
+  {
+    term: 'Independence.',
+    description:
+      'Professional judgement is exercised independently and is not directed by any referral or commercial arrangement.',
   },
 ];
 
@@ -161,6 +184,16 @@ export const AboutPage: GlobalConfig = {
               label: 'CTA link',
               defaultValue: '/about/sunil-uprety/',
             },
+          ],
+        },
+        {
+          label: 'Core value',
+          fields: [
+            termList(
+              'coreValue',
+              { singular: 'Value', plural: 'Care · Clarity · Consistency' },
+              CORE_VALUE,
+            ),
           ],
         },
         {

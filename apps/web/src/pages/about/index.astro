@@ -43,7 +43,30 @@ const BELIEFS_FALLBACK: [string, string][] = [
     'Professional competence.',
     'Recommendations grounded in current law, policy and evidence — never a template.',
   ],
-  ['Client-centred service.', 'Clear communication, regular updates and support at every stage.'],
+  [
+    'Client-centred service.',
+    'Clear communication, regular updates and support at every stage of the process.',
+  ],
+  [
+    'Independence.',
+    'Professional judgement is exercised independently and is not directed by any referral or commercial arrangement.',
+  ],
+];
+
+// "Care. Clarity. Consistency." — the practice's core value (Corporate Profile).
+const CORE_VALUE_FALLBACK: [string, string][] = [
+  [
+    'Care.',
+    'Every matter is received with attention to the person behind it — including honest advice when the honest answer is to wait.',
+  ],
+  [
+    'Clarity.',
+    'Advice in plain language, a written strategy for every engagement, and transparent scope and fees from the outset.',
+  ],
+  [
+    'Consistency.',
+    'Documented processes and careful record-keeping, so every matter is handled to the same professional standard.',
+  ],
 ];
 
 // "Why VMD"
@@ -76,8 +99,23 @@ const WHYVMD_FALLBACK: [string, string][] = [
 
 // Prefer the CMS-managed lists; fall back to the built-in approved copy.
 const disciplines = pairsFrom(a?.method, DISCIPLINES_FALLBACK);
+const coreValue = pairsFrom(a?.coreValue, CORE_VALUE_FALLBACK);
 const beliefs = pairsFrom(a?.beliefs, BELIEFS_FALLBACK);
 const whyVmd = pairsFrom(a?.whyVmd, WHYVMD_FALLBACK);
+
+// Practice activity (Corporate Profile, as at 3 August 2026). These describe the
+// VOLUME and BREADTH of work prepared and managed — not outcomes. The disclaimer
+// below is mandatory and must remain with the figures.
+const ACTIVITY = {
+  total: '1,653',
+  period: '19 September 2023 – 3 August 2026',
+  breakdown: [
+    ['1,070', 'Visa applications'],
+    ['284', 'Expressions of Interest (SkillSelect) & related lodgements'],
+    ['239', 'Skills assessment applications'],
+    ['60', 'Administrative Review Tribunal matters'],
+  ] as [string, string][],
+};
 
 // "Meet the team" — CMS-managed via the Team Members collection (Website Content →
 // Team Members). Section heading/intro come from the About Page global. Falls back
@@ -99,6 +137,7 @@ const members: TeamMember[] = cmsMembers.length
           'Sunil leads the practice and personally assesses every migration matter. With a background spanning education, migration, business and compliance, he provides practical, honest and tailored advice to clients building their future in Australia.',
         motto:
           'Good migration advice starts with an honest diagnosis — even when the honest answer is to wait.',
+        photo: { url: '/team/sunil.jpg' },
       },
       {
         name: 'Sudeep Bartaula',
@@ -106,6 +145,7 @@ const members: TeamMember[] = cmsMembers.length
         shortBio:
           'Sudeep supports the practice through document management, compliance processes and application coordination, working under the supervision of the Registered Migration Agent. He combines strong analytical skills with extensive client-service experience, helping keep each matter organised, accurate and on time.',
         motto: 'Clients and compliance.',
+        photo: { url: '/team/sudeep.jpg' },
       },
     ];
 // Normalise new (position/shortBio/expertise) and legacy (role/bio/specialisations)
@@ -173,6 +213,20 @@ const photoUrl = (m: TeamMember): string | null =>
     }
   </div>
 
+  <section class="about-section" aria-label="Our core value">
+    <p class="about-section__eyebrow">Our core value</p>
+    <h2 class="about-section__h about-section__h--tight">Care. Clarity. Consistency.</h2>
+    <div class="deflist">
+      {
+        coreValue.map(([term, desc]) => (
+          <p>
+            <strong>{term}</strong> {desc}
+          </p>
+        ))
+      }
+    </div>
+  </section>
+
   <section class="about-section" aria-label="What we believe">
     <h2 class="about-section__h">What we believe</h2>
     <div class="deflist">
@@ -184,6 +238,47 @@ const photoUrl = (m: TeamMember): string | null =>
         ))
       }
     </div>
+  </section>
+
+  <section class="about-section" aria-label="Experience">
+    <h2 class="about-section__h">A new brand. An established practitioner.</h2>
+    <p>
+      Visa &amp; Migration Doctors is a young brand built on an established professional record.
+      Immigration assistance at the practice is provided by its Principal, Sunil Uprety, who has
+      practised as a Registered Migration Agent since 19 September 2023.
+    </p>
+    <p>
+      Since registration, Sunil has prepared and managed the following volume of applications and
+      lodgements across skilled, family, student, graduate and review matters:
+    </p>
+    <div class="stats">
+      <div class="stats__lead">
+        <span class="stats__num">{ACTIVITY.total}</span>
+        <span class="stats__caption">applications and lodgements prepared and managed</span>
+        <span class="stats__period">{ACTIVITY.period}</span>
+      </div>
+      <dl class="stats__grid">
+        {
+          ACTIVITY.breakdown.map(([n, label]) => (
+            <div class="stats__item">
+              <dt class="stats__item-num">{n}</dt>
+              <dd class="stats__item-label">{label}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+    <p class="stats__note">
+      Figures are drawn from the practitioner's activity records as at 3 August 2026 and record
+      applications and lodgements prepared and managed. They describe the volume and breadth of work
+      undertaken; they are not statements about outcomes, and no outcome can be guaranteed.
+    </p>
+    <p>
+      Behind the practitioner sits a deliberately built practice: matter management on dedicated
+      practice software, documented processes for every stage of a matter, structured compliance and
+      document control, and administrative support that keeps each file organised, accurate and on
+      time.
+    </p>
   </section>
 
   <section class="team" id="team" aria-label={teamHeading} style="scroll-margin-top: 6rem">
@@ -243,6 +338,80 @@ const photoUrl = (m: TeamMember): string | null =>
   .about-section__h {
     font-size: var(--type-h2);
     margin: 0 0 var(--space-4);
+  }
+  .about-section__h--tight {
+    margin-block-end: var(--space-4);
+  }
+  .about-section__eyebrow {
+    margin: 0 0 var(--space-1);
+    font-size: var(--type-caption);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--color-emphasis-text);
+  }
+  /* Practice-activity figures — a restrained stats treatment (no charts). The
+     lead figure is emphasised; the four-way breakdown sits in a simple grid. The
+     accompanying note is mandatory and describes volume, never outcomes. */
+  .stats {
+    margin-block: var(--space-5);
+    padding: var(--space-5);
+    border: 1px solid color-mix(in srgb, var(--color-action) 12%, transparent);
+    border-radius: var(--radius-card, 14px);
+    background: var(--color-ground-warm);
+  }
+  .stats__lead {
+    display: grid;
+    gap: var(--space-1);
+    padding-block-end: var(--space-4);
+    border-block-end: 1px solid color-mix(in srgb, var(--color-action) 12%, transparent);
+  }
+  .stats__num {
+    font-family: var(--font-display);
+    font-size: var(--type-display-2);
+    line-height: 1;
+    color: var(--color-action);
+  }
+  .stats__caption {
+    font-size: var(--type-body);
+    color: var(--color-text);
+  }
+  .stats__period {
+    font-size: var(--type-body-sm);
+    color: var(--color-text-muted);
+  }
+  .stats__grid {
+    margin: 0;
+    margin-block-start: var(--space-4);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+  .stats__item {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-3);
+  }
+  .stats__item-num {
+    font-family: var(--font-display);
+    font-size: var(--type-h3);
+    color: var(--color-emphasis-text);
+    min-inline-size: 3.5rem;
+  }
+  .stats__item-label {
+    margin: 0;
+    line-height: 1.5;
+    color: var(--color-text);
+  }
+  .stats__note {
+    font-size: var(--type-body-sm);
+    line-height: 1.6;
+    color: var(--color-text-muted);
+  }
+  @media (min-width: 560px) {
+    .stats__grid {
+      grid-template-columns: 1fr 1fr;
+    }
   }
   /* Definition-style blocks (bold lead-in term + description), reused by the
      "Diagnosis/Pathway/Outcome", "What we believe" and "Why VMD" lists. */

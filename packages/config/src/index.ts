@@ -21,6 +21,12 @@ export { serverEnv, publicEnv, type ServerEnv, type PublicEnv } from './env.ts';
  */
 export const PRACTICE = {
   legalName: 'Visa & Migration Doctors',
+  // Registered entity behind the trading name + ABN (Corporate Profile, Aug 2026).
+  // Shown wherever business/legal identity is required (footer, contact details).
+  legalEntity: 'Students Avenue Pty Ltd',
+  abn: '65 632 979 509',
+  // Brand tagline (Corporate Profile). Used as a subtle support line, not a heading.
+  tagline: "Understanding you, advising what's best",
   // Locked brand wording (30 June / 3 July rulings): the support line/descriptor is
   // "Registered Migration Agent, Perth" — the descriptor attaches to the person, and
   // "Migration Advisory · Perth" is prohibited. Do not change without a recorded ruling.

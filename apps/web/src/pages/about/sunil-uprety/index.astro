@@ -8,11 +8,11 @@ const register = PRACTICE.regulator.registerSearchUrl;
 const qualifications = [
   'Registered Migration Agent (MARN 2318234)',
   'Graduate Diploma in Australian Migration Law and Practice',
-  'Master of Business Administration (MBA)',
+  'Master of Business Administration',
   'Master of Global Project Management',
   'MSc in Professional Accountancy',
-  'ACCA Member',
-  'QEAC Certified Education Counsellor',
+  'Fellow, Association of Chartered Certified Accountants (FCCA)',
+  'QEAC-certified education counsellor (QEAC No. 3865, since 2015)',
 ];
 
 const areasOfPractice = [
@@ -32,24 +32,36 @@ const areasOfPractice = [
   cta={{ href: bookUrl, label: 'Book a Consultation' }}
   disclaimer={true}
 >
+  <figure class="pf__portrait">
+    <img
+      src="/team/sunil-portrait.jpg"
+      alt="Sunil Uprety, Registered Migration Agent, at the Visa & Migration Doctors office"
+      width="720"
+      height="900"
+      loading="eager"
+      decoding="async"
+    />
+  </figure>
+
   <p>
     Sunil Uprety is the Principal and Registered Migration Agent of Visa &amp; Migration Doctors.
   </p>
 
   <p>
-    His professional journey began in the education sector in 2015 as a QEAC Certified Education
-    Counsellor, helping international students make informed decisions about their study and
+    His professional journey began in the education sector in 2015 as a QEAC-certified education
+    counsellor, helping international students make informed decisions about their study and
     migration goals. Over the following years he gained broad experience supporting clients across
     education, migration and business advisory services.
   </p>
 
   <p>
-    Sunil became an ACCA Member in May 2017 and completed a Master of Business Administration and a
-    Master of Global Project Management in 2019. His interest in Australian migration law led him to
-    complete the Graduate Diploma in Australian Migration Law and Practice at Griffith University.
-    From 2019, he worked under a Registered Migration Agent, supporting him across a broad range of
-    visa matters in a clerical and case-support capacity, before obtaining his own registration on
-    19 September 2023.
+    Sunil became an ACCA member in May 2017 — and is today a Fellow of the Association of Chartered
+    Certified Accountants (FCCA) — and completed a Master of Business Administration and a Master of
+    Global Project Management in 2019, together with an MSc in Professional Accountancy. His
+    interest in Australian migration law led him to complete the Graduate Diploma in Australian
+    Migration Law and Practice at Griffith University. From 2019, he worked under a Registered
+    Migration Agent, supporting him across a broad range of visa matters in a clerical and
+    case-support capacity, before obtaining his own registration on 19 September 2023.
   </p>
 
   <p>
@@ -81,10 +93,35 @@ const areasOfPractice = [
 </SimplePage>
 
 <style>
+  /* Premium editorial portrait — framed, floated beside the intro on wider
+     screens, full-width above it on mobile. Natural aspect ratio, no distortion. */
+  .pf__portrait {
+    margin: 0 0 var(--space-4);
+    border-radius: var(--radius-card, 14px);
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--color-emphasis) 32%, transparent);
+    box-shadow: var(--shadow-subtle, 0 12px 30px -16px rgba(20, 40, 77, 0.4));
+    background: var(--color-ground-warm);
+    line-height: 0;
+  }
+  .pf__portrait img {
+    display: block;
+    inline-size: 100%;
+    block-size: auto;
+  }
+  @media (min-width: 640px) {
+    .pf__portrait {
+      float: inline-end;
+      inline-size: 15.5rem;
+      margin-inline-start: var(--space-6);
+      margin-block-start: var(--space-1);
+    }
+  }
   .pf__h {
     font-size: var(--type-h3);
     margin-block: var(--space-6) var(--space-2);
     color: var(--color-action);
+    clear: both;
   }
   .pf__list {
     margin: 0 0 var(--space-3);

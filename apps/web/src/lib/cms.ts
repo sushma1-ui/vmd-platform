@@ -305,6 +305,8 @@ export interface AboutContent {
   body?: { text?: string | null }[] | null;
   /** "Diagnosis / Pathway / Outcome" — the clinical method. */
   method?: TermItem[] | null;
+  /** "Care / Clarity / Consistency" — the practice's core value. */
+  coreValue?: TermItem[] | null;
   /** "What we believe" list. */
   beliefs?: TermItem[] | null;
   /** "Why VMD" list. */

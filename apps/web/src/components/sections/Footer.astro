@@ -70,6 +70,7 @@ const ACKNOWLEDGEMENT =
         decoding="async"
       />
       <p class="footer__name">{PRACTICE.legalName}</p>
+      <p class="footer__tagline">{PRACTICE.tagline}</p>
       <p class="footer__nap">
         {PRACTICE.address.street}, {PRACTICE.address.locality}
         {PRACTICE.address.region}
@@ -106,6 +107,9 @@ const ACKNOWLEDGEMENT =
   </section>
   <div class="footer__legal">
     <Disclaimer variant="outcomes" />
+    <p class="footer__entity">
+      {PRACTICE.legalEntity} trading as {PRACTICE.legalName} · ABN {PRACTICE.abn}
+    </p>
     <p class="footer__copy">
       © {new Date().getFullYear()}
       {PRACTICE.legalName} — a migration practice led by Registered Migration Agent (RMA) {
@@ -138,6 +142,12 @@ const ACKNOWLEDGEMENT =
   .footer__name {
     font-family: var(--font-display);
     font-size: var(--type-h3);
+  }
+  .footer__tagline {
+    margin-block-start: var(--space-1);
+    font-size: var(--type-body-sm);
+    font-style: italic;
+    color: color-mix(in srgb, var(--color-text-inverse) 78%, transparent);
   }
   .footer__nap {
     font-size: var(--type-body-sm);
@@ -201,10 +211,15 @@ const ACKNOWLEDGEMENT =
     margin-inline: auto;
     padding: 0 var(--space-4) var(--space-8);
   }
+  .footer__entity {
+    font-size: var(--type-caption);
+    color: color-mix(in srgb, var(--color-text-inverse) 78%, transparent);
+    margin-block-start: var(--space-3);
+  }
   .footer__copy {
     font-size: var(--type-caption);
     color: color-mix(in srgb, var(--color-text-inverse) 70%, transparent);
-    margin-block-start: var(--space-3);
+    margin-block-start: var(--space-2);
   }
   /* Tablet: a roomy 2-column layout. The tight 5-column row only kicks in once
      there is genuinely room for it, so nothing overflows around 768px. */

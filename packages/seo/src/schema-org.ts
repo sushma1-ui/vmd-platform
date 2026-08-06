@@ -17,6 +17,8 @@ export function organizationSchema() {
     '@type': 'ProfessionalService',
     '@id': `${SITE}/#practice`,
     name: PRACTICE.legalName,
+    legalName: PRACTICE.legalEntity,
+    slogan: PRACTICE.tagline,
     url: SITE,
     logo: `${SITE}/logo-vmd.png`,
     image: `${SITE}/logo-vmd.png`,

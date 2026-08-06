@@ -27,6 +27,17 @@ const areasOfFocus = [
   cta={{ href: bookUrl, label: 'Book a Consultation' }}
   disclaimer={true}
 >
+  <figure class="pf__portrait">
+    <img
+      src="/team/sudeep-portrait.jpg"
+      alt="Sudeep Bartaula, Data & Compliance Officer, at the Visa & Migration Doctors office"
+      width="720"
+      height="900"
+      loading="eager"
+      decoding="async"
+    />
+  </figure>
+
   <p>
     Sudeep Bartaula joined Visa &amp; Migration Doctors in February 2025 as Data &amp; Compliance
     Officer, supporting the practice's documentation, compliance and operational functions under the
@@ -67,13 +78,51 @@ const areasOfFocus = [
     Outside work and study, Sudeep enjoys exploring developments in data analytics, business
     intelligence and emerging technologies.
   </p>
+
+  <p class="pf__note">
+    Sudeep does not provide immigration assistance. All immigration assistance at the practice is
+    provided by the Registered Migration Agent.
+  </p>
 </SimplePage>
 
 <style>
+  /* Premium editorial portrait — framed, floated beside the intro on wider
+     screens, full-width above it on mobile. Natural aspect ratio, no distortion. */
+  .pf__portrait {
+    margin: 0 0 var(--space-4);
+    border-radius: var(--radius-card, 14px);
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--color-emphasis) 32%, transparent);
+    box-shadow: var(--shadow-subtle, 0 12px 30px -16px rgba(20, 40, 77, 0.4));
+    background: var(--color-ground-warm);
+    line-height: 0;
+  }
+  .pf__portrait img {
+    display: block;
+    inline-size: 100%;
+    block-size: auto;
+  }
+  @media (min-width: 640px) {
+    .pf__portrait {
+      float: inline-end;
+      inline-size: 15.5rem;
+      margin-inline-start: var(--space-6);
+      margin-block-start: var(--space-1);
+    }
+  }
   .pf__h {
     font-size: var(--type-h3);
     margin-block: var(--space-6) var(--space-2);
     color: var(--color-action);
+    clear: both;
+  }
+  .pf__note {
+    clear: both;
+    margin-block-start: var(--space-5);
+    padding-block-start: var(--space-3);
+    border-block-start: 1px solid color-mix(in srgb, var(--color-action) 12%, transparent);
+    font-size: var(--type-body-sm);
+    color: var(--color-text-muted);
   }
   .pf__list {
     margin: 0 0 var(--space-3);
