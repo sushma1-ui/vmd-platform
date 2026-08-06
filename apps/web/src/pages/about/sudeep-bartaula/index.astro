@@ -79,6 +79,13 @@ const areasOfFocus = [
     intelligence and emerging technologies.
   </p>
 
+  <h2 class="pf__h">Direct contact</h2>
+  <p class="pf__contact">
+    <a href="tel:+61493719431">+61 493 719 431</a>
+    <span class="pf__dot" aria-hidden="true">·</span>
+    <a href="mailto:sudeep@migrationdoctors.com.au">sudeep@migrationdoctors.com.au</a>
+  </p>
+
   <p class="pf__note">
     Sudeep does not provide immigration assistance. All immigration assistance at the practice is
     provided by the Registered Migration Agent.
@@ -115,6 +122,22 @@ const areasOfFocus = [
     margin-block: var(--space-6) var(--space-2);
     color: var(--color-action);
     clear: both;
+  }
+  .pf__contact {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-2);
+    line-height: 1.6;
+  }
+  .pf__contact a {
+    color: var(--color-action);
+    border-block-end: 1px solid var(--color-emphasis);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .pf__dot {
+    color: var(--color-text-muted);
   }
   .pf__note {
     clear: both;
