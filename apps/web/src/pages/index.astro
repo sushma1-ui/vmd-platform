@@ -637,30 +637,30 @@ try {
     user-select: none;
     /* Live centre-right; dissolve toward the copy (left) and all edges so it
        never touches the headline, the nav above, or the section below. */
-    -webkit-mask-image: radial-gradient(115% 105% at 68% 44%, #000 20%, transparent 68%);
-    mask-image: radial-gradient(115% 105% at 68% 44%, #000 20%, transparent 68%);
+    -webkit-mask-image: radial-gradient(115% 110% at 68% 30%, #000 22%, transparent 70%);
+    mask-image: radial-gradient(115% 110% at 68% 30%, #000 22%, transparent 70%);
   }
   .hero__photo img {
     inline-size: 100%;
     block-size: 100%;
     object-fit: cover;
-    object-position: 70% 42%;
+    object-position: 70% 24%;
     /* Atmospheric, not photographic — brightened, warm-toned, low-contrast.
        Strength raised from a whisper to a clearer presence (still masked away
        from the headline so readability holds). */
-    opacity: 0.22;
-    filter: brightness(1.08) contrast(0.88) saturate(0.85) sepia(0.14);
+    opacity: 0.26;
+    filter: brightness(1.05) contrast(0.95) saturate(1.08) sepia(0.05);
   }
   /* Mobile: a different, lighter treatment — focal point moved up and away from
      the stacked copy/form, and visibility reduced so the hero stays clean. */
   @media (max-width: 767px) {
     .hero__photo {
-      -webkit-mask-image: radial-gradient(120% 70% at 62% 20%, #000 14%, transparent 70%);
-      mask-image: radial-gradient(120% 70% at 62% 20%, #000 14%, transparent 70%);
+      -webkit-mask-image: radial-gradient(120% 72% at 62% 12%, #000 14%, transparent 70%);
+      mask-image: radial-gradient(120% 72% at 62% 12%, #000 14%, transparent 70%);
     }
     .hero__photo img {
-      object-position: 60% 22%;
-      opacity: 0.12;
+      object-position: 60% 12%;
+      opacity: 0.15;
     }
   }
   .hero__title {
