@@ -4,9 +4,8 @@ interface Props {
   source?: string;
   heading?: string;
   withMessage?: boolean;
-  consent?: boolean;
 }
-const { source = 'general-enquiry', heading, withMessage = true, consent = true } = Astro.props;
+const { source = 'general-enquiry', heading, withMessage = true } = Astro.props;
 const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
 ---
 
@@ -59,14 +58,6 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
     class="ef__hp"
     aria-hidden="true"
   />
-  {
-    consent && (
-      <label class="ef__consent">
-        <input type="checkbox" name="marketingConsent" /> Keep me updated when the rules that affect
-        me change (optional).
-      </label>
-    )
-  }
   {
     turnstileSiteKey && (
       <div class="cf-turnstile ef__ts" data-sitekey={turnstileSiteKey} data-size="flexible" />
@@ -123,14 +114,6 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
     position: absolute;
     left: -9999px;
   }
-  .ef__consent {
-    display: flex;
-    gap: var(--space-2);
-    align-items: start;
-    font-size: var(--type-body-sm);
-    color: var(--color-text-muted);
-    margin-block: var(--space-3);
-  }
   .ef button {
     min-block-size: var(--space-6);
     padding-inline: var(--space-4);
@@ -183,7 +166,6 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
         email: fd.get('email'),
         mobile: fd.get('mobile') || undefined,
         message: fd.get('message') || undefined,
-        marketingConsent: fd.get('marketingConsent') === 'on',
         company: fd.get('company') || undefined,
         turnstileToken: fd.get('cf-turnstile-response') || undefined,
       };
