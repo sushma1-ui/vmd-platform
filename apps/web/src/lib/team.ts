@@ -42,7 +42,7 @@ export const FEATURED_TEAM: FeaturedMember[] = [
     credential: `MARN ${PRACTICE.principal.marn}`,
     badge: 'OMARA-registered',
     profileHref: '/about/sunil-uprety/',
-    photo: { url: '/team/sunil.jpg', alt: 'Sunil Uprety, Registered Migration Agent' },
+    photo: { url: '/team/sunil-portrait.jpg', alt: 'Sunil Uprety, Registered Migration Agent' },
     shortBio:
       'Sunil leads the practice and personally assesses every matter. You get an honest read on where your case stands — including the best time and way to move forward — from the Registered Migration Agent, not a caseworker.',
     philosophy:
@@ -59,6 +59,7 @@ export const FEATURED_TEAM: FeaturedMember[] = [
     name: 'Sudeep Bartaula',
     position: 'Data & Compliance Officer',
     profileHref: '/about/sudeep-bartaula/',
+    photo: { url: '/team/sudeep-portrait.jpg', alt: 'Sudeep Bartaula, Data & Compliance Officer' },
     shortBio:
       'Sudeep keeps every client file accurate, secure and complete — managing the documentation and data behind each application, so nothing is missed and every deadline is tracked. It is the quiet, careful work that keeps a case moving.',
     philosophy:
