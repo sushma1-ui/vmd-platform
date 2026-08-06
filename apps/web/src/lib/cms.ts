@@ -276,6 +276,8 @@ export interface TeamMember {
   role?: string | null;
   credential?: string | null;
   shortBio?: string | null;
+  /** Short personal line shown in quotes under the bio on the About page. */
+  motto?: string | null;
   /** Legacy alias for shortBio (older About-global data). */
   bio?: string | null;
   /** Legacy free-text specialisations (older About-global data). */
@@ -294,11 +296,19 @@ export interface TeamMember {
   displayOrder?: number | null;
   featured?: boolean | null;
 }
+/** A bold lead-in term + description, as stored by the method/beliefs/whyVmd arrays. */
+export type TermItem = { term?: string | null; description?: string | null };
 export interface AboutContent {
   eyebrow?: string | null;
   title?: string | null;
   lead?: string | null;
   body?: { text?: string | null }[] | null;
+  /** "Diagnosis / Pathway / Outcome" — the clinical method. */
+  method?: TermItem[] | null;
+  /** "What we believe" list. */
+  beliefs?: TermItem[] | null;
+  /** "Why VMD" list. */
+  whyVmd?: TermItem[] | null;
   ctaLabel?: string | null;
   ctaHref?: string | null;
   team?: { heading?: string | null; intro?: string | null; members?: TeamMember[] | null } | null;

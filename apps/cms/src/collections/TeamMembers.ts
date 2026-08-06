@@ -94,6 +94,16 @@ export const TeamMembers: CollectionConfig = {
               admin: { description: 'One or two lines shown on the About page and previews.' },
             },
             {
+              name: 'motto',
+              type: 'text',
+              label: 'Motto (optional)',
+              admin: {
+                description:
+                  'A short personal line shown in quotes under the bio on the About page. Leave blank to hide.',
+                placeholder: 'e.g. Clients and compliance.',
+              },
+            },
+            {
               name: 'fullBio',
               type: 'richText',
               label: 'Full biography',
