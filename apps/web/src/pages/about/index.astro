@@ -7,23 +7,96 @@ import { cms, getAboutPage, type TeamMember } from '../../lib/cms.ts';
 const a = await getAboutPage();
 const bodyParas = (a?.body ?? []).map((p) => p?.text).filter((t): t is string => !!t);
 
-// "Our team" — CMS-managed via the Team Members collection (Website Content →
+// "Our story" — the clinical method (Diagnosis → Pathway → Outcome).
+const disciplines: [string, string][] = [
+  [
+    'Diagnosis.',
+    'A thorough assessment of your circumstances — history, eligibility, risks — before anything is recommended, lodged or promised.',
+  ],
+  [
+    'Pathway.',
+    'A clear written strategy tailored to your situation and goals: your realistic options, with the trade-offs explained in plain language.',
+  ],
+  [
+    'Outcome.',
+    'Careful preparation and guidance throughout the application process, with you informed at every stage.',
+  ],
+];
+
+// "What we believe"
+const beliefs: [string, string][] = [
+  [
+    'Integrity.',
+    'Honest advice, even when the honest answer is to wait or to pursue a different pathway.',
+  ],
+  [
+    'Professional competence.',
+    'Recommendations grounded in current law, policy and evidence — never a template.',
+  ],
+  ['Client-centred service.', 'Clear communication, regular updates and support at every stage.'],
+];
+
+// "Why VMD"
+const whyVmd: [string, string][] = [
+  [
+    'Considered attention on every matter.',
+    'As a boutique, appointment-only practice, we take on a limited number of matters so each receives depth of attention. Every matter is assessed on its individual circumstances, and every client receives guidance tailored to their goals.',
+  ],
+  [
+    'Direct access to the Registered Migration Agent.',
+    'Your matter is personally assessed by Sunil Uprety, Registered Migration Agent (MARN 2318234). You receive advice directly from the practitioner responsible for your case.',
+  ],
+  [
+    'Honest and practical advice.',
+    'Migration decisions carry significant personal and financial consequences. If a pathway is not suitable, we will tell you. If waiting is the better option, we will tell you that too.',
+  ],
+  [
+    'A multidisciplinary perspective.',
+    'The practice draws on experience across migration, international education, business, accounting and compliance — a combination that helps identify practical solutions while maintaining a strong focus on legal and regulatory requirements.',
+  ],
+  [
+    'Accuracy, compliance and attention to detail.',
+    'Well-prepared applications begin with preparation. Our internal processes centre on document management, compliance, accuracy and deadline monitoring, so every matter is handled with care.',
+  ],
+  [
+    'A client-first approach.',
+    "Every migration journey is different. Whether the goal is yours, your family's, your studies or your business, we take the time to understand your objectives and support you throughout the process.",
+  ],
+];
+
+// "Meet the team" — CMS-managed via the Team Members collection (Website Content →
 // Team Members). Section heading/intro come from the About Page global. Falls back
-// to the founding RMA if no members are published yet, so the section is never empty.
-const teamHeading = a?.team?.heading || 'Our team';
-const teamIntro = a?.team?.intro || 'You deal directly with the people who prepare your case.';
+// to the approved team copy if no members are published yet, so the section is
+// never empty and reflects the currently adopted About content.
+const teamHeading = a?.team?.heading || 'The people behind your matter';
+const teamIntro =
+  a?.team?.intro ||
+  'When you engage Visa & Migration Doctors, you work directly with the people responsible for preparing and managing your matter.';
 const cmsMembers = (await cms.teamMembers()).filter((m): m is TeamMember => !!m?.name);
 const members: TeamMember[] = cmsMembers.length
   ? cmsMembers
   : [
       {
         name: PRACTICE.principal.name,
-        position: 'Registered Migration Agent (RMA)',
+        position: 'Director | Registered Migration Agent',
         credential: `MARN ${PRACTICE.principal.marn}`,
         shortBio:
-          'Leads the practice. You get an honest read on where your case stands — including when the better answer is to wait.',
+          'Sunil leads the practice and personally assesses every migration matter. With a background spanning education, migration, business and compliance, he provides practical, honest and tailored advice to clients building their future in Australia.',
+      },
+      {
+        name: 'Sudeep Bartaula',
+        position: 'Data & Compliance Officer',
+        shortBio:
+          'Sudeep supports the practice through document management, compliance processes and application coordination, working under the supervision of the Registered Migration Agent. He combines strong analytical skills with extensive client-service experience, helping keep each matter organised, accurate and on time.',
       },
     ];
+// Team-member mottos — keyed by name so they attach to either CMS or fallback
+// members without changing the card data shape.
+const mottos: Record<string, string> = {
+  'Sunil Uprety':
+    'Good migration advice starts with an honest diagnosis — even when the honest answer is to wait.',
+  'Sudeep Bartaula': 'Clients and compliance.',
+};
 // Normalise new (position/shortBio/expertise) and legacy (role/bio/specialisations)
 // field names so the current card design keeps working with either data source.
 const roleOf = (m: TeamMember) => m.position || m.role || '';
@@ -47,12 +120,12 @@ const photoUrl = (m: TeamMember): string | null =>
 ---
 
 <SimplePage
-  title={a?.title || 'About the Practice'}
+  title={a?.title || 'A migration practice built like a consulting room'}
   description={a?.seo?.metaDescription ||
     'A boutique, appointment-only migration practice in Perth, led by a Registered Migration Agent.'}
   eyebrow={a?.eyebrow || 'The practice'}
   lead={a?.lead ||
-    'Why the clinical frame — Diagnosis, Pathway, Outcome — and what you can count on.'}
+    "Visa & Migration Doctors is a boutique, appointment-only migration practice in Perth, Western Australia, led personally by Sunil Uprety, Registered Migration Agent (MARN 2318234). We assist individuals, couples, families, students, skilled workers and employers to navigate Australia's migration system with clarity."}
   cta={{
     href: a?.ctaHref || '/about/sunil-uprety/',
     label: a?.ctaLabel || 'Meet Sunil Uprety, RMA',
@@ -65,16 +138,39 @@ const photoUrl = (m: TeamMember): string | null =>
     ) : (
       <>
         <p>
-          Visa & Migration Doctors is a boutique, appointment-only practice in Perth. You speak
-          directly with the registered agent.
+          We work by appointment, deliberately. Every matter receives considered attention — not a
+          place in a queue. Before any pathway is recommended, we take the time to understand your
+          circumstances in full, and every matter is assessed on its individual merits against
+          current migration law, policy and professional standards.
         </p>
         <p>
-          <strong>What you can count on:</strong> a straight assessment, careful preparation, and
-          honesty about whether we're the right people to help with your matter.
+          The name is a method, not a metaphor. A good doctor doesn't prescribe before examining,
+          and we don't recommend a visa pathway before understanding your situation. Every
+          engagement follows the same discipline:
         </p>
+        <div class="deflist">
+          {disciplines.map(([term, desc]) => (
+            <p>
+              <strong>{term}</strong> {desc}
+            </p>
+          ))}
+        </div>
       </>
     )
   }
+
+  <section class="about-section" aria-label="What we believe">
+    <h2 class="about-section__h">What we believe</h2>
+    <div class="deflist">
+      {
+        beliefs.map(([term, desc]) => (
+          <p>
+            <strong>{term}</strong> {desc}
+          </p>
+        ))
+      }
+    </div>
+  </section>
 
   <section class="team" id="team" aria-label={teamHeading} style="scroll-margin-top: 6rem">
     <h2 class="team__h">{teamHeading}</h2>
@@ -100,15 +196,54 @@ const photoUrl = (m: TeamMember): string | null =>
               {roleOf(m) && <p class="tm__role">{roleOf(m)}</p>}
               {specOf(m) && <p class="tm__spec">{specOf(m)}</p>}
               {bioOf(m) && <p class="tm__bio">{bioOf(m)}</p>}
+              {m.name && mottos[m.name] && <p class="tm__quote">“{mottos[m.name]}”</p>}
             </div>
           </li>
         ))
       }
     </ul>
   </section>
+
+  <section class="about-section" aria-label="Why VMD">
+    <h2 class="about-section__h">Why VMD</h2>
+    <div class="deflist">
+      {
+        whyVmd.map(([term, desc]) => (
+          <p>
+            <strong>{term}</strong> {desc}
+          </p>
+        ))
+      }
+    </div>
+  </section>
 </SimplePage>
 
 <style>
+  /* Content sections that sit below the story, each separated by the same thin
+     divider the team section uses — keeps the page rhythm consistent. */
+  .about-section {
+    margin-block-start: var(--space-8);
+    padding-block-start: var(--space-6);
+    border-block-start: 1px solid color-mix(in srgb, var(--color-action) 12%, transparent);
+  }
+  .about-section__h {
+    font-size: var(--type-h2);
+    margin: 0 0 var(--space-4);
+  }
+  /* Definition-style blocks (bold lead-in term + description), reused by the
+     "Diagnosis/Pathway/Outcome", "What we believe" and "Why VMD" lists. */
+  .deflist {
+    display: grid;
+    gap: var(--space-4);
+    margin: 0;
+  }
+  .deflist p {
+    margin: 0;
+    line-height: 1.7;
+  }
+  .deflist strong {
+    color: var(--color-text);
+  }
   .team {
     margin-block-start: var(--space-8);
     padding-block-start: var(--space-6);
@@ -181,5 +316,12 @@ const photoUrl = (m: TeamMember): string | null =>
     margin-block-start: var(--space-2);
     line-height: 1.6;
     color: var(--color-text);
+  }
+  .tm__quote {
+    margin-block-start: var(--space-2);
+    font-family: var(--font-display);
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--color-text-muted);
   }
 </style>

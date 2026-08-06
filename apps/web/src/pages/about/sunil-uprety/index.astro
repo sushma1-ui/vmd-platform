@@ -5,79 +5,78 @@ import { PRACTICE } from '@vmd/config';
 const { bookUrl } = await getCtaLinks();
 const register = PRACTICE.regulator.registerSearchUrl;
 
-const expertise = [
-  'Skilled migration — points-tested and state/territory nominated pathways',
-  'Employer-sponsored visas',
+const qualifications = [
+  'Registered Migration Agent (MARN 2318234)',
+  'Graduate Diploma in Australian Migration Law and Practice',
+  'Master of Business Administration (MBA)',
+  'Master of Global Project Management',
+  'MSc in Professional Accountancy',
+  'ACCA Member',
+  'QEAC Certified Education Counsellor',
+];
+
+const areasOfPractice = [
+  'Skilled migration',
+  'Employer sponsored visas',
   'Student and graduate visas',
-  'Partner and family visas',
-  'Visa refusals and ART (merits) review',
+  'Family and partner visas',
+  'Tribunal and review matters',
 ];
 ---
 
 <SimplePage
   title="Sunil Uprety, Registered Migration Agent"
-  description="Registered Migration Agent (RMA): Sunil Uprety · MARN 2318234 — Principal of Visa & Migration Doctors, Perth, bound by the OMARA Code of Conduct."
+  description="Registered Migration Agent (RMA): Sunil Uprety · MARN 2318234 — Director and Principal of Visa & Migration Doctors, Perth, bound by the OMARA Code of Conduct."
   eyebrow="The practitioner"
-  lead="A named, registered and verifiable Registered Migration Agent you can rely on — who reads your case personally."
+  lead="Director | Registered Migration Agent (MARN 2318234)"
   cta={{ href: bookUrl, label: 'Book a Consultation' }}
   disclaimer={true}
 >
   <p>
-    Sunil Uprety is a Registered Migration Agent (MARN 2318234) practising in Perth and the
-    principal of Visa &amp; Migration Doctors. He is bound by the Migration Agents Code of Conduct
-    administered by OMARA, and his registration is verifiable on the public register today.
+    Sunil Uprety is the Principal and Registered Migration Agent of Visa &amp; Migration Doctors.
   </p>
 
-  <h2 class="pf__h">The role</h2>
   <p>
-    As principal, Sunil personally assesses each matter — you work directly with the Registered
-    Migration Agent, not a caseworker. From your first conversation he gives you an honest read on
-    where your case stands, the pathway that genuinely fits, and the best time and way to move
-    forward.
+    His professional journey began in the education sector in 2015 as a QEAC Certified Education
+    Counsellor, helping international students make informed decisions about their study and
+    migration goals. Over the following years he gained broad experience supporting clients across
+    education, migration and business advisory services.
   </p>
 
-  <h2 class="pf__h">Areas of expertise</h2>
+  <p>
+    Sunil became an ACCA Member in May 2017 and completed a Master of Business Administration and a
+    Master of Global Project Management in 2019. His interest in Australian migration law led him to
+    complete the Graduate Diploma in Australian Migration Law and Practice at Griffith University.
+    From 2019, he worked under a Registered Migration Agent, supporting him across a broad range of
+    visa matters in a clerical and case-support capacity, before obtaining his own registration on
+    19 September 2023.
+  </p>
+
+  <p>
+    Today, Sunil leads Visa &amp; Migration Doctors with a focus on ethical practice and
+    personalised advice. He believes migration advice should never be one-size-fits-all: every
+    client deserves a diagnosis of their own circumstances and a strategy built on it.
+  </p>
+
+  <h2 class="pf__h">Qualifications &amp; credentials</h2>
   <ul class="pf__list">
-    {expertise.map((item) => <li>{item}</li>)}
+    {qualifications.map((item) => <li>{item}</li>)}
   </ul>
 
-  <h2 class="pf__h">Experience</h2>
-  <p>
-    Sunil leads every matter with a considered, evidence-based approach — from a first honest
-    assessment through to lodgement and the decision on your case. He is known for straight advice,
-    careful preparation, and telling clients where they genuinely stand, including when the best
-    move is to wait or strengthen a case before applying.
-  </p>
-
-  <h2 class="pf__h">Areas of responsibility</h2>
+  <h2 class="pf__h">Areas of practice</h2>
   <ul class="pf__list">
-    <li>Personal assessment and strategy for every matter</li>
-    <li>Preparation and lodgement of applications</li>
-    <li>Honest, transparent advice and fixed fees, quoted before you commit</li>
-    <li>Compliance with the Migration Agents Code of Conduct</li>
+    {areasOfPractice.map((item) => <li>{item}</li>)}
   </ul>
 
-  <h2 class="pf__h">Registration &amp; accountability</h2>
   <p>
-    Sunil Uprety (MARN 2318234) is a Registered Migration Agent bound by the OMARA Code of Conduct.
-    His registration is public and checkable at any time — a level of accountability you can verify
-    before you commit.
+    Outside professional practice, Sunil enjoys continuous learning, following developments in
+    migration and education policy, and time with family and friends.
   </p>
+
   <p>
     <a class="pf__verify" href={register} rel="noopener" target="_blank">
       Verify Sunil on the OMARA register →
     </a>
-  </p>
-
-  <h2 class="pf__h">Professional philosophy</h2>
-  <blockquote class="pf__quote">
-    “Good migration advice starts with an honest diagnosis — even when the honest answer is to
-    wait.”
-  </blockquote>
-
-  <p>
-    Ready for a straight read on your options? Book a consultation and you'll speak directly with
-    Sunil about where you stand and what comes next.
   </p>
 </SimplePage>
 
@@ -114,15 +113,5 @@ const expertise = [
     border-block-end: 1px solid var(--color-emphasis);
     text-decoration: none;
     font-weight: 600;
-  }
-  .pf__quote {
-    margin: var(--space-3) 0;
-    padding-inline-start: var(--space-4);
-    border-inline-start: 3px solid var(--color-emphasis, #c99a52);
-    font-family: var(--font-display);
-    font-size: var(--type-body-lg);
-    font-style: italic;
-    line-height: 1.5;
-    color: var(--color-text);
   }
 </style>

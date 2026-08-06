@@ -3,61 +3,69 @@ import SimplePage from '../../../components/content/SimplePage.astro';
 import { getCtaLinks } from '../../../lib/cms.ts';
 const { bookUrl } = await getCtaLinks();
 
-// Placeholder-but-professional copy, structured so specifics (experience,
-// qualifications) can be dropped in later without changing the layout. Mirrors
-// the design system of the Sunil Uprety profile page.
-const responsibilities = [
-  'Document management and organisation across every matter',
-  'Application compliance and quality checks before lodgement',
-  'Data accuracy, security and privacy',
-  'Client file integrity, from first enquiry to decision',
-  'Deadline and lodgement tracking',
+const qualifications = [
+  'Master of Business Analytics (current), The University of Western Australia',
+  'Bachelor of Business Administration, Tribhuvan University',
+];
+
+const areasOfFocus = [
+  'Application compliance',
+  'Document management',
+  'Data accuracy and privacy',
+  'Client file integrity',
+  'Process improvement',
+  'Reporting and administration',
+  'Deadline tracking',
 ];
 ---
 
 <SimplePage
   title="Sudeep Bartaula, Data & Compliance Officer"
-  description="Meet Sudeep Bartaula, Data & Compliance Officer at Visa & Migration Doctors — keeping every client file accurate, secure and complete on the way to a decision."
+  description="Meet Sudeep Bartaula, Data & Compliance Officer at Visa & Migration Doctors — supporting documentation, compliance and application coordination under the supervision of the Registered Migration Agent."
   eyebrow="The team"
-  lead="The person who keeps every client file accurate, secure and complete — so nothing is missed on the way to a decision."
+  lead="Data & Compliance Officer"
   cta={{ href: bookUrl, label: 'Book a Consultation' }}
   disclaimer={true}
 >
   <p>
-    Sudeep Bartaula is the Data &amp; Compliance Officer at Visa &amp; Migration Doctors. Behind
-    every application is a great deal of documentation and data, and Sudeep makes sure it is
-    organised, accurate and handled with care — the quiet, meticulous work that keeps a matter
-    moving and gives clients confidence their information is in safe hands.
+    Sudeep Bartaula joined Visa &amp; Migration Doctors in February 2025 as Data &amp; Compliance
+    Officer, supporting the practice's documentation, compliance and operational functions under the
+    supervision of the Registered Migration Agent.
   </p>
 
-  <h2 class="pf__h">The role</h2>
   <p>
-    Sudeep manages the documentation, records and deadlines that sit behind each matter, working
-    closely with the Registered Migration Agent so that every application is complete, consistent
-    and lodged on time. It is a role built on precision, discretion and follow-through.
+    Currently pursuing a Master of Business Analytics at The University of Western Australia, Sudeep
+    combines analytical thinking with a strong client-service mindset. He holds a Bachelor of
+    Business Administration from Shanker Dev Campus, Tribhuvan University, Nepal. Since 2021 he has
+    worked in client-facing and operational roles, developing experience in stakeholder
+    communication, process coordination, documentation management and service delivery.
   </p>
 
-  <h2 class="pf__h">Areas of responsibility</h2>
+  <p>
+    Before joining the migration industry, Sudeep worked as a Loan Processing Associate for an
+    Australian mortgage brokerage and as a Vendor Correspondence Coordinator for a recovery audit
+    firm. These roles strengthened his ability to manage complex documentation, maintain compliance
+    standards and coordinate with clients and stakeholders.
+  </p>
+
+  <p>
+    At Visa &amp; Migration Doctors, Sudeep helps keep applications organised, accurate and prepared
+    in accordance with regulatory requirements.
+  </p>
+
+  <h2 class="pf__h">Qualifications</h2>
   <ul class="pf__list">
-    {responsibilities.map((item) => <li>{item}</li>)}
+    {qualifications.map((item) => <li>{item}</li>)}
   </ul>
 
-  <h2 class="pf__h">Experience</h2>
-  <p>
-    Sudeep brings a detail-oriented background in data management, documentation and administrative
-    compliance, with a focus on accuracy, confidentiality and dependable process. Every client's
-    information is treated with the same standard of care and privacy.
-  </p>
-
-  <h2 class="pf__h">Professional philosophy</h2>
-  <blockquote class="pf__quote">
-    “Behind every smooth application is careful preparation. Getting the detail right — quietly and
-    consistently — is what lets a client focus on their future instead of their paperwork.”
-  </blockquote>
+  <h2 class="pf__h">Areas of focus</h2>
+  <ul class="pf__list">
+    {areasOfFocus.map((item) => <li>{item}</li>)}
+  </ul>
 
   <p>
-    Have a question about your documents or where your matter stands? You're welcome to get in
-    touch, or book a consultation to talk it through with the team.
+    Outside work and study, Sudeep enjoys exploring developments in data analytics, business
+    intelligence and emerging technologies.
   </p>
 </SimplePage>
 
@@ -88,15 +96,5 @@ const responsibilities = [
     block-size: 0.5rem;
     border-radius: 50%;
     background: var(--color-emphasis, #c99a52);
-  }
-  .pf__quote {
-    margin: var(--space-3) 0;
-    padding-inline-start: var(--space-4);
-    border-inline-start: 3px solid var(--color-emphasis, #c99a52);
-    font-family: var(--font-display);
-    font-size: var(--type-body-lg);
-    font-style: italic;
-    line-height: 1.5;
-    color: var(--color-text);
   }
 </style>
