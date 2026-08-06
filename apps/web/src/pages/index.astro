@@ -6,7 +6,7 @@ import { Button, Card, Rule } from '@vmd/ui';
 import { localBusinessSchema, personSchema } from '@vmd/seo';
 import { cms, getSettings, getHomepage } from '../lib/cms.ts';
 import BookCta from '../components/cta/BookCta.astro';
-import TrustGateway from '../components/sections/TrustGateway.astro';
+import ClientTestimonials from '../components/sections/ClientTestimonials.astro';
 import TrustBar from '../components/sections/TrustBar.astro';
 import MeetTeam from '../components/sections/MeetTeam.astro';
 import HealthCheck from '../components/islands/HealthCheck.island.astro';
@@ -444,14 +444,14 @@ try {
     )
   }
 
-  <!-- 10 · TRUST & SUCCESS (gateway cards → dedicated Client Stories hub) -->
+  <!-- 10 · CLIENT TESTIMONIALS (reviews · visa & skill assessments · stories) -->
   {
     shown(hp?.googleReviews) && (
-      <TrustGateway
+      <ClientTestimonials
+        reviews={pinnedReviews}
         rating={settings?.googleReviews?.rating}
         count={settings?.googleReviews?.count}
-        review={pinnedReviews?.[0] ?? null}
-        href="/results/success-stories/"
+        profileUrl={settings?.googleReviews?.profileUrl}
       />
     )
   }

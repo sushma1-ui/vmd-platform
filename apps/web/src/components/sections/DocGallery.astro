@@ -1,0 +1,234 @@
+---
+/**
+ * DocGallery — a responsive grid of real, consented client graphics (visa grants
+ * or skills assessments) with a keyboard-accessible lightbox. Preview WebP +
+ * loading="lazy" + fixed aspect (no layout shift). Used by the dedicated
+ * /results/visa-grants and /results/skill-assessments pages.
+ */
+import type { SuccessMedia } from '../../lib/successMedia.ts';
+interface Props {
+  items: SuccessMedia[];
+}
+const { items } = Astro.props;
+const chevron = (d: string) =>
+  `<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="${d}"/></svg>`;
+---
+
+<ul class="dg" role="list">
+  {
+    items.map((d, i) => (
+      <li class="dg__item">
+        <button
+          class="dg__btn"
+          type="button"
+          data-doc
+          data-src={d.full}
+          data-alt={d.alt}
+          aria-label={`View: ${d.label}${d.sub ? ` (${d.sub})` : ''}`}
+        >
+          <span class="dg__frame">
+            <img
+              src={d.preview}
+              alt={d.alt}
+              width={d.width}
+              height={d.height}
+              loading={i < 4 ? 'eager' : 'lazy'}
+              decoding="async"
+            />
+          </span>
+          <span class="dg__cap">
+            {d.label}
+            {d.sub && <small> · {d.sub}</small>}
+          </span>
+        </button>
+      </li>
+    ))
+  }
+</ul>
+
+<dialog class="dlb" data-doc-lb aria-label="Document">
+  <button class="dlb__x" type="button" data-dlb-close aria-label="Close">✕</button>
+  <img class="dlb__img" data-dlb-img alt="" />
+  <p class="dlb__count" data-dlb-count aria-live="polite"></p>
+  <button
+    class="dlb__nav dlb__nav--prev"
+    type="button"
+    data-dlb-prev
+    aria-label="Previous"
+    set:html={chevron('M15 6l-6 6 6 6')}
+  />
+  <button
+    class="dlb__nav dlb__nav--next"
+    type="button"
+    data-dlb-next
+    aria-label="Next"
+    set:html={chevron('M9 6l6 6-6 6')}
+  />
+</dialog>
+
+<script>
+  const dlb = document.querySelector<HTMLDialogElement>('[data-doc-lb]');
+  if (dlb) {
+    const img = dlb.querySelector<HTMLImageElement>('[data-dlb-img]')!;
+    const countEl = dlb.querySelector<HTMLElement>('[data-dlb-count]')!;
+    const prevBtn = dlb.querySelector<HTMLButtonElement>('[data-dlb-prev]')!;
+    const nextBtn = dlb.querySelector<HTMLButtonElement>('[data-dlb-next]')!;
+    const triggers = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-doc]'));
+    const docs = triggers.map((t) => ({ src: t.dataset.src || '', alt: t.dataset.alt || '' }));
+    let current = 0;
+    const render = (i: number) => {
+      current = i;
+      img.src = docs[i].src;
+      img.alt = docs[i].alt;
+      countEl.textContent = `${i + 1} / ${docs.length}`;
+      prevBtn.disabled = i <= 0;
+      nextBtn.disabled = i >= docs.length - 1;
+    };
+    triggers.forEach((t, i) =>
+      t.addEventListener('click', () => {
+        render(i);
+        dlb.showModal();
+      }),
+    );
+    prevBtn.addEventListener('click', () => current > 0 && render(current - 1));
+    nextBtn.addEventListener('click', () => current < docs.length - 1 && render(current + 1));
+    dlb.querySelector('[data-dlb-close]')?.addEventListener('click', () => dlb.close());
+    dlb.addEventListener('click', (e) => {
+      if (e.target === dlb) dlb.close();
+    });
+    dlb.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft' && current > 0) render(current - 1);
+      if (e.key === 'ArrowRight' && current < docs.length - 1) render(current + 1);
+    });
+  }
+</script>
+
+<style>
+  .dg {
+    list-style: none;
+    margin: var(--space-6) 0 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-5);
+    grid-template-columns: repeat(auto-fill, minmax(min(13rem, 100%), 1fr));
+  }
+  .dg__btn {
+    inline-size: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: zoom-in;
+    text-align: start;
+  }
+  .dg__frame {
+    display: block;
+    aspect-ratio: 1036 / 1296;
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    background: var(--color-ground-warm);
+    border: 1px solid color-mix(in srgb, var(--color-action) 10%, transparent);
+    box-shadow: var(--shadow-subtle, 0 6px 20px -16px rgba(14, 26, 48, 0.34));
+    transition:
+      transform 200ms var(--ease-standard, ease),
+      box-shadow 200ms var(--ease-standard, ease);
+  }
+  .dg__btn:hover .dg__frame,
+  .dg__btn:focus-visible .dg__frame {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-raised, 0 22px 44px -24px rgba(14, 26, 48, 0.4));
+  }
+  .dg__btn:focus-visible .dg__frame {
+    outline: 3px solid var(--color-action);
+    outline-offset: 2px;
+  }
+  .dg__frame img {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+  }
+  .dg__cap {
+    font-size: var(--type-body-sm);
+    font-weight: 600;
+    color: var(--color-text);
+  }
+  .dg__cap small {
+    color: var(--color-text-muted);
+    font-weight: 400;
+  }
+
+  .dlb {
+    border: 0;
+    padding: 0;
+    background: transparent;
+    max-inline-size: min(94vw, 40rem);
+    max-block-size: 94vh;
+    overflow: visible;
+  }
+  .dlb::backdrop {
+    background: color-mix(in srgb, var(--color-ground-deep) 86%, transparent);
+    backdrop-filter: blur(3px);
+  }
+  .dlb__img {
+    display: block;
+    inline-size: 100%;
+    block-size: auto;
+    max-block-size: 88vh;
+    object-fit: contain;
+    border-radius: var(--radius-card);
+    box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.6);
+  }
+  .dlb__count {
+    text-align: center;
+    margin: var(--space-2) 0 0;
+    color: color-mix(in srgb, #fff 88%, transparent);
+    font-size: var(--type-body-sm);
+    font-variant-numeric: tabular-nums;
+  }
+  .dlb__x {
+    position: absolute;
+    inset-block-start: -1rem;
+    inset-inline-end: -1rem;
+    z-index: 2;
+    inline-size: 2.4rem;
+    block-size: 2.4rem;
+    border-radius: 50%;
+    border: 0;
+    background: var(--color-surface);
+    color: var(--color-text);
+    cursor: pointer;
+    box-shadow: var(--shadow-raised, 0 6px 18px rgba(0, 0, 0, 0.3));
+  }
+  .dlb__nav {
+    position: absolute;
+    inset-block-start: 42%;
+    transform: translateY(-50%);
+    inline-size: 3rem;
+    block-size: 3rem;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    border: 0;
+    background: color-mix(in srgb, var(--color-surface) 92%, transparent);
+    color: var(--color-action);
+    cursor: pointer;
+    box-shadow: var(--shadow-raised, 0 6px 18px rgba(0, 0, 0, 0.35));
+  }
+  .dlb__nav--prev {
+    inset-inline-start: -1.4rem;
+  }
+  .dlb__nav--next {
+    inset-inline-end: -1.4rem;
+  }
+  .dlb__nav:disabled {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .dlb__x:focus-visible,
+  .dlb__nav:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+  }
+</style>

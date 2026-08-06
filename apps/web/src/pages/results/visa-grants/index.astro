@@ -1,0 +1,77 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { breadcrumbSchema } from '@vmd/seo';
+import { Disclaimer } from '@vmd/ui';
+import DocGallery from '../../../components/sections/DocGallery.astro';
+import { VISA_GRANTS } from '../../../lib/successMedia.ts';
+
+const trail = [
+  { name: 'Home', path: '/' },
+  { name: 'Results', path: '/results/' },
+  { name: 'Visa grants', path: '/results/visa-grants/' },
+];
+---
+
+<Base
+  title="Visa grants — real, consented client outcomes"
+  description="Genuine visa grant graphics shared with each client's permission, with personal details redacted. Every case is decided on its own merits; this is not a guarantee of any outcome."
+  schemas={[breadcrumbSchema(trail)]}
+>
+  <section class="rgp">
+    <header class="rgp__head">
+      <p class="rgp__eyebrow">Real clients · shared with permission</p>
+      <h1 class="rgp__title">Visa grants</h1>
+      <p class="rgp__lead">
+        Genuine visa outcomes from clients who agreed to share them — personal details are redacted.
+        Tap any graphic to view it. Every case is different and decided on its own merits; these are
+        not a guarantee of any outcome.
+      </p>
+    </header>
+
+    <DocGallery items={VISA_GRANTS} />
+
+    <div class="rgp__foot">
+      <a class="rgp__more" href="/results/skill-assessments/">View skills assessments →</a>
+      <Disclaimer variant="outcomes" />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .rgp {
+    max-inline-size: var(--container-max);
+    margin-inline: auto;
+    padding: var(--space-7) var(--space-4) var(--space-9);
+  }
+  .rgp__head {
+    max-inline-size: 62ch;
+  }
+  .rgp__eyebrow {
+    font-size: var(--type-caption);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-emphasis-text);
+    font-weight: 600;
+  }
+  .rgp__title {
+    font-size: var(--type-display-2);
+    margin-block: var(--space-2) var(--space-3);
+  }
+  .rgp__lead {
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+  .rgp__foot {
+    margin-block-start: var(--space-8);
+  }
+  .rgp__more {
+    display: inline-block;
+    margin-block-end: var(--space-5);
+    font-weight: 600;
+    color: var(--color-emphasis-text);
+    text-decoration: none;
+  }
+  .rgp__more:hover {
+    text-decoration: underline;
+  }
+</style>
