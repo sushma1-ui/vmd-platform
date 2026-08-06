@@ -60,6 +60,15 @@ const ACKNOWLEDGEMENT =
 <footer class="footer">
   <div class="footer__inner">
     <div class="footer__brand">
+      <img
+        class="footer__logo"
+        src="/logo-vmd.png"
+        alt=""
+        width="96"
+        height="96"
+        loading="lazy"
+        decoding="async"
+      />
       <p class="footer__name">{PRACTICE.legalName}</p>
       <p class="footer__nap">
         {PRACTICE.address.street}, {PRACTICE.address.locality}
@@ -118,6 +127,13 @@ const ACKNOWLEDGEMENT =
     display: grid;
     gap: var(--space-6);
     grid-template-columns: 1fr;
+  }
+  .footer__logo {
+    inline-size: 3rem;
+    block-size: 3rem;
+    object-fit: contain;
+    display: block;
+    margin-block-end: var(--space-3);
   }
   .footer__name {
     font-family: var(--font-display);

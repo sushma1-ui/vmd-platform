@@ -78,9 +78,9 @@ const register = PRACTICE.regulator.registerSearchUrl;
 </div>
 <header class="header" data-header>
   <div class="header__inner">
-    <a class="brand" href="/">
-      <span class="brand__mark" aria-hidden="true">VMD</span>
-      <span class="brand__name">{PRACTICE.legalName}</span>
+    <a class="brand" href="/" aria-label={`${PRACTICE.legalName} — home`}>
+      <img class="brand__mark" src="/logo-vmd.png" alt="" width="80" height="80" decoding="async" />
+      <span class="brand__name" aria-hidden="true">{PRACTICE.legalName}</span>
     </a>
     <nav class="nav" aria-label="Primary">
       {
@@ -351,17 +351,15 @@ const register = PRACTICE.regulator.registerSearchUrl;
     text-decoration: none;
     margin-inline-end: auto;
   }
+  /* Official VMD logo (self-contained navy badge, transparent PNG). Sized to the
+     original mark's footprint so there's no layout shift; served from a 1024px
+     source so it stays crisp on HiDPI/Retina. */
   .brand__mark {
-    display: inline-grid;
-    place-items: center;
     inline-size: var(--space-6);
     block-size: var(--space-6);
-    background: var(--color-action);
-    color: var(--color-text-inverse);
-    border-radius: var(--radius-tile);
-    font-weight: 800;
-    letter-spacing: -0.06em;
-    font-size: var(--type-caption);
+    object-fit: contain;
+    display: block;
+    flex: none;
   }
   .brand__name {
     font-family: var(--font-display);

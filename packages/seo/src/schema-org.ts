@@ -18,6 +18,8 @@ export function organizationSchema() {
     '@id': `${SITE}/#practice`,
     name: PRACTICE.legalName,
     url: SITE,
+    logo: `${SITE}/logo-vmd.png`,
+    image: `${SITE}/logo-vmd.png`,
     telephone: PRACTICE.contact.phoneDisplay,
     email: PRACTICE.contact.email,
     address,
