@@ -2,76 +2,69 @@
 import Base from '../../../layouts/Base.astro';
 import { breadcrumbSchema } from '@vmd/seo';
 import { Disclaimer } from '@vmd/ui';
-import DocGallery from '../../../components/sections/DocGallery.astro';
-import { VISA_GRANTS } from '../../../lib/successMedia.ts';
+import CategoryCarousels from '../../../components/sections/CategoryCarousels.astro';
+import { VISA_GRANTS, SKILLS_ASSESSMENTS } from '../../../lib/successMedia.ts';
+
+// One page, grouped by category: visa-grant categories first, then skills
+// assessments. Only categories with real, consented documents are shown.
+const items = [...VISA_GRANTS, ...SKILLS_ASSESSMENTS];
 
 const trail = [
   { name: 'Home', path: '/' },
   { name: 'Results', path: '/results/' },
-  { name: 'Visa grants', path: '/results/visa-grants/' },
+  { name: 'Visa & skill assessments', path: '/results/visa-grants/' },
 ];
 ---
 
 <Base
-  title="Visa grants — real, consented client outcomes"
-  description="Genuine visa grant graphics shared with each client's permission, with personal details redacted. Every case is decided on its own merits; this is not a guarantee of any outcome."
+  title="Visa & Skill Assessments — real, consented client outcomes"
+  description="Real examples of visa grant letters and skills assessment outcomes, grouped by category and shared with client consent. Personal details are redacted. Every case is decided on its own merits; this is not a guarantee of any outcome."
   schemas={[breadcrumbSchema(trail)]}
 >
-  <section class="rgp">
-    <header class="rgp__head">
-      <p class="rgp__eyebrow">Real clients · shared with permission</p>
-      <h1 class="rgp__title">Visa grants</h1>
-      <p class="rgp__lead">
-        Genuine visa outcomes from clients who agreed to share them — personal details are redacted.
-        Tap any graphic to view it. Every case is different and decided on its own merits; these are
-        not a guarantee of any outcome.
+  <section class="vsa">
+    <header class="vsa__head">
+      <p class="vsa__eyebrow">Real clients · shared with permission</p>
+      <h1 class="vsa__title">Visa &amp; Skill Assessments</h1>
+      <p class="vsa__lead">
+        Real examples of visa grant letters and skills assessment outcomes shared with client
+        consent. Personal details are redacted. Every case is different and decided on its own
+        merits — these are not a guarantee of any outcome.
       </p>
     </header>
 
-    <DocGallery items={VISA_GRANTS} />
+    <CategoryCarousels items={items} />
 
-    <div class="rgp__foot">
-      <a class="rgp__more" href="/results/skill-assessments/">View skills assessments →</a>
+    <div class="vsa__foot">
       <Disclaimer variant="outcomes" />
     </div>
   </section>
 </Base>
 
 <style>
-  .rgp {
+  .vsa {
     max-inline-size: var(--container-max);
     margin-inline: auto;
     padding: var(--space-7) var(--space-4) var(--space-9);
   }
-  .rgp__head {
+  .vsa__head {
     max-inline-size: 62ch;
   }
-  .rgp__eyebrow {
+  .vsa__eyebrow {
     font-size: var(--type-caption);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--color-emphasis-text);
     font-weight: 600;
   }
-  .rgp__title {
+  .vsa__title {
     font-size: var(--type-display-2);
     margin-block: var(--space-2) var(--space-3);
   }
-  .rgp__lead {
+  .vsa__lead {
     color: var(--color-text-muted);
     line-height: 1.6;
   }
-  .rgp__foot {
+  .vsa__foot {
     margin-block-start: var(--space-8);
-  }
-  .rgp__more {
-    display: inline-block;
-    margin-block-end: var(--space-5);
-    font-weight: 600;
-    color: var(--color-emphasis-text);
-    text-decoration: none;
-  }
-  .rgp__more:hover {
-    text-decoration: underline;
   }
 </style>

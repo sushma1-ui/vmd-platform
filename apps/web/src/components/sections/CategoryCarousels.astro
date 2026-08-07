@@ -1,0 +1,550 @@
+---
+/**
+ * CategoryCarousels — groups real, consented client graphics by category and
+ * renders one horizontal carousel per category (prev/next, native swipe on touch,
+ * keyboard), each with a "View all" that opens a category-scoped lightbox. Preview
+ * WebP + loading="lazy" + fixed aspect (no layout shift). Only categories that have
+ * documents are rendered — nothing is fabricated.
+ */
+import type { SuccessMedia } from '../../lib/successMedia.ts';
+
+interface Props {
+  items: SuccessMedia[];
+}
+const { items } = Astro.props;
+
+// Display order + friendly headings for each source group (folder). Categories
+// without any uploaded documents are simply skipped.
+const GROUP_ORDER = [
+  'General Skilled Migration',
+  'SC485',
+  'SC500',
+  'SC482',
+  'Partner',
+  'Employer Sponsored',
+  'Skills Assessment',
+];
+const GROUP_META: Record<string, { heading: string; sub: string }> = {
+  'General Skilled Migration': { heading: 'General Skilled Migration', sub: '' },
+  SC485: { heading: 'Subclass 485', sub: 'Temporary Graduate Visa' },
+  SC500: { heading: 'Subclass 500', sub: 'Student Visa' },
+  SC482: { heading: 'Subclass 482', sub: 'Skills in Demand Visa' },
+  Partner: { heading: 'Partner Visa', sub: '' },
+  'Employer Sponsored': { heading: 'Employer Sponsored', sub: '' },
+  'Skills Assessment': { heading: 'Skills Assessments', sub: '' },
+};
+
+const groups = GROUP_ORDER.map((key) => ({
+  key,
+  meta: GROUP_META[key] ?? { heading: key, sub: '' },
+  docs: items.filter((d) => d.group === key),
+})).filter((g) => g.docs.length > 0);
+
+const chevron = (d: string) =>
+  `<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="${d}"/></svg>`;
+---
+
+<div class="cc-wrap">
+  {
+    groups.map((g) => (
+      <section class="cc" data-cc aria-labelledby={`cc-${g.key.replace(/\s+/g, '-')}`}>
+        <header class="cc__head">
+          <div>
+            <h2 class="cc__h" id={`cc-${g.key.replace(/\s+/g, '-')}`}>
+              {g.meta.heading}
+            </h2>
+            {g.meta.sub && <p class="cc__sub">{g.meta.sub}</p>}
+          </div>
+          <button
+            class="cc__all"
+            type="button"
+            data-viewall
+            aria-label={`View all ${g.meta.heading} documents`}
+          >
+            View all →
+          </button>
+        </header>
+
+        <div class="cc__row" data-cc-row>
+          <button
+            class="cc__nav cc__nav--prev"
+            type="button"
+            data-cc-prev
+            aria-label="Scroll left"
+            set:html={chevron('M15 6l-6 6 6 6')}
+          />
+          <div class="cc__viewport" data-cc-viewport>
+            <ul
+              class="cc__track"
+              data-cc-track
+              role="list"
+              tabindex="0"
+              aria-label={`${g.meta.heading} documents`}
+            >
+              {g.docs.map((d, i) => (
+                <li class="cc__item">
+                  <button
+                    class="cc__doc"
+                    type="button"
+                    data-doc
+                    data-src={d.full}
+                    data-alt={d.alt}
+                    aria-label={`View ${g.meta.heading} document ${i + 1} of ${g.docs.length}`}
+                  >
+                    <span class="cc__frame">
+                      <img
+                        src={d.preview}
+                        alt={d.alt}
+                        width={d.width}
+                        height={d.height}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                      <span class="cc__zoom" aria-hidden="true">
+                        <svg
+                          viewBox="0 0 24 24"
+                          width="16"
+                          height="16"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        >
+                          <path d="M11 5a6 6 0 100 12 6 6 0 000-12zM20 20l-3.5-3.5M11 8v6M8 11h6" />
+                        </svg>
+                      </span>
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <button
+            class="cc__nav cc__nav--next"
+            type="button"
+            data-cc-next
+            aria-label="Scroll right"
+            set:html={chevron('M9 6l6 6-6 6')}
+          />
+        </div>
+      </section>
+    ))
+  }
+</div>
+
+<dialog class="dlb" data-doc-lb aria-label="Document">
+  <button class="dlb__x" type="button" data-dlb-close aria-label="Close">✕</button>
+  <img class="dlb__img" data-dlb-img alt="" />
+  <p class="dlb__count" data-dlb-count aria-live="polite"></p>
+  <button
+    class="dlb__nav dlb__nav--prev"
+    type="button"
+    data-dlb-prev
+    aria-label="Previous"
+    set:html={chevron('M15 6l-6 6 6 6')}
+  />
+  <button
+    class="dlb__nav dlb__nav--next"
+    type="button"
+    data-dlb-next
+    aria-label="Next"
+    set:html={chevron('M9 6l6 6-6 6')}
+  />
+</dialog>
+
+<script>
+  // ---- Per-category carousels: transform-based (translateX) + drag/swipe -----
+  document.querySelectorAll<HTMLElement>('[data-cc-row]').forEach((row) => {
+    const vp = row.querySelector<HTMLElement>('[data-cc-viewport]');
+    const track = row.querySelector<HTMLElement>('[data-cc-track]');
+    const prev = row.querySelector<HTMLButtonElement>('[data-cc-prev]');
+    const next = row.querySelector<HTMLButtonElement>('[data-cc-next]');
+    if (!vp || !track || !prev || !next) return;
+
+    let offset = 0;
+    const maxOffset = () => Math.max(0, track.getBoundingClientRect().width - vp.clientWidth);
+    const clamp = (o: number) => Math.max(0, Math.min(maxOffset(), o));
+    const apply = () => {
+      track.style.transform = `translateX(${-offset}px)`;
+      prev.disabled = offset <= 1;
+      next.disabled = offset >= maxOffset() - 1;
+      row.classList.toggle('cc__row--static', maxOffset() <= 1);
+    };
+    const page = () => Math.max(vp.clientWidth * 0.8, 120);
+
+    prev.addEventListener('click', () => {
+      offset = clamp(offset - page());
+      apply();
+    });
+    next.addEventListener('click', () => {
+      offset = clamp(offset + page());
+      apply();
+    });
+    track.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        next.click();
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        prev.click();
+      }
+    });
+
+    // Drag / swipe. A real drag suppresses the click that would open a document.
+    let startX = 0,
+      dx = 0,
+      dragging = false,
+      base = 0,
+      moved = false;
+    const down = (e: PointerEvent) => {
+      dragging = true;
+      moved = false;
+      startX = e.clientX;
+      base = offset;
+      dx = 0;
+      row.classList.add('is-dragging');
+    };
+    const move = (e: PointerEvent) => {
+      if (!dragging) return;
+      dx = e.clientX - startX;
+      if (Math.abs(dx) > 6) moved = true;
+      offset = clamp(base - dx);
+      track.style.transform = `translateX(${-offset}px)`;
+    };
+    const up = () => {
+      if (!dragging) return;
+      dragging = false;
+      row.classList.remove('is-dragging');
+      apply();
+      dx = 0;
+    };
+    vp.addEventListener('pointerdown', down);
+    vp.addEventListener('pointermove', move);
+    vp.addEventListener('pointerup', up);
+    vp.addEventListener('pointercancel', up);
+    vp.addEventListener('pointerleave', up);
+    vp.addEventListener(
+      'click',
+      (e) => {
+        if (moved) {
+          e.preventDefault();
+          e.stopPropagation();
+          moved = false;
+        }
+      },
+      true,
+    );
+
+    window.addEventListener('resize', () => {
+      offset = clamp(offset);
+      apply();
+    });
+    apply();
+  });
+
+  // ---- Category-scoped lightbox --------------------------------------------
+  const dlb = document.querySelector<HTMLDialogElement>('[data-doc-lb]');
+  if (dlb) {
+    const img = dlb.querySelector<HTMLImageElement>('[data-dlb-img]')!;
+    const countEl = dlb.querySelector<HTMLElement>('[data-dlb-count]')!;
+    const prevBtn = dlb.querySelector<HTMLButtonElement>('[data-dlb-prev]')!;
+    const nextBtn = dlb.querySelector<HTMLButtonElement>('[data-dlb-next]')!;
+    let docs: { src: string; alt: string }[] = [];
+    let current = 0;
+    const render = (i: number) => {
+      current = i;
+      img.src = docs[i].src;
+      img.alt = docs[i].alt;
+      countEl.textContent = `${i + 1} / ${docs.length}`;
+      prevBtn.disabled = i <= 0;
+      nextBtn.disabled = i >= docs.length - 1;
+      prevBtn.hidden = nextBtn.hidden = docs.length < 2;
+    };
+    const open = (list: { src: string; alt: string }[], i: number) => {
+      docs = list;
+      render(i);
+      dlb.showModal();
+    };
+    document.querySelectorAll<HTMLElement>('[data-cc]').forEach((section) => {
+      const triggers = Array.from(section.querySelectorAll<HTMLButtonElement>('[data-doc]'));
+      const list = triggers.map((t) => ({ src: t.dataset.src || '', alt: t.dataset.alt || '' }));
+      triggers.forEach((t, i) => t.addEventListener('click', () => open(list, i)));
+      section.querySelector('[data-viewall]')?.addEventListener('click', () => open(list, 0));
+    });
+    prevBtn.addEventListener('click', () => current > 0 && render(current - 1));
+    nextBtn.addEventListener('click', () => current < docs.length - 1 && render(current + 1));
+    dlb.querySelector('[data-dlb-close]')?.addEventListener('click', () => dlb.close());
+    dlb.addEventListener('click', (e) => {
+      if (e.target === dlb) dlb.close();
+    });
+    dlb.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft' && current > 0) render(current - 1);
+      if (e.key === 'ArrowRight' && current < docs.length - 1) render(current + 1);
+    });
+  }
+</script>
+
+<style>
+  .cc-wrap {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-8);
+    margin-block-start: var(--space-7);
+  }
+  .cc {
+    min-inline-size: 0;
+    border-block-start: 1px solid color-mix(in srgb, var(--color-action) 10%, transparent);
+    padding-block-start: var(--space-5);
+  }
+  .cc:first-child {
+    border-block-start: 0;
+    padding-block-start: 0;
+  }
+  .cc__head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-4);
+    margin-block-end: var(--space-4);
+  }
+  .cc__h {
+    font-size: var(--type-h3);
+    margin: 0;
+    color: var(--color-action);
+    line-height: 1.15;
+  }
+  .cc__sub {
+    margin: 2px 0 0;
+    font-size: var(--type-body-sm);
+    color: var(--color-text-muted);
+  }
+  .cc__all {
+    flex: none;
+    background: none;
+    border: 0;
+    padding: 0;
+    font: inherit;
+    font-size: var(--type-body-sm);
+    font-weight: 600;
+    color: var(--color-emphasis-text);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .cc__all:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .cc__all:focus-visible {
+    outline: 2px solid var(--color-action);
+    outline-offset: 2px;
+    border-radius: 3px;
+  }
+
+  .cc__row {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-inline-size: 0;
+  }
+  .cc__viewport {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    overflow: hidden;
+    padding-block: var(--space-1) var(--space-2);
+  }
+  /* Transform-based track (JS-controlled translateX) — deterministic; drag/swipe
+     handled in script. */
+  .cc__track {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    inline-size: max-content;
+    max-inline-size: none;
+    gap: var(--space-4);
+    transition: transform 420ms var(--ease-standard, ease);
+    touch-action: pan-y;
+    will-change: transform;
+  }
+  .cc__row.is-dragging .cc__track {
+    transition: none;
+  }
+  .cc__track:focus-visible {
+    outline: 2px solid var(--color-action);
+    outline-offset: 2px;
+    border-radius: var(--radius-card);
+  }
+  .cc__item {
+    flex: 0 0 auto;
+    inline-size: min(60vw, 12.5rem);
+  }
+  .cc__doc {
+    inline-size: 100%;
+    display: block;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: zoom-in;
+  }
+  .cc__frame {
+    position: relative;
+    display: block;
+    aspect-ratio: 1036 / 1296;
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    background: var(--color-ground-warm);
+    border: 1px solid color-mix(in srgb, var(--color-action) 10%, transparent);
+    box-shadow: var(--shadow-subtle, 0 6px 20px -16px rgba(14, 26, 48, 0.34));
+    transition:
+      transform 180ms var(--ease-standard, ease),
+      box-shadow 180ms var(--ease-standard, ease);
+  }
+  .cc__doc:hover .cc__frame,
+  .cc__doc:focus-visible .cc__frame {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-raised, 0 22px 44px -24px rgba(14, 26, 48, 0.4));
+  }
+  .cc__doc:focus-visible .cc__frame {
+    outline: 3px solid var(--color-action);
+    outline-offset: 2px;
+  }
+  .cc__frame img {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+  }
+  .cc__zoom {
+    position: absolute;
+    inset-block-start: var(--space-2);
+    inset-inline-end: var(--space-2);
+    inline-size: 1.9rem;
+    block-size: 1.9rem;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--color-surface) 85%, transparent);
+    color: var(--color-action);
+    opacity: 0;
+    transition: opacity 160ms var(--ease-standard, ease);
+  }
+  .cc__doc:hover .cc__zoom,
+  .cc__doc:focus-visible .cc__zoom {
+    opacity: 1;
+  }
+  .cc__nav {
+    flex: none;
+    inline-size: 2.6rem;
+    block-size: 2.6rem;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    border: 1px solid color-mix(in srgb, var(--color-action) 14%, transparent);
+    background: var(--color-surface);
+    color: var(--color-action);
+    box-shadow: var(--shadow-subtle, 0 6px 18px -10px rgba(14, 26, 48, 0.4));
+    cursor: pointer;
+    transition:
+      background-color 150ms var(--ease-standard, ease),
+      opacity 150ms var(--ease-standard, ease);
+  }
+  .cc__nav:hover {
+    background: var(--color-ground-warm);
+  }
+  .cc__nav:focus-visible {
+    outline: 2px solid var(--color-action);
+    outline-offset: 2px;
+  }
+  .cc__nav:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+  /* When everything fits, hide the arrows (nothing to scroll). */
+  .cc__row--static .cc__nav {
+    display: none;
+  }
+
+  /* Lightbox (shared with DocGallery styling). */
+  .dlb {
+    border: 0;
+    padding: 0;
+    background: transparent;
+    max-inline-size: min(94vw, 40rem);
+    max-block-size: 94vh;
+    overflow: visible;
+  }
+  .dlb::backdrop {
+    background: color-mix(in srgb, var(--color-ground-deep) 86%, transparent);
+    backdrop-filter: blur(3px);
+  }
+  .dlb__img {
+    display: block;
+    inline-size: 100%;
+    block-size: auto;
+    max-block-size: 88vh;
+    object-fit: contain;
+    border-radius: var(--radius-card);
+    box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.6);
+  }
+  .dlb__count {
+    text-align: center;
+    margin: var(--space-2) 0 0;
+    color: color-mix(in srgb, #fff 88%, transparent);
+    font-size: var(--type-body-sm);
+    font-variant-numeric: tabular-nums;
+  }
+  .dlb__x {
+    position: absolute;
+    inset-block-start: -1rem;
+    inset-inline-end: -1rem;
+    z-index: 2;
+    inline-size: 2.4rem;
+    block-size: 2.4rem;
+    border-radius: 50%;
+    border: 0;
+    background: var(--color-surface);
+    color: var(--color-text);
+    cursor: pointer;
+    box-shadow: var(--shadow-raised, 0 6px 18px rgba(0, 0, 0, 0.3));
+  }
+  .dlb__nav {
+    position: absolute;
+    inset-block-start: 42%;
+    transform: translateY(-50%);
+    inline-size: 3rem;
+    block-size: 3rem;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    border: 0;
+    background: color-mix(in srgb, var(--color-surface) 92%, transparent);
+    color: var(--color-action);
+    cursor: pointer;
+    box-shadow: var(--shadow-raised, 0 6px 18px rgba(0, 0, 0, 0.35));
+  }
+  .dlb__nav--prev {
+    inset-inline-start: -1.4rem;
+  }
+  .dlb__nav--next {
+    inset-inline-end: -1.4rem;
+  }
+  .dlb__nav:disabled {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .dlb__x:focus-visible,
+  .dlb__nav:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cc__track {
+      scroll-behavior: auto;
+    }
+    .cc__frame,
+    .cc__nav,
+    .cc__zoom {
+      transition: none;
+    }
+  }
+</style>
