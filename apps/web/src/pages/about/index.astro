@@ -69,39 +69,11 @@ const CORE_VALUE_FALLBACK: [string, string][] = [
   ],
 ];
 
-// "Why VMD"
-const WHYVMD_FALLBACK: [string, string][] = [
-  [
-    'Considered attention on every matter.',
-    'As a boutique, appointment-only practice, we take on a limited number of matters so each receives depth of attention. Every matter is assessed on its individual circumstances, and every client receives guidance tailored to their goals.',
-  ],
-  [
-    'Direct access to the Registered Migration Agent.',
-    'Your matter is personally assessed by Sunil Uprety, Registered Migration Agent (MARN 2318234). You receive advice directly from the practitioner responsible for your case.',
-  ],
-  [
-    'Honest and practical advice.',
-    'Migration decisions carry significant personal and financial consequences. If a pathway is not suitable, we will tell you. If waiting is the better option, we will tell you that too.',
-  ],
-  [
-    'A multidisciplinary perspective.',
-    'The practice draws on experience across migration, international education, business, accounting and compliance — a combination that helps identify practical solutions while maintaining a strong focus on legal and regulatory requirements.',
-  ],
-  [
-    'Accuracy, compliance and attention to detail.',
-    'Well-prepared applications begin with preparation. Our internal processes centre on document management, compliance, accuracy and deadline monitoring, so every matter is handled with care.',
-  ],
-  [
-    'A client-first approach.',
-    "Every migration journey is different. Whether the goal is yours, your family's, your studies or your business, we take the time to understand your objectives and support you throughout the process.",
-  ],
-];
-
 // Prefer the CMS-managed lists; fall back to the built-in approved copy.
+// (Why VMD now lives on its own page, /about/why-vmd/.)
 const disciplines = pairsFrom(a?.method, DISCIPLINES_FALLBACK);
 const coreValue = pairsFrom(a?.coreValue, CORE_VALUE_FALLBACK);
 const beliefs = pairsFrom(a?.beliefs, BELIEFS_FALLBACK);
-const whyVmd = pairsFrom(a?.whyVmd, WHYVMD_FALLBACK);
 
 // Practice activity (Corporate Profile, as at 3 August 2026). These describe the
 // VOLUME and BREADTH of work prepared and managed — not outcomes. The disclaimer
@@ -311,19 +283,6 @@ const photoUrl = (m: TeamMember): string | null =>
         ))
       }
     </ul>
-  </section>
-
-  <section class="about-section" id="why-vmd" aria-label="Why VMD" style="scroll-margin-top: 6rem">
-    <h2 class="about-section__h">Why VMD</h2>
-    <div class="deflist">
-      {
-        whyVmd.map(([term, desc]) => (
-          <p>
-            <strong>{term}</strong> {desc}
-          </p>
-        ))
-      }
-    </div>
   </section>
 </SimplePage>
 
