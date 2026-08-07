@@ -18,12 +18,6 @@ const STEP_ICONS = [
   'M6 21V4 M6 5h11l-2.5 3 2.5 3H6', // signpost — pathway
   'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z M8.5 12l2.5 2.5 4.5-4.5', // check seal — outcome
 ];
-// "Diagnosis promise" icons: transparency → fixed fee → the registered agent.
-const PROMISE_ICONS = [
-  'M2 12s3.5-6.5 10-6.5S22 12 22 12s-3.5 6.5-10 6.5S2 12 2 12z M12 9.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z', // eye
-  'M4 4h8l8 8-8 8-8-8z M8.4 8.4h.01', // price tag
-  'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M5 20a7 7 0 0 1 14 0', // person
-];
 // Client-journey fallback (used only if an editor hasn't set the steps in the CMS).
 const DEFAULT_STEPS = [
   {
@@ -72,16 +66,6 @@ const googleRating = settings?.googleReviews?.rating;
 const heroRating = googleRating
   ? `Rated ${googleRating.toFixed(1)} on Google`
   : 'Assisting clients across multiple countries';
-
-// "Diagnosis promise" intro: the deployed CMS still serves the previous
-// (comparative) default, so treat that exact string as "unset" — positive,
-// simpler copy wins until an editor sets a genuinely new value.
-const OLD_WHYCHOOSE_INTRO =
-  'The commitments that set us apart are the ones we are glad to be held to.';
-const whyChooseIntro =
-  hp?.whyChoose?.intro && hp.whyChoose.intro.trim() !== OLD_WHYCHOOSE_INTRO
-    ? hp.whyChoose.intro
-    : "The commitments we're glad to be held to.";
 
 // "Where are you in your journey?" — situation-first navigation that speaks the
 // client's language (not subclass numbers) and routes to the most relevant hub.
@@ -208,60 +192,6 @@ try {
   {
     /* The "Which of these is you?" cards were removed — the hero assessment now
       captures the same six situations as its first step, so the section was redundant. */
-  }
-
-  <!-- 5 · DIAGNOSIS PROMISE (Why Choose Us) -->
-  {
-    shown(hp?.whyChoose) && (
-      <section data-reveal class="section">
-        <div class="section__inner">
-          <h2 class="section__h">{hp?.whyChoose?.heading || 'The diagnosis promise'}</h2>
-          <p class="section__sub">{whyChooseIntro}</p>
-          <div class="grid grid--3 promises">
-            {hp?.whyChoose?.promises?.length ? (
-              hp.whyChoose.promises.map((p, i) => (
-                <div class="promise">
-                  <span class="promise__icon" aria-hidden="true">
-                    <Icon path={PROMISE_ICONS[i % PROMISE_ICONS.length]} />
-                  </span>
-                  <p>{p.text}</p>
-                </div>
-              ))
-            ) : (
-              <>
-                <div class="promise">
-                  <span class="promise__icon" aria-hidden="true">
-                    <Icon path={PROMISE_ICONS[0]} />
-                  </span>
-                  <p>
-                    An <strong>honest read</strong> on your eligibility — including the right time
-                    to apply.
-                  </p>
-                </div>
-                <div class="promise">
-                  <span class="promise__icon" aria-hidden="true">
-                    <Icon path={PROMISE_ICONS[1]} />
-                  </span>
-                  <p>
-                    A <strong>fixed fee</strong>, quoted before you commit — so you always know the
-                    cost.
-                  </p>
-                </div>
-                <div class="promise">
-                  <span class="promise__icon" aria-hidden="true">
-                    <Icon path={PROMISE_ICONS[2]} />
-                  </span>
-                  <p>
-                    You work directly with the <strong>Registered Migration Agent</strong>, from
-                    start to finish.
-                  </p>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-      </section>
-    )
   }
 
   {
