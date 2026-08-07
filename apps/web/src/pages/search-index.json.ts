@@ -32,7 +32,7 @@ const STATIC_PAGES: Entry[] = [
     t: 'Sunil Uprety — Registered Migration Agent',
     u: '/about/sunil-uprety/',
     k: 'Page',
-    d: 'Your Registered Migration Agent (RMA), MARN 2318234.',
+    d: 'Sunil Uprety, your Registered Migration Agent (RMA) — MARN 2318234.',
   },
   { t: 'Our Fees', u: '/about/fees/', k: 'Page', d: 'How our professional fees work.' },
   { t: 'Contact', u: '/contact/', k: 'Page', d: 'Get in touch with our Perth office.' },
