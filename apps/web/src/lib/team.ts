@@ -44,7 +44,7 @@ export const FEATURED_TEAM: FeaturedMember[] = [
     profileHref: '/about/sunil-uprety/',
     photo: { url: '/team/sunil-portrait.jpg', alt: 'Sunil Uprety, Registered Migration Agent' },
     shortBio:
-      'Sunil leads the practice and personally assesses every matter. You get an honest read on where your case stands — including the best time and way to move forward — from the Registered Migration Agent, not a caseworker.',
+      'Sunil leads the practice and personally assesses every matter. You get an honest read on where your case stands — including the right time and way to move forward — directly from the Registered Migration Agent.',
     philosophy:
       'Good migration advice starts with an honest diagnosis — even when the honest answer is to wait.',
     expertise: li([

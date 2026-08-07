@@ -59,7 +59,7 @@ const OLD_HERO_LEAD =
 const heroTitle =
   hp?.hero?.title && hp.hero.title.trim() !== OLD_HERO_TITLE
     ? hp.hero.title
-    : 'Find the Right Australian Visa Pathway with Expert Guidance';
+    : 'Find the Right Australian Visa Pathway with Honest Guidance';
 const heroLead =
   hp?.hero?.lead && hp.hero.lead.trim() !== OLD_HERO_LEAD
     ? hp.hero.lead
@@ -71,7 +71,7 @@ const register = PRACTICE.regulator.registerSearchUrl;
 const googleRating = settings?.googleReviews?.rating;
 const heroRating = googleRating
   ? `Rated ${googleRating.toFixed(1)} on Google`
-  : 'Trusted by clients across multiple countries';
+  : 'Assisting clients across multiple countries';
 
 // "Diagnosis promise" intro: the deployed CMS still serves the previous
 // (comparative) default, so treat that exact string as "unset" — positive,
@@ -149,8 +149,8 @@ try {
 ---
 
 <Base
-  title="Australian Visa & Migration Experts — Registered Migration Agents"
-  description={`Honest, expert guidance on Australian visas from Registered Migration Agent ${PRACTICE.principal.name} (MARN ${PRACTICE.principal.marn}). Start a free assessment — for people already in Australia and around the world.`}
+  title="Australian Visa & Migration — Registered Migration Agent in Perth"
+  description={`Honest guidance on Australian visas from Registered Migration Agent ${PRACTICE.principal.name} (MARN ${PRACTICE.principal.marn}). Start a free assessment — for people already in Australia and around the world.`}
   schemas={[localBusinessSchema(), { '@context': 'https://schema.org', ...personSchema() }]}
 >
   <!-- 3 · HERO — the free assessment leads -->
@@ -414,7 +414,7 @@ try {
                 <p>
                   A Registered Migration Agent bound by the Migration Agents Code of Conduct,
                   helping people with Australian visas from onshore and around the world. When you
-                  come to us, you get an honest read on where your case stands — including the best
+                  come to us, you get an honest read on where your case stands — including the right
                   time and way to move forward.
                 </p>
                 <p>

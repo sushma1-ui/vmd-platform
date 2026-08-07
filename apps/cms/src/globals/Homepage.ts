@@ -48,7 +48,7 @@ export const Homepage: GlobalConfig = {
             {
               name: 'title',
               type: 'text',
-              defaultValue: 'Find the Right Australian Visa Pathway with Expert Guidance',
+              defaultValue: 'Find the Right Australian Visa Pathway with Honest Guidance',
             },
             {
               name: 'lead',

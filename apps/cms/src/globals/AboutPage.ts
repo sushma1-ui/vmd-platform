@@ -74,7 +74,8 @@ const BELIEFS: { term: string; description: string }[] = [
   },
   {
     term: 'Professional competence.',
-    description: 'Recommendations grounded in current law, policy and evidence — never a template.',
+    description:
+      'Recommendations grounded in current law, policy and evidence, and tailored to your circumstances.',
   },
   {
     term: 'Client-centred service.',
@@ -123,7 +124,7 @@ const WHY_VMD: { term: string; description: string }[] = [
 /** The Our Story body paragraphs (the sentences that sit above the method list). */
 const STORY_BODY: { text: string }[] = [
   {
-    text: 'We work by appointment, deliberately. Every matter receives considered attention — not a place in a queue. Before any pathway is recommended, we take the time to understand your circumstances in full, and every matter is assessed on its individual merits against current migration law, policy and professional standards.',
+    text: 'We work by appointment, deliberately. Every matter receives considered attention. Before any pathway is recommended, we take the time to understand your circumstances in full, and every matter is assessed on its individual merits against current migration law, policy and professional standards.',
   },
   {
     text: "The name is a method, not a metaphor. A good doctor doesn't prescribe before examining, and we don't recommend a visa pathway before understanding your situation. Every engagement follows the same discipline:",

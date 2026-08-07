@@ -140,7 +140,7 @@ At the time you're invited to apply, you generally need to:
 3. **Expression of Interest (EOI).** Once your skills assessment is positive, we prepare and lodge your EOI, which ranks you against other candidates.
 4. **Visa application.** If you're invited to apply, we lodge a complete application within the required timeframe, with all supporting documents.
 
-Because invitations depend on your points ranking and Australia's skill needs at the time, an invitation isn't guaranteed — our role is to ensure your claims are accurate, fully evidenced, and presented at their genuine best.`,
+Because invitations depend on your points ranking and Australia's skill needs at the time, an invitation isn't guaranteed — our role is to ensure your claims are accurate, fully evidenced, and clearly presented.`,
     faq: [
       {
         question: 'Is 65 points enough to be invited?',
@@ -203,7 +203,7 @@ State criteria and occupation lists change regularly, and nomination isn't guara
       {
         question: 'Which state should I apply to?',
         answer:
-          'The state where your occupation is in demand and your profile best fits the current criteria — which changes through the year as programs open, close and adjust. Living in Western Australia can strengthen a WA nomination case, but we assess all states against your circumstances.',
+          'The state where your occupation is in demand and your profile fits the current criteria — which changes through the year as programs open, close and adjust. Living in Western Australia can strengthen a WA nomination case, and we assess all states against your circumstances.',
       },
       {
         question: 'Do I have to live in the nominating state?',
