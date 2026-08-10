@@ -15,6 +15,7 @@ export const Subclasses: CollectionConfig = {
     group: 'Visa Reference',
     useAsTitle: 'name',
     defaultColumns: ['code', 'name', 'complexity', 'status'],
+    hidden: true,
   },
   access: {
     read: publishedOrEditorial,

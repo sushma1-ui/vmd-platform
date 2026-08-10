@@ -5,7 +5,9 @@ import { seoField } from '../fields/index.ts';
 /** Case studies — problem → approach → outcome → disclaimer. Anonymised. */
 export const CaseStudies: CollectionConfig = {
   slug: 'case-studies',
-  admin: { group: 'Client Results', useAsTitle: 'title' },
+  // Hidden from the simplified editor for now — longer-form anonymised narratives,
+  // not part of day-to-day editing. Data is preserved; unhide to bring it back.
+  admin: { group: 'Client Testimonials', useAsTitle: 'title', hidden: true },
   access: {
     read: publishedOrEditorial,
     create: isEditorial,

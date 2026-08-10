@@ -8,7 +8,12 @@ import { anyone, isAdmin } from '../access/index.ts';
  */
 export const Settings: GlobalConfig = {
   slug: 'settings',
-  admin: { group: 'Site Settings' },
+  label: 'Site Settings',
+  admin: {
+    group: 'Settings',
+    description:
+      'Sitewide values: your Google rating and reviews link, WhatsApp number, and the Book / Health-Check button links.',
+  },
   access: { read: anyone, update: isAdmin },
   fields: [
     {

@@ -13,9 +13,9 @@ export const Footer: GlobalConfig = {
   slug: 'footer',
   label: 'Footer',
   admin: {
-    group: 'Site Settings',
+    group: 'Settings',
     description:
-      'The link columns in the site footer. The address, phone and legal line come from Global Settings.',
+      'The link columns in the site footer. The address, phone and legal line come from Site Settings.',
   },
   access: { read: anyone, update: isEditorial },
   fields: [

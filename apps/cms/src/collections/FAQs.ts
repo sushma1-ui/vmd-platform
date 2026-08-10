@@ -4,7 +4,7 @@ import { publishedOrEditorial, isEditorial } from '../access/index.ts';
 /** FAQs — schema-marked (FAQPage), per-subclass. Feeds snippets + AI answers. */
 export const FAQs: CollectionConfig = {
   slug: 'faqs',
-  admin: { group: 'Visa Reference', useAsTitle: 'question' },
+  admin: { group: 'Visa Reference', useAsTitle: 'question', hidden: true },
   access: {
     read: publishedOrEditorial,
     create: isEditorial,

@@ -9,8 +9,9 @@ import { anyone, isEditorial } from '../access/index.ts';
 export const Media: CollectionConfig = {
   slug: 'media',
   admin: {
-    group: 'Media Library',
-    description: 'Images and files used across the website. Always add descriptive alt text.',
+    group: 'Media',
+    description:
+      'Images and files used across the website. Upload here, then pick them when editing a page. Always add descriptive alt text.',
   },
   access: { read: anyone, create: isEditorial, update: isEditorial, delete: isEditorial },
   upload: {

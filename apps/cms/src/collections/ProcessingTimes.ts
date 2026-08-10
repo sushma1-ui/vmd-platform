@@ -8,6 +8,7 @@ export const ProcessingTimes: CollectionConfig = {
     group: 'Visa Reference',
     useAsTitle: 'subclassCode',
     defaultColumns: ['subclassCode', 'currentEstimate', 'lastVerifiedAt'],
+    hidden: true,
   },
   access: {
     read: publishedOrEditorial,

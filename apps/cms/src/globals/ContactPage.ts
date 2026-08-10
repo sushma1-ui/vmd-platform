@@ -12,7 +12,7 @@ export const ContactPage: GlobalConfig = {
   slug: 'contact-page',
   label: 'Contact Page',
   admin: {
-    group: 'Website Content',
+    group: 'Pages',
     description:
       'The copy on the Contact page (/contact). Phone, email and address come from Global Settings.',
     preview: () => `${process.env.PUBLIC_SITE_URL || 'http://localhost:4321'}/contact/`,

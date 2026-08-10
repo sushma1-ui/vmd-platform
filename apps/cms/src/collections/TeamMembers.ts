@@ -23,11 +23,11 @@ const listField = (name: string, label: string, placeholder: string): Field => (
 
 export const TeamMembers: CollectionConfig = {
   slug: 'team-members',
-  labels: { singular: 'Team Member', plural: 'Team Members' },
+  labels: { singular: 'Team Member', plural: 'Meet the Team' },
   admin: {
-    group: 'Website Content',
+    group: 'Pages',
     description:
-      'The people shown in the "Our team" section on the About page. Add a person, drag Display order to reorder, and set status to Published to show them on the site.',
+      'The people shown in the "Our team" section on the About page. Add a person, drag Display order to reorder, and set Status to Published to show them on the site.',
     useAsTitle: 'name',
     defaultColumns: ['name', 'position', 'status', 'featured', 'displayOrder'],
   },

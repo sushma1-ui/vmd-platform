@@ -32,7 +32,7 @@ export const SocialMedia: GlobalConfig = {
   slug: 'social-media',
   label: 'Social Media',
   admin: {
-    group: 'Site Settings',
+    group: 'Settings',
     description: 'Links to your social profiles. Blank fields simply hide that icon on the site.',
   },
   access: { read: anyone, update: isEditorial },

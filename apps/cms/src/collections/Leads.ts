@@ -10,10 +10,13 @@ import { isEditorial, isAgent } from '../access/index.ts';
  */
 export const Leads: CollectionConfig = {
   slug: 'leads',
+  labels: { singular: 'Website Enquiry', plural: 'Website Enquiries' },
   admin: {
     group: 'Enquiries',
     useAsTitle: 'email',
     defaultColumns: ['submissionId', 'email', 'source', 'status', 'createdAt'],
+    description:
+      'Enquiries submitted through the website forms. These arrive automatically — you don’t add them by hand.',
   },
   access: {
     read: isEditorial,

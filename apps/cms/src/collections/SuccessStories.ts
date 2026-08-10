@@ -12,11 +12,13 @@ import { publishedOrEditorial, isEditorial } from '../access/index.ts';
  */
 export const SuccessStories: CollectionConfig = {
   slug: 'success-stories',
-  labels: { singular: 'Success Story', plural: 'Success Stories (Client Results)' },
+  labels: { singular: 'Client Result', plural: 'Visa Grants & Skill Assessments' },
   admin: {
-    group: 'Client Results',
+    group: 'Client Testimonials',
     useAsTitle: 'title',
     defaultColumns: ['title', 'type', 'category', 'featured', 'order', 'status'],
+    description:
+      'Client wins shown on the site — visa grants, skill assessments, review/testimonial videos and photos. The website groups them into the right carousels automatically. Only entries with consent are ever shown.',
   },
   access: {
     read: publishedOrEditorial,

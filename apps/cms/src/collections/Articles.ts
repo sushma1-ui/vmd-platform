@@ -10,10 +10,11 @@ import { setPublishedAt } from '../hooks/index.ts';
  */
 export const Articles: CollectionConfig = {
   slug: 'articles',
+  labels: { singular: 'Article', plural: 'Blog & Insights' },
   admin: {
-    group: 'Website Content',
+    group: 'Resources',
     description:
-      'Blog posts and resource articles. Draft, then set status to Published to go live.',
+      'Blog posts and resource articles. Write your post, then set Status to Published to go live.',
     useAsTitle: 'title',
     defaultColumns: ['title', 'category', 'status', 'publishedAt'],
   },

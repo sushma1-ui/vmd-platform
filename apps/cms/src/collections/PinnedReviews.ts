@@ -8,7 +8,14 @@ import { publishedOrEditorial, isEditorial } from '../access/index.ts';
  */
 export const PinnedReviews: CollectionConfig = {
   slug: 'pinned-reviews',
-  admin: { group: 'Client Results', useAsTitle: 'reviewerName' },
+  labels: { singular: 'Google Review', plural: 'Google Reviews' },
+  admin: {
+    group: 'Client Testimonials',
+    useAsTitle: 'reviewerName',
+    defaultColumns: ['reviewerName', 'rating', 'reviewDate', 'status'],
+    description:
+      'Featured real Google reviews. Add the reviewer name, rating (1–5) and the review text.',
+  },
   access: {
     read: publishedOrEditorial,
     create: isEditorial,

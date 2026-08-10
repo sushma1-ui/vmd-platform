@@ -5,7 +5,7 @@ import { seoField } from '../fields/index.ts';
 /** Situation hubs (×6) — non-expert language: "I married an Australian". */
 export const Situations: CollectionConfig = {
   slug: 'situations',
-  admin: { group: 'Visa Reference', useAsTitle: 'title' },
+  admin: { group: 'Visa Reference', useAsTitle: 'title', hidden: true },
   access: {
     read: publishedOrEditorial,
     create: isEditorial,

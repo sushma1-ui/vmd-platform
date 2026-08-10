@@ -16,11 +16,11 @@ import { setPublishedAt } from '../hooks/index.ts';
  */
 export const ServicePages: CollectionConfig = {
   slug: 'service-pages',
-  labels: { singular: 'Service Page', plural: 'Service Pages (Our Services)' },
+  labels: { singular: 'Service Page', plural: 'Services' },
   admin: {
-    group: 'Website Content',
+    group: 'Services',
     description:
-      'The "Our Services" pages (visa and service pages shown on the website). Edit the hero, body, FAQ, CTA and SEO here.',
+      'The "Our Services" pages shown on the website. Edit the hero, body, FAQ, CTA and SEO here, then set Status to Published to go live.',
     useAsTitle: 'title',
     defaultColumns: ['title', 'status', 'featured', 'publishedAt', 'updatedAt'],
   },

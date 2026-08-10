@@ -11,6 +11,7 @@ export const AuditLog: CollectionConfig = {
     group: 'System',
     useAsTitle: 'action',
     defaultColumns: ['action', 'collectionSlug', 'docId', 'user', 'createdAt'],
+    hidden: true,
   },
   access: { read: isAdmin, create: () => false, update: () => false, delete: () => false },
   fields: [

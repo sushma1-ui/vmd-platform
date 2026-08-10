@@ -10,7 +10,14 @@ import { seoField, reviewedByField } from '../fields/index.ts';
  */
 export const Services: CollectionConfig = {
   slug: 'services',
-  admin: { group: 'Visa Reference', useAsTitle: 'title', defaultColumns: ['title', 'status'] },
+  // Technical service-hub taxonomy (ties visa subclasses to hub pages). Hidden from
+  // the simplified editor; the editable "Our Services" content lives in Service Pages.
+  admin: {
+    group: 'Services',
+    useAsTitle: 'title',
+    defaultColumns: ['title', 'status'],
+    hidden: true,
+  },
   access: {
     read: publishedOrEditorial,
     create: isEditorial,

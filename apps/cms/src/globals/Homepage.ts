@@ -16,9 +16,9 @@ import { seoField, showToggle, headingIntro, linkGroup } from '../fields/index.t
  */
 export const Homepage: GlobalConfig = {
   slug: 'homepage',
-  label: 'Homepage',
+  label: 'Home Page',
   admin: {
-    group: 'Website Content',
+    group: 'Pages',
     description: 'Every section of the home page, top to bottom. Open a tab to edit that section.',
     preview: () => `${process.env.PUBLIC_SITE_URL || 'http://localhost:4321'}/`,
     livePreview: {

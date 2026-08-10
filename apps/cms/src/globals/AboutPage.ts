@@ -133,10 +133,10 @@ const STORY_BODY: { text: string }[] = [
 
 export const AboutPage: GlobalConfig = {
   slug: 'about-page',
-  label: 'About Page',
+  label: 'About / Our Story',
   admin: {
-    group: 'Website Content',
-    description: 'The copy on the About page (/about).',
+    group: 'Pages',
+    description: 'The copy on the About page (/about) — Our Story, values, and the Why VMD list.',
     preview: () => `${process.env.PUBLIC_SITE_URL || 'http://localhost:4321'}/about/`,
   },
   versions: { drafts: true },
