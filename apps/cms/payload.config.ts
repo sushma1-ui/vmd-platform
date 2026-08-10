@@ -1,3 +1,5 @@
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { buildConfig } from 'payload';
 import { postgresAdapter } from '@payloadcms/db-postgres';
 import { s3Storage } from '@payloadcms/storage-s3';
@@ -20,7 +22,16 @@ import {
 // Prefer a dedicated pooled URL for runtime; fall back to DATABASE_URL. Use `||` (not
 // `??`) so an empty DATABASE_POOL_URL= line in .env correctly falls through instead of
 // shadowing DATABASE_URL with an empty string.
-const connectionString = process.env.DATABASE_POOL_URL || process.env.DATABASE_URL || '';
+const dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// Runtime (serverless functions) prefers the POOLED connection so concurrent
+// invocations don't exhaust Postgres connections. Migrations, however, run DDL —
+// which Supabase's transaction pooler (port 6543) does not support — so when the
+// Payload CLI runs a migrate command we use the DIRECT connection instead.
+const isMigrating = process.argv.some((arg) => arg.includes('migrate'));
+const pooledUrl = process.env.DATABASE_POOL_URL || process.env.DATABASE_URL || '';
+const directUrl = process.env.DATABASE_URL || process.env.DATABASE_POOL_URL || '';
+const connectionString = isMigrating ? directUrl : pooledUrl;
 
 export default buildConfig({
   secret: process.env.PAYLOAD_SECRET ?? '',
@@ -28,7 +39,12 @@ export default buildConfig({
   // Cap upload size (8 MB) so a hostile or accidental huge file can't exhaust
   // storage/memory. Comfortably covers high-resolution photography.
   upload: { limits: { fileSize: 8 * 1024 * 1024 } },
-  db: postgresAdapter({ pool: { connectionString } }),
+  db: postgresAdapter({
+    pool: { connectionString },
+    // Committed migration files (see scripts/run-migrations.mjs). Generate with
+    // `pnpm --filter @vmd/cms migrate:create`; they apply on deploy via `build`.
+    migrationDir: path.resolve(dirname, 'src/migrations'),
+  }),
   collections: collections.map((c) => ({
     ...c,
     hooks: {

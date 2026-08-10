@@ -6,13 +6,16 @@
   "type": "module",
   "scripts": {
     "dev": "next dev -p 3000",
-    "build": "next build",
+    "build": "node scripts/run-migrations.mjs && next build",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "start": "next start -p 3000",
     "seed": "node --experimental-strip-types src/seed.ts",
     "seed:service-pages": "node --experimental-strip-types src/seed-service-pages.ts",
-    "generate:types": "payload generate:types"
+    "generate:types": "payload generate:types",
+    "migrate:create": "payload migrate:create",
+    "migrate": "payload migrate",
+    "migrate:status": "payload migrate:status"
   },
   "dependencies": {
     "@vmd/schema": "workspace:*",
