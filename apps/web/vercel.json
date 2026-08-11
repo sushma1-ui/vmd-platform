@@ -8,7 +8,99 @@
       "destination": "/results/success-stories",
       "permanent": true
     },
-    { "source": "/about/fees", "destination": "/book-consultation", "permanent": true }
+    { "source": "/about/fees", "destination": "/book-consultation", "permanent": true },
+
+    { "source": "/team", "destination": "/about/team", "permanent": true },
+    { "source": "/team-details", "destination": "/about/team", "permanent": true },
+    { "source": "/testimonial", "destination": "/results/reviews", "permanent": true },
+    { "source": "/faq", "destination": "/resources/visa-guides", "permanent": true },
+
+    { "source": "/visa", "destination": "/services", "permanent": true },
+    {
+      "source": "/student-visa",
+      "destination": "/services/subclass-500-student-visa",
+      "permanent": true
+    },
+    {
+      "source": "/temporary-graduate-visa",
+      "destination": "/services/subclass-485-temporary-graduate-visa",
+      "permanent": true
+    },
+    {
+      "source": "/visitor-visa",
+      "destination": "/services/subclass-600-visitor-visa",
+      "permanent": true
+    },
+    { "source": "/skilled-visa", "destination": "/services", "permanent": true },
+    {
+      "source": "/partner-visa",
+      "destination": "/services/partner-visa-onshore-820-801",
+      "permanent": true
+    },
+    {
+      "source": "/employer-sponsored-visa",
+      "destination": "/services/subclass-186-employer-nomination-scheme-visa",
+      "permanent": true
+    },
+
+    { "source": "/country/:slug*", "destination": "/", "permanent": true },
+
+    {
+      "source": "/10-must-visit-hidden-gems-your-next-vacation",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/application-arsenal-your-essential-toolkit-successful",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/elevating-visa-application-complexity-with",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/elevating-your-visa-application-navigating-complexity",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/how-student-visa-consulting-lights-the-way",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/how-student-visa-consulting-transforms-the-journey",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/how-to-experience-the-world-without-breaking",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/student-visa-consulting-and-the-road-to-higher",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/the-impact-of-student-visa-consulting-on-study",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/your-comprehensive-guide-to-successfully-pursuing",
+      "destination": "/blog",
+      "permanent": true
+    },
+
+    { "source": "/hello-world", "destination": "/", "permanent": true },
+    { "source": "/hello-world-2", "destination": "/", "permanent": true },
+    { "source": "/sample-page", "destination": "/", "permanent": true },
+    { "source": "/travel-agency", "destination": "/", "permanent": true },
+    { "source": "/header-footer/:path*", "destination": "/", "permanent": false }
   ],
   "headers": [
     {
