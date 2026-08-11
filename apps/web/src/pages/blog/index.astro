@@ -177,8 +177,48 @@ const trail = [
     clip: rect(0 0 0 0);
     white-space: nowrap;
   }
+  /* A wide Australian editorial photo, treated to a whisper: it sits BEHIND the
+     hero copy over the warm ground, so the heading and text stay the focus. No
+     parallax, no banner/card look. Opacity is deliberately tiny and adjustable
+     via --bl-hero-photo-opacity (8–12%). Decorative only (::before, aria-free). */
   .bl-hero {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
     background: var(--color-ground-warm);
+    --bl-hero-photo-opacity: 0.09;
+  }
+  .bl-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: url('/blog.avif');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    opacity: var(--bl-hero-photo-opacity);
+    pointer-events: none;
+  }
+  /* Faint warm veil, strongest where the copy sits (left), fading out — keeps text
+     crisp over the busiest part of the photo, especially on small screens. */
+  .bl-hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(
+      to right,
+      color-mix(in srgb, var(--color-ground-warm) 35%, transparent),
+      transparent 60%
+    );
+    pointer-events: none;
+  }
+  @media (max-width: 640px) {
+    /* Even quieter on mobile, where the copy sits over more of the image. */
+    .bl-hero {
+      --bl-hero-photo-opacity: 0.08;
+    }
   }
   .bl-hero__inner {
     max-inline-size: var(--container-max);
