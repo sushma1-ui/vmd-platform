@@ -18,28 +18,28 @@
     { "source": "/visa", "destination": "/services", "permanent": true },
     {
       "source": "/student-visa",
-      "destination": "/services/subclass-500-student-visa",
+      "destination": "/visas/subclass-500-student-visa",
       "permanent": true
     },
     {
       "source": "/temporary-graduate-visa",
-      "destination": "/services/subclass-485-temporary-graduate-visa",
+      "destination": "/visas/subclass-485-temporary-graduate-visa",
       "permanent": true
     },
     {
       "source": "/visitor-visa",
-      "destination": "/services/subclass-600-visitor-visa",
+      "destination": "/visas/subclass-600-visitor-visa",
       "permanent": true
     },
     { "source": "/skilled-visa", "destination": "/services", "permanent": true },
     {
       "source": "/partner-visa",
-      "destination": "/services/partner-visa-onshore-820-801",
+      "destination": "/visas/partner-visa-onshore-820-801",
       "permanent": true
     },
     {
       "source": "/employer-sponsored-visa",
-      "destination": "/services/subclass-186-employer-nomination-scheme-visa",
+      "destination": "/visas/subclass-186-employer-nomination-scheme-visa",
       "permanent": true
     },
 
