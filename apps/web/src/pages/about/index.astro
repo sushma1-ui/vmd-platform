@@ -185,6 +185,17 @@ const photoUrl = (m: TeamMember): string | null =>
     }
   </div>
 
+  <figure class="story-photo">
+    <img
+      src="/our-story.webp"
+      width="1200"
+      height="800"
+      alt="A team working together around a table with laptops, notebooks and shared notes"
+      loading="lazy"
+      decoding="async"
+    />
+  </figure>
+
   <section class="about-section" aria-label="Our core value">
     <p class="about-section__eyebrow">Our core value</p>
     <h2 class="about-section__h about-section__h--tight">Care. Clarity. Consistency.</h2>
@@ -287,6 +298,22 @@ const photoUrl = (m: TeamMember): string | null =>
 </SimplePage>
 
 <style>
+  /* Our Story photo — a full-width visual break in the narrative. Fixed aspect
+     ratio + width/height prevent layout shift; lazy-loaded (below the fold). */
+  .story-photo {
+    margin-block: var(--space-7);
+  }
+  .story-photo img {
+    display: block;
+    inline-size: 100%;
+    block-size: auto;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    border-radius: var(--radius-card, 14px);
+    border: 1px solid color-mix(in srgb, var(--color-action) 10%, transparent);
+    box-shadow: var(--shadow-subtle, 0 12px 32px -20px rgba(14, 26, 48, 0.42));
+  }
+
   /* Content sections that sit below the story, each separated by the same thin
      divider the team section uses — keeps the page rhythm consistent. */
   .about-section {
