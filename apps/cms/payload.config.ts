@@ -24,14 +24,14 @@ import {
 // shadowing DATABASE_URL with an empty string.
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// Runtime (serverless functions) prefers the POOLED connection so concurrent
-// invocations don't exhaust Postgres connections. Migrations, however, run DDL —
-// which Supabase's transaction pooler (port 6543) does not support — so when the
-// Payload CLI runs a migrate command we use the DIRECT connection instead.
-const isMigrating = process.argv.some((arg) => arg.includes('migrate'));
-const pooledUrl = process.env.DATABASE_POOL_URL || process.env.DATABASE_URL || '';
-const directUrl = process.env.DATABASE_URL || process.env.DATABASE_POOL_URL || '';
-const connectionString = isMigrating ? directUrl : pooledUrl;
+// Both runtime and migrations use the DIRECT Postgres connection (DATABASE_URL);
+// the bounded pool (below) keeps it within Supabase's connection limit. This is the
+// stable, VERIFIED configuration for this low-traffic CMS, and it does not depend on
+// a hand-pasted pooler string (which repeatedly failed to connect and took the CMS
+// down). A Supavisor SESSION pooler can be layered in later, once validated end to
+// end, by setting DATABASE_POOL_URL AND flipping the preference below — note the
+// TRANSACTION pooler (port 6543) is NOT Payload-safe: it breaks initialization.
+const connectionString = process.env.DATABASE_URL || process.env.DATABASE_POOL_URL || '';
 
 export default buildConfig({
   secret: process.env.PAYLOAD_SECRET ?? '',
