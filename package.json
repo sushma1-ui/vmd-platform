@@ -5,9 +5,9 @@
   "description": "Visa & Migration Doctors \u2014 digital platform monorepo. Astro (public) + Payload (admin/content API), token-driven design system, modularity enforced in CI.",
   "engines": {
     "node": ">=20.11.0",
-    "pnpm": ">=9.0.0"
+    "pnpm": ">=10.0.0"
   },
-  "packageManager": "pnpm@9.12.3",
+  "packageManager": "pnpm@10.15.1",
   "type": "module",
   "scripts": {
     "build": "turbo run build",

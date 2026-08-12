@@ -40,7 +40,17 @@ export default buildConfig({
   // storage/memory. Comfortably covers high-resolution photography.
   upload: { limits: { fileSize: 8 * 1024 * 1024 } },
   db: postgresAdapter({
-    pool: { connectionString },
+    pool: {
+      connectionString,
+      // Bound the per-instance pool so serverless cold-starts and concurrent
+      // editors can't exhaust Supabase's connection slots (proven failure mode on
+      // the Nano tier). max is well above 1 (so afterChange hooks don't deadlock)
+      // and well below the tier limit; idle connections are released; a stuck
+      // connect fails fast (10s) instead of hanging the request.
+      max: 5,
+      idleTimeoutMillis: 30000,
+      connectionTimeoutMillis: 10000,
+    },
     // Committed migration files (see scripts/run-migrations.mjs). Generate with
     // `pnpm --filter @vmd/cms migrate:create`; they apply on deploy via `build`.
     migrationDir: path.resolve(dirname, 'src/migrations'),
