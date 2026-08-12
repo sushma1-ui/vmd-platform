@@ -11,6 +11,26 @@ const BASE = import.meta.env.PUBLIC_CMS_URL ?? 'http://localhost:3000';
 
 type Doc = Record<string, unknown> & { id: string; slug?: string };
 
+/**
+ * Fetch the CMS with a few quick retries. The CMS's serverless cold-start database
+ * connections occasionally fail transiently; without a retry, one such miss at BUILD
+ * time blanks an entire section of the live site. Only 5xx / network errors are
+ * retried (a genuine 4xx returns immediately). Returns null if every attempt fails,
+ * so callers still fall back to their empty/default state — the site never breaks.
+ */
+async function cmsFetch(path: string, retries = 4): Promise<Response | null> {
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const res = await fetch(`${BASE}${path}`);
+      if (res.status < 500) return res;
+    } catch {
+      /* transient network error — retry */
+    }
+    if (attempt < retries) await new Promise((r) => setTimeout(r, 500 * (attempt + 1)));
+  }
+  return null;
+}
+
 async function query<T = Doc>(
   collection: string,
   params: Record<string, string> = {},
@@ -21,9 +41,9 @@ async function query<T = Doc>(
     depth: '1',
     ...params,
   });
+  const res = await cmsFetch(`/api/${collection}?${search.toString()}`);
+  if (!res || !res.ok) return [];
   try {
-    const res = await fetch(`${BASE}/api/${collection}?${search.toString()}`);
-    if (!res.ok) return [];
     const data = (await res.json()) as { docs?: T[] };
     return data.docs ?? [];
   } catch {
@@ -156,8 +176,8 @@ export type Redirect = { from: string; to: string; code: 301 | 302 };
  */
 export async function getSettings(): Promise<SiteSettings | null> {
   try {
-    const res = await fetch(`${BASE}/api/globals/settings?depth=0`);
-    if (!res.ok) return null;
+    const res = await cmsFetch(`/api/globals/settings?depth=0`);
+    if (!res || !res.ok) return null;
     return (await res.json()) as SiteSettings;
   } catch {
     return null;
@@ -256,8 +276,8 @@ let homepageCache: Promise<HomepageContent | null> | null = null;
 export function getHomepage(): Promise<HomepageContent | null> {
   homepageCache ??= (async () => {
     try {
-      const res = await fetch(`${BASE}/api/globals/homepage?depth=1`);
-      if (!res.ok) return null;
+      const res = await cmsFetch(`/api/globals/homepage?depth=1`);
+      if (!res || !res.ok) return null;
       return (await res.json()) as HomepageContent;
     } catch {
       return null;
@@ -327,8 +347,8 @@ export interface ContactContent {
 }
 async function getGlobal<T>(slug: string, depth = 0): Promise<T | null> {
   try {
-    const res = await fetch(`${BASE}/api/globals/${slug}?depth=${depth}`);
-    if (!res.ok) return null;
+    const res = await cmsFetch(`/api/globals/${slug}?depth=${depth}`);
+    if (!res || !res.ok) return null;
     return (await res.json()) as T;
   } catch {
     return null;
@@ -356,8 +376,8 @@ let footerCache: Promise<FooterColumn[] | null> | null = null;
 export function getFooterColumns(): Promise<FooterColumn[] | null> {
   footerCache ??= (async () => {
     try {
-      const res = await fetch(`${BASE}/api/globals/footer?depth=0`);
-      if (!res.ok) return null;
+      const res = await cmsFetch(`/api/globals/footer?depth=0`);
+      if (!res || !res.ok) return null;
       const data = (await res.json()) as { columns?: FooterColumn[] };
       const cols = (data.columns ?? []).filter((c) => c?.heading && c.links?.length);
       return cols.length ? cols : null;
@@ -383,8 +403,8 @@ let socialCache: Promise<SocialLinksMap> | null = null;
 export function getSocialLinks(): Promise<SocialLinksMap> {
   socialCache ??= (async () => {
     try {
-      const res = await fetch(`${BASE}/api/globals/social-media?depth=0`);
-      if (!res.ok) return {};
+      const res = await cmsFetch(`/api/globals/social-media?depth=0`);
+      if (!res || !res.ok) return {};
       const raw = (await res.json()) as SocialLinksMap;
       const safe = (v: unknown): string | undefined =>
         typeof v === 'string' && /^https?:\/\//i.test(v.trim()) ? v.trim() : undefined;
@@ -409,8 +429,8 @@ export function getSocialLinks(): Promise<SocialLinksMap> {
  */
 export async function getRedirects(): Promise<Redirect[]> {
   try {
-    const res = await fetch(`${BASE}/api/redirects?limit=1000&depth=0`);
-    if (!res.ok) return [];
+    const res = await cmsFetch(`/api/redirects?limit=1000&depth=0`);
+    if (!res || !res.ok) return [];
     const data = (await res.json()) as {
       docs?: Array<{ from: string; to: string; code?: string }>;
     };
