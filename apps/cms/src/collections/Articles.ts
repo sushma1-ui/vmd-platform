@@ -1,7 +1,7 @@
 import type { CollectionConfig } from 'payload';
 import { publishedOrEditorial, isEditorial } from '../access/index.ts';
 import { seoField, reviewedByField } from '../fields/index.ts';
-import { setPublishedAt } from '../hooks/index.ts';
+import { setPublishedAt, syncStatusWithPublish } from '../hooks/index.ts';
 
 /**
  * Articles — the ONE Knowledge Centre content type (ARCHITECTURE.md §2.2). Blog
@@ -25,10 +25,20 @@ export const Articles: CollectionConfig = {
     delete: isEditorial,
   },
   versions: { drafts: true },
-  hooks: { beforeChange: [setPublishedAt] },
+  hooks: { beforeChange: [syncStatusWithPublish, setPublishedAt] },
   fields: [
     { name: 'title', type: 'text', required: true },
-    { name: 'slug', type: 'text', required: true, unique: true, index: true },
+    {
+      name: 'slug',
+      type: 'text',
+      required: true,
+      unique: true,
+      index: true,
+      admin: {
+        description:
+          'The web address for this post — lowercase words separated by hyphens, e.g. "why-applications-get-refused".',
+      },
+    },
     {
       name: 'category',
       type: 'select',
@@ -53,8 +63,18 @@ export const Articles: CollectionConfig = {
       defaultValue: 'draft',
       index: true,
       options: ['draft', 'scheduled', 'published'],
+      admin: {
+        description:
+          'Set to "Published" to show this article on the website. "Draft" keeps it hidden.',
+      },
     },
-    { name: 'featured', type: 'checkbox', defaultValue: false, index: true },
+    {
+      name: 'featured',
+      type: 'checkbox',
+      defaultValue: false,
+      index: true,
+      admin: { description: 'Tick to highlight this post in the "Featured" row on the blog.' },
+    },
     {
       name: 'publishedAt',
       type: 'date',
@@ -65,10 +85,28 @@ export const Articles: CollectionConfig = {
         date: { pickerAppearance: 'dayAndTime' },
       },
     },
-    { name: 'excerpt', type: 'textarea', maxLength: 300 },
-    { name: 'heroImage', type: 'upload', relationTo: 'media' },
+    {
+      name: 'excerpt',
+      type: 'textarea',
+      maxLength: 300,
+      admin: {
+        description: 'A short summary shown on the blog listing cards (max 300 characters).',
+      },
+    },
+    {
+      name: 'heroImage',
+      type: 'upload',
+      relationTo: 'media',
+      admin: { description: 'The main image shown at the top of the article.' },
+    },
     { name: 'content', type: 'richText' },
-    { name: 'tags', type: 'text', hasMany: true, index: true },
+    {
+      name: 'tags',
+      type: 'text',
+      hasMany: true,
+      index: true,
+      admin: { description: 'Optional keywords to help search and grouping.' },
+    },
     {
       name: 'faq',
       type: 'array',
@@ -83,9 +121,26 @@ export const Articles: CollectionConfig = {
       type: 'number',
       admin: { description: 'Minutes. Leave blank to auto-estimate from the content.' },
     },
-    { name: 'author', type: 'relationship', relationTo: 'users' },
-    { name: 'relatedArticles', type: 'relationship', relationTo: 'articles', hasMany: true },
-    { name: 'relatedSubclasses', type: 'relationship', relationTo: 'subclasses', hasMany: true },
+    {
+      name: 'author',
+      type: 'relationship',
+      relationTo: 'users',
+      admin: { description: 'The byline. Defaults to the practice principal.' },
+    },
+    {
+      name: 'relatedArticles',
+      type: 'relationship',
+      relationTo: 'articles',
+      hasMany: true,
+      admin: { hidden: true },
+    },
+    {
+      name: 'relatedSubclasses',
+      type: 'relationship',
+      relationTo: 'subclasses',
+      hasMany: true,
+      admin: { hidden: true },
+    },
     reviewedByField,
     seoField,
   ],

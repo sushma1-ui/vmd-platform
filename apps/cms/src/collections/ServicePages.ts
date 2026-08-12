@@ -1,7 +1,7 @@
 import type { CollectionConfig } from 'payload';
 import { publishedOrEditorial, isEditorial } from '../access/index.ts';
 import { seoField } from '../fields/index.ts';
-import { setPublishedAt } from '../hooks/index.ts';
+import { setPublishedAt, syncStatusWithPublish } from '../hooks/index.ts';
 
 /**
  * Service Pages ("Our Services") — content-shaped, one entry per service, rendered
@@ -31,7 +31,7 @@ export const ServicePages: CollectionConfig = {
     delete: isEditorial,
   },
   versions: { drafts: true },
-  hooks: { beforeChange: [setPublishedAt] },
+  hooks: { beforeChange: [syncStatusWithPublish, setPublishedAt] },
   fields: [
     { name: 'title', type: 'text', required: true },
     { name: 'slug', type: 'text', required: true, unique: true, index: true },

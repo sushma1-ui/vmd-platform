@@ -21,3 +21,18 @@ export const setPublishedAt: CollectionBeforeChangeHook<Publishable> = ({ data, 
   }
   return data;
 };
+
+/**
+ * Single publish control. The website filters on the `status` field, while Payload's
+ * "Publish changes" / "Save Draft" buttons drive the version `_status` — two separate
+ * switches that confuse editors. This keeps `status` in step with the button, so
+ * clicking "Publish changes" alone makes content live (WordPress-style). Runs before
+ * setPublishedAt so the published date is stamped correctly. 'scheduled' is left
+ * untouched (only draft/published are synced).
+ */
+export const syncStatusWithPublish: CollectionBeforeChangeHook<Publishable> = ({ data }) => {
+  const versionStatus = (data as { _status?: string })._status;
+  if (versionStatus === 'published') data.status = 'published';
+  else if (versionStatus === 'draft' && data.status !== 'scheduled') data.status = 'draft';
+  return data;
+};
