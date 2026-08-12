@@ -18,7 +18,7 @@ type Doc = Record<string, unknown> & { id: string; slug?: string };
  * retried (a genuine 4xx returns immediately). Returns null if every attempt fails,
  * so callers still fall back to their empty/default state — the site never breaks.
  */
-async function cmsFetch(path: string, retries = 4): Promise<Response | null> {
+async function cmsFetch(path: string, retries = 5): Promise<Response | null> {
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
       const res = await fetch(`${BASE}${path}`);
