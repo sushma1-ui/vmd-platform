@@ -26,7 +26,8 @@ const trail = [
   title={post.title}
   description={post.excerpt ?? post.title}
   type="article"
-  schemas={[articleSchema(post, path), breadcrumbSchema(trail)]}
+  canonicalPath={`/blog/${post.slug}/`}
+  schemas={[articleSchema(post, `/blog/${post.slug}/`), breadcrumbSchema(trail)]}
 >
   <article class="post">
     <nav class="crumbs" aria-label="Breadcrumb">

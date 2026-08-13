@@ -14,9 +14,25 @@ interface Props {
   type?: 'website' | 'article';
   schemas?: unknown[];
   breadcrumbs?: { name: string; path: string }[];
+  // Override the canonical URL when this content has a primary home at another path.
+  canonicalPath?: string;
 }
-const { title, description, noindex = false, type = 'website', schemas = [] } = Astro.props;
-const meta = buildMeta({ title, description, path: Astro.url.pathname, noindex, type });
+const {
+  title,
+  description,
+  noindex = false,
+  type = 'website',
+  schemas = [],
+  canonicalPath,
+} = Astro.props;
+const meta = buildMeta({
+  title,
+  description,
+  path: Astro.url.pathname,
+  canonicalPath,
+  noindex,
+  type,
+});
 const jsonLd = [organizationSchema(), ...schemas];
 ---
 
