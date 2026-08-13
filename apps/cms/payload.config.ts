@@ -36,9 +36,11 @@ const connectionString = process.env.DATABASE_URL || process.env.DATABASE_POOL_U
 export default buildConfig({
   secret: process.env.PAYLOAD_SECRET ?? '',
   editor: lexicalEditor(),
-  // Cap upload size (8 MB) so a hostile or accidental huge file can't exhaust
-  // storage/memory. Comfortably covers high-resolution photography.
-  upload: { limits: { fileSize: 8 * 1024 * 1024 } },
+  // Cap upload size (15 MB) so a hostile or accidental huge file can't exhaust
+  // storage/memory, while comfortably covering full-resolution phone photos and
+  // stock images (a common cause of "upload failed" at the old 8 MB cap). Sharp
+  // still generates small, optimised sizes for the website regardless of original.
+  upload: { limits: { fileSize: 15 * 1024 * 1024 } },
   db: postgresAdapter({
     pool: {
       connectionString,

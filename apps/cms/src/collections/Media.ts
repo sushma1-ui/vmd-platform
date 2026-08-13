@@ -11,7 +11,7 @@ export const Media: CollectionConfig = {
   admin: {
     group: 'Media',
     description:
-      'Images and files used across the website. Upload here, then pick them when editing a page. Always add descriptive alt text.',
+      'Images used across the website. Upload here, then pick them when editing a page. Accepted formats: JPG, PNG, WebP, AVIF (not HEIC or SVG) — if a photo is HEIC from an iPhone, save/export it as JPG first. Max size 15 MB. Always add descriptive alt text.',
   },
   access: { read: anyone, create: isEditorial, update: isEditorial, delete: isEditorial },
   upload: {
