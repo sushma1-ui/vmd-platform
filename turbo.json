@@ -42,6 +42,11 @@
       "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**", "build/**"]
     },
+    "@vmd/web#build": {
+      "dependsOn": ["^build"],
+      "outputs": [".vercel/**", "dist/**"],
+      "cache": false
+    },
     "dev": {
       "cache": false,
       "persistent": true
