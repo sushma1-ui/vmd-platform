@@ -1,0 +1,186 @@
+---
+import Base from '../../layouts/Base.astro';
+import { breadcrumbSchema } from '@vmd/seo';
+import { pathnameToTrail } from '../../lib/breadcrumbs.ts';
+
+/**
+ * Renders a legal document (Privacy Policy, Terms & Conditions) inside the VMD
+ * design system. The `body` is a pre-generated HTML fragment produced VERBATIM from
+ * the source Word document (see apps/web/src/legal/*.html) — masthead, an "On this
+ * page" contents nav, then numbered <section>s with headings, paragraphs and bullet
+ * lists. No wording is added or changed here; this component only frames and styles it.
+ */
+interface Props {
+  title: string;
+  description: string;
+  body: string;
+}
+const { title, description, body } = Astro.props;
+const trail = pathnameToTrail(Astro.url.pathname);
+---
+
+<Base title={title} description={description} schemas={[breadcrumbSchema(trail)]}>
+  <article class="legal" id="top">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      {
+        trail.map((t, i) => (
+          <span>
+            {i > 0 && <span aria-hidden="true"> / </span>}
+            <a href={t.path}>{t.name}</a>
+          </span>
+        ))
+      }
+    </nav>
+    <Fragment set:html={body} />
+    <p class="legal__top"><a href="#top">↑ Back to top</a></p>
+  </article>
+</Base>
+
+<style>
+  .legal {
+    max-inline-size: 74ch;
+    margin-inline: auto;
+    padding: var(--space-7) var(--space-4) var(--space-9);
+  }
+  .crumbs {
+    font-size: var(--type-caption);
+    color: var(--color-text-muted);
+    margin-block-end: var(--space-5);
+  }
+  .crumbs a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .crumbs a:hover {
+    border-block-end: 1px solid var(--color-emphasis);
+  }
+
+  /* Masthead ---------------------------------------------------------------- */
+  .legal :global(.legal__masthead) {
+    margin-block-end: var(--space-6);
+    padding-block-end: var(--space-5);
+    border-block-end: 1px solid color-mix(in srgb, var(--color-text) 12%, transparent);
+  }
+  .legal :global(.legal__brand) {
+    font-size: var(--type-caption);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin-block-end: var(--space-2);
+  }
+  .legal :global(.legal__title) {
+    font-family: var(--font-display);
+    font-size: var(--type-display-2);
+    line-height: 1.1;
+    margin: 0;
+  }
+  .legal :global(.legal__title strong) {
+    font-weight: inherit;
+  }
+  .legal :global(.legal__meta) {
+    margin-block-start: var(--space-4);
+  }
+  .legal :global(.legal__meta p) {
+    margin: 0;
+    font-size: var(--type-body-sm);
+    line-height: 1.6;
+    color: var(--color-text-muted);
+  }
+
+  /* On-this-page contents --------------------------------------------------- */
+  .legal :global(.legal__toc) {
+    margin-block-end: var(--space-7);
+    padding: var(--space-4) var(--space-5);
+    border: 1px solid color-mix(in srgb, var(--color-text) 12%, transparent);
+    border-radius: var(--radius-card);
+    background: color-mix(in srgb, var(--color-emphasis) 5%, transparent);
+  }
+  .legal :global(.legal__toc-h) {
+    margin: 0 0 var(--space-3);
+    font-size: var(--type-caption);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+  .legal :global(.legal__toc ul) {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-2) var(--space-5);
+  }
+  .legal :global(.legal__toc a) {
+    color: var(--color-action);
+    text-decoration: none;
+    font-size: var(--type-body-sm);
+    line-height: 1.4;
+  }
+  .legal :global(.legal__toc a:hover) {
+    text-decoration: underline;
+  }
+  .legal :global(.legal__toc strong) {
+    font-weight: inherit;
+  }
+
+  /* Sections ---------------------------------------------------------------- */
+  .legal :global(.legal__section) {
+    margin-block-start: var(--space-6);
+    scroll-margin-top: var(--space-8);
+  }
+  .legal :global(.legal__section + .legal__section) {
+    padding-block-start: var(--space-6);
+    border-block-start: 1px solid color-mix(in srgb, var(--color-text) 8%, transparent);
+  }
+  .legal :global(.legal__h2) {
+    font-family: var(--font-display);
+    font-size: var(--type-h3);
+    line-height: 1.25;
+    margin: 0 0 var(--space-3);
+  }
+  .legal :global(.legal__h2 strong) {
+    font-weight: inherit;
+  }
+  .legal :global(p) {
+    font-size: var(--type-body);
+    line-height: 1.75;
+    margin-block: 0 var(--space-3);
+  }
+  .legal :global(.legal__ul) {
+    margin-block: 0 var(--space-3);
+    padding-inline-start: 1.4em;
+  }
+  .legal :global(.legal__ul li) {
+    font-size: var(--type-body);
+    line-height: 1.75;
+    margin-block-end: var(--space-2);
+  }
+  .legal :global(strong) {
+    font-weight: 600;
+  }
+  /* Long tokens (emails, register URLs) never force horizontal scroll on mobile. */
+  .legal :global(.legal__section),
+  .legal :global(.legal__meta) {
+    overflow-wrap: anywhere;
+  }
+
+  .legal__top {
+    margin-block-start: var(--space-7);
+    padding-block-start: var(--space-4);
+    border-block-start: 1px solid color-mix(in srgb, var(--color-text) 8%, transparent);
+    font-size: var(--type-body-sm);
+  }
+  .legal__top a {
+    color: var(--color-action);
+    text-decoration: none;
+  }
+  .legal__top a:hover {
+    text-decoration: underline;
+  }
+
+  /* Two-column contents once there is room; single column on mobile. */
+  @media (min-width: 640px) {
+    .legal :global(.legal__toc ul) {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>

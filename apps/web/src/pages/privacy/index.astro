@@ -1,21 +1,12 @@
 ---
-import SimplePage from '../../components/content/SimplePage.astro';
+import LegalDocument from '../../components/content/LegalDocument.astro';
+// The body is the Privacy Policy rendered VERBATIM from the source Word document
+// (apps/web/src/legal/privacy.html, generated from VMD_Privacy_Policy_v1.1_Aug2026.docx).
+import body from '../../legal/privacy.html?raw';
 ---
 
-<SimplePage
+<LegalDocument
   title="Privacy Policy"
-  description="How Visa & Migration Doctors collects, uses and protects your personal information under the Privacy Act."
-  eyebrow="Legal"
-  lead="We collect personal, sometimes sensitive, information. Here's how we handle it."
-  cta={{ href: '/contact/', label: 'Questions? Contact us' }}
->
-  <p>
-    We handle personal and sensitive information in line with the Australian Privacy Act 1988 and
-    the Australian Privacy Principles.
-  </p>
-  <p>
-    Our full Privacy Policy is being published here. In the meantime, if you have any question about
-    how we collect, use, store or disclose your information, please contact us and we will answer
-    it.
-  </p>
-</SimplePage>
+  description="How Visa & Migration Doctors collects, uses, holds and protects your personal information under the Australian Privacy Act and the Migration Agents Code of Conduct."
+  body={body}
+/>

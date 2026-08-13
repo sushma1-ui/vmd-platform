@@ -1,16 +1,12 @@
 ---
-import SimplePage from '../../components/content/SimplePage.astro';
+import LegalDocument from '../../components/content/LegalDocument.astro';
+// The body is the Website Terms and Conditions rendered VERBATIM from the source Word
+// document (apps/web/src/legal/terms.html, generated from VMD-Website-Terms-and-Conditions.docx).
+import body from '../../legal/terms.html?raw';
 ---
 
-<SimplePage
+<LegalDocument
   title="Terms & Conditions"
-  description="Terms of use for the Visa & Migration Doctors website and services."
-  eyebrow="Legal"
-  emptyState="Full terms to be finalised with the practice."
-  cta={{ href: '/privacy/', label: 'Read the Privacy Policy' }}
->
-  <p>
-    These terms govern use of this website. They do not create a client relationship, which begins
-    only on a signed engagement.
-  </p>
-</SimplePage>
+  description="The terms and conditions governing your use of the Visa & Migration Doctors website."
+  body={body}
+/>

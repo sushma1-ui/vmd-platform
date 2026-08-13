@@ -5,3 +5,7 @@
 **/node_modules/**
 packages/tokens/dist/**
 pnpm-lock.yaml
+
+# Verbatim legal documents (Privacy Policy, Terms) generated from the source Word
+# files — must never be reflowed, as that could alter the exact wording/whitespace.
+apps/web/src/legal/**
