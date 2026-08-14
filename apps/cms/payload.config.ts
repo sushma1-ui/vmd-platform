@@ -40,7 +40,7 @@ export default buildConfig({
   // quick actions is added above the dashboard (see beforeDashboard).
   admin: {
     meta: {
-      titleSuffix: ' · Visa & Migration Doctors',
+      titleSuffix: '· Visa & Migration Doctors',
       description: 'Manage the content of the Visa & Migration Doctors website.',
     },
     components: {
