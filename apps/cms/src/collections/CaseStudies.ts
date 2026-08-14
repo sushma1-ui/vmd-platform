@@ -7,7 +7,7 @@ export const CaseStudies: CollectionConfig = {
   slug: 'case-studies',
   // Hidden from the simplified editor for now — longer-form anonymised narratives,
   // not part of day-to-day editing. Data is preserved; unhide to bring it back.
-  admin: { group: 'Client Testimonials', useAsTitle: 'title', hidden: true },
+  admin: { group: 'Website Content', useAsTitle: 'title', hidden: true },
   access: {
     read: publishedOrEditorial,
     create: isEditorial,

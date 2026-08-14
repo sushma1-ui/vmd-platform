@@ -18,23 +18,32 @@ import { Consultations } from './Consultations.ts';
 import { Redirects } from './Redirects.ts';
 import { AuditLog } from './AuditLog.ts';
 
+// Order drives the admin sidebar. Visible, editor-facing collections first, grouped
+// (Media · Blog & Resources · Website Content · Enquiries · System), then the hidden
+// internal/reference collections (which never appear in the nav).
 export const collections = [
-  Users,
+  // Media
   Media,
+  // Blog & Resources
   Articles,
-  Services,
+  // Website Content
   ServicePages,
+  TeamMembers,
+  PinnedReviews,
+  Testimonials,
+  SuccessStories,
+  // Enquiries
+  Leads,
+  Consultations,
+  // System
+  Users,
+  // Hidden / internal (not shown in the nav)
+  Services,
   Subclasses,
   Situations,
   FAQs,
-  TeamMembers,
-  Testimonials,
   CaseStudies,
   ProcessingTimes,
-  PinnedReviews,
-  SuccessStories,
-  Leads,
-  Consultations,
   Redirects,
   AuditLog,
 ];

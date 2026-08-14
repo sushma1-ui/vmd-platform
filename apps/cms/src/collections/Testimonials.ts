@@ -6,7 +6,7 @@ export const Testimonials: CollectionConfig = {
   slug: 'testimonials',
   labels: { singular: 'Written Testimonial', plural: 'Written Testimonials' },
   admin: {
-    group: 'Client Testimonials',
+    group: 'Website Content',
     useAsTitle: 'name',
     defaultColumns: ['name', 'situation', 'date', 'status'],
     description:

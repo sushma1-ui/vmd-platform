@@ -35,6 +35,18 @@ const connectionString = process.env.DATABASE_URL || process.env.DATABASE_POOL_U
 
 export default buildConfig({
   secret: process.env.PAYLOAD_SECRET ?? '',
+  // Brand the admin as VMD (browser tab + meta) so it reads as the practice's own
+  // content manager, not a generic "Payload" install. A friendly welcome panel with
+  // quick actions is added above the dashboard (see beforeDashboard).
+  admin: {
+    meta: {
+      titleSuffix: ' · Visa & Migration Doctors',
+      description: 'Manage the content of the Visa & Migration Doctors website.',
+    },
+    components: {
+      beforeDashboard: ['./src/admin/components/Welcome.tsx#Welcome'],
+    },
+  },
   editor: lexicalEditor(),
   // Cap upload size (15 MB) so a hostile or accidental huge file can't exhaust
   // storage/memory, while comfortably covering full-resolution phone photos and

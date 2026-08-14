@@ -12,7 +12,7 @@ export const Articles: CollectionConfig = {
   slug: 'articles',
   labels: { singular: 'Article', plural: 'Blog & Insights' },
   admin: {
-    group: 'Resources',
+    group: 'Blog & Resources',
     description:
       'Blog posts and resource articles. Write your post, then set Status to Published to go live.',
     useAsTitle: 'title',

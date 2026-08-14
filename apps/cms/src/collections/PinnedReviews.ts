@@ -10,7 +10,7 @@ export const PinnedReviews: CollectionConfig = {
   slug: 'pinned-reviews',
   labels: { singular: 'Google Review', plural: 'Google Reviews' },
   admin: {
-    group: 'Client Testimonials',
+    group: 'Website Content',
     useAsTitle: 'reviewerName',
     defaultColumns: ['reviewerName', 'rating', 'reviewDate', 'status'],
     description:

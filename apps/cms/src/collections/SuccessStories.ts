@@ -14,7 +14,7 @@ export const SuccessStories: CollectionConfig = {
   slug: 'success-stories',
   labels: { singular: 'Client Result', plural: 'Visa Grants & Skill Assessments' },
   admin: {
-    group: 'Client Testimonials',
+    group: 'Website Content',
     useAsTitle: 'title',
     defaultColumns: ['title', 'type', 'category', 'featured', 'order', 'status'],
     description:
