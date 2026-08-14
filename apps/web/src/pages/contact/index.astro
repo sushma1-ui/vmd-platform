@@ -11,6 +11,10 @@ const trail = [
 ];
 // CMS-editable Contact copy; phone/email/address stay single-sourced from config.
 const c = await getContactPage();
+// Eyebrow reads "Contact Us" (updated wording). The stale seed value "Contact" is
+// treated as unset so it resolves to the new wording; a genuinely custom eyebrow
+// set in the CMS still wins.
+const contactEyebrow = c?.eyebrow && c.eyebrow.trim() !== 'Contact' ? c.eyebrow : 'Contact Us';
 ---
 
 <Base
@@ -21,7 +25,7 @@ const c = await getContactPage();
 >
   <section class="ct">
     <div class="ct__intro">
-      <p class="ct__eyebrow">{c?.eyebrow || 'Contact Us'}</p>
+      <p class="ct__eyebrow">{contactEyebrow}</p>
       <h1 class="ct__title">{c?.title || 'Talk to a registered agent'}</h1>
       <p class="ct__lead">
         {
