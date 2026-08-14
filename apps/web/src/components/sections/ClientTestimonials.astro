@@ -27,11 +27,9 @@ interface ReviewIn {
 }
 interface Props {
   reviews?: ReviewIn[];
-  rating?: number | null;
-  count?: number | null;
   profileUrl?: string | null;
 }
-const { reviews = [], rating = null, count = null, profileUrl = null } = Astro.props;
+const { reviews = [], profileUrl = null } = Astro.props;
 
 const reviewCards = reviews
   .map((r) => ({
@@ -131,17 +129,6 @@ const chevron = (d: string) =>
               </div>
             ) : (
               <div class="ctx__empty">
-                {rating != null && (
-                  <p class="ctx__agg">
-                    <span class="ctx__agg-num">{rating.toFixed(1)}</span>
-                    <span class="ctx__agg-stars" aria-hidden="true">
-                      ★★★★★
-                    </span>
-                    <span class="ctx__agg-txt">
-                      {count ? `from ${count} verified Google reviews` : 'average on Google'}
-                    </span>
-                  </p>
-                )}
                 <p class="ctx__empty-note">Verified, dated reviews from the people we've guided.</p>
               </div>
             )
@@ -769,23 +756,6 @@ const chevron = (d: string) =>
     gap: var(--space-3);
     justify-content: center;
   }
-  .ctx__agg {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    flex-wrap: wrap;
-    margin: 0;
-  }
-  .ctx__agg-num {
-    font-family: var(--font-display);
-    font-size: var(--type-h3);
-    color: var(--color-emphasis-text);
-    line-height: 1;
-  }
-  .ctx__agg-stars {
-    color: var(--color-emphasis-text);
-  }
-  .ctx__agg-txt,
   .ctx__empty-note {
     color: var(--color-text-muted);
     font-size: var(--type-body-sm);

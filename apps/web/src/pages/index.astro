@@ -60,12 +60,6 @@ const heroLead =
     : "Helping individuals, families, and businesses navigate Australia's migration system with ethical, personalised advice from a Registered Migration Agent.";
 
 const register = PRACTICE.regulator.registerSearchUrl;
-// A concrete, verifiable trust line beats a vague claim. Use the live Google
-// rating when available, falling back to a worldwide-reach line.
-const googleRating = settings?.googleReviews?.rating;
-const heroRating = googleRating
-  ? `Rated ${googleRating.toFixed(1)} on Google`
-  : 'Assisting clients across multiple countries';
 
 // "Where are you in your journey?" — situation-first navigation that speaks the
 // client's language (not subclass numbers) and routes to the most relevant hub.
@@ -165,10 +159,6 @@ try {
         <li>Personalised Migration Advice</li>
         <li>Assisting Clients Worldwide</li>
       </ul>
-      <p class="hero__rating">
-        <span class="hero__rating-stars" aria-hidden="true">★★★★★</span>
-        <span>{heroRating}</span>
-      </p>
       <div class="hero__cta">
         <BookCta variant="primary" label="Book a Consultation" />
       </div>
@@ -188,6 +178,23 @@ try {
 
   <!-- 3b · TRUST BAR (verifiable credentials) -->
   <TrustBar />
+
+  <!-- 3c · WHO WE ARE (brief company introduction) -->
+  <section data-reveal class="section intro">
+    <div class="section__inner">
+      <p class="eyebrow">Who we are</p>
+      <p class="intro__lead">
+        Visa &amp; Migration Doctors is a Perth-based migration practice, led personally by {
+          PRACTICE.principal.name
+        }, a Registered Migration Agent. We help individuals, families and businesses navigate
+        Australia's visa system — onshore and from overseas — with honest, tailored advice you can
+        act on with confidence.
+      </p>
+      <p class="section__more">
+        <a href="/about/">Learn more about VMD →</a>
+      </p>
+    </div>
+  </section>
 
   {
     /* The "Which of these is you?" cards were removed — the hero assessment now
@@ -380,8 +387,6 @@ try {
     shown(hp?.googleReviews) && (
       <ClientTestimonials
         reviews={pinnedReviews}
-        rating={settings?.googleReviews?.rating}
-        count={settings?.googleReviews?.count}
         profileUrl={settings?.googleReviews?.profileUrl}
       />
     )
@@ -503,6 +508,14 @@ try {
     color: var(--color-action);
     border-block-end: 1px solid var(--color-emphasis);
     text-decoration: none;
+  }
+  /* Brief company introduction — a single confident lead line, generously spaced. */
+  .intro__lead {
+    font-size: var(--type-body-lg);
+    line-height: 1.6;
+    max-inline-size: 68ch;
+    color: var(--color-text);
+    margin-block: var(--space-2) var(--space-4);
   }
 
   .hero {
@@ -637,20 +650,6 @@ try {
     background: color-mix(in srgb, var(--color-emphasis, #c99a52) 24%, transparent);
     border: 1px solid color-mix(in srgb, var(--color-emphasis, #c99a52) 40%, transparent);
     border-radius: 50%;
-  }
-  .hero__rating {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--space-2);
-    margin-block-start: var(--space-5);
-    font-size: var(--type-body-sm);
-    color: var(--color-text-muted);
-  }
-  .hero__rating-stars {
-    color: var(--color-emphasis-text);
-    letter-spacing: 0.06em;
-    font-size: var(--type-body);
   }
   .hero__cta {
     margin-block-start: var(--space-6);

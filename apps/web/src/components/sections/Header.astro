@@ -23,7 +23,7 @@ const nav = [
   { label: 'About', href: '/about/', about: true },
   { label: 'Our Services', href: '/services/', mega: true },
   { label: 'Resources', href: '/resources/', resources: true },
-  { label: 'Contact', href: '/contact/' },
+  { label: 'Contact Us', href: '/contact/' },
 ];
 
 // "About" mega — a compact, self-describing information panel (not a plain dropdown).
@@ -113,9 +113,6 @@ const register = PRACTICE.regulator.registerSearchUrl;
     <div class="utility__left">
       <a class="utility__item" href={`tel:${PRACTICE.contact.phone}`}>
         {PRACTICE.contact.phoneDisplay}
-      </a>
-      <a class="utility__item utility__email" href={`mailto:${PRACTICE.contact.email}`}>
-        {PRACTICE.contact.email}
       </a>
       <a
         class="utility__item utility__marn"
@@ -468,7 +465,6 @@ const register = PRACTICE.regulator.registerSearchUrl;
   .utility__item:focus-visible {
     color: var(--color-emphasis);
   }
-  .utility__email,
   .utility__marn {
     display: none;
     color: color-mix(in srgb, var(--color-text-inverse) 80%, transparent);
@@ -974,11 +970,6 @@ const register = PRACTICE.regulator.registerSearchUrl;
     font-size: var(--type-caption);
     color: var(--color-text-muted);
     line-height: 1.5;
-  }
-  @media (min-width: 640px) {
-    .utility__email {
-      display: inline;
-    }
   }
   /* The header packs brand + full nav + three CTAs, so the horizontal layout only
      appears once there is comfortable room (~1120px). Below that the burger menu —
