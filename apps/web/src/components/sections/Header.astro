@@ -494,12 +494,21 @@ const register = PRACTICE.regulator.registerSearchUrl;
   /* Official VMD logo (self-contained navy badge, transparent PNG). Sized to the
      original mark's footprint so there's no layout shift; served from a 1024px
      source so it stays crisp on HiDPI/Retina. */
+  /* Primary brand mark — sized to read as a clear logo, not a tiny icon. Square
+     aspect kept (object-fit: contain, equal dimensions) so it never distorts;
+     slightly smaller on mobile so the sticky header stays compact. */
   .brand__mark {
-    inline-size: var(--space-6);
-    block-size: var(--space-6);
+    inline-size: 3.5rem;
+    block-size: 3.5rem;
     object-fit: contain;
     display: block;
     flex: none;
+  }
+  @media (min-width: 1120px) {
+    .brand__mark {
+      inline-size: 3.75rem;
+      block-size: 3.75rem;
+    }
   }
   .brand__name {
     font-family: var(--font-display);
