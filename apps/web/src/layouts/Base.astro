@@ -3,7 +3,6 @@ import '../styles/fonts.css';
 import '@vmd/ui/styles/base.css';
 import { buildMeta, organizationSchema } from '@vmd/seo';
 import Header from '../components/sections/Header.astro';
-import UpdatesBar from '../components/sections/UpdatesBar.astro';
 import Footer from '../components/sections/Footer.astro';
 import MobileActionBar from '../components/sections/MobileActionBar.astro';
 
@@ -54,7 +53,6 @@ const jsonLd = [organizationSchema(), ...schemas];
     {jsonLd.map((s) => <script type="application/ld+json" set:html={JSON.stringify(s)} />)}
   </head>
   <body>
-    <UpdatesBar />
     <Header />
     <main id="main"><slot /></main>
     <Footer />
