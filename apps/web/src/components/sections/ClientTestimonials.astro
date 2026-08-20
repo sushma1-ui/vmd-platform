@@ -62,7 +62,7 @@ const chevron = (d: string) =>
   `<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="${d}"/></svg>`;
 ---
 
-<section class="ctx section section--bone" data-reveal aria-labelledby="ctx-h">
+<section class="ctx ctx--photo section section--bone" data-reveal aria-labelledby="ctx-h">
   <div class="ctx__inner">
     <p class="eyebrow">Client testimonials</p>
     <h2 class="ctx__h" id="ctx-h">Real clients. Real experiences.</h2>
@@ -495,6 +495,23 @@ const chevron = (d: string) =>
     max-inline-size: var(--container-max);
     margin-inline: auto;
     padding-inline: var(--space-4);
+    position: relative;
+    z-index: 1;
+  }
+  /* Subtle happy-client backdrop — a whisper behind the bone, cards and text
+     stay fully legible on top (very low opacity, warm wash over it). */
+  .ctx--photo {
+    position: relative;
+    isolation: isolate;
+  }
+  .ctx--photo::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: url('/Happy people.avif') center / cover no-repeat;
+    opacity: 0.07;
+    pointer-events: none;
   }
   .eyebrow {
     font-size: var(--type-caption);

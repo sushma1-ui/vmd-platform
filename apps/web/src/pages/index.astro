@@ -2,12 +2,11 @@
 // build-bust: team members collection live
 import Base from '../layouts/Base.astro';
 import { PRACTICE, RMA_LINE } from '@vmd/config';
-import { Button, Card, Rule } from '@vmd/ui';
+import { Card, Rule } from '@vmd/ui';
 import { localBusinessSchema, personSchema } from '@vmd/seo';
 import { cms, getSettings, getHomepage } from '../lib/cms.ts';
 import BookCta from '../components/cta/BookCta.astro';
 import ClientTestimonials from '../components/sections/ClientTestimonials.astro';
-import TrustBar from '../components/sections/TrustBar.astro';
 import MeetTeam from '../components/sections/MeetTeam.astro';
 import HealthCheck from '../components/islands/HealthCheck.island.astro';
 import Icon from '../components/Icon.astro';
@@ -54,10 +53,14 @@ const heroTitle =
   hp?.hero?.title && hp.hero.title.trim() !== OLD_HERO_TITLE
     ? hp.hero.title
     : 'Find the Right Australian Visa Pathway with Honest Guidance';
+// Prototype-approved concise lead. The previous long default is also treated as
+// "unset" so this shorter version wins until an editor sets a genuinely new value.
+const OLD_HERO_LEAD_2 =
+  "Helping individuals, families, and businesses navigate Australia's migration system with ethical, personalised advice from a Registered Migration Agent.";
 const heroLead =
-  hp?.hero?.lead && hp.hero.lead.trim() !== OLD_HERO_LEAD
+  hp?.hero?.lead && hp.hero.lead.trim() !== OLD_HERO_LEAD && hp.hero.lead.trim() !== OLD_HERO_LEAD_2
     ? hp.hero.lead
-    : "Helping individuals, families, and businesses navigate Australia's migration system with ethical, personalised advice from a Registered Migration Agent.";
+    : 'Ethical, professional guidance on Australian visas and migration — for individuals, families and businesses — direct from a Registered Migration Agent.';
 
 const register = PRACTICE.regulator.registerSearchUrl;
 
@@ -131,6 +134,17 @@ try {
   description={`Honest guidance on Australian visas from Registered Migration Agent ${PRACTICE.principal.name} (MARN ${PRACTICE.principal.marn}). Start a free assessment — for people already in Australia and around the world.`}
   schemas={[localBusinessSchema(), { '@context': 'https://schema.org', ...personSchema() }]}
 >
+  <!-- RMA credential band (blue, minimal — sits between the navbar and hero) -->
+  <section class="credband" aria-label="Registered Migration Agent">
+    <div class="credband__inner">
+      <p class="credband__name">{PRACTICE.principal.name}, RMA</p>
+      <p class="credband__marn">MARN {PRACTICE.principal.marn}</p>
+      <a class="credband__link" href={register} rel="noopener" target="_blank">
+        Verify on the MARA register →
+      </a>
+    </div>
+  </section>
+
   <!-- 3 · HERO — the free assessment leads -->
   <section class="hero" id="start">
     {
@@ -173,26 +187,6 @@ try {
         </p>
       </div>
       <HealthCheck />
-    </div>
-  </section>
-
-  <!-- 3b · TRUST BAR (verifiable credentials) -->
-  <TrustBar />
-
-  <!-- 3c · WHO WE ARE (brief company introduction) -->
-  <section data-reveal class="section intro">
-    <div class="section__inner">
-      <p class="eyebrow">Who we are</p>
-      <p class="intro__lead">
-        Visa &amp; Migration Doctors is a Perth-based migration practice, led personally by {
-          PRACTICE.principal.name
-        }, a Registered Migration Agent. We help individuals, families and businesses navigate
-        Australia's visa system — onshore and from overseas — with honest, tailored advice you can
-        act on with confidence.
-      </p>
-      <p class="section__more">
-        <a href="/about/">Learn more about VMD →</a>
-      </p>
     </div>
   </section>
 
@@ -287,100 +281,33 @@ try {
     )
   }
 
-  <!-- 8b · WHY VMD (brief, catchy teaser → full reasons on /about/#why-vmd) -->
-  <section data-reveal class="section">
-    <div class="section__inner">
-      <p class="eyebrow">Why VMD</p>
-      <h2 class="section__h">A big decision, in the right hands.</h2>
-      <p class="section__sub">Four reasons clients trust us with one of life's biggest moves.</p>
-      <ul class="why__grid" role="list">
-        <li class="why__item">
-          <h3 class="why__t">Named, registered, verifiable</h3>
-          <p class="why__d">
-            {PRACTICE.principal.name}, your Registered Migration Agent (MARN {
-              PRACTICE.principal.marn
-            }) — checkable on the public register.
-          </p>
-        </li>
-        <li class="why__item">
-          <h3 class="why__t">One team, start to finish</h3>
-          <p class="why__d">The same people, from your first assessment to the final decision.</p>
-        </li>
-        <li class="why__item">
-          <h3 class="why__t">Straight answers, always</h3>
-          <p class="why__d">
-            The pathway that genuinely fits — including the honest advice to wait.
-          </p>
-        </li>
-        <li class="why__item">
-          <h3 class="why__t">With you, wherever you are</h3>
-          <p class="why__d">Perth-based, guiding clients across Australia and around the world.</p>
-        </li>
-      </ul>
-      <p class="section__more section__more--center">
-        <a href="/about/why-vmd/">See the full picture — Why VMD →</a>
-      </p>
+  <!-- 8b · AUSTRALIA — a sense of place (real map photo, warm treatment) -->
+  <section data-reveal class="ausmap">
+    <div class="ausmap__inner">
+      <figure class="ausmap__figure">
+        <img
+          class="ausmap__img"
+          src="/Aus map.webp"
+          alt="Map of Australia"
+          width="1200"
+          height="900"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+      <div class="ausmap__copy">
+        <p class="eyebrow">Wherever you are</p>
+        <h2 class="section__h">Australia-wide, and around the world.</h2>
+        <p class="section__sub">
+          Perth-based and working with clients right across Australia and overseas — the same
+          dedicated point of contact, wherever your journey begins.
+        </p>
+      </div>
     </div>
   </section>
 
-  <!-- 9 · MEET SUNIL (Trust & Credentials) -->
-  {
-    shown(hp?.practitioner) && (
-      <section data-reveal class="section">
-        <div class="section__inner meet">
-          <figure class="meet__portrait meet__portrait--photo">
-            <img
-              class="meet__img"
-              src="/team/sunil.jpg"
-              alt={`${PRACTICE.principal.name}, Registered Migration Agent`}
-              width="640"
-              height="640"
-              loading="lazy"
-              decoding="async"
-            />
-          </figure>
-          <div class="meet__copy">
-            <p class="eyebrow">{hp?.practitioner?.eyebrow || 'The practitioner'}</p>
-            <h2 class="section__h">
-              {hp?.practitioner?.heading || `You'll speak to ${PRACTICE.principal.name}.`}
-            </h2>
-            {hp?.practitioner?.body?.length ? (
-              hp.practitioner.body.map((para) => <p>{para.text}</p>)
-            ) : (
-              <>
-                <p>
-                  A Registered Migration Agent bound by the Migration Agents Code of Conduct,
-                  helping people with Australian visas from onshore and around the world. When you
-                  come to us, you get an honest read on where your case stands — including the right
-                  time and way to move forward.
-                </p>
-                <p>
-                  What you can count on: a straight assessment, careful preparation, and honesty
-                  about whether we're the right people to help. That's the whole practice.
-                </p>
-              </>
-            )}
-            <ul class="meet__points">
-              <li>Bound by the Migration Agents Code of Conduct</li>
-              <li>Fixed fees, quoted before you commit</li>
-              <li>You work directly with the Registered Migration Agent</li>
-            </ul>
-            <p class="meet__marn">
-              <a href={register} rel="noopener" target="_blank">
-                {RMA_LINE} — verify on the OMARA register →
-              </a>
-            </p>
-            <Button
-              variant="secondary"
-              href={hp?.practitioner?.button?.href || '/about/sunil-uprety/'}
-            >
-              {hp?.practitioner?.button?.label || 'More about Sunil'}
-            </Button>
-          </div>
-        </div>
-      </section>
-    )
-  }
+  <!-- 9 · MEET YOUR TEAM (homepage glimpse → full team page) -->
+  <MeetTeam />
 
   <!-- 10 · CLIENT TESTIMONIALS (reviews · visa & skill assessments · stories) -->
   {
@@ -392,13 +319,14 @@ try {
     )
   }
 
-  <!-- 11 · INSIGHTS (Featured Blogs) -->
+  <!-- 11 · BLOG & RESOURCES (final dark section) -->
   {
     shown(hp?.featuredBlogs) && (
-      <section data-reveal class="section">
+      <section data-reveal class="section blogres">
         <div class="section__inner">
-          <h2 class="section__h">{hp?.featuredBlogs?.heading || 'From our blog'}</h2>
-          <p class="section__sub">
+          <p class="eyebrow blogres__eyebrow">Blog &amp; Resources</p>
+          <h2 class="section__h blogres__h">{hp?.featuredBlogs?.heading || 'From our blog'}</h2>
+          <p class="section__sub blogres__sub">
             {hp?.featuredBlogs?.intro ||
               'Migration law changes constantly. Every piece is authored by a Registered Migration Agent.'}
           </p>
@@ -450,28 +378,6 @@ try {
       </section>
     )
   }
-
-  <!-- 11c · MEET YOUR TEAM (homepage glimpse → full team page) -->
-  <MeetTeam />
-
-  <!-- 12 · CLOSING (Final CTA) -->
-  {
-    shown(hp?.finalCta) && (
-      <section data-reveal class="band band--close">
-        <div class="band__inner band__inner--center">
-          <h2 class="band__h">{hp?.finalCta?.heading || 'Ready to get clear on your options?'}</h2>
-          <p class="band__lead band__lead--center">
-            {hp?.finalCta?.lead ||
-              'Book a consultation for a straight, honest read on your case — with a Registered Migration Agent, and a fixed fee quoted before you commit.'}
-          </p>
-          <BookCta variant="primary" label={hp?.finalCta?.buttonLabel || 'Book a consultation'} />
-          <p class="band__promise">
-            <a href="/#start">Prefer to start free? Take the visa assessment →</a>
-          </p>
-        </div>
-      </section>
-    )
-  }
 </Base>
 
 <style>
@@ -486,6 +392,97 @@ try {
   }
   .section--bone {
     background: var(--color-ground-warm);
+  }
+
+  /* ── RMA credential band — a calm navy strip between the navbar and hero.
+        Name primary, MARN secondary, verify link obvious (gold). ───────────── */
+  .credband {
+    background: var(--color-action);
+  }
+  .credband__inner {
+    max-inline-size: var(--container-max);
+    margin-inline: auto;
+    padding: var(--space-5) var(--space-4);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.35rem var(--space-5);
+    text-align: center;
+  }
+  .credband__name {
+    font-weight: 700;
+    font-size: var(--type-body);
+    color: #fff;
+    letter-spacing: 0.01em;
+  }
+  .credband__marn {
+    font-size: var(--type-body-sm);
+    color: color-mix(in srgb, #fff 78%, transparent);
+  }
+  .credband__link {
+    font-size: var(--type-body-sm);
+    font-weight: 600;
+    color: var(--color-emphasis);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    text-decoration-color: color-mix(in srgb, var(--color-emphasis) 55%, transparent);
+  }
+  .credband__link:hover,
+  .credband__link:focus-visible {
+    text-decoration-color: var(--color-emphasis);
+  }
+
+  /* ── Australia — a sense of place. Real map photo, warm and quiet. ───────── */
+  .ausmap {
+    background: var(--color-ground-warm);
+    padding-block: var(--space-8);
+  }
+  .ausmap__inner {
+    max-inline-size: var(--container-max);
+    margin-inline: auto;
+    padding-inline: var(--space-4);
+    display: grid;
+    gap: var(--space-6);
+    align-items: center;
+    grid-template-columns: 1fr;
+  }
+  .ausmap__figure {
+    margin: 0;
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .ausmap__img {
+    display: block;
+    inline-size: 100%;
+    block-size: auto;
+    object-fit: cover;
+  }
+  @media (min-width: 880px) {
+    .ausmap__inner {
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: var(--space-8);
+    }
+  }
+
+  /* ── Blog & Resources — the closing dark section. ───────────────────────── */
+  .blogres {
+    background: var(--color-ink, #0e1a30);
+  }
+  .blogres__eyebrow {
+    color: var(--color-emphasis);
+  }
+  .blogres__h {
+    color: #fff;
+  }
+  .blogres__sub {
+    color: color-mix(in srgb, #fff 82%, transparent);
+  }
+  .blogres .section__more a {
+    color: var(--color-emphasis);
+  }
+  .blogres .ledger-empty--light {
+    color: color-mix(in srgb, #fff 82%, transparent);
   }
   .section__inner {
     max-inline-size: var(--container-max);
