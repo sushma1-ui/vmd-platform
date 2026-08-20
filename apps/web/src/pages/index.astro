@@ -62,8 +62,6 @@ const heroLead =
     ? hp.hero.lead
     : 'Ethical, professional guidance on Australian visas and migration — for individuals, families and businesses — direct from a Registered Migration Agent.';
 
-const register = PRACTICE.regulator.registerSearchUrl;
-
 // "Where are you in your journey?" — situation-first navigation that speaks the
 // client's language (not subclass numbers) and routes to the most relevant hub.
 // It complements the hero: the hero's assessment gives a personal answer; this
@@ -134,17 +132,6 @@ try {
   description={`Honest guidance on Australian visas from Registered Migration Agent ${PRACTICE.principal.name} (MARN ${PRACTICE.principal.marn}). Start a free assessment — for people already in Australia and around the world.`}
   schemas={[localBusinessSchema(), { '@context': 'https://schema.org', ...personSchema() }]}
 >
-  <!-- RMA credential band (blue, minimal — sits between the navbar and hero) -->
-  <section class="credband" aria-label="Registered Migration Agent">
-    <div class="credband__inner">
-      <p class="credband__name">{PRACTICE.principal.name}, RMA</p>
-      <p class="credband__marn">MARN {PRACTICE.principal.marn}</p>
-      <a class="credband__link" href={register} rel="noopener" target="_blank">
-        Verify on the MARA register →
-      </a>
-    </div>
-  </section>
-
   <!-- 3 · HERO — the free assessment leads -->
   <section class="hero" id="start">
     {
@@ -392,45 +379,6 @@ try {
   }
   .section--bone {
     background: var(--color-ground-warm);
-  }
-
-  /* ── RMA credential band — a calm navy strip between the navbar and hero.
-        Name primary, MARN secondary, verify link obvious (gold). ───────────── */
-  .credband {
-    background: var(--color-action);
-  }
-  .credband__inner {
-    max-inline-size: var(--container-max);
-    margin-inline: auto;
-    padding: var(--space-5) var(--space-4);
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    justify-content: center;
-    gap: 0.35rem var(--space-5);
-    text-align: center;
-  }
-  .credband__name {
-    font-weight: 700;
-    font-size: var(--type-body);
-    color: #fff;
-    letter-spacing: 0.01em;
-  }
-  .credband__marn {
-    font-size: var(--type-body-sm);
-    color: color-mix(in srgb, #fff 78%, transparent);
-  }
-  .credband__link {
-    font-size: var(--type-body-sm);
-    font-weight: 600;
-    color: var(--color-emphasis);
-    text-decoration: underline;
-    text-underline-offset: 2px;
-    text-decoration-color: color-mix(in srgb, var(--color-emphasis) 55%, transparent);
-  }
-  .credband__link:hover,
-  .credband__link:focus-visible {
-    text-decoration-color: var(--color-emphasis);
   }
 
   /* ── Australia — a sense of place. Real map photo, warm and quiet. ───────── */

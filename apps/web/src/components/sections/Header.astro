@@ -114,13 +114,14 @@ const register = PRACTICE.regulator.registerSearchUrl;
       <a class="utility__item" href={`tel:${PRACTICE.contact.phone}`}>
         {PRACTICE.contact.phoneDisplay}
       </a>
+      <span class="utility__item utility__marn">{RMA_LINE}</span>
       <a
-        class="utility__item utility__marn"
+        class="utility__item utility__verify"
         href={register}
         rel="noopener noreferrer"
         target="_blank"
       >
-        {RMA_LINE}
+        Verify on the MARA register →
       </a>
     </div>
     <SocialLinks />
@@ -468,6 +469,21 @@ const register = PRACTICE.regulator.registerSearchUrl;
   .utility__marn {
     display: none;
     color: color-mix(in srgb, var(--color-text-inverse) 80%, transparent);
+  }
+  .utility__verify {
+    display: none;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  /* Higher specificity than `.utility a { color: inherit }` so the verify link
+     carries the gold accent (reads as an action, not plain text). */
+  .utility a.utility__verify {
+    color: var(--color-emphasis);
+    text-decoration-color: color-mix(in srgb, var(--color-emphasis) 55%, transparent);
+  }
+  .utility a.utility__verify:hover,
+  .utility a.utility__verify:focus-visible {
+    text-decoration-color: var(--color-emphasis);
   }
   .header {
     position: sticky;
@@ -984,7 +1000,8 @@ const register = PRACTICE.regulator.registerSearchUrl;
      appears once there is comfortable room (~1120px). Below that the burger menu —
      which carries the same nav and CTAs — takes over, so items never wrap or overlap. */
   @media (min-width: 1120px) {
-    .utility__marn {
+    .utility__marn,
+    .utility__verify {
       display: inline;
     }
     .nav,
