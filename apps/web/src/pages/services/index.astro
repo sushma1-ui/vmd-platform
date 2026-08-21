@@ -1,6 +1,8 @@
 ---
 import Base from '../../layouts/Base.astro';
 import { breadcrumbSchema } from '@vmd/seo';
+import { Rule, Disclaimer } from '@vmd/ui';
+import BookCta from '../../components/cta/BookCta.astro';
 import { cms } from '../../lib/cms.ts';
 import { servicePageHref, type ServiceDoc } from '../../lib/servicePages.ts';
 
@@ -53,11 +55,17 @@ const trail = [
   schemas={[breadcrumbSchema(trail)]}
 >
   <section class="hub">
-    <header class="hub__head">
-      <h1>Our Services</h1>
-      <p>
-        Clear, honest guidance across Australia's visa pathways — prepared by a Registered Migration
-        Agent.
+    <header class="hub__head" data-reveal>
+      <p class="hub__eyebrow">Our services</p>
+      <h1 class="hub__title">Clear pathways, honestly assessed</h1>
+      <Rule width="short" />
+      <p class="hub__lead">
+        Guidance across Australia's visa pathways — skilled, employer-sponsored, family and partner,
+        student and graduate, and review matters — prepared by a Registered Migration Agent.
+      </p>
+      <p class="hub__principle">
+        Every matter begins with an individual assessment. No pathway is recommended until it has
+        been diagnosed as suitable for your circumstances.
       </p>
     </header>
 
@@ -66,13 +74,16 @@ const trail = [
         <p class="hub__empty">Our service pages are being prepared. Please check back soon.</p>
       ) : (
         groups.map((g) => (
-          <section class="hub__group">
-            <h2>{g.heading}</h2>
+          <section class="hub__group" data-reveal>
+            <h2 class="hub__group-h">{g.heading}</h2>
             <div class="hub__grid">
               {g.items.map((p) => (
                 <a class="hub__card" href={p.href}>
-                  <h3>{p.title}</h3>
-                  {p.blurb && <p>{p.blurb}</p>}
+                  <h3 class="hub__card-h">{p.title}</h3>
+                  {p.blurb && <p class="hub__card-p">{p.blurb}</p>}
+                  <span class="hub__card-cta">
+                    Explore <span aria-hidden="true">→</span>
+                  </span>
                 </a>
               ))}
             </div>
@@ -80,6 +91,19 @@ const trail = [
         ))
       )
     }
+
+    <aside class="hub__cta" data-reveal>
+      <h2 class="hub__cta-h">Not sure which pathway fits?</h2>
+      <p class="hub__cta-p">
+        Book a consultation for an honest read on your options — assessed personally by a Registered
+        Migration Agent, with scope and fees agreed before you commit.
+      </p>
+      <BookCta variant="primary" label="Book a consultation" />
+    </aside>
+
+    <div class="hub__foot">
+      <Disclaimer variant="generalInformation" />
+    </div>
   </section>
 </Base>
 
@@ -90,43 +114,132 @@ const trail = [
     padding: var(--space-7) var(--space-4) var(--space-9);
   }
   .hub__head {
-    margin-block-end: var(--space-6);
+    margin-block-end: var(--space-7);
+    max-inline-size: 68ch;
   }
-  .hub__head p {
+  .hub__eyebrow {
+    font-size: var(--type-caption);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     color: var(--color-text-muted);
-    max-inline-size: 48ch;
+    margin: 0 0 var(--space-2);
+  }
+  .hub__title {
+    font-size: var(--type-display-2);
+    margin: 0 0 var(--space-3);
+  }
+  .hub__lead {
+    font-size: var(--type-body-lg);
+    line-height: 1.55;
+    color: var(--color-text-muted);
+    max-inline-size: 60ch;
+    margin-block: var(--space-4) 0;
+  }
+  /* The clinical principle — a calm, gold-anchored note, not a banner. */
+  .hub__principle {
+    margin-block-start: var(--space-5);
+    padding-inline-start: var(--space-4);
+    border-inline-start: 2px solid var(--color-emphasis-line);
+    font-family: var(--font-display);
+    font-size: var(--type-h4);
+    line-height: 1.4;
+    color: var(--color-text);
+    max-inline-size: 52ch;
   }
   .hub__group {
-    margin-block-start: var(--space-7);
+    margin-block-start: var(--space-8);
   }
-  .hub__group > h2 {
-    margin-block-end: var(--space-4);
+  .hub__group-h {
+    font-size: var(--type-h3);
+    margin-block-end: var(--space-5);
   }
   .hub__grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(18rem, 100%), 1fr));
     gap: var(--space-4);
   }
+  /* Premium service card — matches the homepage situation cards: white surface,
+     hairline border, soft shadow, gold "Explore" affordance, gentle hover lift. */
   .hub__card {
-    display: block;
-    padding: var(--space-4);
-    border: 1px solid color-mix(in srgb, var(--color-action) 10%, transparent);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-5);
+    background: var(--color-surface);
+    border: 1px solid var(--color-hairline);
     border-radius: var(--radius-card);
     text-decoration: none;
-    color: inherit;
-    transition: border-color 0.15s ease;
+    color: var(--color-text);
+    box-shadow: var(--shadow-subtle, 0 8px 24px -14px rgba(16, 30, 60, 0.22));
+    transition:
+      transform var(--motion-fast, 180ms) var(--ease-standard, ease),
+      box-shadow var(--motion-fast, 180ms) var(--ease-standard, ease);
   }
-  .hub__card:hover {
-    border-color: var(--color-emphasis);
+  .hub__card-h {
+    font-family: var(--font-display);
+    font-size: var(--type-h4);
+    line-height: 1.2;
+    margin: 0;
+    color: var(--color-action);
   }
-  .hub__card h3 {
-    font-size: var(--type-body-lg, var(--type-body));
-    margin-block-end: var(--space-2);
-  }
-  .hub__card p {
+  .hub__card-p {
     color: var(--color-text-muted);
     font-size: var(--type-body-sm);
+    line-height: 1.55;
     margin: 0;
+  }
+  .hub__card-cta {
+    margin-block-start: auto;
+    padding-block-start: var(--space-3);
+    font-weight: 600;
+    font-size: var(--type-body-sm);
+    color: var(--color-action);
+  }
+  .hub__card-cta span {
+    display: inline-block;
+    transition: transform var(--motion-fast, 180ms) var(--ease-standard, ease);
+  }
+  .hub__card:focus-visible {
+    outline: 2px solid var(--color-interactive);
+    outline-offset: 3px;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .hub__card:hover,
+    .hub__card:focus-visible {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-raised, 0 22px 48px -22px rgba(16, 30, 60, 0.4));
+    }
+    .hub__card:hover .hub__card-cta span {
+      transform: translateX(3px);
+    }
+  }
+  /* Closing CTA — a quiet bone panel, echoing the team-page invitation. */
+  .hub__cta {
+    margin-block-start: var(--space-8);
+    padding: clamp(var(--space-6), 5vw, var(--space-8)) var(--space-5);
+    background: var(--color-ground-warm);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-card);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .hub__cta-h {
+    font-size: var(--type-h2);
+    margin: 0;
+    max-inline-size: 22ch;
+    text-wrap: balance;
+  }
+  .hub__cta-p {
+    color: var(--color-text-muted);
+    max-inline-size: 52ch;
+    margin: 0 0 var(--space-2);
+    line-height: 1.6;
+  }
+  .hub__foot {
+    margin-block-start: var(--space-7);
   }
   .hub__empty {
     color: var(--color-text-muted);
