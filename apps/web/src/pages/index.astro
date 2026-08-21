@@ -526,30 +526,33 @@ try {
        the centre-right. Airy whites, warm neutrals only (no grey/blue), edge-
        faded so there's no visible box. All values tunable here; layout untouched. */
     background:
-      /* clean bright highlight over the copy — airy + high readability */
-      radial-gradient(44% 42% at 15% 4%, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0) 62%),
+      /* clean highlight over the copy — airy, but eased so the warm ground reads */
+      radial-gradient(44% 42% at 15% 4%, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0) 62%),
       /* directional morning light: bright-clean left → warm gold right */
       linear-gradient(
           100deg,
-          rgba(255, 255, 255, 0.9) 0%,
-          rgba(255, 255, 255, 0.34) 36%,
-          color-mix(in srgb, var(--color-ground-warm) 42%, transparent) 74%,
-          color-mix(in srgb, var(--color-emphasis) 11%, transparent) 100%
+          rgba(255, 255, 255, 0.66) 0%,
+          rgba(255, 255, 255, 0.24) 36%,
+          color-mix(in srgb, var(--color-ground-warm) 48%, transparent) 74%,
+          color-mix(in srgb, var(--color-emphasis) 12%, transparent) 100%
         ),
       /* soft golden haze emerging toward the centre-right */
       radial-gradient(
           56% 66% at 82% 40%,
-          color-mix(in srgb, var(--color-emphasis) 13%, transparent),
+          color-mix(in srgb, var(--color-emphasis) 14%, transparent),
           transparent 66%
         ),
       /* morning-haze veil — airiness, lifts any muddiness */
-      radial-gradient(120% 112% at 48% 16%, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0) 82%),
+      radial-gradient(120% 112% at 48% 16%, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0) 82%),
       /* warm base glow rising — grounding warmth + depth */
       radial-gradient(
           130% 84% at 46% 114%,
-          color-mix(in srgb, var(--color-ground-warm) 52%, transparent),
+          color-mix(in srgb, var(--color-ground-warm) 58%, transparent),
           transparent 62%
         );
+    /* Warm bone base so the whole hero reads as a soft ivory ground (matching the
+       approved prototype) rather than pure white. Ink copy stays AAA-legible. */
+    background-color: var(--color-ground-warm);
   }
   /* Keep the copy and form above the atmospheric photo. */
   .hero__copy,
