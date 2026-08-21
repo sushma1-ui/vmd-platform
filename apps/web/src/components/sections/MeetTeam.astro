@@ -67,6 +67,12 @@ const team = resolveTeam(cmsMembers).slice(0, 2);
 </section>
 
 <style>
+  /* Warm bone ground — part of the homepage's alternating section rhythm
+     (white map -> bone team -> navy testimonials), so the page reads with
+     depth rather than as one flat expanse. */
+  .mt {
+    background: var(--color-ground-warm);
+  }
   .mt__inner {
     max-inline-size: var(--container-max);
     margin-inline: auto;
