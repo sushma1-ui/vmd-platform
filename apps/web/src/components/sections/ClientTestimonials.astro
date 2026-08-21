@@ -62,7 +62,7 @@ const chevron = (d: string) =>
   `<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="${d}"/></svg>`;
 ---
 
-<section class="ctx ctx--photo section section--bone" data-reveal aria-labelledby="ctx-h">
+<section class="ctx ctx--photo ctx--dark section" data-reveal aria-labelledby="ctx-h">
   <div class="ctx__inner">
     <p class="eyebrow">Client testimonials</p>
     <h2 class="ctx__h" id="ctx-h">Real clients. Real experiences.</h2>
@@ -498,8 +498,13 @@ const chevron = (d: string) =>
     position: relative;
     z-index: 1;
   }
-  /* Subtle happy-client backdrop — a whisper behind the bone, cards and text
-     stay fully legible on top (very low opacity, warm wash over it). */
+  /* Deep-navy section — the approved treatment: a rich navy ground with the real
+     happy-client photo as a subtle backdrop, and light cards riding on top. */
+  .ctx--dark {
+    background: linear-gradient(180deg, var(--color-action), var(--color-ground-deep));
+    color: var(--color-text-inverse);
+    padding-block: var(--space-8);
+  }
   .ctx--photo {
     position: relative;
     isolation: isolate;
@@ -510,24 +515,39 @@ const chevron = (d: string) =>
     inset: 0;
     z-index: 0;
     background: url('/Happy people.avif') center / cover no-repeat;
-    opacity: 0.07;
+    /* On the navy ground the photo reads as an atmospheric glow, not a picture —
+       veiled by a navy wash so cards and text stay fully legible on top. */
+    opacity: 0.16;
     pointer-events: none;
+  }
+  .ctx--dark::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-action) 55%, transparent),
+      color-mix(in srgb, var(--color-ground-deep) 82%, transparent)
+    );
   }
   .eyebrow {
     font-size: var(--type-caption);
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--color-emphasis-text);
-    font-weight: 600;
+    color: var(--color-emphasis);
+    font-weight: 700;
   }
   .ctx__h {
     font-size: var(--type-h2);
     margin-block: var(--space-2) var(--space-2);
     text-wrap: balance;
+    color: var(--color-text-inverse);
   }
   .ctx__sub {
     font-size: var(--type-body-lg);
-    color: var(--color-text-muted);
+    color: color-mix(in srgb, var(--color-text-inverse) 84%, transparent);
     max-inline-size: 64ch;
     margin-block-end: var(--space-6);
   }

@@ -173,7 +173,9 @@ try {
           steps — free, and yours to act on when you're ready.
         </p>
       </div>
-      <HealthCheck />
+      <div class="hero__form-body">
+        <HealthCheck />
+      </div>
     </div>
   </section>
 
@@ -188,7 +190,7 @@ try {
   }
 
   <!-- 7 · WHERE ARE YOU IN YOUR JOURNEY? (situation-first navigation) -->
-  <section data-reveal class="section section--bone">
+  <section data-reveal class="section">
     <div class="section__inner">
       <p class="eyebrow">Explore your pathway</p>
       <h2 class="section__h">Where are you in your journey?</h2>
@@ -289,6 +291,16 @@ try {
           Perth-based and working with clients right across Australia and overseas — the same
           dedicated point of contact, wherever your journey begins.
         </p>
+        <dl class="ausmap__stats">
+          <div class="ausmap__stat">
+            <dt class="ausmap__k">1,653</dt>
+            <dd class="ausmap__v">applications &amp; lodgements prepared since 2023</dd>
+          </div>
+          <div class="ausmap__stat">
+            <dt class="ausmap__k ausmap__k--place">Perth CBD</dt>
+            <dd class="ausmap__v">{PRACTICE.address.street} · by appointment</dd>
+          </div>
+        </dl>
       </div>
     </div>
   </section>
@@ -383,7 +395,7 @@ try {
 
   /* ── Australia — a sense of place. Real map photo, warm and quiet. ───────── */
   .ausmap {
-    background: var(--color-ground-warm);
+    background: var(--color-ground-light);
     padding-block: var(--space-8);
   }
   .ausmap__inner {
@@ -395,16 +407,53 @@ try {
     align-items: center;
     grid-template-columns: 1fr;
   }
+  /* The map is treated intentionally — a rounded, hairline-framed card that sits
+     up off the page on a soft shadow, not a dropped-in stock photo. */
   .ausmap__figure {
     margin: 0;
-    border-radius: 14px;
+    border-radius: var(--radius-card);
     overflow: hidden;
+    border: 1px solid var(--color-hairline);
+    box-shadow: var(--shadow-overlay);
+    background: var(--color-ground-warm);
   }
   .ausmap__img {
     display: block;
     inline-size: 100%;
     block-size: auto;
     object-fit: cover;
+    transition: transform 600ms var(--ease-standard, ease);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .ausmap__figure:hover .ausmap__img {
+      transform: scale(1.02);
+    }
+  }
+  /* Key-stat pair — a premium, gold-accented numeral (display face) over a muted
+     caption, echoing the section-heading language. Real, client-approved figures. */
+  .ausmap__stats {
+    margin: var(--space-5) 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-5) var(--space-7);
+  }
+  .ausmap__stat {
+    max-inline-size: 22ch;
+  }
+  .ausmap__k {
+    font-family: var(--font-display);
+    font-size: var(--type-h2);
+    line-height: 1;
+    color: var(--color-emphasis-text);
+  }
+  .ausmap__k--place {
+    font-size: var(--type-h3);
+  }
+  .ausmap__v {
+    margin: var(--space-2) 0 0;
+    font-size: var(--type-body-sm);
+    color: var(--color-text-muted);
+    line-height: 1.4;
   }
   @media (min-width: 880px) {
     .ausmap__inner {
@@ -591,8 +640,8 @@ try {
     font-size: 0.86rem;
     font-weight: 800;
     line-height: 1;
-    color: var(--color-action);
-    background: color-mix(in srgb, var(--color-emphasis, #c99a52) 24%, transparent);
+    color: var(--color-emphasis-text);
+    background: color-mix(in srgb, var(--color-emphasis, #c99a52) 22%, transparent);
     border: 1px solid color-mix(in srgb, var(--color-emphasis, #c99a52) 40%, transparent);
     border-radius: 50%;
   }
@@ -694,28 +743,35 @@ try {
     background: var(--color-surface);
     border: 1px solid color-mix(in srgb, var(--color-action) 12%, transparent);
     border-radius: var(--radius-card);
-    padding: clamp(var(--space-4), 4vw, var(--space-6));
+    overflow: hidden;
     box-shadow: var(--shadow-raised, 0 22px 48px -30px rgba(14, 26, 48, 0.45));
   }
+  /* Navy header band — the approved treatment: deep navy panel, white text and a
+     gold eyebrow, sitting above the white form body (like a clinician's chart). */
   .hero__form-head {
-    margin-block-end: var(--space-4);
+    background: linear-gradient(155deg, var(--color-action), var(--color-ground-deep));
+    color: var(--color-text-inverse);
+    padding: clamp(var(--space-4), 3.5vw, var(--space-5));
+  }
+  .hero__form-body {
+    padding: clamp(var(--space-4), 4vw, var(--space-6));
   }
   .hero__form-eyebrow {
     font-size: var(--type-caption);
-    letter-spacing: 0.06em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--color-emphasis-text);
-    font-weight: 600;
+    color: var(--color-emphasis);
+    font-weight: 700;
     margin: 0;
   }
   .hero__form-title {
     font-size: var(--type-h3);
     margin-block: var(--space-1) var(--space-2);
-    color: var(--color-action);
+    color: var(--color-text-inverse);
   }
   .hero__form-sub {
     font-size: var(--type-body-sm);
-    color: var(--color-text-muted);
+    color: color-mix(in srgb, var(--color-text-inverse) 84%, transparent);
     line-height: 1.55;
     margin: 0;
     max-inline-size: 44ch;
