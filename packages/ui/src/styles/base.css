@@ -1,6 +1,44 @@
 /* @vmd/ui base — reset + document defaults. Consumes generated token vars. */
 @import '@vmd/tokens/tokens.css';
 
+/* ── Derived semantic tokens ───────────────────────────────────────────────
+   These EXTEND the generated brand tokens; they never redefine a locked brand
+   hex. They give the platform a single vocabulary for the things components
+   were already reaching for by hand: a raised "surface", tonal hairline borders,
+   gold accent tints, and a verified/registered cue. Defining --color-surface
+   here also resolves ~30 existing references that had no fallback (cards and the
+   hero form were rendering transparent). Every value that can carry text clears
+   WCAG AA on its intended ground. */
+:root {
+  /* Surfaces — the raised card/form plane and its warm tonal sibling. Both are
+     aliases of existing ground tokens (no new raw values). Defining --color-surface
+     also resolves ~30 existing references that had no fallback, so cards and the
+     hero form were rendering transparent. */
+  --color-surface: var(--color-ground-light); /* white — raised cards, forms, menus */
+  --color-surface-warm: var(--color-ground-warm); /* bone — alternating tonal surface */
+  --color-ink: var(--color-ground-deep); /* ink ground alias, for dark panels */
+
+  /* Hairlines — tonal navy lines for borders/dividers, consistent everywhere.
+     Mixed in oklab (perceptual) — and this also keeps raw colour strings out of
+     the file, satisfying the token-purity lint. */
+  --color-hairline: color-mix(in oklab, var(--color-action) 12%, transparent);
+  --color-hairline-strong: color-mix(in oklab, var(--color-action) 20%, transparent);
+  --color-hairline-inverse: color-mix(in oklab, var(--color-text-inverse) 14%, transparent);
+
+  /* Gold accent — decorative (non-text) tints and lines. */
+  --color-emphasis-tint: color-mix(in oklab, var(--color-emphasis) 14%, transparent);
+  --color-emphasis-line: color-mix(in oklab, var(--color-emphasis) 40%, transparent);
+
+  /* Verified / registered cue — reuses the AA-tested brand success green
+     (#146C43) rather than inventing a colour. For trust signals only, sparingly. */
+  --color-verified: var(--color-success);
+  --color-verified-tint: color-mix(in oklab, var(--color-success) 12%, transparent);
+  --color-verified-line: color-mix(in oklab, var(--color-success) 34%, transparent);
+
+  /* Pill radius alias (equals --radius-chip); several components already assume it. */
+  --radius-pill: var(--radius-chip);
+}
+
 *,
 *::before,
 *::after {
