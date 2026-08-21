@@ -35,6 +35,75 @@ const DEFAULT_STEPS = [
   },
 ];
 
+// Core values — the real "Care. Clarity. Consistency." A calm, three-part
+// editorial statement (not a busy card grid). Copy is verbatim from the practice's
+// core value, trimmed to one plain sentence each.
+const VALUES = [
+  {
+    k: 'Care',
+    d: 'Every matter is received with attention to the person behind it — including honest advice when the honest answer is to wait.',
+  },
+  {
+    k: 'Clarity',
+    d: 'Advice in plain language, a written strategy for every engagement, and transparent scope and fees from the outset.',
+  },
+  {
+    k: 'Consistency',
+    d: 'Documented processes and careful record-keeping, so every matter is handled to the same professional standard.',
+  },
+];
+
+// Application & Lodgement — the client's key ask. The six visitor-facing stages
+// (Assessment → Strategy → Documentation → Application → Lodgement → Decision)
+// mapped onto the REAL Diagnosis → Pathway → Outcome method and the real
+// "documented processes / document control / deadline monitoring / informed at
+// every stage" language. No invented procedural guarantees — each stage states
+// what the practice does and what the client can expect.
+const STAGES = [
+  {
+    phase: 'Diagnosis',
+    name: 'Assessment',
+    desc: 'We examine your history, eligibility and any risks before anything is recommended, lodged or promised.',
+    we: 'A thorough review of your circumstances against current law and policy.',
+    you: 'Your background, documents and goals — shared openly.',
+  },
+  {
+    phase: 'Pathway',
+    name: 'Strategy',
+    desc: 'A written strategy sets out realistic options and the trade-offs in plain language, with scope and fees agreed from the outset.',
+    we: 'A clear written plan matched to your situation and goals.',
+    you: 'Your questions, and a decision on the pathway to pursue.',
+  },
+  {
+    phase: 'Outcome',
+    name: 'Documentation',
+    desc: 'Evidence is prepared carefully and completely, with structured document control so nothing is missed.',
+    we: 'Checklists, drafting and review, organised on dedicated practice-management software.',
+    you: 'The requested documents and information, as they are needed.',
+  },
+  {
+    phase: 'Outcome',
+    name: 'Application',
+    desc: 'Your application is prepared and checked against the requirements before it goes near submission.',
+    we: 'Preparation, accuracy checks and a considered final review.',
+    you: 'Confirmation, and any last details we flag with you.',
+  },
+  {
+    phase: 'Outcome',
+    name: 'Lodgement',
+    desc: 'The application is lodged and your file is actively monitored — deadlines tracked, requests actioned.',
+    we: 'Lodgement, deadline monitoring and correspondence on your file.',
+    you: 'Prompt responses to anything raised after lodgement.',
+  },
+  {
+    phase: 'Outcome',
+    name: 'Decision',
+    desc: 'You are kept informed through to the decision, and guided on what it means and any next steps.',
+    we: 'Updates at each stage and clear guidance on the outcome.',
+    you: null,
+  },
+];
+
 const settings = await getSettings();
 // Homepage global (CMS-editable, section by section). Every read falls back to
 // the built-in copy below, so the page is identical until an editor changes it,
@@ -179,6 +248,27 @@ try {
     </div>
   </section>
 
+  <!-- 4 · WHAT GUIDES US — Care · Clarity · Consistency (calm values moment) -->
+  <section data-reveal class="section values">
+    <div class="section__inner values__inner">
+      <p class="eyebrow">What guides us</p>
+      <h2 class="section__h values__h">Care. Clarity. Consistency.</h2>
+      <p class="section__sub values__sub">
+        Three principles shape how every matter is handled — quietly, and without exception.
+      </p>
+      <ul class="values__set" role="list">
+        {
+          VALUES.map((v) => (
+            <li class="values__item">
+              <h3 class="values__k">{v.k}</h3>
+              <p class="values__d">{v.d}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
   {
     /* The "Which of these is you?" cards were removed — the hero assessment now
       captures the same six situations as its first step, so the section was redundant. */
@@ -190,7 +280,7 @@ try {
   }
 
   <!-- 7 · WHERE ARE YOU IN YOUR JOURNEY? (situation-first navigation) -->
-  <section data-reveal class="section">
+  <section data-reveal class="section section--bone">
     <div class="section__inner">
       <p class="eyebrow">Explore your pathway</p>
       <h2 class="section__h">Where are you in your journey?</h2>
@@ -242,8 +332,9 @@ try {
   <!-- 8 · YOUR JOURNEY (How we work — client journey timeline) -->
   {
     shown(hp?.howWeWork) && (
-      <section data-reveal class="section section--bone">
+      <section data-reveal class="section">
         <div class="section__inner">
+          <p class="eyebrow">The method</p>
           <h2 class="section__h">{hp?.howWeWork?.heading || 'How we work'}</h2>
           {hp?.howWeWork?.intro && <p class="section__sub">{hp.howWeWork.intro}</p>}
           <ol class="journey">
@@ -270,6 +361,52 @@ try {
     )
   }
 
+  <!-- 8a · APPLICATION & LODGEMENT — the six-stage journey (client's key ask) -->
+  <section data-reveal class="section section--bone applodge">
+    <div class="section__inner">
+      <p class="eyebrow">Application &amp; lodgement</p>
+      <h2 class="section__h">From first assessment to the decision</h2>
+      <p class="section__sub">
+        A boutique practice runs on documented processes and careful record-keeping. Here is how a
+        matter moves through the practice — what we handle, and what we&rsquo;ll ask of you — with
+        you informed at every stage.
+      </p>
+      <ol class="applodge__stages" role="list">
+        {
+          STAGES.map((s, i) => (
+            <li class="applodge__stage">
+              <div class="applodge__aside">
+                <span class="applodge__num">{String(i + 1).padStart(2, '0')}</span>
+                <span class="applodge__phase">{s.phase}</span>
+              </div>
+              <div class="applodge__body">
+                <h3 class="applodge__name">{s.name}</h3>
+                <p class="applodge__desc">{s.desc}</p>
+                <dl class="applodge__pair">
+                  <div class="applodge__cell">
+                    <dt>We handle</dt>
+                    <dd>{s.we}</dd>
+                  </div>
+                  {s.you && (
+                    <div class="applodge__cell">
+                      <dt>You provide</dt>
+                      <dd>{s.you}</dd>
+                    </div>
+                  )}
+                </dl>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+      <p class="applodge__after">
+        After lodgement your file is monitored and you are kept informed through to the decision.
+        Every application is decided on its own merits under Australian migration law; past outcomes
+        do not indicate or guarantee future results.
+      </p>
+    </div>
+  </section>
+
   <!-- 8b · AUSTRALIA — a sense of place (real map photo, warm treatment) -->
   <section data-reveal class="ausmap">
     <div class="ausmap__inner">
@@ -291,16 +428,40 @@ try {
           Perth-based and working with clients right across Australia and overseas — the same
           dedicated point of contact, wherever your journey begins.
         </p>
-        <dl class="ausmap__stats">
-          <div class="ausmap__stat">
-            <dt class="ausmap__k">1,653</dt>
-            <dd class="ausmap__v">applications &amp; lodgements prepared since 2023</dd>
-          </div>
-          <div class="ausmap__stat">
-            <dt class="ausmap__k ausmap__k--place">Perth CBD</dt>
-            <dd class="ausmap__v">{PRACTICE.address.street} · by appointment</dd>
-          </div>
-        </dl>
+        <div class="ausmap__figures">
+          <p class="ausmap__total">
+            <span class="ausmap__total-k">1,653</span>
+            <span class="ausmap__total-v"
+              >applications &amp; lodgements prepared and managed since 2023</span
+            >
+          </p>
+          <dl class="ausmap__breakdown">
+            <div class="ausmap__row">
+              <dt class="ausmap__row-k">1,070</dt>
+              <dd class="ausmap__row-v">Visa applications</dd>
+            </div>
+            <div class="ausmap__row">
+              <dt class="ausmap__row-k">284</dt>
+              <dd class="ausmap__row-v">EOIs &amp; related lodgements</dd>
+            </div>
+            <div class="ausmap__row">
+              <dt class="ausmap__row-k">239</dt>
+              <dd class="ausmap__row-v">Skills assessment applications</dd>
+            </div>
+            <div class="ausmap__row">
+              <dt class="ausmap__row-k">60</dt>
+              <dd class="ausmap__row-v">Administrative Review Tribunal matters</dd>
+            </div>
+          </dl>
+          <p class="ausmap__caveat">
+            A record of work prepared and managed — not a statement about outcomes. Every
+            application is decided on its own merits; past outcomes do not indicate or guarantee
+            future results.
+          </p>
+          <p class="ausmap__place">
+            <span class="ausmap__place-k">Perth CBD</span> · {PRACTICE.address.street} · by appointment
+          </p>
+        </div>
       </div>
     </div>
   </section>
@@ -429,31 +590,83 @@ try {
       transform: scale(1.02);
     }
   }
-  /* Key-stat pair — a premium, gold-accented numeral (display face) over a muted
-     caption, echoing the section-heading language. Real, client-approved figures. */
-  .ausmap__stats {
-    margin: var(--space-5) 0 0;
+  /* Reach figures — a premium, gold-accented headline numeral (display face) over
+     the real breakdown, echoing the section-heading language. Real, client-approved
+     figures; the caveat sits directly beneath so the number is never read as an
+     outcome claim. */
+  .ausmap__figures {
+    margin-block-start: var(--space-5);
+  }
+  .ausmap__total {
     display: flex;
+    align-items: baseline;
     flex-wrap: wrap;
-    gap: var(--space-5) var(--space-7);
+    gap: var(--space-1) var(--space-3);
+    margin: 0;
   }
-  .ausmap__stat {
-    max-inline-size: 22ch;
-  }
-  .ausmap__k {
+  .ausmap__total-k {
     font-family: var(--font-display);
     font-size: var(--type-h2);
     line-height: 1;
     color: var(--color-emphasis-text);
   }
-  .ausmap__k--place {
-    font-size: var(--type-h3);
-  }
-  .ausmap__v {
-    margin: var(--space-2) 0 0;
+  .ausmap__total-v {
     font-size: var(--type-body-sm);
     color: var(--color-text-muted);
     line-height: 1.4;
+    max-inline-size: 26ch;
+  }
+  /* Breakdown — a tidy ledger: gold numeral, muted label, hairline-separated rows. */
+  .ausmap__breakdown {
+    margin: var(--space-5) 0 0;
+    display: grid;
+    gap: var(--space-3);
+    max-inline-size: 34ch;
+  }
+  .ausmap__row {
+    display: grid;
+    grid-template-columns: 4.5ch 1fr;
+    align-items: baseline;
+    gap: var(--space-3);
+    padding-block-end: var(--space-3);
+    border-block-end: 1px solid var(--color-hairline);
+  }
+  .ausmap__row:last-child {
+    border-block-end: 0;
+    padding-block-end: 0;
+  }
+  .ausmap__row-k {
+    font-family: var(--font-display);
+    font-size: var(--type-h4);
+    line-height: 1;
+    color: var(--color-emphasis-text);
+    text-align: end;
+  }
+  .ausmap__row-v {
+    margin: 0;
+    font-size: var(--type-body-sm);
+    color: var(--color-text-muted);
+    line-height: 1.35;
+  }
+  .ausmap__caveat {
+    margin: var(--space-4) 0 0;
+    font-size: var(--type-caption);
+    line-height: 1.5;
+    color: var(--color-text-muted);
+    max-inline-size: 46ch;
+  }
+  .ausmap__place {
+    margin: var(--space-4) 0 0;
+    padding-block-start: var(--space-4);
+    border-block-start: 1px solid var(--color-hairline);
+    font-size: var(--type-body-sm);
+    color: var(--color-text-muted);
+    line-height: 1.4;
+  }
+  .ausmap__place-k {
+    font-family: var(--font-display);
+    font-size: var(--type-body-lg);
+    color: var(--color-action);
   }
   @media (min-width: 880px) {
     .ausmap__inner {
@@ -934,6 +1147,174 @@ try {
       transform: translateY(-50%);
       inline-size: calc(100% + var(--space-6));
       block-size: 2px;
+    }
+  }
+
+  /* ── Care · Clarity · Consistency — a calm values moment. ──────────────────
+     Restrained by design: three text blocks, each led by a gold hairline, held in
+     a generous column. No cards, no icons, no colour for its own sake. */
+  .values__inner {
+    max-inline-size: 74rem;
+  }
+  .values__h {
+    letter-spacing: -0.01em;
+  }
+  .values__sub {
+    margin-block-end: 0;
+  }
+  .values__set {
+    list-style: none;
+    margin: var(--space-7) 0 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-6);
+    grid-template-columns: 1fr;
+  }
+  .values__item {
+    padding-block-start: var(--space-4);
+    border-block-start: 2px solid var(--color-emphasis-line);
+  }
+  .values__k {
+    font-family: var(--font-display);
+    font-size: var(--type-h3);
+    color: var(--color-action);
+    margin: 0 0 var(--space-2);
+    line-height: 1.15;
+  }
+  .values__d {
+    margin: 0;
+    font-size: var(--type-body);
+    color: var(--color-text-muted);
+    line-height: 1.65;
+    max-inline-size: 34ch;
+  }
+  @media (min-width: 820px) {
+    .values__set {
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-4) var(--space-6);
+    }
+  }
+
+  /* ── Application & Lodgement — the six-stage journey. ──────────────────────
+     A vertical, editorial timeline: a two-digit numeral + method-phase tag on the
+     left, joined by a gold connector; the stage, plain-language description and a
+     "we handle / you provide" pair on the right. Reassuring, scannable, no wall of
+     text — the richer sibling of the .journey pattern. */
+  .applodge__stages {
+    list-style: none;
+    margin: var(--space-7) 0 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-6);
+  }
+  .applodge__stage {
+    position: relative;
+    display: grid;
+    grid-template-columns: 4.5rem 1fr;
+    gap: var(--space-4);
+    align-items: start;
+  }
+  .applodge__aside {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  /* Connector — a hairline gold line linking each numeral to the next. */
+  .applodge__stage:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: 2.25rem;
+    inset-block-start: 3.4rem;
+    transform: translateX(-50%);
+    inline-size: 2px;
+    block-size: calc(100% - 3.4rem + var(--space-6));
+    background: var(--color-emphasis-line);
+  }
+  .applodge__num {
+    inline-size: 3.4rem;
+    block-size: 3.4rem;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--color-surface);
+    border: 1px solid var(--color-emphasis-line);
+    box-shadow: var(--shadow-subtle, 0 8px 24px -14px rgba(16, 30, 60, 0.22));
+    font-family: var(--font-display);
+    font-size: var(--type-h4);
+    line-height: 1;
+    color: var(--color-emphasis-text);
+  }
+  .applodge__phase {
+    font-size: var(--type-caption);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    text-align: center;
+  }
+  .applodge__body {
+    padding-block-end: var(--space-2);
+  }
+  .applodge__name {
+    font-family: var(--font-display);
+    font-size: var(--type-h3);
+    color: var(--color-action);
+    margin: 0;
+    line-height: 1.2;
+  }
+  .applodge__desc {
+    margin: var(--space-2) 0 0;
+    font-size: var(--type-body);
+    line-height: 1.6;
+    color: var(--color-text);
+    max-inline-size: 56ch;
+  }
+  .applodge__pair {
+    margin: var(--space-4) 0 0;
+    display: grid;
+    gap: var(--space-3);
+    grid-template-columns: 1fr;
+  }
+  .applodge__cell {
+    padding-inline-start: var(--space-4);
+    border-inline-start: 2px solid var(--color-hairline-strong);
+  }
+  .applodge__cell dt {
+    font-size: var(--type-caption);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--color-emphasis-text);
+  }
+  .applodge__cell dd {
+    margin: var(--space-1) 0 0;
+    font-size: var(--type-body-sm);
+    line-height: 1.5;
+    color: var(--color-text-muted);
+    max-inline-size: 40ch;
+  }
+  .applodge__after {
+    margin: var(--space-7) 0 0;
+    padding-block-start: var(--space-5);
+    border-block-start: 1px solid var(--color-hairline);
+    font-size: var(--type-body-sm);
+    line-height: 1.6;
+    color: var(--color-text-muted);
+    max-inline-size: 68ch;
+  }
+  @media (min-width: 720px) {
+    .applodge__stage {
+      grid-template-columns: 6rem 1fr;
+      gap: var(--space-6);
+    }
+    .applodge__stage:not(:last-child)::before {
+      inset-inline-start: 3rem;
+    }
+    .applodge__pair {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-5);
     }
   }
 
