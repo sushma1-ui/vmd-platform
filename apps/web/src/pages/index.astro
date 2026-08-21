@@ -35,24 +35,6 @@ const DEFAULT_STEPS = [
   },
 ];
 
-// Core values — the real "Care. Clarity. Consistency." A calm, three-part
-// editorial statement (not a busy card grid). Copy is verbatim from the practice's
-// core value, trimmed to one plain sentence each.
-const VALUES = [
-  {
-    k: 'Care',
-    d: 'Every matter is received with attention to the person behind it — including honest advice when the honest answer is to wait.',
-  },
-  {
-    k: 'Clarity',
-    d: 'Advice in plain language, a written strategy for every engagement, and transparent scope and fees from the outset.',
-  },
-  {
-    k: 'Consistency',
-    d: 'Documented processes and careful record-keeping, so every matter is handled to the same professional standard.',
-  },
-];
-
 // Application & Lodgement — the client's key ask. The six visitor-facing stages
 // (Assessment → Strategy → Documentation → Application → Lodgement → Decision)
 // mapped onto the REAL Diagnosis → Pathway → Outcome method and the real
@@ -245,27 +227,6 @@ try {
       <div class="hero__form-body">
         <HealthCheck />
       </div>
-    </div>
-  </section>
-
-  <!-- 4 · WHAT GUIDES US — Care · Clarity · Consistency (calm values moment) -->
-  <section data-reveal class="section values">
-    <div class="section__inner values__inner">
-      <p class="eyebrow">What guides us</p>
-      <h2 class="section__h values__h">Care. Clarity. Consistency.</h2>
-      <p class="section__sub values__sub">
-        Three principles shape how every matter is handled — quietly, and without exception.
-      </p>
-      <ul class="values__set" role="list">
-        {
-          VALUES.map((v) => (
-            <li class="values__item">
-              <h3 class="values__k">{v.k}</h3>
-              <p class="values__d">{v.d}</p>
-            </li>
-          ))
-        }
-      </ul>
     </div>
   </section>
 
@@ -1147,51 +1108,6 @@ try {
       transform: translateY(-50%);
       inline-size: calc(100% + var(--space-6));
       block-size: 2px;
-    }
-  }
-
-  /* ── Care · Clarity · Consistency — a calm values moment. ──────────────────
-     Restrained by design: three text blocks, each led by a gold hairline, held in
-     a generous column. No cards, no icons, no colour for its own sake. */
-  .values__inner {
-    max-inline-size: 74rem;
-  }
-  .values__h {
-    letter-spacing: -0.01em;
-  }
-  .values__sub {
-    margin-block-end: 0;
-  }
-  .values__set {
-    list-style: none;
-    margin: var(--space-7) 0 0;
-    padding: 0;
-    display: grid;
-    gap: var(--space-6);
-    grid-template-columns: 1fr;
-  }
-  .values__item {
-    padding-block-start: var(--space-4);
-    border-block-start: 2px solid var(--color-emphasis-line);
-  }
-  .values__k {
-    font-family: var(--font-display);
-    font-size: var(--type-h3);
-    color: var(--color-action);
-    margin: 0 0 var(--space-2);
-    line-height: 1.15;
-  }
-  .values__d {
-    margin: 0;
-    font-size: var(--type-body);
-    color: var(--color-text-muted);
-    line-height: 1.65;
-    max-inline-size: 34ch;
-  }
-  @media (min-width: 820px) {
-    .values__set {
-      grid-template-columns: repeat(3, 1fr);
-      gap: var(--space-4) var(--space-6);
     }
   }
 
