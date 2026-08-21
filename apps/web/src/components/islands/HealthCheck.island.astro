@@ -310,11 +310,23 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
   .hc__continue,
   .hc__submit {
     text-align: center;
-    background: var(--color-action);
-    color: var(--color-text-inverse);
+    /* Approved primary treatment: gold fill with dark ink text — the same warm
+       CTA the client signed off on for the hero. Ink-on-gold clears WCAG AA. */
+    background: var(--color-emphasis);
+    color: var(--color-text);
     border-color: transparent;
-    font-weight: 500;
+    font-weight: 600;
     margin-block-start: var(--space-4);
+    transition:
+      background-color var(--motion-fast) var(--ease-standard),
+      transform var(--motion-fast) var(--ease-standard);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .hc__continue:hover,
+    .hc__submit:hover {
+      background: color-mix(in srgb, var(--color-emphasis) 88%, black);
+      transform: translateY(-1px);
+    }
   }
   .hc__submit[aria-busy='true'] {
     opacity: 0.7;
