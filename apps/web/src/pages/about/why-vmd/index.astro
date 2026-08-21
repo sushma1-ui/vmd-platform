@@ -40,6 +40,42 @@ const WHYVMD_FALLBACK: [string, string][] = [
 ];
 
 const whyVmd = pairsFrom(a?.whyVmd, WHYVMD_FALLBACK);
+
+// Application & lodgement — a short, elegant view of how a matter moves through
+// the practice, mapped onto the real Diagnosis → Pathway → Outcome method and the
+// real documented-process language. No invented procedural guarantees.
+const STAGES: { phase: string; name: string; desc: string }[] = [
+  {
+    phase: 'Diagnosis',
+    name: 'Assessment',
+    desc: 'We examine your history, eligibility and any risks before anything is recommended or lodged.',
+  },
+  {
+    phase: 'Pathway',
+    name: 'Strategy',
+    desc: 'A written strategy of your realistic options and the trade-offs, with scope and fees agreed from the outset.',
+  },
+  {
+    phase: 'Outcome',
+    name: 'Documentation',
+    desc: 'Evidence prepared carefully and completely, with structured document control.',
+  },
+  {
+    phase: 'Outcome',
+    name: 'Application',
+    desc: 'Your application prepared and checked against the requirements before submission.',
+  },
+  {
+    phase: 'Outcome',
+    name: 'Lodgement',
+    desc: 'Lodged and actively monitored — deadlines tracked, requests actioned.',
+  },
+  {
+    phase: 'Outcome',
+    name: 'Decision',
+    desc: 'You are kept informed through to the decision, and guided on what it means.',
+  },
+];
 ---
 
 <SimplePage
@@ -59,6 +95,35 @@ const whyVmd = pairsFrom(a?.whyVmd, WHYVMD_FALLBACK);
       ))
     }
   </div>
+
+  <section class="aljourney" aria-label="Application and lodgement">
+    <p class="aljourney__eyebrow">Application &amp; lodgement</p>
+    <h2 class="aljourney__h">From first assessment to the decision</h2>
+    <p class="aljourney__intro">
+      How a matter moves through the practice — documented at every stage, and clear about what we
+      handle and what we&rsquo;ll ask of you.
+    </p>
+    <ol class="aljourney__steps" role="list">
+      {
+        STAGES.map((s, i) => (
+          <li class="aljourney__step">
+            <span class="aljourney__node">{String(i + 1).padStart(2, '0')}</span>
+            <div class="aljourney__text">
+              <h3 class="aljourney__name">
+                {s.name} <span class="aljourney__phase">{s.phase}</span>
+              </h3>
+              <p class="aljourney__desc">{s.desc}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+    <p class="aljourney__after">
+      After lodgement your file is monitored through to the decision. Every application is decided
+      on its own merits under Australian migration law; past outcomes do not indicate or guarantee
+      future results.
+    </p>
+  </section>
 </SimplePage>
 
 <style>
@@ -73,5 +138,108 @@ const whyVmd = pairsFrom(a?.whyVmd, WHYVMD_FALLBACK);
   }
   .deflist strong {
     color: var(--color-text);
+  }
+
+  /* Application & lodgement — a compact, editorial timeline. Small gold numeral
+     nodes on a hairline gold connector; stage + method-phase + one line each. */
+  .aljourney {
+    margin-block-start: var(--space-8);
+    padding-block-start: var(--space-7);
+    border-block-start: 1px solid var(--color-hairline);
+  }
+  .aljourney__eyebrow {
+    margin: 0;
+    font-size: var(--type-caption);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-emphasis-text);
+  }
+  .aljourney__h {
+    font-family: var(--font-display);
+    font-size: var(--type-h3);
+    color: var(--color-action);
+    margin: var(--space-2) 0 0;
+    line-height: 1.15;
+  }
+  .aljourney__intro {
+    margin: var(--space-3) 0 0;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    max-inline-size: 58ch;
+  }
+  .aljourney__steps {
+    list-style: none;
+    margin: var(--space-6) 0 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-5);
+  }
+  .aljourney__step {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--space-4);
+    align-items: start;
+  }
+  /* Gold connector between nodes. */
+  .aljourney__step:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: 1.15rem;
+    inset-block-start: 2.3rem;
+    inline-size: 1px;
+    block-size: calc(100% - 2.3rem + var(--space-5));
+    background: var(--color-emphasis-line);
+  }
+  .aljourney__node {
+    position: relative;
+    z-index: 1;
+    inline-size: 2.3rem;
+    block-size: 2.3rem;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--color-surface);
+    border: 1px solid var(--color-emphasis-line);
+    color: var(--color-emphasis-text);
+    font-family: var(--font-display);
+    font-size: var(--type-body);
+    line-height: 1;
+  }
+  .aljourney__text {
+    min-inline-size: 0;
+  }
+  .aljourney__name {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--type-h4);
+    color: var(--color-action);
+    line-height: 1.2;
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+  .aljourney__phase {
+    font-family: var(--font-body);
+    font-size: var(--type-caption);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--color-text-muted);
+  }
+  .aljourney__desc {
+    margin: var(--space-1) 0 0;
+    font-size: var(--type-body-sm);
+    line-height: 1.55;
+    color: var(--color-text-muted);
+  }
+  .aljourney__after {
+    margin: var(--space-6) 0 0;
+    padding-block-start: var(--space-4);
+    border-block-start: 1px solid var(--color-hairline);
+    font-size: var(--type-body-sm);
+    line-height: 1.6;
+    color: var(--color-text-muted);
   }
 </style>
