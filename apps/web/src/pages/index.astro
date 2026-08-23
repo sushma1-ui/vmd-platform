@@ -497,8 +497,13 @@ const QUICK_LINKS = [
   .res__eyebrow {
     color: var(--color-emphasis);
   }
-  .res__h {
+  /* Higher specificity than the navy `.section__h` default, so the heading stays
+     white on the dark ground; its .hl accent uses the brighter gold for contrast. */
+  .res .section__h {
     color: #fff;
+  }
+  .res .section__h .hl {
+    color: var(--color-emphasis);
   }
   .res__grid {
     display: grid;
@@ -626,6 +631,7 @@ const QUICK_LINKS = [
   }
   .section__h {
     font-size: var(--type-h2);
+    color: var(--color-action);
   }
   .section__sub {
     font-size: var(--type-body-lg);
@@ -747,12 +753,14 @@ const QUICK_LINKS = [
     line-height: 1.12;
     letter-spacing: -0.015em;
     text-wrap: balance;
+    color: var(--color-action);
   }
   .hero__lead {
     font-size: var(--type-body-lg);
     line-height: 1.5;
     margin-block: var(--space-3) 0;
     max-inline-size: 48ch;
+    color: var(--color-text-muted);
   }
   .hero__checks {
     list-style: none;
