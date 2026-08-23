@@ -122,6 +122,9 @@ const eager = index < 2;
     position: relative;
     margin: 0;
     aspect-ratio: 4 / 5;
+    /* Cap the height so a wide card doesn't blow the portrait up too large;
+       object-fit keeps the face framed (top-centre) as it crops. */
+    max-block-size: 22rem;
     overflow: hidden;
     background: radial-gradient(
       120% 120% at 50% 12%,
