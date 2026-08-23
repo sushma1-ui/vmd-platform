@@ -9,29 +9,24 @@ import BookCta from '../components/cta/BookCta.astro';
 import ClientTestimonials from '../components/sections/ClientTestimonials.astro';
 import MeetTeam from '../components/sections/MeetTeam.astro';
 import HealthCheck from '../components/islands/HealthCheck.island.astro';
-import Icon from '../components/Icon.astro';
 
-// "How we work" icons: examine → route → verified outcome (the clinical brand arc).
-const STEP_ICONS = [
-  'M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14z M20 20l-4.3-4.3', // magnifier — diagnosis
-  'M6 21V4 M6 5h11l-2.5 3 2.5 3H6', // signpost — pathway
-  'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z M8.5 12l2.5 2.5 4.5-4.5', // check seal — outcome
-];
+// "How we work" — the practice's real method (Diagnosis → Pathway → Outcome).
 // Client-journey fallback (used only if an editor hasn't set the steps in the CMS).
 const DEFAULT_STEPS = [
   {
     label: 'Diagnosis',
-    description: 'A thorough, evidence-based assessment of exactly where you stand — no guesswork.',
+    description:
+      'A thorough, evidence-based assessment of your circumstances, history and eligibility — before anything is recommended.',
   },
   {
     label: 'Pathway',
     description:
-      'A clear plan matched to your circumstances and the law, with fixed fees quoted upfront.',
+      'A clear written strategy matched to your situation and the law, with the trade-offs explained in plain language.',
   },
   {
     label: 'Outcome',
     description:
-      'Careful preparation and honest guidance, right through to the decision on your case.',
+      'Careful preparation and honest guidance through the application, keeping you informed at every stage.',
   },
 ];
 
@@ -190,7 +185,7 @@ try {
   }
 
   <!-- 7 · WHERE ARE YOU IN YOUR JOURNEY? (situation-first navigation) -->
-  <section data-reveal class="section section--bone">
+  <section data-reveal class="section">
     <div class="section__inner">
       <p class="eyebrow">Explore your pathway</p>
       <h2 class="section__h">Where are you in your journey?</h2>
@@ -239,92 +234,66 @@ try {
     </div>
   </section>
 
-  <!-- 8 · YOUR JOURNEY (How we work — client journey timeline) -->
+  <!-- 8 · HOW WE WORK — "A method, not a metaphor" (three numbered steps) -->
   {
     shown(hp?.howWeWork) && (
-      <section data-reveal class="section">
+      <section data-reveal class="section section--bone">
         <div class="section__inner">
-          <p class="eyebrow">The method</p>
-          <h2 class="section__h">{hp?.howWeWork?.heading || 'How we work'}</h2>
+          <p class="eyebrow">How we work</p>
+          <h2 class="section__h">
+            {hp?.howWeWork?.heading && hp.howWeWork.heading.trim() !== 'How we work' ? (
+              hp.howWeWork.heading
+            ) : (
+              <Fragment>
+                A method, <span class="hl">not a metaphor</span>
+              </Fragment>
+            )}
+          </h2>
           {hp?.howWeWork?.intro && <p class="section__sub">{hp.howWeWork.intro}</p>}
-          <ol class="journey">
-            {(hp?.howWeWork?.steps?.length ? hp.howWeWork.steps : DEFAULT_STEPS).map((step, i) => (
-              <li class="journey__step">
-                <div class="journey__marker">
-                  <span class="journey__icon" aria-hidden="true">
-                    <Icon path={STEP_ICONS[i % STEP_ICONS.length]} size={22} />
-                  </span>
-                  <span class="journey__num">{i + 1}</span>
-                </div>
-                <div class="journey__content">
-                  <p class="journey__label">{step.label}</p>
-                  <p class="journey__desc">{step.description}</p>
-                </div>
-              </li>
+          <div class="steps">
+            {(hp?.howWeWork?.steps?.length ? hp.howWeWork.steps : DEFAULT_STEPS).map((step) => (
+              <div class="step">
+                <h3 class="step__h">{step.label}</h3>
+                <p class="step__d">{step.description}</p>
+              </div>
             ))}
-          </ol>
-          <p class="section__more section__more--center">
-            <a href="/#start">Start with a free diagnosis →</a>
-          </p>
+          </div>
         </div>
       </section>
     )
   }
 
-  <!-- 8b · AUSTRALIA — a sense of place (real map photo, warm treatment) -->
+  <!-- 8b · WHEREVER YOU ARE — real map + reach (benchmark layout) -->
   <section data-reveal class="ausmap">
     <div class="ausmap__inner">
-      <figure class="ausmap__figure">
+      <figure class="ausmap__map">
         <img
-          class="ausmap__img"
-          src="/Aus map.webp"
+          src="/aus-map.webp"
           alt="Map of Australia"
           width="1200"
-          height="900"
+          height="750"
           loading="lazy"
           decoding="async"
         />
       </figure>
       <div class="ausmap__copy">
         <p class="eyebrow">Wherever you are</p>
-        <h2 class="section__h">Australia-wide, and around the world.</h2>
+        <h2 class="section__h">
+          Australian migration advice, <span class="hl">wherever you are</span>
+        </h2>
         <p class="section__sub">
-          Perth-based and working with clients right across Australia and overseas — the same
-          dedicated point of contact, wherever your journey begins.
+          Based in Perth and working with clients onshore and overseas — the same registered
+          practice, the same standard of care, whether you meet us in person or online.
         </p>
-        <div class="ausmap__figures">
-          <p class="ausmap__total">
-            <span class="ausmap__total-k">1,653</span>
-            <span class="ausmap__total-v"
-              >applications &amp; lodgements prepared and managed since 2023</span
-            >
-          </p>
-          <dl class="ausmap__breakdown">
-            <div class="ausmap__row">
-              <dt class="ausmap__row-k">1,070</dt>
-              <dd class="ausmap__row-v">Visa applications</dd>
-            </div>
-            <div class="ausmap__row">
-              <dt class="ausmap__row-k">284</dt>
-              <dd class="ausmap__row-v">EOIs &amp; related lodgements</dd>
-            </div>
-            <div class="ausmap__row">
-              <dt class="ausmap__row-k">239</dt>
-              <dd class="ausmap__row-v">Skills assessment applications</dd>
-            </div>
-            <div class="ausmap__row">
-              <dt class="ausmap__row-k">60</dt>
-              <dd class="ausmap__row-v">Administrative Review Tribunal matters</dd>
-            </div>
-          </dl>
-          <p class="ausmap__caveat">
-            A record of work prepared and managed — not a statement about outcomes. Every
-            application is decided on its own merits; past outcomes do not indicate or guarantee
-            future results.
-          </p>
-          <p class="ausmap__place">
-            <span class="ausmap__place-k">Perth CBD</span> · {PRACTICE.address.street} · by appointment
-          </p>
+        <div class="ausmap__stat">
+          <div>
+            <div class="ausmap__k">1,653</div>
+            <div class="ausmap__v">applications &amp; lodgements prepared since 2023</div>
+          </div>
+          <div>
+            <div class="ausmap__k">Perth&nbsp;CBD</div>
+            <div class="ausmap__v">{PRACTICE.address.street} · by appointment</div>
+          </div>
         </div>
       </div>
     </div>
@@ -407,9 +376,14 @@ try {
 <style>
   .eyebrow {
     font-size: var(--type-caption);
-    letter-spacing: 0.06em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--color-text-muted);
+    font-weight: 700;
+    color: var(--color-emphasis-text);
+  }
+  /* Gold heading accent (matches the benchmark's <span class="hl">). */
+  .section__h .hl {
+    color: var(--color-emphasis-text);
   }
   .section {
     padding-block: var(--space-8);
@@ -432,9 +406,8 @@ try {
     align-items: center;
     grid-template-columns: 1fr;
   }
-  /* The map is treated intentionally — a rounded, hairline-framed card that sits
-     up off the page on a soft shadow, not a dropped-in stock photo. */
-  .ausmap__figure {
+  /* The map — a rounded, hairline-framed card on a soft shadow, at a calm 16:10. */
+  .ausmap__map {
     margin: 0;
     border-radius: var(--radius-card);
     overflow: hidden;
@@ -442,99 +415,42 @@ try {
     box-shadow: var(--shadow-overlay);
     background: var(--color-ground-warm);
   }
-  .ausmap__img {
+  .ausmap__map img {
     display: block;
     inline-size: 100%;
-    block-size: auto;
+    block-size: 100%;
+    aspect-ratio: 16 / 10;
     object-fit: cover;
     transition: transform 600ms var(--ease-standard, ease);
   }
   @media (prefers-reduced-motion: no-preference) {
-    .ausmap__figure:hover .ausmap__img {
+    .ausmap__map:hover img {
       transform: scale(1.02);
     }
   }
-  /* Reach figures — a premium, gold-accented headline numeral (display face) over
-     the real breakdown, echoing the section-heading language. Real, client-approved
-     figures; the caveat sits directly beneath so the number is never read as an
-     outcome claim. */
-  .ausmap__figures {
-    margin-block-start: var(--space-5);
-  }
-  .ausmap__total {
+  /* Reach — two calm, gold-numeral figures (real, client-approved work volumes). */
+  .ausmap__stat {
     display: flex;
-    align-items: baseline;
     flex-wrap: wrap;
-    gap: var(--space-1) var(--space-3);
-    margin: 0;
+    gap: var(--space-5) var(--space-7);
+    margin-block-start: var(--space-6);
   }
-  .ausmap__total-k {
+  .ausmap__k {
     font-family: var(--font-display);
     font-size: var(--type-h2);
     line-height: 1;
     color: var(--color-emphasis-text);
   }
-  .ausmap__total-v {
+  .ausmap__v {
+    margin-block-start: var(--space-1);
     font-size: var(--type-body-sm);
     color: var(--color-text-muted);
     line-height: 1.4;
-    max-inline-size: 26ch;
-  }
-  /* Breakdown — a tidy ledger: gold numeral, muted label, hairline-separated rows. */
-  .ausmap__breakdown {
-    margin: var(--space-5) 0 0;
-    display: grid;
-    gap: var(--space-3);
-    max-inline-size: 34ch;
-  }
-  .ausmap__row {
-    display: grid;
-    grid-template-columns: 4.5ch 1fr;
-    align-items: baseline;
-    gap: var(--space-3);
-    padding-block-end: var(--space-3);
-    border-block-end: 1px solid var(--color-hairline);
-  }
-  .ausmap__row:last-child {
-    border-block-end: 0;
-    padding-block-end: 0;
-  }
-  .ausmap__row-k {
-    font-family: var(--font-display);
-    font-size: var(--type-h4);
-    line-height: 1;
-    color: var(--color-emphasis-text);
-    text-align: end;
-  }
-  .ausmap__row-v {
-    margin: 0;
-    font-size: var(--type-body-sm);
-    color: var(--color-text-muted);
-    line-height: 1.35;
-  }
-  .ausmap__caveat {
-    margin: var(--space-4) 0 0;
-    font-size: var(--type-caption);
-    line-height: 1.5;
-    color: var(--color-text-muted);
-    max-inline-size: 46ch;
-  }
-  .ausmap__place {
-    margin: var(--space-4) 0 0;
-    padding-block-start: var(--space-4);
-    border-block-start: 1px solid var(--color-hairline);
-    font-size: var(--type-body-sm);
-    color: var(--color-text-muted);
-    line-height: 1.4;
-  }
-  .ausmap__place-k {
-    font-family: var(--font-display);
-    font-size: var(--type-body-lg);
-    color: var(--color-action);
+    max-inline-size: 24ch;
   }
   @media (min-width: 880px) {
     .ausmap__inner {
-      grid-template-columns: 1.05fr 0.95fr;
+      grid-template-columns: 0.95fr 1.05fr;
       gap: var(--space-8);
     }
   }
@@ -924,93 +840,54 @@ try {
   }
   /* Client journey timeline (How we work) — a connected path, not just tiles, so
      visitors can see exactly what happens next and feel oriented, not anxious. */
-  .journey {
-    list-style: none;
-    margin: var(--space-6) 0 0;
-    padding: 0;
+  /* How we work — three numbered steps: a navy disc with a gold numeral (CSS
+     counter, matching the benchmark), the step name beside it, description below. */
+  .steps {
+    counter-reset: s;
     display: grid;
-    gap: var(--space-5);
+    gap: var(--space-6);
+    margin-block-start: var(--space-6);
+    grid-template-columns: 1fr;
   }
-  .journey__step {
+  .step {
     position: relative;
-    display: grid;
-    grid-template-columns: 3rem 1fr;
-    gap: var(--space-4);
-    align-items: start;
+    padding-inline-start: 3.4rem;
   }
-  .journey__marker {
-    position: relative;
-    z-index: 1;
-    inline-size: 3rem;
-    block-size: 3rem;
+  .step::before {
+    counter-increment: s;
+    content: counter(s);
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block-start: -0.15rem;
+    inline-size: 2.4rem;
+    block-size: 2.4rem;
     border-radius: 50%;
-    display: grid;
-    place-items: center;
-    background: var(--color-ground-deep);
+    background: var(--color-action);
     color: var(--color-emphasis);
-  }
-  .journey__num {
-    position: absolute;
-    inset-block-start: -0.35rem;
-    inset-inline-end: -0.35rem;
-    inline-size: 1.4rem;
-    block-size: 1.4rem;
-    border-radius: 50%;
-    background: var(--color-emphasis);
-    color: var(--color-ground-deep);
-    font-family: var(--font-body);
-    font-size: var(--type-caption);
-    font-weight: 700;
+    font-family: var(--font-display);
+    font-size: var(--type-h4);
+    line-height: 1;
     display: grid;
     place-items: center;
   }
-  /* Connector — vertical on mobile, from this marker down to the next. */
-  .journey__step:not(:last-child)::before {
-    content: '';
-    position: absolute;
-    inset-inline-start: 1.5rem;
-    inset-block-start: 3rem;
-    transform: translateX(-50%);
-    inline-size: 2px;
-    block-size: calc(100% - 3rem + var(--space-5));
-    background: color-mix(in srgb, var(--color-emphasis) 40%, transparent);
-  }
-  .journey__label {
-    margin: 0;
+  .step__h {
+    margin: 0 0 var(--space-1);
     font-family: var(--font-display);
     font-size: var(--type-h3);
     color: var(--color-action);
     line-height: 1.2;
   }
-  .journey__desc {
-    margin-block-start: var(--space-2);
-    margin-inline: auto;
-    font-size: var(--type-body);
+  .step__d {
+    margin: 0;
+    font-size: var(--type-body-sm);
+    color: var(--color-text-muted);
     line-height: 1.6;
-    color: var(--color-text);
-    max-inline-size: 38ch;
   }
-  @media (min-width: 768px) {
-    .journey {
+  @media (min-width: 860px) {
+    .steps {
       grid-template-columns: repeat(3, 1fr);
-      gap: var(--space-6);
+      gap: var(--space-7);
       margin-block-start: var(--space-7);
-    }
-    .journey__step {
-      grid-template-columns: 1fr;
-      gap: var(--space-4);
-      justify-items: center;
-      text-align: center;
-    }
-    /* Connector — a single hairline from each marker's centre to the next
-       marker's centre (the last step has none), so the nodes read as one
-       clean, precisely-joined path. */
-    .journey__step:not(:last-child)::before {
-      inset-block-start: 1.5rem;
-      inset-inline-start: 50%;
-      transform: translateY(-50%);
-      inline-size: calc(100% + var(--space-6));
-      block-size: 2px;
     }
   }
 
