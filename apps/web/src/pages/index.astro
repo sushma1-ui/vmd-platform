@@ -2,7 +2,7 @@
 // build-bust: team members collection live
 import Base from '../layouts/Base.astro';
 import { PRACTICE, RMA_LINE } from '@vmd/config';
-import { Card, Rule } from '@vmd/ui';
+import { Rule } from '@vmd/ui';
 import { localBusinessSchema, personSchema } from '@vmd/seo';
 import { cms, getSettings, getHomepage } from '../lib/cms.ts';
 import BookCta from '../components/cta/BookCta.astro';
@@ -120,6 +120,23 @@ let pinnedReviews: any[] = [];
 try {
   pinnedReviews = await cms.pinnedReviews();
 } catch {}
+
+// Official Government & trusted third-party tools — the same links as the nav's
+// Resources menu (single source of truth for the URLs).
+const QUICK_LINKS = [
+  { label: 'Home Affairs', href: 'https://immi.homeaffairs.gov.au/' },
+  { label: 'VEVO Check', href: 'https://online.immi.gov.au/evo/firstParty?actionType=query' },
+  { label: 'Visa Pricing', href: 'https://immi.homeaffairs.gov.au/visas/visa-pricing-estimator' },
+  {
+    label: 'Processing Times',
+    href: 'https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-processing-times/global-visa-processing-times',
+  },
+  {
+    label: 'Points Calculator',
+    href: 'https://immi.homeaffairs.gov.au/help-support/departmental-forms/online-forms/points-calculator',
+  },
+  { label: 'Police Check', href: 'https://afpnationalpolicechecks.converga.com.au/' },
+];
 ---
 
 <Base
@@ -312,41 +329,58 @@ try {
     )
   }
 
-  <!-- 11 · BLOG & RESOURCES (final dark section) -->
+  <!-- 11 · RESOURCES — closing dark section (blog · guides · official tools) -->
   {
     shown(hp?.featuredBlogs) && (
-      <section data-reveal class="section blogres">
+      <section data-reveal class="section res">
         <div class="section__inner">
-          <p class="eyebrow blogres__eyebrow">Blog &amp; Resources</p>
-          <h2 class="section__h blogres__h">{hp?.featuredBlogs?.heading || 'From our blog'}</h2>
-          <p class="section__sub blogres__sub">
-            {hp?.featuredBlogs?.intro ||
-              'Migration law changes constantly. Every piece is authored by a Registered Migration Agent.'}
-          </p>
-          {posts.length > 0 ? (
-            <>
-              <div class="grid grid--3">
-                {posts.map((p) => (
-                  <Card
-                    title={p.title}
-                    href={`/blog/${p.slug}/`}
-                    eyebrow={String(p.category).replace(/-/g, ' ')}
-                  >
-                    {p.excerpt ?? ''}
-                  </Card>
-                ))}
-              </div>
-              <p class="section__more">
-                <a href={hp?.featuredBlogs?.link?.href || '/blog/'}>
-                  {hp?.featuredBlogs?.link?.label || 'Read the blog →'}
-                </a>
-              </p>
-            </>
-          ) : (
-            <div class="ledger-empty ledger-empty--light">
-              Articles appear here once published — every piece is reviewed by {RMA_LINE}.
+          <p class="eyebrow res__eyebrow">Resources</p>
+          <h2 class="section__h res__h">
+            Guides, insights and <span class="hl">official tools</span>
+          </h2>
+          <div class="res__grid">
+            <div class="res__main">
+              <p class="res__k">Blog &amp; insights</p>
+              {posts.length > 0 ? (
+                <div class="res__posts">
+                  {posts.map((p) => (
+                    <a class="rpost" href={`/blog/${p.slug}/`}>
+                      <span class="rpost__cat">{String(p.category).replace(/-/g, ' ')}</span>
+                      <h3 class="rpost__t">{p.title}</h3>
+                    </a>
+                  ))}
+                </div>
+              ) : (
+                <div class="res__empty">
+                  Articles appear here once published — every piece is reviewed by {RMA_LINE}.
+                </div>
+              )}
+              <a class="res__more" href={hp?.featuredBlogs?.link?.href || '/blog/'}>
+                {hp?.featuredBlogs?.link?.label || 'Read the blog →'}
+              </a>
             </div>
-          )}
+            <div class="res__side">
+              <div class="res__box">
+                <h3 class="res__box-h">Visa Guides &amp; Checklists</h3>
+                <p class="res__box-p">
+                  Step-by-step guides and document checklists for common pathways.
+                </p>
+                <a class="res__more" href="/resources/">
+                  Browse guides &amp; checklists →
+                </a>
+              </div>
+              <div class="res__box">
+                <h3 class="res__box-h">Quick Links</h3>
+                <div class="quicklinks">
+                  {QUICK_LINKS.map((l) => (
+                    <a href={l.href} target="_blank" rel="noopener noreferrer">
+                      {l.label}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
     )
@@ -455,24 +489,135 @@ try {
     }
   }
 
-  /* ── Blog & Resources — the closing dark section. ───────────────────────── */
-  .blogres {
-    background: var(--color-ink, #0e1a30);
+  /* ── Resources — the closing dark section: blog posts + guides + official
+        tools, on a navy→ink gradient (matches the benchmark). ──────────────── */
+  .res {
+    background: linear-gradient(180deg, var(--color-action), var(--color-ground-deep));
   }
-  .blogres__eyebrow {
+  .res__eyebrow {
     color: var(--color-emphasis);
   }
-  .blogres__h {
+  .res__h {
     color: #fff;
   }
-  .blogres__sub {
-    color: color-mix(in srgb, #fff 82%, transparent);
+  .res__grid {
+    display: grid;
+    gap: var(--space-6);
+    margin-block-start: var(--space-6);
+    grid-template-columns: 1fr;
   }
-  .blogres .section__more a {
+  .res__k {
+    margin: 0 0 var(--space-3);
+    font-size: var(--type-caption);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: color-mix(in srgb, #fff 78%, transparent);
+  }
+  .res__posts {
+    display: grid;
+    gap: var(--space-3);
+  }
+  .rpost {
+    display: block;
+    padding: var(--space-4);
+    border-radius: var(--radius-control);
+    background: color-mix(in srgb, #fff 5%, transparent);
+    border: 1px solid color-mix(in srgb, #fff 14%, transparent);
+    text-decoration: none;
+    transition:
+      background-color 160ms var(--ease-standard, ease),
+      transform 160ms var(--ease-standard, ease);
+  }
+  .rpost:hover {
+    background: color-mix(in srgb, #fff 9%, transparent);
+  }
+  .rpost__cat {
+    font-size: var(--type-caption);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 700;
     color: var(--color-emphasis);
   }
-  .blogres .ledger-empty--light {
+  .rpost__t {
+    margin: var(--space-1) 0 0;
+    font-family: var(--font-display);
+    font-size: var(--type-h4);
+    line-height: 1.25;
+    color: #fff;
+  }
+  .res__more {
+    display: inline-block;
+    margin-block-start: var(--space-4);
+    color: var(--color-emphasis);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .res__more:hover,
+  .res__more:focus-visible {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .res__side {
+    display: grid;
+    gap: var(--space-4);
+    align-content: start;
+  }
+  .res__box {
+    padding: var(--space-5);
+    border-radius: var(--radius-control);
+    background: color-mix(in srgb, #fff 5%, transparent);
+    border: 1px solid color-mix(in srgb, #fff 14%, transparent);
+  }
+  .res__box-h {
+    margin: 0 0 var(--space-2);
+    font-family: var(--font-display);
+    font-size: var(--type-h4);
+    color: #fff;
+  }
+  .res__box-p {
+    margin: 0 0 var(--space-2);
+    font-size: var(--type-body-sm);
+    line-height: 1.5;
+    color: color-mix(in srgb, #fff 78%, transparent);
+  }
+  .res__box .res__more {
+    margin-block-start: var(--space-1);
+  }
+  .quicklinks {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-2) var(--space-4);
+  }
+  .quicklinks a {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding-block: 0.1rem;
+    font-size: var(--type-body-sm);
     color: color-mix(in srgb, #fff 82%, transparent);
+    text-decoration: none;
+  }
+  .quicklinks a::before {
+    content: '↗';
+    color: var(--color-emphasis);
+    font-size: 0.8em;
+  }
+  .quicklinks a:hover,
+  .quicklinks a:focus-visible {
+    color: var(--color-emphasis);
+  }
+  .res__empty {
+    padding: var(--space-5);
+    border-radius: var(--radius-control);
+    border: 1px dashed color-mix(in srgb, #fff 24%, transparent);
+    color: color-mix(in srgb, #fff 78%, transparent);
+  }
+  @media (min-width: 880px) {
+    .res__grid {
+      grid-template-columns: 1.3fr 1fr;
+      gap: var(--space-7);
+    }
   }
   .section__inner {
     max-inline-size: var(--container-max);
