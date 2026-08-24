@@ -76,7 +76,7 @@ const team = resolveTeam(cmsMembers).slice(0, 2);
   .mt__inner {
     max-inline-size: var(--container-max);
     margin-inline: auto;
-    padding: clamp(var(--space-7), 5vw, var(--space-9)) var(--space-4);
+    padding: clamp(var(--space-5), 3vw, var(--space-6)) var(--space-4);
     text-align: center;
   }
   .eyebrow {
@@ -96,15 +96,15 @@ const team = resolveTeam(cmsMembers).slice(0, 2);
   }
   .mt__grid {
     list-style: none;
-    margin: var(--space-7) 0 0;
+    margin: var(--space-5) 0 0;
     padding: 0;
     display: grid;
-    gap: clamp(var(--space-5), 5vw, var(--space-7));
+    gap: clamp(var(--space-4), 4vw, var(--space-6));
     grid-template-columns: 1fr;
   }
   @media (min-width: 620px) {
     .mt__grid {
-      grid-template-columns: repeat(2, 15rem);
+      grid-template-columns: repeat(2, 12rem);
       justify-content: center;
     }
   }
@@ -118,7 +118,7 @@ const team = resolveTeam(cmsMembers).slice(0, 2);
   }
   .mtc__portrait {
     position: relative;
-    margin: 0 0 var(--space-4);
+    margin: 0 0 var(--space-3);
     inline-size: 100%;
     aspect-ratio: 4 / 5;
     overflow: hidden;
@@ -186,7 +186,7 @@ const team = resolveTeam(cmsMembers).slice(0, 2);
   }
   .mt__more {
     display: inline-block;
-    margin-block-start: var(--space-7);
+    margin-block-start: var(--space-5);
     font-weight: 600;
     color: var(--color-interactive-strong);
     text-decoration: none;
