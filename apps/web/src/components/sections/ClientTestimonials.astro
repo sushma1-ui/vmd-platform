@@ -519,11 +519,11 @@ const chevron = (d: string) =>
        added (see the note in the PR/handover). Biased slightly upward so the
        busiest faces sit lower — behind the cards, never behind the heading. */
     background:
-      url('/family-reunion.webp') center 30% / cover no-repeat,
+      url('/family-reunion.webp') center 28% / cover no-repeat,
       url('/happy-people.avif') center / cover no-repeat;
-    /* On the navy ground the photo reads as an atmospheric glow, not a picture —
-       veiled by the navy wash below so cards and text stay fully legible. */
-    opacity: 0.18;
+    /* Visible enough to read as a real family-reunion moment, but still a veiled
+       background — the navy wash below keeps cards and text fully legible. */
+    opacity: 0.45;
     pointer-events: none;
   }
   .ctx--dark::after {
@@ -532,17 +532,18 @@ const chevron = (d: string) =>
     inset: 0;
     z-index: 0;
     pointer-events: none;
-    /* Strong navy overlay — keeps the photo subdued and text extremely readable. */
+    /* Navy overlay — softer at the top so the image shows through, deeper toward
+       the cards so text stays readable. */
     background: linear-gradient(
       180deg,
-      color-mix(in srgb, var(--color-action) 66%, transparent),
-      color-mix(in srgb, var(--color-ground-deep) 88%, transparent)
+      color-mix(in srgb, var(--color-action) 48%, transparent),
+      color-mix(in srgb, var(--color-ground-deep) 74%, transparent)
     );
   }
-  /* Tablet/mobile: dial the image back further so the cards stay the focus. */
+  /* Tablet/mobile: dial the image back a little so the cards stay the focus. */
   @media (max-width: 640px) {
     .ctx--photo::before {
-      opacity: 0.1;
+      opacity: 0.3;
     }
   }
   .eyebrow {
