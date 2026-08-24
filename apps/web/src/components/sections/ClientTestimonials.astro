@@ -498,11 +498,16 @@ const chevron = (d: string) =>
     position: relative;
     z-index: 1;
   }
-  /* Warm ivory section — the family-reunion photo reads in its natural warm tones
-     (no blue cast) as a soft backdrop, with dark text and light cards on top. */
+  /* Slight dark-blue section — a refined navy ground (not the heavy near-black
+     ink) with the family-reunion photo as subtle atmosphere behind it, and white
+     text + light cards on top. */
   .ctx--dark {
-    background: var(--color-ground-warm);
-    color: var(--color-text);
+    background: linear-gradient(
+      180deg,
+      var(--color-action),
+      color-mix(in srgb, var(--color-action) 90%, black)
+    );
+    color: var(--color-text-inverse);
     padding-block: var(--space-5);
   }
   .ctx--photo {
@@ -514,16 +519,13 @@ const chevron = (d: string) =>
     position: absolute;
     inset: 0;
     z-index: 0;
-    /* Emotional family-reunion backdrop. The new image is the top layer; the
-       existing happy-people.avif is a graceful fallback until the new file is
-       added (see the note in the PR/handover). Biased slightly upward so the
-       busiest faces sit lower — behind the cards, never behind the heading. */
+    /* Family-reunion backdrop (happy-people.avif is the graceful fallback). Biased
+       slightly upward so the busiest faces sit lower — behind the cards. Kept faint
+       so the dark blue clearly reads as the background. */
     background:
       url('/family-reunion.webp') center 28% / cover no-repeat,
       url('/happy-people.avif') center / cover no-repeat;
-    /* Visible enough to read as a real family-reunion moment, but still a veiled
-       background — the ivory wash below keeps cards and text fully legible. */
-    opacity: 0.55;
+    opacity: 0.28;
     pointer-events: none;
   }
   .ctx--dark::after {
@@ -532,36 +534,35 @@ const chevron = (d: string) =>
     inset: 0;
     z-index: 0;
     pointer-events: none;
-    /* Warm ivory overlay — no blue tint; softer at the top so the image shows
-       through, warmer toward the cards so the dark text stays readable. */
+    /* Navy veil — keeps the dark blue dominant and the white text crisp. */
     background: linear-gradient(
       180deg,
-      color-mix(in srgb, var(--color-ground-warm) 48%, transparent),
-      color-mix(in srgb, var(--color-ground-warm) 66%, transparent)
+      color-mix(in srgb, var(--color-action) 52%, transparent),
+      color-mix(in srgb, var(--color-action) 72%, transparent)
     );
   }
-  /* Tablet/mobile: dial the image back a little so the cards stay the focus. */
+  /* Tablet/mobile: dial the image back further so the cards stay the focus. */
   @media (max-width: 640px) {
     .ctx--photo::before {
-      opacity: 0.3;
+      opacity: 0.18;
     }
   }
   .eyebrow {
     font-size: var(--type-caption);
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--color-emphasis-text);
+    color: var(--color-emphasis);
     font-weight: 700;
   }
   .ctx__h {
     font-size: var(--type-h2);
     margin-block: var(--space-2) var(--space-2);
     text-wrap: balance;
-    color: var(--color-action);
+    color: var(--color-text-inverse);
   }
   .ctx__sub {
     font-size: var(--type-body);
-    color: var(--color-text-muted);
+    color: color-mix(in srgb, var(--color-text-inverse) 84%, transparent);
     max-inline-size: 64ch;
     margin-block-end: var(--space-5);
   }
