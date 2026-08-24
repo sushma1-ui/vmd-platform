@@ -503,7 +503,7 @@ const chevron = (d: string) =>
   .ctx--dark {
     background: var(--color-ground-warm);
     color: var(--color-text);
-    padding-block: var(--space-8);
+    padding-block: var(--space-5);
   }
   .ctx--photo {
     position: relative;
@@ -560,19 +560,19 @@ const chevron = (d: string) =>
     color: var(--color-action);
   }
   .ctx__sub {
-    font-size: var(--type-body-lg);
+    font-size: var(--type-body);
     color: var(--color-text-muted);
     max-inline-size: 64ch;
-    margin-block-end: var(--space-6);
+    margin-block-end: var(--space-5);
   }
 
   /* ---- Three equal-height cards ----------------------------------------- */
   .ctx__grid {
     display: grid;
-    gap: var(--space-5);
+    gap: var(--space-4);
     grid-template-columns: 1fr;
     align-items: stretch;
-    margin-block-end: var(--space-6);
+    margin-block-end: var(--space-3);
   }
   .card {
     display: flex;
@@ -597,7 +597,7 @@ const chevron = (d: string) =>
     display: flex;
     align-items: center;
     gap: var(--space-3);
-    padding: var(--space-5) var(--space-5) var(--space-3);
+    padding: var(--space-4) var(--space-4) var(--space-2);
   }
   .card__ico {
     flex: none;
@@ -628,12 +628,12 @@ const chevron = (d: string) =>
   .card__body {
     flex: 1 1 auto;
     display: flex;
-    padding-inline: var(--space-5);
+    padding-inline: var(--space-4);
   }
   .card__foot {
-    padding: var(--space-3) var(--space-5) var(--space-5);
+    padding: var(--space-2) var(--space-4) var(--space-4);
     border-block-start: 1px solid color-mix(in srgb, var(--color-action) 8%, transparent);
-    margin-block-start: var(--space-4);
+    margin-block-start: var(--space-3);
   }
   .card__foot--split {
     display: flex;
@@ -794,10 +794,11 @@ const chevron = (d: string) =>
   .rev__text {
     margin: 0;
     color: var(--color-text);
-    line-height: 1.6;
+    line-height: 1.55;
+    font-size: var(--type-body-sm);
     display: -webkit-box;
-    -webkit-line-clamp: 6;
-    line-clamp: 6;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
@@ -828,7 +829,7 @@ const chevron = (d: string) =>
   .doc__frame {
     position: relative;
     display: block;
-    aspect-ratio: 1036 / 1296;
+    block-size: 10rem;
     border-radius: var(--radius-control);
     overflow: hidden;
     background: var(--color-ground-warm);
@@ -838,6 +839,7 @@ const chevron = (d: string) =>
     inline-size: 100%;
     block-size: 100%;
     object-fit: cover;
+    object-position: top center;
     transition: transform 260ms var(--ease-standard, ease);
   }
   .doc:hover .doc__frame img {
@@ -892,7 +894,7 @@ const chevron = (d: string) =>
     inline-size: 100%;
     align-self: stretch;
     position: relative;
-    aspect-ratio: 4 / 3;
+    block-size: 10rem;
     border-radius: var(--radius-control);
     background: radial-gradient(
       120% 120% at 50% 30%,
@@ -1006,10 +1008,7 @@ const chevron = (d: string) =>
   @media (min-width: 1024px) {
     .ctx__grid {
       grid-template-columns: repeat(3, 1fr);
-      gap: var(--space-6);
-    }
-    .ctx__h {
-      font-size: var(--type-h1);
+      gap: var(--space-5);
     }
   }
   @media (prefers-reduced-motion: reduce) {
