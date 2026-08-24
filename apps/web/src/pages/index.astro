@@ -181,8 +181,7 @@ const QUICK_LINKS = [
         <p class="hero__form-eyebrow">Free · takes 90 seconds</p>
         <h2 class="hero__form-title">Answer a few quick questions</h2>
         <p class="hero__form-sub">
-          A Registered Migration Agent reviews your answers and comes back with your clear next
-          steps — free, and yours to act on when you're ready.
+          A Registered Migration Agent reviews your answers and replies with your clear next steps.
         </p>
       </div>
       <div class="hero__form-body">
@@ -207,8 +206,7 @@ const QUICK_LINKS = [
       <p class="eyebrow">Explore your pathway</p>
       <h2 class="section__h">Where are you in your journey?</h2>
       <p class="section__sub">
-        Prefer to look around first? Choose what fits and go straight to the right pathway — or take
-        the free assessment above for a personal answer.
+        Prefer to browse first? Choose what fits and go straight to the right pathway.
       </p>
       <ul class="sit__grid" role="list">
         {
@@ -216,7 +214,7 @@ const QUICK_LINKS = [
             <li>
               <a class="sit__card" href={s.href}>
                 <span class="sit__icon" aria-hidden="true">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
                     <path
                       d={s.icon}
                       stroke="currentColor"
@@ -235,10 +233,12 @@ const QUICK_LINKS = [
                     )}
                   </svg>
                 </span>
-                <span class="sit__label">{s.label}</span>
-                <span class="sit__desc">{s.desc}</span>
-                <span class="sit__cta">
-                  Explore <span aria-hidden="true">→</span>
+                <span class="sit__text">
+                  <span class="sit__label">{s.label}</span>
+                  <span class="sit__desc">{s.desc}</span>
+                </span>
+                <span class="sit__arrow" aria-hidden="true">
+                  →
                 </span>
               </a>
             </li>
@@ -804,18 +804,21 @@ const QUICK_LINKS = [
     margin: var(--space-4) 0 0;
     padding: 0;
     display: grid;
-    gap: var(--space-4);
+    gap: var(--space-3);
     grid-template-columns: 1fr;
   }
   .sit__grid > li {
     display: flex;
   }
+  /* Compact horizontal "journey selector" — a browse-your-path row, distinct from
+     the hero's assessment: icon · label + one-line · arrow, in a link. */
   .sit__card {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: var(--space-3);
     inline-size: 100%;
-    gap: var(--space-2);
-    padding: var(--space-4);
+    padding: var(--space-3) var(--space-4);
     background: var(--color-surface, #fff);
     border: 1px solid color-mix(in srgb, var(--color-action) 12%, transparent);
     border-radius: var(--radius-card);
@@ -824,39 +827,41 @@ const QUICK_LINKS = [
     box-shadow: var(--shadow-subtle, 0 8px 24px -14px rgba(16, 30, 60, 0.22));
     transition:
       transform var(--motion-fast, 180ms) var(--ease-standard, ease),
-      box-shadow var(--motion-fast, 180ms) var(--ease-standard, ease);
+      box-shadow var(--motion-fast, 180ms) var(--ease-standard, ease),
+      border-color var(--motion-fast, 180ms) var(--ease-standard, ease);
   }
   .sit__icon {
+    flex: none;
     display: grid;
     place-items: center;
-    inline-size: 2.6rem;
-    block-size: 2.6rem;
+    inline-size: 2.4rem;
+    block-size: 2.4rem;
     border-radius: 50%;
     color: var(--color-emphasis-text);
-    background: color-mix(in srgb, var(--color-emphasis) 18%, transparent);
+    background: color-mix(in srgb, var(--color-emphasis) 16%, transparent);
     border: 1px solid color-mix(in srgb, var(--color-emphasis) 30%, transparent);
-    margin-block-end: var(--space-1);
+  }
+  .sit__text {
+    min-inline-size: 0;
   }
   .sit__label {
+    display: block;
     font-family: var(--font-display);
-    font-size: var(--type-h4);
+    font-size: var(--type-body-lg);
     line-height: 1.2;
-    color: var(--color-text);
-  }
-  .sit__desc {
-    font-size: var(--type-body-sm);
-    color: var(--color-text-muted);
-    line-height: 1.5;
-  }
-  .sit__cta {
-    margin-block-start: auto;
-    padding-block-start: var(--space-3);
-    font-weight: 600;
-    font-size: var(--type-body-sm);
     color: var(--color-action);
   }
-  .sit__cta span {
-    display: inline-block;
+  .sit__desc {
+    display: block;
+    margin-block-start: 2px;
+    font-size: var(--type-body-sm);
+    color: var(--color-text-muted);
+    line-height: 1.35;
+  }
+  .sit__arrow {
+    flex: none;
+    color: var(--color-emphasis-text);
+    font-weight: 700;
     transition: transform var(--motion-fast, 180ms) var(--ease-standard, ease);
   }
   .sit__card:focus-visible {
@@ -865,11 +870,12 @@ const QUICK_LINKS = [
   }
   @media (prefers-reduced-motion: no-preference) {
     .sit__card:hover,
-    .sit__card:focus-visible {
-      transform: translateY(-4px);
+    .sit__card:focus-within {
+      transform: translateY(-3px);
       box-shadow: var(--shadow-raised, 0 22px 48px -22px rgba(16, 30, 60, 0.4));
     }
-    .sit__card:hover .sit__cta span {
+    .sit__card:hover .sit__arrow,
+    .sit__card:focus-within .sit__arrow {
       transform: translateX(3px);
     }
   }
