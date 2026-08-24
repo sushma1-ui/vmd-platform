@@ -2,6 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import { breadcrumbSchema, localBusinessSchema } from '@vmd/seo';
 import { PRACTICE } from '@vmd/config';
+import { Rule } from '@vmd/ui';
 import { getContactPage } from '../../lib/cms.ts';
 import LastReviewed from '../../components/content/LastReviewed.astro';
 import EnquiryForm from '../../components/islands/EnquiryForm.island.astro';
@@ -24,9 +25,10 @@ const contactEyebrow = c?.eyebrow && c.eyebrow.trim() !== 'Contact' ? c.eyebrow 
   schemas={[localBusinessSchema(), breadcrumbSchema(trail)]}
 >
   <section class="ct">
-    <div class="ct__intro">
+    <div class="ct__intro" data-reveal>
       <p class="ct__eyebrow">{contactEyebrow}</p>
       <h1 class="ct__title">{c?.title || 'Talk to a registered agent'}</h1>
+      <Rule width="short" />
       <p class="ct__lead">
         {
           c?.lead ||
@@ -34,33 +36,58 @@ const contactEyebrow = c?.eyebrow && c.eyebrow.trim() !== 'Contact' ? c.eyebrow 
         }
       </p>
       <ul class="ct__channels">
-        <li>
-          <strong>Phone</strong>
-          <a href={`tel:${PRACTICE.contact.phone}`}>{PRACTICE.contact.phoneDisplay}</a> · {
-            c?.hoursNote || 'Mon–Fri 9–5 AWST'
-          }
+        <li class="ct__channel">
+          <span class="ct__channel-k">Phone</span>
+          <span class="ct__channel-v">
+            <a href={`tel:${PRACTICE.contact.phone}`}>{PRACTICE.contact.phoneDisplay}</a>
+            <span class="ct__channel-note">{c?.hoursNote || 'Mon–Fri 9–5 AWST'}</span>
+          </span>
         </li>
-        <li>
-          <strong>Email</strong>
-          <a href={`mailto:${PRACTICE.contact.email}`}>{PRACTICE.contact.email}</a>
+        <li class="ct__channel">
+          <span class="ct__channel-k">Email</span>
+          <span class="ct__channel-v">
+            <a href={`mailto:${PRACTICE.contact.email}`}>{PRACTICE.contact.email}</a>
+          </span>
         </li>
         {
           (c?.whatsappUrl ?? 'https://wa.me/61493719431') && (
-            <li>
-              <strong>WhatsApp</strong>
-              <a href={c?.whatsappUrl || 'https://wa.me/61493719431'} rel="noopener">
-                Message us
-              </a>
+            <li class="ct__channel">
+              <span class="ct__channel-k">WhatsApp</span>
+              <span class="ct__channel-v">
+                <a href={c?.whatsappUrl || 'https://wa.me/61493719431'} rel="noopener">
+                  Message us
+                </a>
+              </span>
             </li>
           )
         }
-        <li>
-          <strong>Office</strong>
-          {PRACTICE.address.street}, {PRACTICE.address.locality}
-          {PRACTICE.address.region}
-          {PRACTICE.address.postcode}
+        <li class="ct__channel">
+          <span class="ct__channel-k">Office</span>
+          <span class="ct__channel-v ct__channel-v--plain">
+            {PRACTICE.address.street}, {PRACTICE.address.locality}
+            {PRACTICE.address.region}
+            {PRACTICE.address.postcode}
+            <span class="ct__channel-note">By appointment only</span>
+          </span>
         </li>
       </ul>
+
+      <figure class="ct__map">
+        <img
+          src="/Map.jpg"
+          alt="Illustrated map of Australia marking the Perth office location"
+          width="1200"
+          height="800"
+          loading="lazy"
+          decoding="async"
+        />
+        <figcaption class="ct__map-cap">
+          <span class="ct__map-place">Perth CBD</span> · {PRACTICE.address.locality}, {
+            PRACTICE.address.region
+          } — assisting clients Australia-wide and overseas.
+        </figcaption>
+      </figure>
+
       <div class="ct__details">
         <p class="ct__details-h">Practice details</p>
         <p>{PRACTICE.legalEntity} trading as {PRACTICE.legalName} · ABN {PRACTICE.abn}</p>
@@ -74,7 +101,7 @@ const contactEyebrow = c?.eyebrow && c.eyebrow.trim() !== 'Contact' ? c.eyebrow 
         </p>
       </div>
     </div>
-    <div class="ct__form">
+    <div class="ct__form" data-reveal>
       <EnquiryForm source="general-enquiry" heading={c?.formHeading || 'Send an enquiry'} />
       <LastReviewed />
     </div>
@@ -94,29 +121,103 @@ const contactEyebrow = c?.eyebrow && c.eyebrow.trim() !== 'Contact' ? c.eyebrow 
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--color-text-muted);
+    margin: 0 0 var(--space-2);
   }
   .ct__title {
     font-size: var(--type-display-2);
-    margin-block: var(--space-2) var(--space-3);
+    margin-block: 0 var(--space-3);
   }
   .ct__lead {
     font-size: var(--type-body-lg);
-    margin-block-end: var(--space-5);
+    line-height: 1.55;
+    color: var(--color-text-muted);
+    max-inline-size: 46ch;
+    margin-block: var(--space-4) var(--space-6);
   }
+  /* Contact channels — a tidy ledger: uppercase gold label, value with a muted
+     note beneath, hairline-separated rows. Calm, scannable, premium. */
   .ct__channels {
     list-style: none;
     padding: 0;
-    line-height: 2.2;
+    margin: 0;
+    display: grid;
+    gap: 0;
   }
-  .ct__channels a {
+  .ct__channel {
+    display: grid;
+    grid-template-columns: 7rem 1fr;
+    gap: var(--space-3);
+    align-items: baseline;
+    padding-block: var(--space-3);
+    border-block-end: 1px solid var(--color-hairline);
+  }
+  .ct__channel:first-child {
+    border-block-start: 1px solid var(--color-hairline);
+  }
+  .ct__channel-k {
+    font-size: var(--type-caption);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--color-emphasis-text);
+  }
+  .ct__channel-v {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    font-size: var(--type-body);
+    color: var(--color-text);
+    line-height: 1.5;
+  }
+  .ct__channel-v a {
     color: var(--color-action);
     border-block-end: 1px solid var(--color-emphasis);
     text-decoration: none;
+    align-self: flex-start;
+  }
+  .ct__channel-note {
+    font-size: var(--type-body-sm);
+    color: var(--color-text-muted);
+  }
+  /* Sense of place — the illustrated map, framed like a designed object rather than
+     a dropped-in graphic: rounded, hairline-framed, lifted on a soft shadow. */
+  .ct__map {
+    margin: var(--space-6) 0 0;
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    border: 1px solid var(--color-hairline);
+    box-shadow: var(--shadow-overlay, 0 18px 40px -24px rgba(14, 26, 48, 0.4));
+    background: var(--color-ground-warm);
+  }
+  .ct__map img {
+    display: block;
+    inline-size: 100%;
+    block-size: auto;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    transition: transform 600ms var(--ease-standard, ease);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .ct__map:hover img {
+      transform: scale(1.02);
+    }
+  }
+  .ct__map-cap {
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--type-body-sm);
+    line-height: 1.5;
+    color: var(--color-text-muted);
+    border-block-start: 1px solid var(--color-hairline);
+  }
+  .ct__map-place {
+    font-family: var(--font-display);
+    font-size: var(--type-body-lg);
+    color: var(--color-action);
   }
   .ct__details {
-    margin-block-start: var(--space-5);
-    padding-block-start: var(--space-4);
-    border-block-start: 1px solid color-mix(in srgb, var(--color-action) 12%, transparent);
+    margin-block-start: var(--space-6);
+    padding-block-start: var(--space-5);
+    border-block-start: 1px solid var(--color-hairline);
     font-size: var(--type-body-sm);
     line-height: 1.65;
     color: var(--color-text-muted);
@@ -134,6 +235,8 @@ const contactEyebrow = c?.eyebrow && c.eyebrow.trim() !== 'Contact' ? c.eyebrow 
   @media (min-width: 900px) {
     .ct {
       grid-template-columns: 1fr 1fr;
+      gap: var(--space-8);
+      align-items: start;
     }
   }
 </style>

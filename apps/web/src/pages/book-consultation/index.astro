@@ -1,7 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import { breadcrumbSchema } from '@vmd/seo';
-import { TrustStrip, Disclaimer } from '@vmd/ui';
+import { TrustStrip, Disclaimer, Rule } from '@vmd/ui';
 import BookingForm from '../../components/islands/BookingForm.island.astro';
 import { getCtaLinks } from '../../lib/cms.ts';
 import LastReviewed from '../../components/content/LastReviewed.astro';
@@ -49,29 +49,32 @@ const trail = [
   schemas={[breadcrumbSchema(trail)]}
 >
   <section class="bkc">
-    <p class="bkc__eyebrow">Advisory · fixed fee</p>
-    <h1 class="bkc__title">Book a Consultation</h1>
-    <p class="bkc__lead">
-      Choose the consultation that fits your situation. We'll confirm your time in AWST and send a
-      preparation checklist by email.
-    </p>
+    <header class="bkc__head" data-reveal>
+      <p class="bkc__eyebrow">Advisory · fixed fee</p>
+      <h1 class="bkc__title">Book a Consultation</h1>
+      <Rule width="short" />
+      <p class="bkc__lead">
+        Choose the consultation that fits your situation. We'll confirm your time in AWST and send a
+        preparation checklist by email.
+      </p>
+    </header>
 
-    <div class="bkc__types" role="list">
+    <div class="bkc__types" role="list" data-reveal>
       {
         types.map((t) => (
           <div class="bkc__type" role="listitem">
             <div class="bkc__type-head">
-              <h2>{t.title}</h2>
+              <h2 class="bkc__type-h">{t.title}</h2>
               {t.fee && <span class="bkc__fee">{t.fee}</span>}
             </div>
-            <p>{t.detail}</p>
+            <p class="bkc__type-p">{t.detail}</p>
             <div class="bkc__type-actions">
               <button type="button" class="bkc__choose" data-bk-choose={t.value}>
                 Choose this
               </button>
               {t.href && (
                 <a class="bkc__learn" href={t.href}>
-                  Learn more →
+                  Learn more <span aria-hidden="true">→</span>
                 </a>
               )}
             </div>
@@ -80,7 +83,7 @@ const trail = [
       }
     </div>
 
-    <div class="bkc__form" id="booking-form">
+    <div class="bkc__form" id="booking-form" data-reveal>
       <h2 class="bkc__form-h">Request your consultation</h2>
       <TrustStrip reviewUrl="/results/reviews/" />
       <BookingForm />
@@ -114,30 +117,55 @@ const trail = [
     margin-inline: auto;
     padding: var(--space-7) var(--space-4) var(--space-9);
   }
+  .bkc__head {
+    max-inline-size: 60ch;
+  }
   .bkc__eyebrow {
     font-size: var(--type-caption);
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--color-text-muted);
+    margin: 0 0 var(--space-2);
   }
   .bkc__title {
     font-size: var(--type-display-2, var(--type-h1));
-    margin-block: var(--space-2) var(--space-3);
+    margin-block: 0 var(--space-3);
   }
   .bkc__lead {
+    font-size: var(--type-body-lg);
+    line-height: 1.55;
     color: var(--color-text-muted);
     max-inline-size: 60ch;
+    margin-block: var(--space-4) 0;
   }
   .bkc__types {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
     gap: var(--space-4);
-    margin-block: var(--space-6);
+    margin-block: var(--space-7);
   }
+  /* Premium consultation-type card — matches the services hub: white surface,
+     hairline border, soft shadow, gold fee chip, gentle hover lift. */
   .bkc__type {
-    padding: var(--space-4);
-    border: 1px solid color-mix(in srgb, var(--color-action) 10%, transparent);
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-5);
+    background: var(--color-surface);
+    border: 1px solid var(--color-hairline);
     border-radius: var(--radius-card);
+    box-shadow: var(--shadow-subtle, 0 8px 24px -14px rgba(16, 30, 60, 0.22));
+    transition:
+      transform var(--motion-fast, 180ms) var(--ease-standard, ease),
+      box-shadow var(--motion-fast, 180ms) var(--ease-standard, ease);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .bkc__type:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-raised, 0 22px 48px -22px rgba(16, 30, 60, 0.4));
+    }
+    .bkc__type:hover .bkc__learn span {
+      transform: translateX(3px);
+    }
   }
   .bkc__type-head {
     display: flex;
@@ -146,53 +174,82 @@ const trail = [
     gap: var(--space-2);
     margin-block-end: var(--space-2);
   }
-  .bkc__type h2 {
-    font-size: var(--type-body-lg, var(--type-body));
-    margin-block-end: 0;
+  .bkc__type-h {
+    font-family: var(--font-display);
+    font-size: var(--type-h4);
+    line-height: 1.2;
+    color: var(--color-action);
+    margin: 0;
   }
   .bkc__fee {
     flex: none;
     font-family: var(--font-display);
     font-size: var(--type-h4);
     font-weight: 600;
-    color: var(--color-action);
+    color: var(--color-emphasis-text);
     background: color-mix(in srgb, var(--color-emphasis) 14%, transparent);
-    padding: 0.1em 0.5em;
+    border: 1px solid color-mix(in srgb, var(--color-emphasis) 28%, transparent);
+    padding: 0.1em 0.55em;
     border-radius: var(--radius-chip);
     line-height: 1.2;
   }
-  .bkc__type p {
+  .bkc__type-p {
     color: var(--color-text-muted);
     font-size: var(--type-body-sm);
+    line-height: 1.55;
+    margin: 0;
   }
   .bkc__type-actions {
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-3);
     align-items: center;
-    margin-block-start: var(--space-3);
+    margin-block-start: auto;
+    padding-block-start: var(--space-4);
   }
   .bkc__choose {
     background: var(--color-action);
     color: var(--color-action-contrast);
     border: 0;
-    padding: var(--space-2) var(--space-3);
+    padding: var(--space-2) var(--space-4);
     border-radius: var(--radius-control);
     font-weight: 600;
     cursor: pointer;
+    transition: background var(--motion-fast, 180ms) var(--ease-standard, ease);
+  }
+  .bkc__choose:hover {
+    background: color-mix(in srgb, var(--color-action) 88%, #000);
+  }
+  .bkc__choose:focus-visible {
+    outline: 2px solid var(--color-interactive);
+    outline-offset: 3px;
   }
   .bkc__learn {
     font-size: var(--type-body-sm);
-    color: var(--color-text-muted);
+    font-weight: 600;
+    color: var(--color-action);
+    text-decoration: none;
+  }
+  .bkc__learn span {
+    display: inline-block;
+    transition: transform var(--motion-fast, 180ms) var(--ease-standard, ease);
   }
   .bkc__form {
-    margin-block-start: var(--space-7);
+    margin-block-start: var(--space-8);
+    padding-block-start: var(--space-6);
+    border-block-start: 1px solid var(--color-hairline);
   }
   .bkc__form-h {
+    font-size: var(--type-h2);
     margin-block-end: var(--space-3);
   }
   .bkc__alt {
     margin-block-start: var(--space-5);
     color: var(--color-text-muted);
+  }
+  .bkc__alt a {
+    color: var(--color-action);
+    border-block-end: 1px solid var(--color-emphasis);
+    text-decoration: none;
   }
 </style>
