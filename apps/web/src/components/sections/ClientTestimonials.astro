@@ -498,11 +498,11 @@ const chevron = (d: string) =>
     position: relative;
     z-index: 1;
   }
-  /* Deep-navy section — the approved treatment: a rich navy ground with the real
-     happy-client photo as a subtle backdrop, and light cards riding on top. */
+  /* Warm ivory section — the family-reunion photo reads in its natural warm tones
+     (no blue cast) as a soft backdrop, with dark text and light cards on top. */
   .ctx--dark {
-    background: linear-gradient(180deg, var(--color-action), var(--color-ground-deep));
-    color: var(--color-text-inverse);
+    background: var(--color-ground-warm);
+    color: var(--color-text);
     padding-block: var(--space-8);
   }
   .ctx--photo {
@@ -522,8 +522,8 @@ const chevron = (d: string) =>
       url('/family-reunion.webp') center 28% / cover no-repeat,
       url('/happy-people.avif') center / cover no-repeat;
     /* Visible enough to read as a real family-reunion moment, but still a veiled
-       background — the navy wash below keeps cards and text fully legible. */
-    opacity: 0.45;
+       background — the ivory wash below keeps cards and text fully legible. */
+    opacity: 0.55;
     pointer-events: none;
   }
   .ctx--dark::after {
@@ -532,12 +532,12 @@ const chevron = (d: string) =>
     inset: 0;
     z-index: 0;
     pointer-events: none;
-    /* Navy overlay — softer at the top so the image shows through, deeper toward
-       the cards so text stays readable. */
+    /* Warm ivory overlay — no blue tint; softer at the top so the image shows
+       through, warmer toward the cards so the dark text stays readable. */
     background: linear-gradient(
       180deg,
-      color-mix(in srgb, var(--color-action) 48%, transparent),
-      color-mix(in srgb, var(--color-ground-deep) 74%, transparent)
+      color-mix(in srgb, var(--color-ground-warm) 48%, transparent),
+      color-mix(in srgb, var(--color-ground-warm) 66%, transparent)
     );
   }
   /* Tablet/mobile: dial the image back a little so the cards stay the focus. */
@@ -550,18 +550,18 @@ const chevron = (d: string) =>
     font-size: var(--type-caption);
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--color-emphasis);
+    color: var(--color-emphasis-text);
     font-weight: 700;
   }
   .ctx__h {
     font-size: var(--type-h2);
     margin-block: var(--space-2) var(--space-2);
     text-wrap: balance;
-    color: var(--color-text-inverse);
+    color: var(--color-action);
   }
   .ctx__sub {
     font-size: var(--type-body-lg);
-    color: color-mix(in srgb, var(--color-text-inverse) 84%, transparent);
+    color: var(--color-text-muted);
     max-inline-size: 64ch;
     margin-block-end: var(--space-6);
   }
