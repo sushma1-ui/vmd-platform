@@ -1,13 +1,11 @@
 ---
 /**
- * MeetTeam — a homepage glimpse of the featured professionals, placed just
- * before the final CTA to create an immediate human connection and lead visitors
- * to the full "Meet the Team" page. Shares the same data source as /about/team/,
- * so it stays in sync as the team grows. Portraits are photo-ready with an
- * elegant monogram placeholder until real photos are uploaded to the CMS.
+ * MeetTeam — a homepage glimpse of the featured professionals: a left-aligned
+ * header and two horizontal cards (photo · name · role · short bio), leading to
+ * the full "Meet the Team" page. Shares the same data source as /about/team/.
  */
 import { cms } from '../../lib/cms.ts';
-import { resolveTeam, roleOf, photoUrlOf, initialsOf } from '../../lib/team.ts';
+import { resolveTeam, roleOf, bioOf, photoUrlOf, initialsOf } from '../../lib/team.ts';
 
 let cmsMembers: Awaited<ReturnType<typeof cms.teamMembers>> = [];
 try {
@@ -21,15 +19,18 @@ const team = resolveTeam(cmsMembers).slice(0, 2);
 <section data-reveal class="mt section--bone" aria-labelledby="mt-h">
   <div class="mt__inner">
     <header class="mt__head">
-      <p class="eyebrow">Meet your team</p>
-      <h2 class="mt__h" id="mt-h">The people guiding your migration journey</h2>
+      <p class="eyebrow">The people behind your matter</p>
+      <h2 class="mt__h" id="mt-h">
+        You work <span class="hl">directly</span> with the people preparing your case
+      </h2>
     </header>
 
     <ul class="mt__grid" role="list">
       {
-        team.map((m, i) => {
+        team.map((m) => {
           const photo = photoUrlOf(m);
           const title = roleOf(m);
+          const bio = bioOf(m);
           return (
             <li class="mtc">
               <figure class:list={['mtc__portrait', photo && 'mtc__portrait--photo']}>
@@ -40,8 +41,8 @@ const team = resolveTeam(cmsMembers).slice(0, 2);
                     alt={`${m.name} — ${title}`}
                     loading="lazy"
                     decoding="async"
-                    width="480"
-                    height="600"
+                    width="176"
+                    height="176"
                   />
                 ) : (
                   <span class="mtc__mono" aria-hidden="true">
@@ -49,11 +50,14 @@ const team = resolveTeam(cmsMembers).slice(0, 2);
                   </span>
                 )}
               </figure>
-              <p class="mtc__name">{m.name}</p>
-              <p class="mtc__role">
-                {title}
-                {m.credential && <span class="mtc__cred"> • {m.credential}</span>}
-              </p>
+              <div class="mtc__body">
+                <h3 class="mtc__name">{m.name}</h3>
+                <p class="mtc__role">
+                  {title}
+                  {m.credential && <span class="mtc__cred"> · {m.credential}</span>}
+                </p>
+                {bio && <p class="mtc__bio">{bio}</p>}
+              </div>
             </li>
           );
         })
@@ -67,115 +71,100 @@ const team = resolveTeam(cmsMembers).slice(0, 2);
 </section>
 
 <style>
-  /* Warm bone ground — part of the homepage's alternating section rhythm
-     (white map -> bone team -> navy testimonials), so the page reads with
-     depth rather than as one flat expanse. */
+  /* Warm bone ground — part of the homepage's alternating section rhythm. */
   .mt {
     background: var(--color-ground-warm);
   }
   .mt__inner {
     max-inline-size: var(--container-max);
     margin-inline: auto;
-    padding: clamp(var(--space-4), 2vw, var(--space-5)) var(--space-4);
-    text-align: center;
+    padding: clamp(var(--space-6), 4vw, var(--space-7)) var(--space-4);
   }
   .eyebrow {
     font-size: var(--type-caption);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--color-emphasis-text);
-    font-weight: 600;
+    font-weight: 700;
     margin: 0;
+  }
+  .mt__head {
+    max-inline-size: 60ch;
+    margin-block-end: var(--space-5);
   }
   .mt__h {
     font-size: var(--type-h2);
     line-height: 1.15;
-    margin: var(--space-2) auto 0;
-    max-inline-size: 22ch;
+    margin: var(--space-2) 0 0;
+    color: var(--color-action);
     text-wrap: balance;
   }
+  .mt__h .hl {
+    color: var(--color-emphasis-text);
+    font-style: italic;
+  }
+
+  /* Two horizontal member cards. */
   .mt__grid {
     list-style: none;
-    margin: var(--space-4) 0 0;
+    margin: 0;
     padding: 0;
     display: grid;
-    gap: clamp(var(--space-4), 4vw, var(--space-6));
+    gap: var(--space-4);
     grid-template-columns: 1fr;
   }
-  @media (min-width: 620px) {
+  @media (min-width: 720px) {
     .mt__grid {
-      grid-template-columns: repeat(2, 10rem);
-      justify-content: center;
+      grid-template-columns: repeat(2, 1fr);
     }
   }
   .mtc {
     display: flex;
-    flex-direction: column;
+    gap: var(--space-4);
     align-items: center;
-    inline-size: 100%;
-    max-inline-size: 18rem;
-    margin-inline: auto;
+    background: var(--color-surface);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-card);
+    padding: var(--space-4);
   }
   .mtc__portrait {
-    position: relative;
-    margin: 0 0 var(--space-3);
-    inline-size: 100%;
-    aspect-ratio: 4 / 5;
+    flex: none;
+    margin: 0;
+    inline-size: 5.25rem;
+    block-size: 5.25rem;
+    border-radius: 12px;
     overflow: hidden;
-    border-radius: var(--radius-image, 12px);
-    background: radial-gradient(
-      120% 120% at 50% 12%,
-      color-mix(in srgb, var(--color-ground-deep) 92%, black) 0%,
-      var(--color-ground-deep) 100%
-    );
+    background: var(--color-ground-warm);
     display: grid;
     place-items: center;
-    box-shadow: var(--shadow-subtle, 0 8px 24px -14px rgba(16, 30, 60, 0.28));
   }
   .mtc__img {
     inline-size: 100%;
     block-size: 100%;
     object-fit: cover;
-    transition: transform var(--motion-base, 220ms) var(--ease-standard, ease);
-  }
-  /* Real photo: light, warm frame + gentle unifying treatment (see TeamCard). */
-  .mtc__portrait--photo {
-    background: linear-gradient(180deg, #f4f0e8 0%, #e7dfcf 100%);
+    object-position: top center;
   }
   .mtc__portrait--photo .mtc__img {
-    object-position: top center;
-    filter: saturate(0.94) contrast(1.03);
-  }
-  .mtc__portrait--photo::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    box-shadow:
-      inset 0 0 0 1px color-mix(in srgb, var(--color-emphasis, #c99a52) 24%, transparent),
-      inset 0 -40px 40px -30px color-mix(in srgb, var(--color-ground-deep) 40%, transparent);
+    filter: saturate(0.96) contrast(1.02);
   }
   .mtc__mono {
     font-family: var(--font-display);
-    font-size: clamp(2.75rem, 9vw, 3.75rem);
+    font-size: var(--type-h3);
     font-weight: 600;
     color: var(--color-emphasis-text);
-    inline-size: clamp(4.5rem, 16vw, 6rem);
-    block-size: clamp(4.5rem, 16vw, 6rem);
-    display: grid;
-    place-items: center;
-    border-radius: 50%;
-    border: 2px solid color-mix(in srgb, var(--color-emphasis, #c99a52) 45%, transparent);
-    background: color-mix(in srgb, var(--color-text-inverse) 6%, transparent);
+  }
+  .mtc__body {
+    min-inline-size: 0;
   }
   .mtc__name {
     font-family: var(--font-display);
     font-size: var(--type-h4);
-    margin: 0;
-    color: var(--color-text);
+    line-height: 1.15;
+    margin: 0 0 2px;
+    color: var(--color-action);
   }
   .mtc__role {
-    margin: var(--space-1) 0 0;
+    margin: 0 0 var(--space-2);
     font-size: var(--type-body-sm);
     font-weight: 600;
     color: var(--color-emphasis-text);
@@ -184,9 +173,15 @@ const team = resolveTeam(cmsMembers).slice(0, 2);
   .mtc__cred {
     white-space: nowrap;
   }
+  .mtc__bio {
+    margin: 0;
+    font-size: var(--type-body-sm);
+    color: var(--color-text-muted);
+    line-height: 1.55;
+  }
   .mt__more {
     display: inline-block;
-    margin-block-start: var(--space-4);
+    margin-block-start: var(--space-5);
     font-weight: 600;
     color: var(--color-interactive-strong);
     text-decoration: none;
@@ -201,13 +196,9 @@ const team = resolveTeam(cmsMembers).slice(0, 2);
   .mt__more:focus-visible {
     border-block-end-color: currentColor;
   }
-  .mt__more:hover span {
-    transform: translateX(3px);
-  }
-
   @media (prefers-reduced-motion: no-preference) {
-    .mtc:hover .mtc__img {
-      transform: scale(1.04);
+    .mt__more:hover span {
+      transform: translateX(3px);
     }
   }
 </style>
