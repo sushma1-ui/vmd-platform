@@ -8,7 +8,6 @@ import { cms, getSettings, getHomepage } from '../lib/cms.ts';
 import BookCta from '../components/cta/BookCta.astro';
 import ClientTestimonials from '../components/sections/ClientTestimonials.astro';
 import MeetTeam from '../components/sections/MeetTeam.astro';
-import GoogleReviews from '../components/sections/GoogleReviews.astro';
 import HealthCheck from '../components/islands/HealthCheck.island.astro';
 
 // "How we work" — the practice's real method (Diagnosis → Pathway → Outcome).
@@ -200,17 +199,6 @@ const QUICK_LINKS = [
     /* Client testimonials + visa outcomes are merged into the single "Client stories"
       section below (reviews + testimonials + outcomes in one place). */
   }
-
-  <!-- 6 · GOOGLE REVIEWS — a compact, verified trust strip (reuses GoogleReviews) -->
-  <section data-reveal class="section section--bone">
-    <div class="section__inner">
-      <GoogleReviews
-        pinned={pinnedReviews}
-        count={settings?.googleReviews?.count}
-        intro="Verified reviews from the people we've guided — read them in full on our Google Business Profile."
-      />
-    </div>
-  </section>
 
   <!-- 7 · WHERE ARE YOU IN YOUR JOURNEY? (situation-first navigation) -->
   <section data-reveal class="section">
