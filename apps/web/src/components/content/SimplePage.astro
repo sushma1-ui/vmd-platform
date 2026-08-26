@@ -5,6 +5,17 @@ import { pathnameToTrail } from '../../lib/breadcrumbs.ts';
 import { Disclaimer } from '@vmd/ui';
 import LastReviewed from './LastReviewed.astro';
 
+/**
+ * SimplePage — the shared editorial layout for the site's prose pages.
+ *
+ * Instead of a single narrow column centred in a sea of empty gutters, the page is
+ * an asymmetric two-column composition on desktop: a STICKY LEFT RAIL carries the
+ * breadcrumb, eyebrow, title, lead, CTA and any page-specific `aside` (a credential
+ * block, pull-quote, mini-timeline …); the body flows in a comfortable reading
+ * column on the right. This uses the available width intentionally without
+ * stretching paragraphs, and keeps the reading measure ~68ch. On mobile it stacks:
+ * the rail becomes a normal page header, then the body — clean and readable.
+ */
 interface Props {
   title: string;
   description: string;
@@ -16,42 +27,63 @@ interface Props {
 }
 const { title, description, eyebrow, lead, cta, emptyState, disclaimer } = Astro.props;
 const trail = pathnameToTrail(Astro.url.pathname);
+const hasAside = Astro.slots.has('aside');
 ---
 
 <Base title={title} description={description} schemas={[breadcrumbSchema(trail)]}>
   <article class="page">
-    <nav class="crumbs" aria-label="Breadcrumb">
-      {
-        trail.map((t, i) => (
-          <span>
-            {i > 0 && <span aria-hidden="true"> / </span>}
-            <a href={t.path}>{t.name}</a>
-          </span>
-        ))
-      }
-    </nav>
-    {eyebrow && <p class="page__eyebrow">{eyebrow}</p>}
-    <h1 class="page__title">{title}</h1>
-    {lead && <p class="page__lead">{lead}</p>}
-    <div class="page__body"><slot /></div>
-    {emptyState && <div class="page__empty">{emptyState}</div>}
-    {disclaimer && <Disclaimer variant="generalInformation" />}
-    {
-      cta && (
-        <p class="page__cta">
-          <a href={cta.href}>{cta.label} →</a>
-        </p>
-      )
-    }
-    <LastReviewed />
+    <div class="page__grid">
+      <aside class="page__rail">
+        <nav class="crumbs" aria-label="Breadcrumb">
+          {
+            trail.map((t, i) => (
+              <span>
+                {i > 0 && <span aria-hidden="true"> / </span>}
+                <a href={t.path}>{t.name}</a>
+              </span>
+            ))
+          }
+        </nav>
+        {eyebrow && <p class="page__eyebrow">{eyebrow}</p>}
+        <h1 class="page__title">{title}</h1>
+        {lead && <p class="page__lead">{lead}</p>}
+        {
+          cta && (
+            <p class="page__cta">
+              <a href={cta.href}>{cta.label} →</a>
+            </p>
+          )
+        }
+        {
+          hasAside && (
+            <div class="page__aside">
+              <slot name="aside" />
+            </div>
+          )
+        }
+        <div class="page__rail-foot"><LastReviewed /></div>
+      </aside>
+
+      <div class="page__content">
+        <div class="page__body"><slot /></div>
+        {emptyState && <div class="page__empty">{emptyState}</div>}
+        {disclaimer && <Disclaimer variant="generalInformation" class="page__disclaimer" />}
+      </div>
+    </div>
   </article>
 </Base>
 <style>
   .page {
-    max-inline-size: var(--container-prose);
+    max-inline-size: 68rem;
     margin-inline: auto;
     padding: var(--space-7) var(--space-4) var(--space-9);
   }
+  .page__grid {
+    display: grid;
+    gap: var(--space-6);
+    grid-template-columns: 1fr;
+  }
+
   .crumbs {
     font-size: var(--type-caption);
     color: var(--color-text-muted);
@@ -65,21 +97,49 @@ const trail = pathnameToTrail(Astro.url.pathname);
     border-block-end: 1px solid var(--color-emphasis);
   }
   .page__eyebrow {
+    margin: 0 0 var(--space-2);
     font-size: var(--type-caption);
-    letter-spacing: 0.06em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--color-text-muted);
+    font-weight: 700;
+    color: var(--color-emphasis-text);
   }
   .page__title {
-    font-size: var(--type-display-2);
-    margin-block: var(--space-2) var(--space-4);
+    font-family: var(--font-display);
+    font-size: var(--type-h1, var(--type-display-2));
+    line-height: 1.12;
+    margin-block: 0 var(--space-4);
     color: var(--color-action);
+    text-wrap: balance;
   }
   .page__lead {
     font-size: var(--type-body-lg);
     line-height: 1.5;
-    margin-block-end: var(--space-4);
+    margin-block: 0 var(--space-4);
     color: var(--color-text-muted);
+  }
+  .page__cta {
+    margin-block: 0;
+  }
+  .page__cta a {
+    color: var(--color-action);
+    border-block-end: 1px solid var(--color-emphasis);
+    text-decoration: none;
+    font-size: var(--type-body-lg);
+  }
+
+  /* Optional page-specific aside (credential card, pull-quote, mini-timeline). */
+  .page__aside {
+    margin-block-start: var(--space-6);
+    padding-block-start: var(--space-5);
+    border-block-start: 1px solid var(--color-hairline);
+  }
+  .page__rail-foot {
+    margin-block-start: var(--space-6);
+  }
+
+  .page__content {
+    min-inline-size: 0;
   }
   .page__body {
     font-size: var(--type-body);
@@ -95,13 +155,25 @@ const trail = pathnameToTrail(Astro.url.pathname);
     color: var(--color-text-muted);
     margin-block: var(--space-4);
   }
-  .page__cta {
-    margin-block-start: var(--space-5);
+  .page__disclaimer {
+    margin-block-start: var(--space-6);
   }
-  .page__cta a {
-    color: var(--color-action);
-    border-block-end: 1px solid var(--color-emphasis);
-    text-decoration: none;
-    font-size: var(--type-body-lg);
+
+  /* Desktop: the asymmetric editorial split. Rail is sticky so it fills the left as
+     the body scrolls; the body keeps a comfortable ~40rem measure. */
+  @media (min-width: 900px) {
+    .page__grid {
+      grid-template-columns: 19rem minmax(0, 42rem);
+      gap: var(--space-8);
+      align-items: start;
+      justify-content: space-between;
+    }
+    .page__rail {
+      position: sticky;
+      inset-block-start: var(--space-6);
+    }
+    .page__title {
+      font-size: var(--type-h2);
+    }
   }
 </style>

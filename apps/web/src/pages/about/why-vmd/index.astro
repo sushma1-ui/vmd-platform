@@ -86,6 +86,12 @@ const STAGES: { phase: string; name: string; desc: string }[] = [
   cta={{ href: bookUrl, label: 'Book a Consultation' }}
   disclaimer={true}
 >
+  <Fragment slot="aside">
+    <blockquote class="rail-quote">
+      If a pathway is not suitable, we will tell you. If waiting is the better option, we will tell
+      you that too.
+    </blockquote>
+  </Fragment>
   <div class="deflist">
     {
       whyVmd.map(([term, desc]) => (
@@ -127,6 +133,17 @@ const STAGES: { phase: string; name: string; desc: string }[] = [
 </SimplePage>
 
 <style>
+  /* Rail pull-quote — an editorial accent in the sticky left rail. */
+  .rail-quote {
+    margin: 0;
+    padding-inline-start: var(--space-4);
+    border-inline-start: 3px solid var(--color-emphasis);
+    font-family: var(--font-display);
+    font-size: var(--type-body-lg);
+    font-style: italic;
+    line-height: 1.4;
+    color: var(--color-action);
+  }
   .deflist {
     display: grid;
     gap: var(--space-4);

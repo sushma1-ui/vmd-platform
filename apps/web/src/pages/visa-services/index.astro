@@ -1,16 +1,92 @@
 ---
 import SimplePage from '../../components/content/SimplePage.astro';
+import { Card } from '@vmd/ui';
+
+/**
+ * Visa Services hub. The prose column would be near-empty on its own, so the body
+ * is a card grid of the main pathways (verified routes, mirrored from the homepage
+ * situation links) — this fills the content column and turns a one-line page into a
+ * genuine orientation hub. The rail carries the title, lead and Health Check CTA.
+ */
+const PATHWAYS: { title: string; href: string; eyebrow: string; desc: string }[] = [
+  {
+    title: 'Skilled migration',
+    href: '/visas/subclass-189-skilled-independent-visa',
+    eyebrow: 'Points-tested',
+    desc: 'Turn your qualifications and experience into a skilled visa (189 · 190 · 491).',
+  },
+  {
+    title: 'Employer sponsored',
+    href: '/visas/subclass-482-skills-in-demand-visa',
+    eyebrow: 'Sponsored',
+    desc: 'For skilled workers and the businesses that sponsor them (482 · 186).',
+  },
+  {
+    title: 'Family & partner',
+    href: '/visas/partner-visa-onshore-820-801',
+    eyebrow: 'Family',
+    desc: 'Partner, parent and family pathways — prepared carefully and completely.',
+  },
+  {
+    title: 'Student visa',
+    href: '/visas/subclass-500-student-visa',
+    eyebrow: 'Study',
+    desc: 'Studying in Australia (subclass 500), with the migration picture in view.',
+  },
+  {
+    title: 'Study in Australia',
+    href: '/study-in-australia/',
+    eyebrow: 'Education',
+    desc: 'Course guidance and migration expertise under one roof — before you enrol.',
+  },
+  {
+    title: 'Refusals & appeals',
+    href: '/visa-services/refusals-and-appeals/',
+    eyebrow: 'Review',
+    desc: "A refusal isn't the end — understand your review options and next steps.",
+  },
+];
 ---
 
 <SimplePage
   title="Visa Services"
   description="Australian visa services in Perth: skilled, employer sponsored, family & partner, student, refusals and more."
   eyebrow="Orientation"
-  lead="Which visa is yours? Start here, or take the Health Check for a guided answer."
+  lead="Which visa is yours? Start with a pathway below, or take the Health Check for a guided answer."
   cta={{ href: '/health-check/', label: 'Start the Visa Health Check' }}
 >
-  <p>
+  <p class="vs-intro">
     Choose a pathway below, or if you're not sure of your subclass, the Visa Health Check will route
     you.
   </p>
+  <ul class="vs-grid" role="list">
+    {
+      PATHWAYS.map((p) => (
+        <li>
+          <Card title={p.title} href={p.href} eyebrow={p.eyebrow}>
+            {p.desc}
+          </Card>
+        </li>
+      ))
+    }
+  </ul>
 </SimplePage>
+
+<style>
+  .vs-intro {
+    margin-block-end: var(--space-5);
+  }
+  .vs-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 560px) {
+    .vs-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>

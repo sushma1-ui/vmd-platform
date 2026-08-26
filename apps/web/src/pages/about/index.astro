@@ -156,6 +156,19 @@ const photoUrl = (m: TeamMember): string | null =>
   }}
   disclaimer={true}
 >
+  <Fragment slot="aside">
+    <div class="rail-cred">
+      <p class="rail-cred__k">The practitioner</p>
+      <p class="rail-cred__name">{PRACTICE.principal.name}</p>
+      <p class="rail-cred__role">Registered Migration Agent · MARN {PRACTICE.principal.marn}</p>
+      <a
+        class="rail-cred__link"
+        href={PRACTICE.regulator.registerSearchUrl}
+        target="_blank"
+        rel="noopener">Verify on the OMARA register →</a
+      >
+    </div>
+  </Fragment>
   {
     bodyParas.length > 0 ? (
       bodyParas.map((t) => <p>{t}</p>)
@@ -299,6 +312,41 @@ const photoUrl = (m: TeamMember): string | null =>
 </SimplePage>
 
 <style>
+  /* Rail credential card — a quiet trust anchor in the sticky left rail. */
+  .rail-cred {
+    display: grid;
+    gap: 2px;
+  }
+  .rail-cred__k {
+    margin: 0 0 var(--space-1);
+    font-size: var(--type-caption);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--color-emphasis-text);
+  }
+  .rail-cred__name {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--type-h4);
+    color: var(--color-action);
+  }
+  .rail-cred__role {
+    margin: 0;
+    font-size: var(--type-body-sm);
+    color: var(--color-text-muted);
+    line-height: 1.5;
+  }
+  .rail-cred__link {
+    display: inline-block;
+    margin-block-start: var(--space-2);
+    font-size: var(--type-body-sm);
+    font-weight: 600;
+    color: var(--color-action);
+    text-decoration: none;
+    border-block-end: 1px solid var(--color-emphasis);
+  }
+
   /* Our Story photo — a full-width visual break in the narrative. Fixed aspect
      ratio + width/height prevent layout shift; lazy-loaded (below the fold). */
   .story-photo {

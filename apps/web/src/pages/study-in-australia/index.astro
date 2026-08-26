@@ -19,10 +19,11 @@ import { breadcrumbSchema, faqSchema, serviceSchema } from '@vmd/seo';
 import { pathnameToTrail } from '../../lib/breadcrumbs.ts';
 import BookCta from '../../components/cta/BookCta.astro';
 import GoogleReviews from '../../components/sections/GoogleReviews.astro';
-import { cms } from '../../lib/cms.ts';
+import { cms, getCtaLinks } from '../../lib/cms.ts';
 import { CURATED_REVIEWS } from '../../lib/reviews.ts';
 
 const trail = pathnameToTrail(Astro.url.pathname);
+const { bookUrl } = await getCtaLinks();
 
 // Reviews: prefer CMS pinned reviews; fall back to the curated genuine set so the
 // section shows real client words rather than an empty panel. The GoogleReviews
@@ -53,26 +54,36 @@ const POINTS = [
 
 // What we help with — education-forward. Migration-related items are qualified with
 // "where migration is part of your goal" so nothing implies every student needs it.
+// Bespoke navy + gold line icons — one per service, drawn on a 24 grid in the same
+// stroke idiom as the header/situations icons (navy stroke, a single gold accent
+// stroke). Inline styles keep them self-contained through set:html.
+const SVG_BASE =
+  'viewBox="0 0 24 24" fill="none" width="26" height="26" aria-hidden="true" style="stroke:var(--color-action);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"';
 const SERVICES = [
   {
     term: 'Course & institution selection',
     desc: 'Matched to your goal, budget and circumstances.',
+    icon: `<svg ${SVG_BASE}><path d="M12 6C10 4.6 7 4 4 4v13c3 0 6 .6 8 2 2-1.4 5-2 8-2V4c-3 0-6 .6-8 2z"/><path d="M12 6v13" style="stroke:var(--color-emphasis)"/></svg>`,
   },
   {
     term: 'Admissions & enrolment',
     desc: 'Applications, offers and your Confirmation of Enrolment (CoE).',
+    icon: `<svg ${SVG_BASE}><path d="M14 3H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7z"/><path d="M14 3v4h4"/><path d="M9.4 14.3l1.8 1.9 3.4-4" style="stroke:var(--color-emphasis)"/></svg>`,
   },
   {
     term: 'Education pathway guidance',
     desc: 'Understanding how study options relate to your longer-term goals.',
+    icon: `<svg ${SVG_BASE}><circle cx="12" cy="12" r="8.5"/><path d="M15 9l-2 5-4 1 2-5z" style="stroke:var(--color-emphasis)"/></svg>`,
   },
   {
     term: 'Student visa (subclass 500)',
     desc: 'Prepared and lodged by our Registered Migration Agent.',
+    icon: `<svg ${SVG_BASE}><path d="M6 3h9a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><circle cx="10.5" cy="10" r="2.3"/><path d="M8 15.5h5" style="stroke:var(--color-emphasis)"/></svg>`,
   },
   {
     term: 'Post-study options',
     desc: 'Honest advice on graduate and skilled routes, where migration is part of your goal.',
+    icon: `<svg ${SVG_BASE}><path d="M3.5 20h17"/><path d="M5 20C8 12 11 8 19 6"/><path d="M14.5 5.6L19.2 5l-.4 4.7" style="stroke:var(--color-emphasis)"/></svg>`,
   },
 ];
 
@@ -151,6 +162,17 @@ const schemas = [
 >
   <!-- 1 · HERO + positioning (one opening beat) -->
   <section class="se-hero">
+    <div class="se-hero__media" aria-hidden="true">
+      <img
+        src="/study-hero.png"
+        alt=""
+        width="2000"
+        height="1333"
+        loading="eager"
+        fetchpriority="low"
+        decoding="async"
+      />
+    </div>
     <div class="se-hero__inner">
       <nav class="crumbs" aria-label="Breadcrumb">
         {
@@ -223,6 +245,7 @@ const schemas = [
         {
           SERVICES.map((s) => (
             <li class="se-service">
+              <span class="se-ico" set:html={s.icon} />
               <h3 class="se-service__term">{s.term}</h3>
               <p class="se-service__desc">{s.desc}</p>
             </li>
@@ -232,24 +255,34 @@ const schemas = [
     </div>
   </section>
 
-  <!-- 4 · HOW IT WORKS — the gold-numeral method timeline -->
+  <!-- 4 · HOW IT WORKS — the gold-numeral method timeline + editorial aside -->
   <section class="se-sec se-sec--white" data-reveal aria-labelledby="how-h">
-    <div class="se-sec__inner">
-      <p class="eyebrow">How it works</p>
-      <h2 class="se-h" id="how-h">A considered process, start to finish</h2>
-      <ol class="se-steps" role="list">
-        {
-          STEPS.map((s, i) => (
-            <li class="se-step">
-              <span class="se-step__node">{String(i + 1).padStart(2, '0')}</span>
-              <div class="se-step__text">
-                <h3 class="se-step__name">{s.name}</h3>
-                <p class="se-step__desc">{s.desc}</p>
-              </div>
-            </li>
-          ))
-        }
-      </ol>
+    <div class="se-sec__inner se-how">
+      <div class="se-how__main">
+        <p class="eyebrow">How it works</p>
+        <h2 class="se-h" id="how-h">A considered process, start to finish</h2>
+        <ol class="se-steps" role="list">
+          {
+            STEPS.map((s, i) => (
+              <li class="se-step">
+                <span class="se-step__node">{String(i + 1).padStart(2, '0')}</span>
+                <div class="se-step__text">
+                  <h3 class="se-step__name">{s.name}</h3>
+                  <p class="se-step__desc">{s.desc}</p>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+      <aside class="se-how__aside">
+        <p class="se-how__quote">
+          At every step, honest advice — clear about what a course can and can’t do for your goal.
+        </p>
+        <p class="se-how__note">
+          No pressure and no false promises. If a plan isn’t right for you, we’ll tell you.
+        </p>
+      </aside>
     </div>
   </section>
 
@@ -276,13 +309,13 @@ const schemas = [
   </section>
 
   <!-- 6 · WHAT CLIENTS SAY — restrained, editorial reviews -->
-  <section class="se-sec se-sec--white" data-reveal aria-label="Client reviews">
+  <section class="se-sec se-sec--white se-sec--tight" data-reveal aria-label="Client reviews">
     <div class="se-sec__inner">
       <GoogleReviews
         heading="What our clients say"
         intro="Personal attention on every matter, and clear from the start about our services and fees. Here’s what clients say about working with us."
         pinned={reviews}
-        limit={3}
+        limit={2}
       />
     </div>
   </section>
@@ -290,8 +323,13 @@ const schemas = [
   <!-- 7 · FAQ -->
   <section class="se-sec se-sec--bone" data-reveal aria-labelledby="faq-h">
     <div class="se-sec__inner se-faq">
-      <p class="eyebrow">Good to know</p>
-      <h2 class="se-h" id="faq-h">Study in Australia — your questions</h2>
+      <div class="se-faq__head">
+        <p class="eyebrow">Good to know</p>
+        <h2 class="se-h" id="faq-h">Study in Australia — your questions</h2>
+        <p class="se-faq__help">
+          Can’t find your answer? <a href={bookUrl}>Book a consultation →</a>
+        </p>
+      </div>
       <div class="se-faq__list">
         {
           FAQS.map((f) => (
@@ -368,15 +406,50 @@ const schemas = [
   .se-sec--bone {
     background: var(--color-ground-warm);
   }
+  .se-sec--tight .se-sec__inner {
+    padding-block: var(--space-5);
+  }
 
   /* ---- 1 · Hero + positioning ------------------------------------------ */
   .se-hero {
+    position: relative;
+    overflow: hidden;
     background: var(--color-ground-warm);
   }
+  /* Perth/Melbourne hero whisper — a treated, right-anchored atmosphere that fills
+     the hero's right-side whitespace without competing with the text. Quiet: low
+     opacity, desaturated, multiplied into the bone, masked so it dissolves left and
+     downward before it reaches the copy or the positioning strip. */
+  .se-hero__media {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-end: 0;
+    inline-size: 55%;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .se-hero__media img {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+    object-position: center 30%;
+    opacity: 0.13;
+    filter: grayscale(0.35) saturate(0.7) contrast(1.02);
+    mix-blend-mode: multiply;
+    -webkit-mask-image: linear-gradient(115deg, transparent 30%, #000 78%);
+    mask-image: linear-gradient(115deg, transparent 30%, #000 78%);
+  }
   .se-hero__inner {
+    position: relative;
+    z-index: 1;
     max-inline-size: var(--container-max);
     margin-inline: auto;
     padding: clamp(var(--space-6), 5vw, var(--space-8)) var(--space-4) var(--space-7);
+  }
+  @media (max-width: 640px) {
+    .se-hero__media {
+      display: none;
+    }
   }
   .se-hero__title {
     font-family: var(--font-display);
@@ -497,6 +570,11 @@ const schemas = [
     color: var(--color-text-muted);
     line-height: 1.55;
   }
+  .se-ico {
+    display: block;
+    line-height: 0;
+    margin-block-end: var(--space-3);
+  }
 
   /* ---- 4 · How it works (gold-numeral timeline) ------------------------- */
   .se-steps {
@@ -554,6 +632,29 @@ const schemas = [
     line-height: 1.6;
     color: var(--color-text-muted);
   }
+  /* How-it-works editorial aside — fills the timeline's right whitespace with a
+     short pull-quote + reassurance rather than a decorative image. */
+  .se-how__aside {
+    margin-block-start: var(--space-5);
+    padding-block-start: var(--space-5);
+    border-block-start: 1px solid var(--color-hairline);
+  }
+  .se-how__quote {
+    margin: 0;
+    padding-inline-start: var(--space-4);
+    border-inline-start: 3px solid var(--color-emphasis);
+    font-family: var(--font-display);
+    font-size: var(--type-h4);
+    font-style: italic;
+    line-height: 1.35;
+    color: var(--color-action);
+  }
+  .se-how__note {
+    margin: var(--space-4) 0 0;
+    font-size: var(--type-body-sm);
+    line-height: 1.6;
+    color: var(--color-text-muted);
+  }
 
   /* ---- 5 · Student visa (dark navy band) -------------------------------- */
   .se-visa {
@@ -604,10 +705,21 @@ const schemas = [
     color: color-mix(in srgb, var(--color-text-inverse) 70%, transparent);
   }
 
-  /* ---- 7 · FAQ ---------------------------------------------------------- */
+  /* ---- 7 · FAQ (two-column: sticky head rail + accordion) --------------- */
+  .se-faq__help {
+    margin: var(--space-4) 0 0;
+    font-size: var(--type-body-sm);
+    color: var(--color-text-muted);
+  }
+  .se-faq__help a {
+    color: var(--color-action);
+    font-weight: 600;
+    text-decoration: none;
+    border-block-end: 1px solid var(--color-emphasis);
+    white-space: nowrap;
+  }
   .se-faq__list {
     margin-block-start: var(--space-5);
-    max-inline-size: 72ch;
     border-block-start: 1px solid var(--color-hairline);
   }
   .se-faq__item {
@@ -719,6 +831,34 @@ const schemas = [
     .se-approach__head {
       position: sticky;
       inset-block-start: var(--space-6);
+    }
+    /* How it works — timeline left, editorial aside right (fills the whitespace). */
+    .se-how {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 17rem;
+      gap: clamp(var(--space-6), 5vw, var(--space-8));
+      align-items: start;
+    }
+    .se-how__aside {
+      margin-block-start: 0;
+      padding-block-start: 0;
+      border-block-start: 0;
+      position: sticky;
+      inset-block-start: var(--space-6);
+    }
+    /* FAQ — sticky head rail left, accordion right (uses the width, cuts height). */
+    .se-faq {
+      display: grid;
+      grid-template-columns: 17rem minmax(0, 1fr);
+      gap: clamp(var(--space-6), 5vw, var(--space-8));
+      align-items: start;
+    }
+    .se-faq__head {
+      position: sticky;
+      inset-block-start: var(--space-6);
+    }
+    .se-faq__list {
+      margin-block-start: 0;
     }
   }
 </style>
