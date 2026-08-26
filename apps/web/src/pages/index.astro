@@ -319,17 +319,7 @@ const QUICK_LINKS = [
   <!-- 9 · MEET YOUR TEAM (homepage glimpse → full team page) -->
   <MeetTeam />
 
-  <!-- 10 · CLIENT TESTIMONIALS (reviews · visa & skill assessments · stories) -->
-  {
-    shown(hp?.googleReviews) && (
-      <ClientTestimonials
-        reviews={pinnedReviews}
-        profileUrl={settings?.googleReviews?.profileUrl}
-      />
-    )
-  }
-
-  <!-- 11 · RESOURCES — closing dark section (blog · guides · official tools) -->
+  <!-- 11 · RESOURCES — dark section (blog · guides · official tools) -->
   {
     shown(hp?.featuredBlogs) && (
       <section data-reveal class="section res">
@@ -403,6 +393,16 @@ const QUICK_LINKS = [
           </div>
         </div>
       </section>
+    )
+  }
+
+  <!-- CLIENT TESTIMONIALS — Google reviews, kept as the final section just above the footer -->
+  {
+    shown(hp?.googleReviews) && (
+      <ClientTestimonials
+        reviews={pinnedReviews}
+        profileUrl={settings?.googleReviews?.profileUrl}
+      />
     )
   }
 </Base>
