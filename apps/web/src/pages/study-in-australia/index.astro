@@ -18,23 +18,10 @@ import { Rule } from '@vmd/ui';
 import { breadcrumbSchema, faqSchema, serviceSchema } from '@vmd/seo';
 import { pathnameToTrail } from '../../lib/breadcrumbs.ts';
 import BookCta from '../../components/cta/BookCta.astro';
-import GoogleReviews from '../../components/sections/GoogleReviews.astro';
-import { cms, getCtaLinks } from '../../lib/cms.ts';
-import { CURATED_REVIEWS } from '../../lib/reviews.ts';
+import { getCtaLinks } from '../../lib/cms.ts';
 
 const trail = pathnameToTrail(Astro.url.pathname);
 const { bookUrl } = await getCtaLinks();
-
-// Reviews: prefer CMS pinned reviews; fall back to the curated genuine set so the
-// section shows real client words rather than an empty panel. The GoogleReviews
-// component itself prefers the live Places API over either when it's configured.
-let pinned: any[] = [];
-try {
-  pinned = await cms.pinnedReviews();
-} catch {
-  /* fall back to curated genuine reviews */
-}
-const reviews = pinned.length ? pinned : CURATED_REVIEWS;
 
 // The opening positioning — the territory VMD owns.
 const POINTS = [
@@ -308,18 +295,6 @@ const schemas = [
     </div>
   </section>
 
-  <!-- 6 · WHAT CLIENTS SAY — restrained, editorial reviews -->
-  <section class="se-sec se-sec--white se-sec--tight" data-reveal aria-label="Client reviews">
-    <div class="se-sec__inner">
-      <GoogleReviews
-        heading="What our clients say"
-        intro="Personal attention on every matter, and clear from the start about our services and fees. Here’s what clients say about working with us."
-        pinned={reviews}
-        limit={2}
-      />
-    </div>
-  </section>
-
   <!-- 7 · FAQ -->
   <section class="se-sec se-sec--bone" data-reveal aria-labelledby="faq-h">
     <div class="se-sec__inner se-faq">
@@ -432,9 +407,9 @@ const schemas = [
     inline-size: 100%;
     block-size: 100%;
     object-fit: cover;
-    object-position: center 12%;
-    opacity: 0.2;
-    filter: grayscale(0.35) saturate(0.7) contrast(1.02);
+    object-position: center 4%;
+    opacity: 0.3;
+    filter: grayscale(0.2) saturate(0.9) contrast(1.02) brightness(1.05);
     mix-blend-mode: multiply;
     -webkit-mask-image: linear-gradient(115deg, transparent 30%, #000 78%);
     mask-image: linear-gradient(115deg, transparent 30%, #000 78%);
