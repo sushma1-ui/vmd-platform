@@ -1,6 +1,7 @@
 /** Derive a breadcrumb trail from a pathname. One implementation, used everywhere. */
 const LABELS: Record<string, string> = {
   'visa-services': 'Visa Services',
+  'study-in-australia': 'Study in Australia',
   'your-situation': 'Your Situation',
   'general-skilled-migration': 'General Skilled Migration',
   'employer-sponsored': 'Employer Sponsored',

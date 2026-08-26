@@ -1,0 +1,724 @@
+---
+/**
+ * Study in Australia — the Education landing page.
+ *
+ * Positioning: education guidance + Australian migration expertise under one roof,
+ * with an honest "Goal first, course second" approach. Migration considerations are
+ * framed as relevant ONLY where migration is part of the student's goal — the page
+ * never implies every student needs migration planning, and never promises or implies
+ * a visa/PR/employment outcome (see the Disclaimer + outcomes wording).
+ *
+ * Built entirely from VMD's existing design system: Base layout, BookCta, the
+ * GoogleReviews section, Rule, the Disclaimer component, @vmd/config identity and the
+ * @vmd/seo schema builders. No homepage files are touched.
+ */
+import Base from '../../layouts/Base.astro';
+import { PRACTICE } from '@vmd/config';
+import { Rule } from '@vmd/ui';
+import { breadcrumbSchema, faqSchema, serviceSchema } from '@vmd/seo';
+import { pathnameToTrail } from '../../lib/breadcrumbs.ts';
+import BookCta from '../../components/cta/BookCta.astro';
+import GoogleReviews from '../../components/sections/GoogleReviews.astro';
+import { cms } from '../../lib/cms.ts';
+import { CURATED_REVIEWS } from '../../lib/reviews.ts';
+
+const trail = pathnameToTrail(Astro.url.pathname);
+
+// Reviews: prefer CMS pinned reviews; fall back to the curated genuine set so the
+// section shows real client words rather than an empty panel. The GoogleReviews
+// component itself prefers the live Places API over either when it's configured.
+let pinned: any[] = [];
+try {
+  pinned = await cms.pinnedReviews();
+} catch {
+  /* fall back to curated genuine reviews */
+}
+const reviews = pinned.length ? pinned : CURATED_REVIEWS;
+
+// The opening positioning — the territory VMD owns.
+const POINTS = [
+  {
+    term: 'One team',
+    desc: 'Course advice and a Registered Migration Agent, working together on your matter.',
+  },
+  {
+    term: 'A clearer pathway',
+    desc: 'Study options considered in the context of your goal, not in isolation.',
+  },
+  {
+    term: 'Honest advice',
+    desc: "If a course or a plan isn't right for you, we'll say so.",
+  },
+];
+
+// What we help with — education-forward. Migration-related items are qualified with
+// "where migration is part of your goal" so nothing implies every student needs it.
+const SERVICES = [
+  {
+    term: 'Course & institution selection',
+    desc: 'Matched to your goal, budget and circumstances.',
+  },
+  {
+    term: 'Admissions & enrolment',
+    desc: 'Applications, offers and your Confirmation of Enrolment (CoE).',
+  },
+  {
+    term: 'Education pathway guidance',
+    desc: 'Understanding how study options relate to your longer-term goals.',
+  },
+  {
+    term: 'Student visa (subclass 500)',
+    desc: 'Prepared and lodged by our Registered Migration Agent.',
+  },
+  {
+    term: 'Post-study options',
+    desc: 'Honest advice on graduate and skilled routes, where migration is part of your goal.',
+  },
+];
+
+// How it works — VMD's real method (Diagnosis → Pathway → Outcome), in plain verbs.
+const STEPS = [
+  {
+    name: 'Understand',
+    desc: 'We start with your goal, your academic background and your budget — and, where migration matters to you, the relevant realities.',
+  },
+  {
+    name: 'Advise',
+    desc: 'Clear guidance on your realistic study options, the institutions worth considering, and the honest trade-offs.',
+  },
+  {
+    name: 'Support',
+    desc: 'Enrolment handled, and — if a student visa is part of your plan — your application prepared by our Registered Migration Agent, through to the decision.',
+  },
+];
+
+const FAQS = [
+  {
+    question: 'Can you guarantee I’ll get permanent residency if I study here?',
+    answer:
+      'No — and no one honestly can. Migration outcomes depend on your circumstances and Australian law at the time. What we can do is give you clear, honest advice so your study decision is well informed.',
+  },
+  {
+    question: 'Do I need migration help to study with you?',
+    answer:
+      'Not at all. Many students simply want the right course. Migration guidance is there for those whose goals include living or working in Australia longer-term.',
+  },
+  {
+    question: 'Can you advise on my student visa?',
+    answer: `Yes. Visa advice is given by our Registered Migration Agent, ${PRACTICE.principal.name} (MARN ${PRACTICE.principal.marn}) — education advice and visa advice from one team.`,
+  },
+  {
+    question: 'How do you choose which course and institution to recommend?',
+    answer:
+      'We start from your goal, budget and background, and recommend what genuinely fits your circumstances.',
+  },
+  {
+    question: 'What does it cost to work with you?',
+    answer:
+      'We set out our services and any fees clearly before you begin, so there are no surprises.',
+  },
+  {
+    question: 'Can I work or bring my family while studying?',
+    answer:
+      'Conditions and current rules apply. We’ll talk you through what’s relevant to your situation.',
+  },
+  {
+    question: 'What happens after I graduate?',
+    answer:
+      'Depending on your course and goals, there may be graduate or skilled options. We’ll give you honest advice on what’s realistic — decided, as always, on the merits.',
+  },
+];
+
+const registerUrl = PRACTICE.regulator.registerSearchUrl;
+
+const schemas = [
+  breadcrumbSchema(trail),
+  serviceSchema({
+    name: 'Study in Australia — education & migration guidance',
+    description:
+      'Education guidance and Australian migration expertise under one roof: course and institution selection, admissions and enrolment support, and student visa (subclass 500) advice from a Registered Migration Agent in Perth.',
+    path: '/study-in-australia/',
+    serviceType: 'Education and migration guidance',
+  }),
+  faqSchema(FAQS),
+];
+---
+
+<Base
+  title="Study in Australia — Education & Migration Guidance | VMD"
+  description="Choose the right course with your bigger picture in view. VMD brings education guidance and Australian migration expertise together in Perth — honest advice and student visa (subclass 500) support from a Registered Migration Agent."
+  schemas={schemas}
+>
+  <!-- 1 · HERO + positioning (one opening beat) -->
+  <section class="se-hero">
+    <div class="se-hero__inner">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        {
+          trail.map((t, i) => (
+            <span>
+              {i > 0 && <span aria-hidden="true"> / </span>}
+              <a href={t.path}>{t.name}</a>
+            </span>
+          ))
+        }
+      </nav>
+      <p class="eyebrow">Study in Australia</p>
+      <h1 class="se-hero__title">Don’t just choose a course. Understand your pathway.</h1>
+      <Rule width="short" />
+      <p class="se-hero__lead">
+        Studying in Australia is a major decision — for your finances, and often your future. VMD
+        brings education guidance and migration expertise together in one team, so you can choose a
+        course that fits your goal, with honest advice at every step.
+      </p>
+      <div class="se-hero__cta">
+        <BookCta variant="primary" label="Book a Consultation" />
+        <a class="se-hero__more" href="#approach">See how we help ↓</a>
+      </div>
+
+      <div class="se-points">
+        <p class="se-points__lead">Education guidance and migration expertise — one team.</p>
+        <ul class="se-points__list" role="list">
+          {
+            POINTS.map((p) => (
+              <li class="se-point">
+                <span class="se-point__term">{p.term}</span>
+                <span class="se-point__desc">{p.desc}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 · APPROACH — Goal first. Course second. -->
+  <section class="se-sec se-sec--white" id="approach" data-reveal aria-labelledby="approach-h">
+    <div class="se-sec__inner se-approach">
+      <div class="se-approach__head">
+        <p class="eyebrow">Our approach</p>
+        <h2 class="se-h" id="approach-h">Goal first. Course second.</h2>
+      </div>
+      <div class="se-approach__body">
+        <p>
+          Everyone’s reason for studying is different. Some study for the qualification alone. For
+          others, living or working in Australia longer-term is part of the picture — and where
+          migration is part of your goal, those realities matter to the course and institution you
+          choose. We start by understanding your goal, then help you find the study option that
+          genuinely fits it.
+        </p>
+        <p class="se-approach__note">
+          Not every course connects to a migration pathway — and we’ll always be straight with you
+          about what a course can and can’t do.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 · WHAT WE HELP WITH -->
+  <section class="se-sec se-sec--bone" data-reveal aria-labelledby="services-h">
+    <div class="se-sec__inner">
+      <p class="eyebrow">What we help with</p>
+      <h2 class="se-h" id="services-h">Support across your study journey</h2>
+      <ul class="se-services" role="list">
+        {
+          SERVICES.map((s) => (
+            <li class="se-service">
+              <h3 class="se-service__term">{s.term}</h3>
+              <p class="se-service__desc">{s.desc}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- 4 · HOW IT WORKS — the gold-numeral method timeline -->
+  <section class="se-sec se-sec--white" data-reveal aria-labelledby="how-h">
+    <div class="se-sec__inner">
+      <p class="eyebrow">How it works</p>
+      <h2 class="se-h" id="how-h">A considered process, start to finish</h2>
+      <ol class="se-steps" role="list">
+        {
+          STEPS.map((s, i) => (
+            <li class="se-step">
+              <span class="se-step__node">{String(i + 1).padStart(2, '0')}</span>
+              <div class="se-step__text">
+                <h3 class="se-step__name">{s.name}</h3>
+                <p class="se-step__desc">{s.desc}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- 5 · STUDENT VISA — the RMA credibility differentiator (the dark moment) -->
+  <section class="se-visa" data-reveal aria-labelledby="visa-h">
+    <div class="se-visa__inner">
+      <p class="eyebrow eyebrow--gold">Student visa (subclass 500)</p>
+      <h2 class="se-visa__h" id="visa-h">Visa advice from a Registered Migration Agent</h2>
+      <p class="se-visa__body">
+        When a student visa is part of your journey, it’s handled by our Registered Migration Agent
+        —
+        {' '}{PRACTICE.principal.name} (MARN {PRACTICE.principal.marn}) — not passed to a third
+        party. Education advice and migration advice, from one accountable team.
+      </p>
+      <a class="se-visa__verify" href={registerUrl} target="_blank" rel="noopener">
+        Verify on the OMARA register →
+      </a>
+      <p class="se-visa__fine">
+        Every application is decided on its own merits under Australian migration law. Past outcomes
+        do not indicate or guarantee future results. We are not affiliated with the Department of
+        Home Affairs.
+      </p>
+    </div>
+  </section>
+
+  <!-- 6 · WHAT CLIENTS SAY — restrained, editorial reviews -->
+  <section class="se-sec se-sec--white" data-reveal aria-label="Client reviews">
+    <div class="se-sec__inner">
+      <GoogleReviews
+        heading="What our clients say"
+        intro="Personal attention on every matter, and clear from the start about our services and fees. Here’s what clients say about working with us."
+        pinned={reviews}
+        limit={3}
+      />
+    </div>
+  </section>
+
+  <!-- 7 · FAQ -->
+  <section class="se-sec se-sec--bone" data-reveal aria-labelledby="faq-h">
+    <div class="se-sec__inner se-faq">
+      <p class="eyebrow">Good to know</p>
+      <h2 class="se-h" id="faq-h">Study in Australia — your questions</h2>
+      <div class="se-faq__list">
+        {
+          FAQS.map((f) => (
+            <details class="se-faq__item">
+              <summary class="se-faq__q">{f.question}</summary>
+              <p class="se-faq__a">{f.answer}</p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 · FINAL CTA -->
+  <section class="se-cta" aria-labelledby="cta-h">
+    <div class="se-cta__inner">
+      <h2 class="se-cta__h" id="cta-h">Understand your pathway before you enrol.</h2>
+      <p class="se-cta__sub">
+        Book a consultation for honest, considered advice on studying in Australia — with your
+        bigger picture in view.
+      </p>
+      <div class="se-cta__actions">
+        <BookCta variant="primary" label="Book a Consultation" />
+        <a class="se-cta__phone" href={`tel:${PRACTICE.contact.phone}`}>
+          Call {PRACTICE.contact.phoneDisplay}
+        </a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* ---- Shared primitives ------------------------------------------------ */
+  .eyebrow {
+    margin: 0;
+    font-size: var(--type-caption);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--color-emphasis-text);
+  }
+  .eyebrow--gold {
+    color: var(--color-emphasis);
+  }
+  .crumbs {
+    font-size: var(--type-caption);
+    color: var(--color-text-muted);
+    margin-block-end: var(--space-4);
+  }
+  .crumbs a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .crumbs a:hover {
+    border-block-end: 1px solid var(--color-emphasis);
+  }
+  .se-h {
+    font-family: var(--font-display);
+    font-size: var(--type-h2);
+    line-height: 1.15;
+    margin: var(--space-2) 0 0;
+    color: var(--color-action);
+    text-wrap: balance;
+  }
+
+  .se-sec__inner {
+    max-inline-size: var(--container-max);
+    margin-inline: auto;
+    padding: clamp(var(--space-6), 4vw, var(--space-7)) var(--space-4);
+  }
+  .se-sec--white {
+    background: var(--color-ground-light);
+  }
+  .se-sec--bone {
+    background: var(--color-ground-warm);
+  }
+
+  /* ---- 1 · Hero + positioning ------------------------------------------ */
+  .se-hero {
+    background: var(--color-ground-warm);
+  }
+  .se-hero__inner {
+    max-inline-size: var(--container-max);
+    margin-inline: auto;
+    padding: clamp(var(--space-6), 5vw, var(--space-8)) var(--space-4) var(--space-7);
+  }
+  .se-hero__title {
+    font-family: var(--font-display);
+    font-size: var(--type-display-2);
+    line-height: 1.08;
+    margin-block: var(--space-2) 0;
+    color: var(--color-action);
+    max-inline-size: 20ch;
+    text-wrap: balance;
+  }
+  .se-hero__lead {
+    font-size: var(--type-body-lg);
+    line-height: 1.55;
+    margin-block-start: var(--space-3);
+    max-inline-size: 58ch;
+    color: var(--color-text);
+  }
+  .se-hero__cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4);
+    margin-block-start: var(--space-5);
+  }
+  .se-hero__more {
+    color: var(--color-interactive-strong);
+    font-weight: 600;
+    text-decoration: none;
+    border-block-end: 1px solid transparent;
+    transition: border-color var(--motion-fast, 180ms) var(--ease-standard, ease);
+  }
+  .se-hero__more:hover,
+  .se-hero__more:focus-visible {
+    border-block-end-color: currentColor;
+  }
+
+  .se-points {
+    margin-block-start: clamp(var(--space-6), 5vw, var(--space-7));
+    padding-block-start: var(--space-5);
+    border-block-start: 1px solid var(--color-hairline);
+  }
+  .se-points__lead {
+    margin: 0 0 var(--space-4);
+    font-family: var(--font-display);
+    font-size: var(--type-h4);
+    color: var(--color-action);
+  }
+  .se-points__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: 1fr;
+  }
+  .se-point {
+    display: grid;
+    gap: 2px;
+    padding-inline-start: var(--space-3);
+    border-inline-start: 2px solid var(--color-emphasis-line);
+  }
+  .se-point__term {
+    font-weight: 700;
+    color: var(--color-text);
+  }
+  .se-point__desc {
+    font-size: var(--type-body-sm);
+    color: var(--color-text-muted);
+    line-height: 1.55;
+  }
+
+  /* ---- 2 · Approach ----------------------------------------------------- */
+  .se-approach__body {
+    margin-block-start: var(--space-4);
+    max-inline-size: 62ch;
+  }
+  .se-approach__body p {
+    margin: 0;
+    font-size: var(--type-body);
+    line-height: 1.7;
+    color: var(--color-text);
+  }
+  .se-approach__note {
+    margin-block-start: var(--space-4) !important;
+    padding-inline-start: var(--space-4);
+    border-inline-start: 3px solid var(--color-emphasis);
+    font-family: var(--font-display);
+    font-size: var(--type-body-lg);
+    font-style: italic;
+    color: var(--color-action) !important;
+  }
+
+  /* ---- 3 · Services ----------------------------------------------------- */
+  .se-services {
+    list-style: none;
+    margin: var(--space-5) 0 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: 1fr;
+  }
+  .se-service {
+    padding: var(--space-4) var(--space-5);
+    background: var(--color-surface);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-card);
+  }
+  .se-service__term {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--type-h4);
+    line-height: 1.2;
+    color: var(--color-action);
+  }
+  .se-service__desc {
+    margin: var(--space-1) 0 0;
+    font-size: var(--type-body-sm);
+    color: var(--color-text-muted);
+    line-height: 1.55;
+  }
+
+  /* ---- 4 · How it works (gold-numeral timeline) ------------------------- */
+  .se-steps {
+    list-style: none;
+    margin: var(--space-6) 0 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-5);
+    max-inline-size: 64ch;
+  }
+  .se-step {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--space-4);
+    align-items: start;
+  }
+  .se-step:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: 1.15rem;
+    inset-block-start: 2.3rem;
+    inline-size: 1px;
+    block-size: calc(100% - 2.3rem + var(--space-5));
+    background: var(--color-emphasis-line);
+  }
+  .se-step__node {
+    position: relative;
+    z-index: 1;
+    inline-size: 2.3rem;
+    block-size: 2.3rem;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--color-surface);
+    border: 1px solid var(--color-emphasis-line);
+    color: var(--color-emphasis-text);
+    font-family: var(--font-display);
+    font-size: var(--type-body);
+    line-height: 1;
+  }
+  .se-step__text {
+    min-inline-size: 0;
+  }
+  .se-step__name {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--type-h4);
+    color: var(--color-action);
+    line-height: 1.2;
+  }
+  .se-step__desc {
+    margin: var(--space-1) 0 0;
+    font-size: var(--type-body-sm);
+    line-height: 1.6;
+    color: var(--color-text-muted);
+  }
+
+  /* ---- 5 · Student visa (dark navy band) -------------------------------- */
+  .se-visa {
+    background: var(--color-action);
+    color: var(--color-text-inverse);
+  }
+  .se-visa__inner {
+    max-inline-size: var(--container-max);
+    margin-inline: auto;
+    padding: clamp(var(--space-6), 4vw, var(--space-7)) var(--space-4);
+  }
+  .se-visa__h {
+    font-family: var(--font-display);
+    font-size: var(--type-h2);
+    line-height: 1.15;
+    margin: var(--space-2) 0 0;
+    color: var(--color-text-inverse);
+    text-wrap: balance;
+    max-inline-size: 22ch;
+  }
+  .se-visa__body {
+    margin-block-start: var(--space-4);
+    max-inline-size: 60ch;
+    font-size: var(--type-body-lg);
+    line-height: 1.6;
+    color: color-mix(in srgb, var(--color-text-inverse) 88%, transparent);
+  }
+  .se-visa__verify {
+    display: inline-block;
+    margin-block-start: var(--space-4);
+    color: var(--color-emphasis);
+    font-weight: 600;
+    text-decoration: none;
+    border-block-end: 1px solid transparent;
+    transition: border-color var(--motion-fast, 180ms) var(--ease-standard, ease);
+  }
+  .se-visa__verify:hover,
+  .se-visa__verify:focus-visible {
+    border-block-end-color: currentColor;
+  }
+  .se-visa__fine {
+    margin-block-start: var(--space-5);
+    padding-block-start: var(--space-4);
+    border-block-start: 1px solid color-mix(in srgb, var(--color-text-inverse) 22%, transparent);
+    max-inline-size: 64ch;
+    font-size: var(--type-body-sm);
+    line-height: 1.6;
+    color: color-mix(in srgb, var(--color-text-inverse) 70%, transparent);
+  }
+
+  /* ---- 7 · FAQ ---------------------------------------------------------- */
+  .se-faq__list {
+    margin-block-start: var(--space-5);
+    max-inline-size: 72ch;
+    border-block-start: 1px solid var(--color-hairline);
+  }
+  .se-faq__item {
+    border-block-end: 1px solid var(--color-hairline);
+  }
+  .se-faq__q {
+    cursor: pointer;
+    list-style: none;
+    padding: var(--space-4) var(--space-6) var(--space-4) 0;
+    position: relative;
+    font-family: var(--font-display);
+    font-size: var(--type-h4);
+    color: var(--color-action);
+    line-height: 1.25;
+  }
+  .se-faq__q::-webkit-details-marker {
+    display: none;
+  }
+  .se-faq__q::after {
+    content: '+';
+    position: absolute;
+    inset-inline-end: 0;
+    inset-block-start: 50%;
+    transform: translateY(-50%);
+    font-family: var(--font-body);
+    font-size: var(--type-h3);
+    font-weight: 400;
+    color: var(--color-emphasis-text);
+    line-height: 1;
+  }
+  .se-faq__item[open] .se-faq__q::after {
+    content: '–';
+  }
+  .se-faq__q:focus-visible {
+    outline: 3px solid var(--color-action);
+    outline-offset: 3px;
+  }
+  .se-faq__a {
+    margin: 0;
+    padding-block-end: var(--space-4);
+    max-inline-size: 68ch;
+    font-size: var(--type-body);
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  /* ---- 8 · Final CTA (ink band) ---------------------------------------- */
+  .se-cta {
+    background: var(--color-ground-deep);
+    color: var(--color-text-inverse);
+  }
+  .se-cta__inner {
+    max-inline-size: var(--container-max);
+    margin-inline: auto;
+    padding: clamp(var(--space-7), 5vw, var(--space-8)) var(--space-4);
+    text-align: center;
+  }
+  .se-cta__h {
+    font-family: var(--font-display);
+    font-size: var(--type-h2);
+    line-height: 1.15;
+    margin: 0;
+    color: var(--color-text-inverse);
+    text-wrap: balance;
+  }
+  .se-cta__sub {
+    margin: var(--space-3) auto 0;
+    max-inline-size: 54ch;
+    font-size: var(--type-body-lg);
+    line-height: 1.55;
+    color: color-mix(in srgb, var(--color-text-inverse) 82%, transparent);
+  }
+  .se-cta__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-4);
+    margin-block-start: var(--space-5);
+  }
+  .se-cta__phone {
+    color: var(--color-emphasis);
+    font-weight: 600;
+    text-decoration: none;
+    border-block-end: 1px solid transparent;
+    transition: border-color var(--motion-fast, 180ms) var(--ease-standard, ease);
+  }
+  .se-cta__phone:hover,
+  .se-cta__phone:focus-visible {
+    border-block-end-color: currentColor;
+  }
+
+  /* ---- Responsive ------------------------------------------------------- */
+  @media (min-width: 640px) {
+    .se-points__list {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .se-services {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (min-width: 900px) {
+    .se-approach {
+      display: grid;
+      grid-template-columns: minmax(0, 22rem) 1fr;
+      gap: clamp(var(--space-6), 5vw, var(--space-8));
+      align-items: start;
+    }
+    .se-approach__head {
+      position: sticky;
+      inset-block-start: var(--space-6);
+    }
+  }
+</style>
