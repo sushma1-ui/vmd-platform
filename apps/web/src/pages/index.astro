@@ -44,10 +44,9 @@ const shown = (s?: { show?: boolean | null }) => s?.show !== false;
 const OLD_HERO_TITLE = 'Find the Right Australian Visa Pathway — Before You Spend a Dollar';
 const OLD_HERO_LEAD =
   'Honest, expert guidance from a Registered Migration Agent — clear answers and a plan you can trust, entirely at your pace.';
+const HERO_DEFAULT = 'Find the Right Australian Visa Pathway with Honest Guidance';
 const heroTitle =
-  hp?.hero?.title && hp.hero.title.trim() !== OLD_HERO_TITLE
-    ? hp.hero.title
-    : 'Find the Right Australian Visa Pathway with Honest Guidance';
+  hp?.hero?.title && hp.hero.title.trim() !== OLD_HERO_TITLE ? hp.hero.title : HERO_DEFAULT;
 // Prototype-approved concise lead. The previous long default is also treated as
 // "unset" so this shorter version wins until an editor sets a genuinely new value.
 const OLD_HERO_LEAD_2 =
@@ -164,7 +163,17 @@ const QUICK_LINKS = [
       />
     </div>
     <div class="hero__copy">
-      <h1 class="hero__title">{heroTitle}</h1>
+      <h1 class="hero__title">
+        {
+          heroTitle === HERO_DEFAULT ? (
+            <Fragment>
+              Australian migration and visas, <span class="hl">made clear.</span>
+            </Fragment>
+          ) : (
+            heroTitle
+          )
+        }
+      </h1>
       <Rule width="short" />
       <p class="hero__lead">{heroLead}</p>
       <ul class="hero__checks" aria-label="What you can count on">
@@ -754,6 +763,10 @@ const QUICK_LINKS = [
     letter-spacing: -0.015em;
     text-wrap: balance;
     color: var(--color-action);
+  }
+  .hero__title .hl {
+    color: var(--color-emphasis-text);
+    font-style: italic;
   }
   .hero__lead {
     font-size: var(--type-body-lg);
