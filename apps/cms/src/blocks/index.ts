@@ -100,7 +100,7 @@ export const TrustBlock: Block = {
           name: 'label',
           type: 'text',
           required: true,
-          admin: { placeholder: 'e.g. MARA-registered' },
+          admin: { placeholder: 'e.g. OMARA-registered' },
         },
         {
           name: 'href',
