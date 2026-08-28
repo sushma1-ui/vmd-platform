@@ -86,7 +86,13 @@ export function buildServiceNav(docs: ServiceDoc[]): ServiceNav {
     .map((p) => ({ label: labelOf(p), href: servicePageHref(p) }));
 
   const skilled = pick(bySlug, SKILLED);
-  const familyStudy = [...pick(bySlug, FAMILY_STUDY), ...leftovers];
+  // "Study in Australia" is a bespoke education page (not a CMS service doc); it sits in
+  // the study/partner column, next to the Student (500) pathway, inside Our Services.
+  const familyStudy = [
+    ...pick(bySlug, FAMILY_STUDY),
+    { label: 'Study in Australia', href: '/study-in-australia/' },
+    ...leftovers,
+  ];
   const employerItems = pick(bySlug, EMPLOYER);
 
   // Reviews & second opinion — the dedicated pages plus ART merits review.
