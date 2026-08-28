@@ -131,7 +131,10 @@ const register = PRACTICE.regulator.registerSearchUrl;
   <div class="header__inner">
     <a class="brand" href="/" aria-label={`${PRACTICE.legalName} — home`}>
       <img class="brand__mark" src="/logo-vmd.png" alt="" width="80" height="80" decoding="async" />
-      <span class="brand__name" aria-hidden="true">{PRACTICE.legalName}</span>
+      <span class="brand__name" aria-hidden="true">
+        {PRACTICE.legalName}
+        <small>Australian Visa &amp; Migration, <span class="brand__mc">Made Clear</span></small>
+      </span>
     </a>
     <nav class="nav" aria-label="Primary">
       {
@@ -540,6 +543,10 @@ const register = PRACTICE.regulator.registerSearchUrl;
     letter-spacing: 0.1em;
     color: var(--color-text-muted);
     margin-block-start: 3px;
+  }
+  .brand__name small .brand__mc {
+    color: var(--color-emphasis-text);
+    font-weight: 600;
   }
   .nav {
     display: none;
