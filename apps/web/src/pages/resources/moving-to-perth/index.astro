@@ -1,12 +1,70 @@
 ---
 import SimplePage from '../../../components/content/SimplePage.astro';
+import { getCtaLinks } from '../../../lib/cms.ts';
+const { bookUrl } = await getCtaLinks();
 ---
 
 <SimplePage
   title="Moving to Perth"
-  description="Life in Perth for new migrants: suburbs, schools, cost of living, Medicare and banking."
+  description="A practical guide to settling in Perth, Western Australia: suburbs, schools, cost of living, Medicare, banking and getting set up — from a Perth-based migration practice."
   eyebrow="Life stage"
-  lead="What life will actually be like — 12 months upstream of the visa."
-  emptyState="Cluster content is authored in the CMS and appears here as it's published."
-  cta={{ href: '/resources/', label: 'Back to Resources' }}
-/>
+  lead="What life is actually like once the visa is sorted — a practical guide to settling in Perth, Western Australia."
+  cta={{ href: bookUrl, label: 'Book a Consultation' }}
+  disclaimer={true}
+>
+  <p>
+    Perth is Western Australia's capital — a calm, spacious city on the Swan River with a
+    Mediterranean climate, some of the world's most liveable suburbs, and a strong economy built on
+    resources, health, education and construction. For many new arrivals it offers a gentler pace
+    than the eastern capitals, with beaches, parks and good schools close to the CBD.
+  </p>
+
+  <h2>Choosing where to live</h2>
+  <p>
+    Perth's suburbs each have their own character — riverside and coastal areas, established
+    tree-lined suburbs near the city, and newer, more affordable family suburbs further out. When
+    you're choosing, weigh up your commute, school catchments, and whether you want to be near the
+    coast, the river or the hills. Renting first while you get to know the city is common and
+    sensible.
+  </p>
+
+  <h2>Schools</h2>
+  <p>
+    Western Australia has public (government) schools, Catholic schools and independent schools.
+    Public school enrolment is generally tied to where you live (the local intake area), so school
+    catchments are worth checking before you settle on a suburb. International students and some
+    visa holders may pay fees at government schools — we can point you to the current rules for your
+    visa.
+  </p>
+
+  <h2>Cost of living</h2>
+  <p>
+    Your main costs will be rent, groceries, transport, utilities and health cover. Perth is
+    generally more affordable than Sydney or Melbourne, though costs vary by suburb and lifestyle.
+    Budget for a rental bond and initial set-up costs when you arrive, and allow time to build a
+    local rental and credit history.
+  </p>
+
+  <h2>Health cover &amp; Medicare</h2>
+  <p>
+    Access to Medicare (Australia's public health system) depends on your visa. Permanent residents
+    and some visa holders can enrol; temporary visa holders, including students, generally need
+    private health cover (such as OSHC for students) for the duration of their stay. Confirm what
+    applies to your visa before you rely on public cover.
+  </p>
+
+  <h2>Getting set up</h2>
+  <ul>
+    <li>Open an Australian bank account (you can often start this before you arrive).</li>
+    <li>Apply for a Tax File Number (TFN) once you're here if you'll be working.</li>
+    <li>Sort a mobile plan and, once you have a lease, connect electricity, gas and internet.</li>
+    <li>Look into public transport (Transperth) and whether you'll need a car for your suburb.</li>
+    <li>Register with a local GP and, if eligible, enrol in Medicare.</li>
+  </ul>
+
+  <p>
+    This is general information to help you plan — the details that matter most depend on your visa.
+    If you're moving to Perth, or planning to, we're a Perth-based practice and happy to help you
+    understand what your visa allows and what to prepare.
+  </p>
+</SimplePage>

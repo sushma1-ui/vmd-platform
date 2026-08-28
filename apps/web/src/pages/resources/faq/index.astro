@@ -1,13 +1,217 @@
 ---
-import SimplePage from '../../../components/content/SimplePage.astro';
+import Base from '../../../layouts/Base.astro';
+import { breadcrumbSchema, faqSchema } from '@vmd/seo';
+import { Rule, Disclaimer } from '@vmd/ui';
+import { PRACTICE } from '@vmd/config';
+import { pathnameToTrail } from '../../../lib/breadcrumbs.ts';
+import LastReviewed from '../../../components/content/LastReviewed.astro';
+
+/**
+ * Frequently Asked Questions — a genuine, schema-marked general FAQ page. The
+ * curated set below is the site's general practice FAQ (honest, no outcome
+ * promises). Visa-specific questions are answered on each visa/service page via
+ * the CMS FAQs collection; this page covers the questions asked across the board.
+ */
+const trail = pathnameToTrail(Astro.url.pathname);
+
+const FAQS: { question: string; answer: string }[] = [
+  {
+    question: 'Do I need a registered migration agent to apply for a visa?',
+    answer:
+      "You can lodge many applications yourself. A Registered Migration Agent helps where the stakes, the complexity or the consequences of a mistake are high — assessing your options honestly, preparing the evidence properly, and keeping the matter on track. If your case is straightforward and you're confident, we'll tell you that too.",
+  },
+  {
+    question: 'Who will actually handle my matter?',
+    answer: `Your matter is personally assessed by ${PRACTICE.principal.name}, Registered Migration Agent (MARN ${PRACTICE.principal.marn}). You receive advice directly from the practitioner responsible for your case — not passed to a call centre.`,
+  },
+  {
+    question: 'What happens in an initial consultation?',
+    answer:
+      'We review your circumstances, history and goals, explain your realistic options and the trade-offs in plain language, and set out the scope and fees before any work begins. You leave with a clear understanding of where you stand and what the next step is.',
+  },
+  {
+    question: 'How much do your services cost?',
+    answer:
+      'We set out our services and fees clearly in writing before you commit, so there are no surprises. Government charges and third-party costs (such as skills assessments or medicals) are separate and depend on your pathway; we outline the likely costs during your consultation.',
+  },
+  {
+    question: 'Can you guarantee my visa will be approved?',
+    answer:
+      'No — and no one honestly can. Every application is decided on its own merits under Australian migration law, by the Department of Home Affairs. What we can do is give you honest advice about your prospects and prepare a well-evidenced application. Past outcomes do not indicate or guarantee future results.',
+  },
+  {
+    question: 'How long does a visa application take?',
+    answer:
+      'Processing times vary by visa subclass, your circumstances and current departmental workloads, and they change over time. We confirm the current published times for your pathway and keep your matter moving — responding to requests promptly and tracking deadlines.',
+  },
+  {
+    question: 'My visa was refused — can you help?',
+    answer:
+      "Often, yes. A refusal isn't always the end. Depending on the decision there may be a review or appeal pathway, or a stronger fresh application. We give you an honest read on your options and the time limits, which can be short — so it's worth getting advice quickly.",
+  },
+  {
+    question: 'Can you help whether I am in Australia or overseas?',
+    answer:
+      'Yes. We assist clients onshore and offshore. Some visas must be applied for from inside Australia and others from outside — we confirm what applies to your situation and plan around it.',
+  },
+  {
+    question: 'Do you help with skills assessments?',
+    answer:
+      'Yes. A skills assessment is a common first step for skilled pathways. We help you identify the right assessing authority for your occupation and prepare the evidence they require.',
+  },
+  {
+    question: 'Can you help my partner or family move to Australia?',
+    answer:
+      'Yes. We advise on partner, family and related pathways, and prepare the relationship or family evidence carefully. As with every matter, eligibility depends on your individual circumstances and current requirements.',
+  },
+  {
+    question: 'Can studying in Australia lead to a longer stay?',
+    answer:
+      'For some students, study can connect to graduate or skilled pathways later — but not every course leads to a migration outcome, and nothing is guaranteed. If living or working in Australia longer-term is part of your goal, we consider those realities when discussing your study options. See our Study in Australia page.',
+  },
+  {
+    question: 'How do I get started?',
+    answer:
+      'Book an initial consultation, or take the free Visa Health Check and a Registered Migration Agent will review your answers and point you to your next step.',
+  },
+];
 ---
 
-<SimplePage
-  title="Frequently Asked Questions"
-  description="Answers to common Australian migration questions, schema-marked for search."
-  eyebrow="Knowledge Centre"
-  lead="The twelve questions we're actually asked."
-  emptyState="FAQs are authored in the CMS and rendered with FAQPage schema once published."
-  cta={{ href: '/contact/', label: 'Ask us directly' }}
-  disclaimer={true}
-/>
+<Base
+  title="Frequently Asked Questions | Visa & Migration Doctors"
+  description="Answers to common questions about Australian visas, migration agents, consultations, fees, processing times and refusals — from a Registered Migration Agent in Perth."
+  schemas={[breadcrumbSchema(trail), { '@context': 'https://schema.org', ...faqSchema(FAQS) }]}
+>
+  <article class="faqp">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      {
+        trail.map((t, i) => (
+          <span>
+            {i > 0 && <span aria-hidden="true"> / </span>}
+            <a href={t.path}>{t.name}</a>
+          </span>
+        ))
+      }
+    </nav>
+    <header class="faqp__head">
+      <p class="faqp__eyebrow">Knowledge Centre</p>
+      <h1 class="faqp__title">Frequently asked questions</h1>
+      <Rule width="short" />
+      <p class="faqp__lead">
+        The questions we're actually asked — answered plainly. For questions about a specific visa,
+        see that visa's page; for anything else, just ask us.
+      </p>
+    </header>
+
+    <div class="faqp__list">
+      {
+        FAQS.map((f) => (
+          <details class="faqp__item">
+            <summary class="faqp__q">{f.question}</summary>
+            <p class="faqp__a">{f.answer}</p>
+          </details>
+        ))
+      }
+    </div>
+
+    <Disclaimer variant="generalInformation" class="faqp__disc" />
+
+    <p class="faqp__cta">
+      <a href="/contact/">Ask us directly →</a>
+    </p>
+    <LastReviewed />
+  </article>
+</Base>
+
+<style>
+  .faqp {
+    max-inline-size: var(--container-prose);
+    margin-inline: auto;
+    padding: var(--space-7) var(--space-4) var(--space-9);
+  }
+  .crumbs {
+    font-size: var(--type-caption);
+    color: var(--color-text-muted);
+    margin-block-end: var(--space-4);
+  }
+  .crumbs a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .crumbs a:hover {
+    border-block-end: 1px solid var(--color-emphasis);
+  }
+  .faqp__eyebrow {
+    font-size: var(--type-caption);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--color-emphasis-text);
+    margin: 0;
+  }
+  .faqp__title {
+    font-family: var(--font-display);
+    font-size: var(--type-display-2);
+    color: var(--color-action);
+    margin-block: var(--space-2) var(--space-3);
+  }
+  .faqp__lead {
+    font-size: var(--type-body-lg);
+    line-height: 1.5;
+    color: var(--color-text-muted);
+    margin-block: var(--space-3) var(--space-6);
+    max-inline-size: 60ch;
+  }
+  .faqp__list {
+    display: grid;
+    gap: 0;
+    border-block-start: 1px solid var(--color-hairline);
+  }
+  .faqp__item {
+    border-block-end: 1px solid var(--color-hairline);
+  }
+  .faqp__q {
+    cursor: pointer;
+    list-style: none;
+    padding: var(--space-4) 2rem var(--space-4) 0;
+    position: relative;
+    font-family: var(--font-display);
+    font-size: var(--type-h4);
+    line-height: 1.25;
+    color: var(--color-action);
+  }
+  .faqp__q::-webkit-details-marker {
+    display: none;
+  }
+  .faqp__q::after {
+    content: '+';
+    position: absolute;
+    inset-inline-end: 0.25rem;
+    inset-block-start: var(--space-4);
+    font-family: var(--font-body);
+    font-size: 1.3rem;
+    line-height: 1;
+    color: var(--color-emphasis-text);
+  }
+  .faqp__item[open] .faqp__q::after {
+    content: '–';
+  }
+  .faqp__a {
+    margin: 0 0 var(--space-4);
+    line-height: 1.7;
+    color: var(--color-text);
+    max-inline-size: 68ch;
+  }
+  .faqp__disc {
+    margin-block-start: var(--space-6);
+  }
+  .faqp__cta {
+    margin-block-start: var(--space-5);
+  }
+  .faqp__cta a {
+    color: var(--color-action);
+    border-block-end: 1px solid var(--color-emphasis);
+    text-decoration: none;
+    font-size: var(--type-body-lg);
+  }
+</style>

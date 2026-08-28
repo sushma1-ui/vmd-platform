@@ -3,16 +3,42 @@ import Newsletter from '../../../components/islands/Newsletter.island.astro';
 import SimplePage from '../../../components/content/SimplePage.astro';
 import { getCtaLinks } from '../../../lib/cms.ts';
 const { healthCheckUrl } = await getCtaLinks();
+
+// Official Home Affairs global processing-times tool — the authoritative source.
+const IMMI_TIMES =
+  'https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-processing-times/global-visa-processing-times';
 ---
 
 <SimplePage
-  title="Processing Times Tracker"
-  description="Monthly-verified Australian visa processing times by subclass, with sources."
+  title="Visa Processing Times"
+  description="How to check current Australian visa processing times, why they change, and how we keep your matter moving — from a Registered Migration Agent in Perth."
   eyebrow="Knowledge Centre"
-  lead="Live, monthly-verified, and exactly what answer engines cite."
-  emptyState="Times are maintained in the CMS with a 'last verified' date and Home Affairs source, shown once entered."
+  lead="Processing times change often. Here's how to check the current position — and how we keep your matter moving."
   cta={{ href: healthCheckUrl, label: 'Check your position' }}
   disclaimer={true}
 >
+  <p>
+    Australian visa processing times vary by subclass, by your individual circumstances, and by the
+    Department of Home Affairs' current workloads — and they are updated regularly. Because of that,
+    the most reliable figure is always the current published one.
+  </p>
+  <p>The Department publishes indicative global processing times for each visa, updated monthly:</p>
+  <p>
+    <a href={IMMI_TIMES} target="_blank" rel="noopener noreferrer"
+      >Home Affairs — global visa processing times →</a
+    >
+  </p>
+  <h2>How we keep your matter moving</h2>
+  <p>
+    Processing time is not something any agent controls — but a well-prepared, complete application
+    avoids the requests for more information that add weeks or months. For every matter we prepare
+    the evidence carefully, respond to any departmental request promptly, and track your deadlines,
+    so nothing stalls that we can prevent.
+  </p>
+  <p>
+    When you engage us, we confirm the processing time currently published for your pathway and set
+    honest expectations for your circumstances. Times can change while an application is on foot; we
+    keep you informed through to the decision.
+  </p>
   <div style="margin-block-start: var(--space-6);"><Newsletter /></div>
 </SimplePage>
