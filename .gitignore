@@ -19,3 +19,9 @@ packages/tokens/dist/
 coverage/
 playwright-report/
 test-results/
+# tooling / local artifacts
+.claude/
+.vercel/
+*.tsbuildinfo
+# local prototypes (not shipped)
+apps/web/public/homepage-prototype*.html
