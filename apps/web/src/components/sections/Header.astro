@@ -21,7 +21,7 @@ try {
 const nav = [
   { label: 'Home', href: '/' },
   { label: 'About', href: '/about/', about: true },
-  { label: 'Migration Services', href: '/services/', mega: true },
+  { label: 'Our Services', href: '/services/', mega: true },
   { label: 'Resources', href: '/resources/', resources: true },
   { label: 'Contact Us', href: '/contact/' },
 ];
@@ -662,7 +662,7 @@ const register = PRACTICE.regulator.registerSearchUrl;
   }
   .mega__cols {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: var(--space-5);
     align-content: start;
   }

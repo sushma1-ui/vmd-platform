@@ -59,12 +59,13 @@ const SKILLED = [
   'subclass-485-temporary-graduate-visa',
   'skills-assessment',
 ];
-const FAMILY_STUDY = [
+const FAMILY_VISIT = [
   'partner-visa-onshore-820-801',
   'partner-visa-offshore-309-100',
-  'subclass-500-student-visa',
   'subclass-600-visitor-visa',
 ];
+// Study sits in its own column, beside Refusals & review.
+const STUDY = ['subclass-500-student-visa'];
 
 const labelOf = (p: ServiceDoc) => SHORT_LABELS[p.slug] || p.title;
 
@@ -78,7 +79,7 @@ function pick(bySlug: Map<string, ServiceDoc>, slugs: string[]): NavItem[] {
 
 export function buildServiceNav(docs: ServiceDoc[]): ServiceNav {
   const bySlug = new Map(docs.map((p) => [p.slug, p]));
-  const known = new Set([...EMPLOYER, ...SKILLED, ...FAMILY_STUDY]);
+  const known = new Set([...EMPLOYER, ...SKILLED, ...FAMILY_VISIT, ...STUDY]);
 
   // Anything published but not slotted above (e.g. a brand-new visa) still shows up.
   const leftovers = docs
@@ -86,12 +87,12 @@ export function buildServiceNav(docs: ServiceDoc[]): ServiceNav {
     .map((p) => ({ label: labelOf(p), href: servicePageHref(p) }));
 
   const skilled = pick(bySlug, SKILLED);
-  // "Study in Australia" is a bespoke education page (not a CMS service doc); it sits in
-  // the study/partner column, next to the Student (500) pathway, inside Our Services.
-  const familyStudy = [
-    ...pick(bySlug, FAMILY_STUDY),
+  const familyVisit = [...pick(bySlug, FAMILY_VISIT), ...leftovers];
+  // Dedicated Study column: the Student (500) visa page plus the bespoke "Study in
+  // Australia" education page (the latter isn't a CMS service doc).
+  const study = [
+    ...pick(bySlug, STUDY),
     { label: 'Study in Australia', href: '/study-in-australia/' },
-    ...leftovers,
   ];
   const employerItems = pick(bySlug, EMPLOYER);
 
@@ -112,8 +113,9 @@ export function buildServiceNav(docs: ServiceDoc[]): ServiceNav {
     },
     columns: [
       { heading: 'Skilled & graduate', items: skilled },
-      { heading: 'Partner, study & visit', items: familyStudy },
+      { heading: 'Partner & visit', items: familyVisit },
       { heading: 'Refusals & review', items: reviews },
+      { heading: 'Study', items: study },
     ].filter((c) => c.items.length > 0),
     seeAllHref: '/services/',
   };
