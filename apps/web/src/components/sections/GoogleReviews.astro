@@ -126,7 +126,6 @@ const initials = (name: string) =>
                     <span class="rev-card__stars" aria-label={`${r.rating} out of 5`}>
                       <span aria-hidden="true">{stars(r.rating)}</span>
                     </span>
-                    {r.when && <span class="rev-card__when">{r.when}</span>}
                   </p>
                 </div>
                 <svg
@@ -250,10 +249,6 @@ const initials = (name: string) =>
     color: var(--color-emphasis-text);
     letter-spacing: 0.06em;
     margin: 0;
-  }
-  .rev-card__when {
-    font-size: var(--type-body-sm);
-    color: var(--color-text-muted);
   }
   .rev-card__g {
     flex: none;
