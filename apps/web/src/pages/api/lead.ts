@@ -85,6 +85,6 @@ function referenceSequence(): number {
 function json(d: unknown, status = 200) {
   return new Response(JSON.stringify(d), {
     status,
-    headers: { 'content-type': 'application/json' },
+    headers: { 'content-type': 'application/json', 'cache-control': 'no-store' },
   });
 }

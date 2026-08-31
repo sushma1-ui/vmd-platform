@@ -131,7 +131,7 @@ function json(d: unknown, s = 200) {
     status: s,
     headers: {
       'content-type': 'application/json',
-      ...(s === 200 ? { 'cache-control': 'no-store' } : {}),
+      'cache-control': 'no-store',
     },
   });
 }
