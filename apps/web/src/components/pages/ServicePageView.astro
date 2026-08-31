@@ -38,11 +38,14 @@ const readingTime = page.readingTime ?? Math.max(1, Math.round(words / 200));
 
 const toc: { id: string; text: string; level: number }[] = [];
 const bodyHtml = rawHtml.replace(/<(h2|h3)>([\s\S]*?)<\/\1>/g, (_m, tag, inner) => {
-  const text = String(inner).replace(/<[^>]+>/g, '');
-  const id = text
+  const raw = String(inner).replace(/<[^>]+>/g, '');
+  const id = raw
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '');
+  // Strip any author-written leading list number so the <ol> is the single source
+  // of numbering — no "○ 1." double markers.
+  const text = raw.replace(/^\s*\d+[.)]\s+/, '');
   toc.push({ id, text, level: tag === 'h2' ? 2 : 3 });
   return `<${tag} id="${id}">${inner}</${tag}>`;
 });
@@ -290,7 +293,6 @@ const schemas = [
   }
   .svc__toc-l3 {
     margin-inline-start: var(--space-3);
-    list-style: circle;
   }
   .svc__body :global(h2) {
     margin-block: var(--space-6) var(--space-3);
