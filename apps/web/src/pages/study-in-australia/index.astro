@@ -410,6 +410,10 @@ const schemas = [
           Call {PRACTICE.contact.phoneDisplay}
         </a>
       </div>
+      <p class="se-cta__email">
+        Education &amp; admissions enquiries —
+        <a href="mailto:admissions@migrationdoctors.com.au">admissions@migrationdoctors.com.au</a>
+      </p>
     </div>
   </section>
 </Base>
@@ -931,6 +935,22 @@ const schemas = [
   }
   .se-cta__phone:hover,
   .se-cta__phone:focus-visible {
+    border-block-end-color: currentColor;
+  }
+  .se-cta__email {
+    margin: var(--space-4) auto 0;
+    font-size: var(--type-body);
+    color: color-mix(in srgb, var(--color-text-inverse) 82%, transparent);
+  }
+  .se-cta__email a {
+    color: var(--color-emphasis);
+    font-weight: 600;
+    text-decoration: none;
+    border-block-end: 1px solid transparent;
+    transition: border-color var(--motion-fast, 180ms) var(--ease-standard, ease);
+  }
+  .se-cta__email a:hover,
+  .se-cta__email a:focus-visible {
     border-block-end-color: currentColor;
   }
 
