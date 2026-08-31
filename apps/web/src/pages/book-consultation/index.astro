@@ -32,8 +32,18 @@ const types = [
     value: 'follow-up',
     title: 'Follow-up',
     fee: null,
+    free: false,
     detail: 'A follow-up session for an existing matter you have already discussed with us.',
     href: null,
+  },
+  {
+    value: 'educational',
+    title: 'Educational Consultation',
+    fee: null,
+    free: true,
+    detail:
+      'Not sure what to study, where to study, or how to start your Australian education journey? Speak with our team, free, for guidance on your study options and pathway — before you decide.',
+    href: '/study-in-australia/',
   },
 ];
 
@@ -62,10 +72,14 @@ const trail = [
     <div class="bkc__types" role="list" data-reveal>
       {
         types.map((t) => (
-          <div class="bkc__type" role="listitem">
+          <div class:list={['bkc__type', { 'bkc__type--free': t.free }]} role="listitem">
             <div class="bkc__type-head">
               <h2 class="bkc__type-h">{t.title}</h2>
-              {t.fee && <span class="bkc__fee">{t.fee}</span>}
+              {t.free ? (
+                <span class="bkc__free">Free</span>
+              ) : (
+                t.fee && <span class="bkc__fee">{t.fee}</span>
+              )}
             </div>
             <p class="bkc__type-p">{t.detail}</p>
             <div class="bkc__type-actions">
@@ -101,14 +115,24 @@ const trail = [
   // Progressive enhancement: a type card pre-selects the form's consultation type and
   // scrolls to the form. Without JS, the select and form still work on their own.
   const select = document.querySelector<HTMLSelectElement>('#bk-type');
+  const choose = (value: string, scroll = true) => {
+    if (select && value) {
+      select.value = value;
+      // Fire change so the form reveals type-specific fields (e.g. Educational).
+      select.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+    if (scroll) document.getElementById('booking-form')?.scrollIntoView({ behavior: 'smooth' });
+    select?.focus();
+  };
   document.querySelectorAll<HTMLButtonElement>('[data-bk-choose]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const value = btn.dataset.bkChoose;
-      if (select && value) select.value = value;
-      document.getElementById('booking-form')?.scrollIntoView({ behavior: 'smooth' });
-      select?.focus();
-    });
+    btn.addEventListener('click', () => choose(btn.dataset.bkChoose || ''));
   });
+  // Deep link: /book-consultation?type=educational (or #educational) — used by the
+  // Study in Australia FREE Educational Consultation CTAs.
+  const valid = ['initial', 'second-opinion', 'follow-up', 'educational'];
+  const params = new URLSearchParams(location.search);
+  const pre = params.get('type') || (location.hash ? location.hash.slice(1) : '');
+  if (pre && valid.includes(pre)) choose(pre);
 </script>
 
 <style>
@@ -192,6 +216,24 @@ const trail = [
     padding: 0.1em 0.55em;
     border-radius: var(--radius-chip);
     line-height: 1.2;
+  }
+  /* Educational Consultation — the FREE Study-in-Australia lead magnet. Distinct
+     from the paid cards with a gold frame + solid gold FREE badge, still on-brand. */
+  .bkc__type--free {
+    border-color: color-mix(in srgb, var(--color-emphasis) 55%, var(--color-hairline));
+    background: color-mix(in srgb, var(--color-emphasis) 5%, var(--color-surface));
+  }
+  .bkc__free {
+    flex: none;
+    font-weight: 700;
+    font-size: var(--type-caption);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-ground-deep);
+    background: var(--color-emphasis);
+    padding: 0.28em 0.7em;
+    border-radius: var(--radius-chip);
+    line-height: 1.1;
   }
   .bkc__type-p {
     color: var(--color-text-muted);

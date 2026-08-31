@@ -44,6 +44,7 @@ export const Leads: CollectionConfig = {
         'health-check',
         'second-opinion',
         'consultation',
+        'educational-consultation',
         'guide-download',
         'newsletter',
         'quick-enquiry',

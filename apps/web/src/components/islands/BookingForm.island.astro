@@ -10,7 +10,9 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
       <select id="bk-type" name="type"
         ><option value="initial">Initial Consultation</option><option value="second-opinion"
           >Second Opinion</option
-        ><option value="follow-up">Follow-up</option></select
+        ><option value="follow-up">Follow-up</option><option value="educational"
+          >Educational Consultation — FREE</option
+        ></select
       >
     </div>
     <div class="bk__f">
@@ -49,8 +51,50 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
       />
     </div>
   </div>
+  <div class="bk__edu" data-edu-fields hidden>
+    <p class="bk__edu-h">A few details to make your free education session useful (optional)</p>
+    <div class="bk__grid">
+      <div class="bk__f">
+        <label for="bk-contact">Preferred contact method</label>
+        <select id="bk-contact" name="contactMethod">
+          <option value="">No preference</option>
+          <option>Email</option>
+          <option>Phone call</option>
+          <option>WhatsApp</option>
+        </select>
+      </div>
+      <div class="bk__f">
+        <label for="bk-level">Current education level</label><input
+          id="bk-level"
+          name="educationLevel"
+          autocomplete="off"
+          placeholder="e.g. Year 12, Bachelor’s"
+        />
+      </div>
+      <div class="bk__f">
+        <label for="bk-course">Intended study / course</label><input
+          id="bk-course"
+          name="intendedCourse"
+          placeholder="e.g. Nursing, IT, Business"
+        />
+      </div>
+      <div class="bk__f">
+        <label for="bk-city">Preferred city / institution (if known)</label><input
+          id="bk-city"
+          name="preferredCity"
+        />
+      </div>
+      <div class="bk__f">
+        <label for="bk-intake">Approximate intake / timing</label><input
+          id="bk-intake"
+          name="intake"
+          placeholder="e.g. Semester 1, 2027"
+        />
+      </div>
+    </div>
+  </div>
   <div class="bk__f">
-    <label for="bk-notes">Anything we should know?</label><textarea
+    <label for="bk-notes">Any questions, or anything we should know?</label><textarea
       id="bk-notes"
       name="notes"
       rows="3"></textarea>
@@ -122,6 +166,19 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
     font-weight: 500;
     cursor: pointer;
   }
+  .bk__edu {
+    margin-block-end: var(--space-3);
+    padding: var(--space-3) var(--space-4) 0;
+    border: 1px dashed var(--color-emphasis);
+    border-radius: var(--radius-control);
+    background: color-mix(in srgb, var(--color-emphasis) 6%, transparent);
+  }
+  .bk__edu-h {
+    margin: 0 0 var(--space-3);
+    font-size: var(--type-body-sm);
+    font-weight: 600;
+    color: var(--color-emphasis-text);
+  }
   .bk__hp {
     position: absolute;
     left: -9999px;
@@ -157,6 +214,14 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
   const ok = form?.querySelector('[data-ok]');
   const submit = form?.querySelector('button[type="submit"]');
   const submitLabel = submit ? submit.textContent : '';
+  // Educational Consultation reveals a few optional study-specific fields.
+  const typeSel = form?.querySelector('#bk-type');
+  const eduFields = form?.querySelector('[data-edu-fields]');
+  const toggleEdu = () => {
+    if (eduFields) eduFields.hidden = typeSel?.value !== 'educational';
+  };
+  typeSel?.addEventListener('change', toggleEdu);
+  toggleEdu();
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     err.hidden = true;
@@ -173,6 +238,27 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
       company: fd.get('company') || undefined,
       turnstileToken: fd.get('cf-turnstile-response') || undefined,
     };
+    if (payload.type === 'educational') {
+      const lines = [];
+      const push = (label, name) => {
+        const v = fd.get(name);
+        if (v) lines.push(label + ': ' + v);
+      };
+      push('Preferred contact', 'contactMethod');
+      push('Education level', 'educationLevel');
+      push('Intended course', 'intendedCourse');
+      push('Preferred city/institution', 'preferredCity');
+      push('Intake/timing', 'intake');
+      const msg = fd.get('notes');
+      payload.notes =
+        [
+          '[Educational Consultation — Study in Australia]',
+          lines.join('\n'),
+          msg ? 'Message: ' + msg : '',
+        ]
+          .filter(Boolean)
+          .join('\n') || undefined;
+    }
     if (!payload.firstName || !payload.email || !payload.mobile) {
       err.textContent = 'Please enter your name, email and mobile.';
       err.hidden = false;

@@ -14,10 +14,9 @@
  */
 import Base from '../../layouts/Base.astro';
 import { PRACTICE } from '@vmd/config';
-import { Rule } from '@vmd/ui';
+import { Rule, Button } from '@vmd/ui';
 import { breadcrumbSchema, faqSchema, serviceSchema } from '@vmd/seo';
 import { pathnameToTrail } from '../../lib/breadcrumbs.ts';
-import BookCta from '../../components/cta/BookCta.astro';
 import { getCtaLinks } from '../../lib/cms.ts';
 
 const trail = pathnameToTrail(Astro.url.pathname);
@@ -217,7 +216,9 @@ const schemas = [
         course that fits your goal, with honest advice at every step.
       </p>
       <div class="se-hero__cta">
-        <BookCta variant="primary" label="Book a Consultation" />
+        <Button variant="primary" href="/book-consultation?type=educational"
+          >Book Your FREE Educational Consultation</Button
+        >
         <a class="se-hero__more" href="#approach">See how we help ↓</a>
       </div>
 
@@ -276,6 +277,20 @@ const schemas = [
           ))
         }
       </ul>
+    </div>
+  </section>
+
+  <!-- 3b · FREE Educational Consultation — mid-page conversion band -->
+  <section class="se-freeband" data-reveal aria-label="Free educational consultation">
+    <div class="se-freeband__inner">
+      <p class="se-freeband__kicker">Free · No obligation</p>
+      <p class="se-freeband__text">
+        Talk to our education team before you decide — a free consultation on your study options and
+        pathway, with your bigger picture in view.
+      </p>
+      <Button variant="primary" href="/book-consultation?type=educational"
+        >Book Your FREE Educational Consultation</Button
+      >
     </div>
   </section>
 
@@ -401,11 +416,13 @@ const schemas = [
     <div class="se-cta__inner">
       <h2 class="se-cta__h" id="cta-h">Understand your pathway before you enrol.</h2>
       <p class="se-cta__sub">
-        Book a consultation for honest, considered advice on studying in Australia — with your
-        bigger picture in view.
+        Start with a free educational consultation — honest, considered advice on studying in
+        Australia, with your bigger picture in view.
       </p>
       <div class="se-cta__actions">
-        <BookCta variant="primary" label="Book a Consultation" />
+        <Button variant="primary" href="/book-consultation?type=educational"
+          >Book Your FREE Educational Consultation</Button
+        >
         <a class="se-cta__phone" href={`tel:${PRACTICE.contact.phone}`}>
           Call {PRACTICE.contact.phoneDisplay}
         </a>
@@ -952,6 +969,34 @@ const schemas = [
   .se-cta__email a:hover,
   .se-cta__email a:focus-visible {
     border-block-end-color: currentColor;
+  }
+  /* FREE Educational Consultation — mid-page conversion band. Warm bone ground with
+     a gold wash + hairline, so the offer reads as one consistent campaign with the
+     hero and final CTA without shouting. */
+  .se-freeband {
+    background: color-mix(in srgb, var(--color-emphasis) 8%, var(--color-ground-warm));
+    border-block: 1px solid color-mix(in srgb, var(--color-emphasis) 25%, transparent);
+  }
+  .se-freeband__inner {
+    max-inline-size: var(--container-max);
+    margin-inline: auto;
+    padding: clamp(var(--space-6), 4vw, var(--space-7)) var(--space-4);
+    text-align: center;
+  }
+  .se-freeband__kicker {
+    margin: 0 0 var(--space-2);
+    font-size: var(--type-caption);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--color-emphasis-text);
+  }
+  .se-freeband__text {
+    margin: 0 auto var(--space-4);
+    max-inline-size: 52ch;
+    font-size: var(--type-body-lg);
+    line-height: 1.5;
+    color: var(--color-text);
   }
 
   /* ---- Responsive ------------------------------------------------------- */

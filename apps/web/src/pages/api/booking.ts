@@ -68,12 +68,16 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   if (apiKey && recordId !== 'pending' && providerRef)
     await patchConsultation(recordId, { providerRef }, apiKey);
 
-  // 4) A booking is also a high-value lead.
+  // 4) A booking is also a high-value lead. Educational Consultations (the Study in
+  //    Australia funnel) are tagged distinctly so that funnel can be measured, and
+  //    routed to admissions@ — without changing the general consultation pipeline.
+  const isEducational = data.type === 'educational';
+  const bookingLeadSource = isEducational ? 'educational-consultation' : 'consultation';
   if (apiKey)
     await createLead(
       {
-        source: 'consultation',
-        score: scoreLead('consultation'),
+        source: bookingLeadSource,
+        score: scoreLead(bookingLeadSource),
         firstName: data.firstName,
         email: data.email,
         mobile: data.mobile,
@@ -85,16 +89,17 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   //    checklist (commitment device, §9.4).
   if (env.POSTMARK_SERVER_TOKEN && env.POSTMARK_FROM_EMAIL) {
     const postmark = { serverToken: env.POSTMARK_SERVER_TOKEN, from: env.POSTMARK_FROM_EMAIL };
-    // Team alert — a booking is a high-value enquiry; route it to the practice inbox.
+    // Team alert — route educational (Study in Australia) enquiries to admissions@,
+    // every other consultation to the general practice inbox.
     await sendTransactional(
       {
-        to: PRACTICE.contact.email,
+        to: isEducational ? PRACTICE.contact.admissionsEmail : PRACTICE.contact.email,
         template: 'lead-internal-notification',
         model: {
           firstName: data.firstName,
           email: data.email,
           mobile: data.mobile,
-          source: 'consultation booking',
+          source: isEducational ? 'educational consultation booking' : 'consultation booking',
           submissionId: recordId !== 'pending' ? recordId : undefined,
           healthCheck: {
             consultationType: data.type,

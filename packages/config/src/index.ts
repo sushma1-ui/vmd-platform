@@ -53,6 +53,9 @@ export const PRACTICE = {
     // Practice-standard shared mailbox (matches client documents). sunil@ is retained
     // for direct client correspondence only, not shown as the public site contact.
     email: 'enquiries@migrationdoctors.com.au',
+    // Education / admissions enquiries — the Study in Australia funnel (Educational
+    // Consultation bookings + the Study page/footer education contact) route here.
+    admissionsEmail: 'admissions@migrationdoctors.com.au',
   },
   address: {
     street: 'Level 27, 44 St Georges Terrace',

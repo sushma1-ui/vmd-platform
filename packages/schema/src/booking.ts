@@ -21,6 +21,7 @@ export const consultationType = z.enum([
   'initial',
   'second-opinion',
   'follow-up',
+  'educational',
   'standard',
   'online',
   'in-person',
