@@ -42,11 +42,16 @@ const shown = (s?: { show?: boolean | null }) => s?.show !== false;
 // writes are pending, so treat those exact old strings as "unset" — the current
 // copy wins until an editor sets a genuinely new value (which is still honoured).
 const OLD_HERO_TITLE = 'Find the Right Australian Visa Pathway — Before You Spend a Dollar';
+// Superseded CMS hero titles — treated as "unset" so the branded styled default
+// (with the gold "Made Clear" accent) wins until an editor sets a genuinely new value.
+const SUPERSEDED_HERO_TITLES = [OLD_HERO_TITLE, 'Australian Migration, Made Clear...'];
 const OLD_HERO_LEAD =
   'Honest, expert guidance from a Registered Migration Agent — clear answers and a plan you can trust, entirely at your pace.';
 const HERO_DEFAULT = 'Find the Right Australian Visa Pathway with Honest Guidance';
 const heroTitle =
-  hp?.hero?.title && hp.hero.title.trim() !== OLD_HERO_TITLE ? hp.hero.title : HERO_DEFAULT;
+  hp?.hero?.title && !SUPERSEDED_HERO_TITLES.includes(hp.hero.title.trim())
+    ? hp.hero.title
+    : HERO_DEFAULT;
 // Prototype-approved concise lead. The previous long default is also treated as
 // "unset" so this shorter version wins until an editor sets a genuinely new value.
 const OLD_HERO_LEAD_2 =
