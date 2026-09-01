@@ -52,7 +52,7 @@ export const PRACTICE = {
     phoneDisplay: '+61 493 719 431',
     // Practice-standard shared mailbox (matches client documents). sunil@ is retained
     // for direct client correspondence only, not shown as the public site contact.
-    email: 'enquiries@migrationdoctors.com.au',
+    email: 'enquiry@migrationdoctors.com.au',
     // Education / admissions enquiries — the Study in Australia funnel (Educational
     // Consultation bookings + the Study page/footer education contact) route here.
     admissionsEmail: 'admissions@migrationdoctors.com.au',
