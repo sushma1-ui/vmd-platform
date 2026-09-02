@@ -1,7 +1,5 @@
 ---
 import SimplePage from '../../../components/content/SimplePage.astro';
-import { getCtaLinks } from '../../../lib/cms.ts';
-const { bookUrl } = await getCtaLinks();
 
 const qualifications = [
   'Master of Business Analytics (current), The University of Western Australia',
@@ -24,7 +22,6 @@ const areasOfFocus = [
   description="Meet Sudeep Bartaula, Data & Compliance Officer at Visa & Migration Doctors — supporting documentation, compliance and application coordination under the supervision of the Registered Migration Agent."
   eyebrow="The team"
   lead="Data & Compliance Officer"
-  cta={{ href: bookUrl, label: 'Book a Consultation' }}
   disclaimer={true}
 >
   <figure class="pf__portrait">
