@@ -25,5 +25,6 @@ test-results/
 *.tsbuildinfo
 # local prototypes (not shipped)
 apps/web/public/homepage-prototype*.html
-# hero-carousel source PNGs (~28MB) — only the optimised /hero-carousel/*.webp ship
+# hero-carousel source PNGs (raw, tens of MB) — only the optimised /hero-carousel/*.webp ship
 apps/web/public/Carousal/
+apps/web/public/Carousal 2/

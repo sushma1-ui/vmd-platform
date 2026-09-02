@@ -151,15 +151,15 @@ const QUICK_LINKS = [
   <!-- 3 · HERO — the free assessment leads -->
   <section class="hero" id="start">
     {
-      /* Atmospheric Opera House — the real photo, treated to a whisper: low
-       opacity, brightened, warm-toned, low-contrast, masked so it lives centre-
-       right and dissolves into the light. Behind the content only; hidden intent
-       is "feel Australia before you notice the landmark". Decorative. */
+      /* Hero background carousel — full-bleed images that cross-fade every 5s and
+       loop continuously. Behind the content only, under a readability scrim so the
+       copy stays legible. Decorative; optimised WebP in /public/hero-carousel that
+       load progressively (first eager, the rest one step ahead) so nothing blocks. */
     }
     <div class="hero__photo" aria-hidden="true">
       <div class="hero__carousel" data-hero-carousel>
         {
-          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n, idx) => (
+          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((n, idx) => (
             <img
               class:list={['hero__slide', { 'is-active': idx === 0 }]}
               src={idx === 0 ? `/hero-carousel/${n}.webp` : undefined}
