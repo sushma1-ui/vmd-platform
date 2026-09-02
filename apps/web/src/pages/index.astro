@@ -157,15 +157,23 @@ const QUICK_LINKS = [
        is "feel Australia before you notice the landmark". Decorative. */
     }
     <div class="hero__photo" aria-hidden="true">
-      <img
-        src="/opera-house.avif"
-        alt=""
-        width="1600"
-        height="1000"
-        loading="eager"
-        fetchpriority="low"
-        decoding="async"
-      />
+      <div class="hero__carousel" data-hero-carousel>
+        {
+          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n, idx) => (
+            <img
+              class:list={['hero__slide', { 'is-active': idx === 0 }]}
+              src={idx === 0 ? `/hero-carousel/${n}.webp` : undefined}
+              data-src={idx === 0 ? undefined : `/hero-carousel/${n}.webp`}
+              alt=""
+              width="1600"
+              height="1000"
+              loading={idx === 0 ? 'eager' : 'lazy'}
+              fetchpriority={idx === 0 ? 'high' : undefined}
+              decoding="async"
+            />
+          ))
+        }
+      </div>
     </div>
     <div class="hero__copy">
       <h1 class="hero__title">
@@ -419,6 +427,32 @@ const QUICK_LINKS = [
       />
     )
   }
+  <script>
+    // Homepage hero background carousel — cross-fades the 10 images every 5s and
+    // loops. The first slide is in the HTML (eager); the rest load progressively,
+    // one step ahead of when they're shown, so the carousel never blocks the page.
+    // Honours prefers-reduced-motion (stays on the first image, no rotation).
+    (function () {
+      const root = document.querySelector('[data-hero-carousel]');
+      if (!root) return;
+      const slides = Array.prototype.slice.call(root.querySelectorAll('.hero__slide'));
+      if (slides.length < 2) return;
+      const load = (el) => {
+        if (el && !el.getAttribute('src') && el.dataset.src) el.setAttribute('src', el.dataset.src);
+      };
+      load(slides[1]); // ready the next image for a smooth first transition
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      let i = 0;
+      setInterval(function () {
+        const next = (i + 1) % slides.length;
+        load(slides[next]);
+        load(slides[(next + 1) % slides.length]); // preload one further ahead
+        slides[i].classList.remove('is-active');
+        slides[next].classList.add('is-active');
+        i = next;
+      }, 5000);
+    })();
+  </script>
 </Base>
 
 <style>
@@ -728,21 +762,47 @@ const QUICK_LINKS = [
     overflow: hidden;
     pointer-events: none;
     user-select: none;
-    /* Live centre-right; dissolve toward the copy (left) and all edges so it
-       never touches the headline, the nav above, or the section below. */
-    -webkit-mask-image: radial-gradient(115% 110% at 68% 30%, #000 22%, transparent 70%);
-    mask-image: radial-gradient(115% 110% at 68% 30%, #000 22%, transparent 70%);
   }
-  .hero__photo img {
+  /* Readability scrim over the carousel: bright behind the left-hand copy,
+     clearing toward the right so the imagery reads. All values tunable here. */
+  .hero__photo::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: linear-gradient(
+      100deg,
+      var(--color-ground-warm) 0%,
+      color-mix(in srgb, var(--color-ground-warm) 80%, transparent) 32%,
+      color-mix(in srgb, var(--color-ground-warm) 42%, transparent) 58%,
+      transparent 88%
+    );
+  }
+  .hero__carousel {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+  /* Each slide is a full-bleed layer; only .is-active is visible. JS cross-fades
+     them every 5s and loops; images beyond the first load progressively. */
+  .hero__slide {
+    position: absolute;
+    inset: 0;
     inline-size: 100%;
     block-size: 100%;
     object-fit: cover;
-    object-position: 70% 24%;
-    /* Atmospheric, not photographic — brightened, warm-toned, low-contrast.
-       Strength raised from a whisper to a clearer presence (still masked away
-       from the headline so readability holds). */
-    opacity: 0.26;
-    filter: brightness(1.05) contrast(0.95) saturate(1.08) sepia(0.05);
+    object-position: 60% center;
+    opacity: 0;
+    transition: opacity 1200ms var(--ease-standard, ease);
+    filter: saturate(1.04);
+  }
+  .hero__slide.is-active {
+    opacity: 0.85;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero__slide {
+      transition: none;
+    }
   }
   /* Mobile: a different, lighter treatment — focal point moved up and away from
      the stacked copy/form, and visibility reduced so the hero stays clean. */
@@ -751,15 +811,18 @@ const QUICK_LINKS = [
        zooming into an unrecognisable slice. So constrain it to a landscape BAND
        at the top (behind the headline), keep the Opera House in frame, and fade
        it out before the form — clearly visible, still readable. */
-    .hero__photo {
-      inset-block-end: auto;
-      block-size: min(48vh, 360px);
-      -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 58%, transparent 100%);
-      mask-image: linear-gradient(180deg, #000 0%, #000 58%, transparent 100%);
+    /* Mobile: keep the carousel full-bleed but scrim top + bottom so the stacked
+       copy and form stay readable over it. */
+    .hero__photo::after {
+      background: linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--color-ground-warm) 72%, transparent) 0%,
+        color-mix(in srgb, var(--color-ground-warm) 28%, transparent) 42%,
+        color-mix(in srgb, var(--color-ground-warm) 88%, transparent) 100%
+      );
     }
-    .hero__photo img {
-      object-position: 55% center;
-      opacity: 0.34;
+    .hero__slide {
+      object-position: center;
     }
   }
   .hero__title {
