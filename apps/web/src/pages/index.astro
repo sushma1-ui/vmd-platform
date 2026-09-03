@@ -806,23 +806,30 @@ const QUICK_LINKS = [
   }
   /* Mobile: a different, lighter treatment — focal point moved up and away from
      the stacked copy/form, and visibility reduced so the hero stays clean. */
-  @media (max-width: 767px) {
-    /* Mobile: the landscape photo can't fill the tall, stacked hero without
-       zooming into an unrecognisable slice. So constrain it to a landscape BAND
-       at the top (behind the headline), keep the Opera House in frame, and fade
-       it out before the form — clearly visible, still readable. */
-    /* Mobile: keep the carousel full-bleed but scrim top + bottom so the stacked
-       copy and form stay readable over it. */
+  /* Stacked layout (below the 880px two-column breakpoint): a full-bleed carousel
+     behind the tall, stacked copy + form crops the landscape images into an
+     awkward vertical slice. Instead, present it as a proper landscape BAND at the
+     top of the hero — contained, rounded, compact, standing on its own so the
+     images read as intended and the copy/form flow cleanly beneath it. */
+  @media (max-width: 879.98px) {
+    .hero__photo {
+      position: relative;
+      inset: auto;
+      inline-size: 100%;
+      block-size: clamp(180px, 46vw, 300px);
+      border-radius: var(--radius-card, 14px);
+      box-shadow: var(--shadow-subtle, 0 10px 26px -16px rgba(16, 30, 60, 0.28));
+    }
+    /* The band stands alone (text is below it now), so drop the readability scrim
+       and show each image at full strength. */
     .hero__photo::after {
-      background: linear-gradient(
-        180deg,
-        color-mix(in srgb, var(--color-ground-warm) 72%, transparent) 0%,
-        color-mix(in srgb, var(--color-ground-warm) 28%, transparent) 42%,
-        color-mix(in srgb, var(--color-ground-warm) 88%, transparent) 100%
-      );
+      display: none;
     }
     .hero__slide {
       object-position: center;
+    }
+    .hero__slide.is-active {
+      opacity: 1;
     }
   }
   .hero__title {
