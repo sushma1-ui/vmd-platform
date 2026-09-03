@@ -672,6 +672,13 @@ const register = PRACTICE.regulator.registerSearchUrl;
     margin: 0 0 var(--space-3);
     padding-block-end: var(--space-2);
     border-block-end: 1px solid color-mix(in srgb, var(--color-action) 10%, transparent);
+    /* Reserve two lines for every column heading so a longer name (e.g. "Student &
+       Graduate Visa") that wraps stays aligned with the single-line headings beside
+       it — the text sits on its underline and each column's links start on one line. */
+    min-block-size: calc(3.2em + var(--space-2) + 1px);
+    display: flex;
+    align-items: flex-end;
+    text-wrap: balance;
   }
   .mega__col-list {
     list-style: none;
