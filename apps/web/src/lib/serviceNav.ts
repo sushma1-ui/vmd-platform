@@ -42,8 +42,8 @@ const SHORT_LABELS: Record<string, string> = {
   'partner-visa-offshore-309-100': 'Partner — Offshore (309/100)',
   'subclass-500-student-visa': 'Student (500)',
   'subclass-600-visitor-visa': 'Visitor (600)',
-  'skills-assessment': 'Skills Assessment',
-  'art-review-applications': 'ART merits review',
+  'skills-assessment': 'Skill Assessment',
+  'art-review-applications': 'ART Merits Review',
 };
 
 // Which column a service belongs to, by slug. Order within each list is preserved.
@@ -56,16 +56,14 @@ const SKILLED = [
   'subclass-190-skilled-nominated-visa',
   'subclass-491-skilled-work-regional-visa',
   'subclass-191-permanent-residence-skilled-regional-visa',
-  'subclass-485-temporary-graduate-visa',
-  'skills-assessment',
 ];
+// Student & graduate visas grouped together.
+const STUDENT_GRADUATE = ['subclass-500-student-visa', 'subclass-485-temporary-graduate-visa'];
 const FAMILY_VISIT = [
   'partner-visa-onshore-820-801',
   'partner-visa-offshore-309-100',
   'subclass-600-visitor-visa',
 ];
-// Study sits in its own column, beside Refusals & review.
-const STUDY = ['subclass-500-student-visa'];
 
 const labelOf = (p: ServiceDoc) => SHORT_LABELS[p.slug] || p.title;
 
@@ -79,28 +77,38 @@ function pick(bySlug: Map<string, ServiceDoc>, slugs: string[]): NavItem[] {
 
 export function buildServiceNav(docs: ServiceDoc[]): ServiceNav {
   const bySlug = new Map(docs.map((p) => [p.slug, p]));
-  const known = new Set([...EMPLOYER, ...SKILLED, ...FAMILY_VISIT, ...STUDY]);
+  const known = new Set([
+    ...EMPLOYER,
+    ...SKILLED,
+    ...STUDENT_GRADUATE,
+    ...FAMILY_VISIT,
+    'skills-assessment',
+    'initial-consultation',
+    'art-review-applications',
+  ]);
 
   // Anything published but not slotted above (e.g. a brand-new visa) still shows up.
   const leftovers = docs
     .filter((p) => p.section === 'visas' && !known.has(p.slug))
     .map((p) => ({ label: labelOf(p), href: servicePageHref(p) }));
 
-  const skilled = pick(bySlug, SKILLED);
-  const familyVisit = [...pick(bySlug, FAMILY_VISIT), ...leftovers];
-  // Dedicated Study column: the Student (500) visa page plus the bespoke "Study in
-  // Australia" education page (the latter isn't a CMS service doc).
-  const study = [
-    ...pick(bySlug, STUDY),
-    { label: 'Study in Australia', href: '/study-in-australia/' },
-  ];
+  const skilled = [...pick(bySlug, SKILLED), ...leftovers];
+  const studentGraduate = pick(bySlug, STUDENT_GRADUATE);
+  const familyVisit = pick(bySlug, FAMILY_VISIT);
   const employerItems = pick(bySlug, EMPLOYER);
 
-  // Reviews & second opinion — the dedicated pages plus ART merits review.
-  const reviews: NavItem[] = [
+  // Other services. "Admissions" is the Study in Australia education page (bespoke —
+  // not a CMS service doc), labelled simply "Admissions". "ART Merits Review" is the
+  // refusal/review wording used throughout the navbar. Second Opinion and Refusal
+  // Recovery are the dedicated review pages.
+  const otherServices: NavItem[] = [
+    { label: 'Admissions', href: '/study-in-australia/' },
+    { label: 'Health Insurance', href: '/resources/health-insurance/' },
+    ...pick(bySlug, ['skills-assessment']),
+    ...pick(bySlug, ['initial-consultation']),
+    ...pick(bySlug, ['art-review-applications']),
     { label: 'Second Opinion', href: '/services/second-opinion/' },
     { label: 'Refusal Recovery', href: '/services/refusal-recovery/' },
-    ...pick(bySlug, ['art-review-applications']),
   ];
 
   return {
@@ -112,10 +120,10 @@ export function buildServiceNav(docs: ServiceDoc[]): ServiceNav {
       items: employerItems,
     },
     columns: [
-      { heading: 'Skilled & graduate', items: skilled },
-      { heading: 'Partner & visit', items: familyVisit },
-      { heading: 'Refusals & review', items: reviews },
-      { heading: 'Study', items: study },
+      { heading: 'Skilled', items: skilled },
+      { heading: 'Student & Graduate Visa', items: studentGraduate },
+      { heading: 'Family & Visit Visa', items: familyVisit },
+      { heading: 'Other Services', items: otherServices },
     ].filter((c) => c.items.length > 0),
     seeAllHref: '/services/',
   };

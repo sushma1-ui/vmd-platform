@@ -1,0 +1,70 @@
+---
+import SimplePage from '../../../components/content/SimplePage.astro';
+import { getCtaLinks } from '../../../lib/cms.ts';
+const { bookUrl } = await getCtaLinks();
+---
+
+<SimplePage
+  title="Health Insurance for Your Visa"
+  description="How health cover works for Australian visas — OSHC for students, OVHC for temporary visa holders, and Medicare eligibility — general guidance from a Registered Migration Agent in Perth."
+  eyebrow="Knowledge Centre"
+  lead="Adequate health cover is a condition of many Australian visas. Here's how it generally works — and what to confirm for your situation."
+  cta={{ href: bookUrl, label: 'Book a Consultation' }}
+  disclaimer={true}
+>
+  <p>
+    Australia expects most visa holders to hold adequate health cover for the length of their stay,
+    and for several visas it's a formal requirement. What you need depends on your visa and your
+    circumstances — the notes below are a general starting point, not advice for your case.
+  </p>
+
+  <h2>Why health cover matters for your visa</h2>
+  <p>
+    Many temporary visas are granted on the basis that you can meet your own health costs while in
+    Australia, so you don't become a burden on the public system. Some visas set out a specific type
+    of cover you must hold; for others, appropriate private cover is simply expected. Where cover is
+    required, keeping it current for the whole of your stay is part of meeting your visa conditions.
+  </p>
+
+  <h2>Overseas Student Health Cover (OSHC)</h2>
+  <p>
+    Student visa (subclass 500) holders are generally required to hold Overseas Student Health Cover
+    (OSHC) for the duration of their studies, usually arranged before the visa is granted and
+    maintained throughout. Cover is provided by approved insurers, and your education provider can
+    often help you arrange it. See our
+    <a href="/visas/subclass-500-student-visa">Student visa</a> page for the wider requirements.
+  </p>
+
+  <h2>Overseas Visitor Health Cover (OVHC)</h2>
+  <p>
+    Temporary visa holders who aren't students — including many skilled and working visa holders and
+    visitors — are typically expected to hold adequate private health insurance, often referred to
+    as Overseas Visitor Health Cover (OVHC), unless they're covered another way. The level of cover
+    that counts as "adequate" varies by visa, so it's worth confirming before you apply or travel.
+  </p>
+
+  <h2>Medicare</h2>
+  <p>
+    Access to Medicare (Australia's public health system) depends on your visa and, in some cases,
+    on a reciprocal health care agreement between Australia and your home country. Permanent
+    residents and some visa holders can enrol; many temporary visa holders cannot, and rely on
+    private cover instead. Confirm what applies to you before you count on public cover.
+  </p>
+
+  <h2>What to check</h2>
+  <ul>
+    <li>Whether your specific visa requires a particular type or level of cover.</li>
+    <li>That your cover starts before you arrive and lasts the full length of your stay.</li>
+    <li>Whether you (or a reciprocal agreement) give you any Medicare access.</li>
+    <li>
+      What your policy actually covers — waiting periods, exclusions and limits differ between
+      insurers.
+    </li>
+  </ul>
+
+  <p>
+    Health cover requirements sit alongside the health and character requirements for many visas. If
+    you're not sure what your visa needs, we can talk it through as part of preparing your
+    application — get in touch and we'll point you to what's relevant for your situation.
+  </p>
+</SimplePage>
