@@ -584,7 +584,7 @@ Once you're enrolled and have your Confirmation of Enrolment, we prepare and lod
   {
     section: 'visas',
     slug: 'subclass-600-visitor-visa',
-    title: 'Subclass 600 Visitor Visa (Tourist Stream)',
+    title: 'Subclass 600 Visitor Visa',
     metaTitle: 'Subclass 600 Visitor Visa | Visa & Migration Doctors Perth',
     metaDescription:
       'The Subclass 600 Visitor visa lets you travel to Australia for tourism or to visit family. Requirements and longer parent-stay options — Registered Migration Agent, Perth.',

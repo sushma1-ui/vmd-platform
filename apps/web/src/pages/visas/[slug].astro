@@ -9,7 +9,16 @@ export async function getStaticPaths() {
   const all = (await cms.servicePages()) as unknown as ServiceDoc[];
   return all
     .filter((p) => p.section === 'visas')
-    .map((p) => ({ params: { slug: p.slug }, props: { page: p, allPages: all } }));
+    .map((p) => {
+      // The Subclass 600 page heading drops the "(Tourist Stream)" qualifier while
+      // the body keeps it. Applied to the title here so the H1, breadcrumb and
+      // schema stay consistent on that page. (Align the CMS title when convenient.)
+      const page =
+        p.slug === 'subclass-600-visitor-visa'
+          ? { ...p, title: p.title.replace(' (Tourist Stream)', '') }
+          : p;
+      return { params: { slug: p.slug }, props: { page, allPages: all } };
+    });
 }
 
 const { page, allPages } = Astro.props;
