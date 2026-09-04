@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import { secondOpinionIntake, scoreLead, formatSubmissionReference } from '@vmd/schema';
-import { rateLimit, verifyTurnstile } from '@vmd/forms';
+import { rateLimit, verifyTurnstile, readJson } from '@vmd/forms';
 import { sendTransactional } from '@vmd/email';
 import { PRACTICE } from '@vmd/config';
 import { createLead } from '../../lib/cms.ts';
@@ -9,30 +9,31 @@ export const prerender = false;
 const env = import.meta.env;
 
 export const POST: APIRoute = async ({ request, clientAddress }) => {
-  let body: unknown;
-  try {
-    body = await request.json();
-  } catch {
-    return json({ ok: false }, 400);
-  }
-  const raw = (body ?? {}) as Record<string, unknown>;
+  const read = await readJson(request); // size-limited (32 KB) + JSON-object guard
+  if (!read.ok) return json({ ok: false, error: read.error }, read.status);
+  const body = read.data;
+  const raw = body as Record<string, unknown>;
   if (raw.company) return json({ ok: true }); // honeypot
 
   const parsed = secondOpinionIntake.safeParse(body);
   if (!parsed.success) return json({ ok: false, fieldErrors: fieldErrs(parsed.error.issues) }, 422);
 
+  const ip =
+    clientAddress || request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
   const okHuman = await verifyTurnstile(
     raw.turnstileToken as string | undefined,
     env.TURNSTILE_SECRET_KEY,
-    clientAddress,
+    ip,
   );
   if (!okHuman) return json({ ok: false, error: 'Verification failed' }, 400);
 
-  const underLimit = await rateLimit(`so:${clientAddress}`, 5, 60, {
-    url: env.UPSTASH_REDIS_REST_URL,
-    token: env.UPSTASH_REDIS_REST_TOKEN,
-  });
-  if (!underLimit) return json({ ok: false, error: 'Too many requests' }, 429);
+  const upstash = { url: env.UPSTASH_REDIS_REST_URL, token: env.UPSTASH_REDIS_REST_TOKEN };
+  const [ipBurst, ipHour, emailDay] = await Promise.all([
+    rateLimit(`so:ip:${ip}`, 5, 60, upstash),
+    rateLimit(`so:ip:h:${ip}`, 20, 3600, upstash),
+    rateLimit(`so:email:${parsed.data.email}`, 5, 86_400, upstash),
+  ]);
+  if (!ipBurst || !ipHour || !emailDay) return json({ ok: false, error: 'Too many requests' }, 429);
 
   const source = 'second-opinion' as const;
   const now = new Date();

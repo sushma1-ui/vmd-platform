@@ -1,6 +1,7 @@
 import { leadSchema, type Lead } from '@vmd/schema';
-export { verifyTurnstile } from './spam.ts';
+export { verifyTurnstile, turnstileConfigured, type TurnstileOptions } from './spam.ts';
 export { rateLimit, type UpstashConfig } from './rate-limit.ts';
+export { readJson, type ReadJsonResult } from './body.ts';
 
 export type ValidationResult<T> =
   { ok: true; data: T } | { ok: false; fieldErrors: Record<string, string> };

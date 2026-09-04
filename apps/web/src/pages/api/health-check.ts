@@ -4,7 +4,7 @@ import { track } from '@vmd/analytics';
 import { PRACTICE } from '@vmd/config';
 import { sendTransactional } from '@vmd/email';
 import { getCrmProvider } from '@vmd/crm';
-import { verifyTurnstile, rateLimit } from '@vmd/forms';
+import { verifyTurnstile, rateLimit, readJson } from '@vmd/forms';
 import { createLead } from '../../lib/cms.ts';
 
 export const prerender = false;
@@ -21,13 +21,14 @@ const env = import.meta.env;
  * never block (or fail) the client's success response.
  */
 export const POST: APIRoute = async ({ request, clientAddress }) => {
-  let body: unknown;
-  try {
-    body = await request.json();
-  } catch {
-    return json({ ok: false, error: 'invalid-json' }, 400);
-  }
-  const raw = (body ?? {}) as Record<string, unknown>;
+  const read = await readJson(request); // size-limited (32 KB) + JSON-object guard
+  if (!read.ok)
+    return json(
+      { ok: false, error: read.status === 413 ? 'payload-too-large' : 'invalid-json' },
+      read.status,
+    );
+  const body = read.data;
+  const raw = body as Record<string, unknown>;
 
   // 1a — Honeypot: bots fill the hidden "website" field. Drop silently with a
   //      generic success so they learn nothing; no lead, no email, no CRM.

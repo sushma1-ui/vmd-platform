@@ -17,13 +17,25 @@ export const firstName = z.string().trim().min(1, 'Please enter your first name'
 export const country = z.string().trim().min(1, 'Select your country of residence').max(80);
 export const nationality = z.string().trim().min(1, 'Select your nationality').max(80);
 
-/** UTM + attribution captured on every submission (Blueprint §9.4). */
+/** UTM + attribution captured on every submission (Blueprint §9.4). Every field is
+ *  length-bounded so a hostile client can't stuff large blobs into these
+ *  free-text, client-supplied values (unbounded strings are a payload/storage
+ *  abuse vector). Overlong values are TRUNCATED to the cap (not rejected), so a
+ *  genuine long referrer URL never fails an otherwise valid enquiry; a non-string
+ *  falls back to empty. */
+const capped = (max: number) =>
+  z
+    .string()
+    .trim()
+    .transform((s) => s.slice(0, max))
+    .catch('')
+    .optional();
 export const attribution = z.object({
-  utmSource: z.string().optional(),
-  utmMedium: z.string().optional(),
-  utmCampaign: z.string().optional(),
-  landingPage: z.string().optional(),
-  referrer: z.string().optional(),
+  utmSource: capped(512),
+  utmMedium: capped(512),
+  utmCampaign: capped(512),
+  landingPage: capped(2048),
+  referrer: capped(2048),
   device: z.enum(['mobile', 'tablet', 'desktop']).optional(),
 });
 

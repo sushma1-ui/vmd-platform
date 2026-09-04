@@ -33,8 +33,34 @@ const dirname = path.dirname(fileURLToPath(import.meta.url));
 // TRANSACTION pooler (port 6543) is NOT Payload-safe: it breaks initialization.
 const connectionString = process.env.DATABASE_URL || process.env.DATABASE_POOL_URL || '';
 
+// Origins permitted for cross-origin API/cookie use. The website talks to the CMS
+// server-to-server with an API key (no browser CORS involved), so this primarily
+// hardens the admin panel's own cookie auth against cross-site use. Same-origin
+// admin access is always allowed regardless of this list.
+const siteUrl = process.env.PUBLIC_SITE_URL || 'https://migrationdoctors.com.au';
+const cmsUrl = process.env.PUBLIC_CMS_URL || '';
+const allowedOrigins = [
+  siteUrl,
+  'https://www.migrationdoctors.com.au',
+  cmsUrl,
+  ...(process.env.NODE_ENV !== 'production'
+    ? ['http://localhost:3000', 'http://localhost:4321']
+    : []),
+].filter((o): o is string => Boolean(o));
+
 export default buildConfig({
   secret: process.env.PAYLOAD_SECRET ?? '',
+  // Cross-origin allow-list for the REST/GraphQL API and CSRF-protected cookie auth.
+  cors: allowedOrigins,
+  csrf: allowedOrigins,
+  // App-layer rate limit on the Payload API, keyed on the REAL client IP (trustProxy,
+  // since we sit behind Vercel/Cloudflare). Unauthenticated writes are already denied
+  // by access control; this caps hammering and brute-force against the login endpoint.
+  // Generous enough never to throttle an editor working in the admin.
+  rateLimit: { window: 60_000, max: 500, trustProxy: true },
+  // Keep the GraphQL playground out of production and bound query complexity so a
+  // crafted deep/nested query can't be used to exhaust the database.
+  graphQL: { disablePlaygroundInProduction: true, maxComplexity: 1000 },
   // Brand the admin as VMD (browser tab + meta) so it reads as the practice's own
   // content manager, not a generic "Payload" install. A friendly welcome panel with
   // quick actions is added above the dashboard (see beforeDashboard).

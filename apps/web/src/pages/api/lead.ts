@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { validateLead, verifyTurnstile, rateLimit } from '@vmd/forms';
+import { validateLead, verifyTurnstile, rateLimit, readJson } from '@vmd/forms';
 import { scoreLead, formatSubmissionReference } from '@vmd/schema';
 import { sendTransactional } from '@vmd/email';
 import { track } from '@vmd/analytics';
@@ -10,30 +10,34 @@ export const prerender = false;
 const env = import.meta.env;
 
 export const POST: APIRoute = async ({ request, clientAddress }) => {
-  let body: Record<string, unknown>;
-  try {
-    body = (await request.json()) as Record<string, unknown>;
-  } catch {
-    return json({ ok: false, error: 'Invalid body' }, 400);
-  }
+  const read = await readJson(request); // size-limited (32 KB) + JSON-object guard
+  if (!read.ok) return json({ ok: false, error: read.error }, read.status);
+  const body = read.data as Record<string, unknown>;
 
   if (body.company) return json({ ok: true, id: 'ignored' }); // honeypot
 
   const result = validateLead(body);
   if (!result.ok) return json({ ok: false, fieldErrors: result.fieldErrors }, 422);
 
+  const ip =
+    clientAddress || request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
   const okHuman = await verifyTurnstile(
     body.turnstileToken as string | undefined,
     env.TURNSTILE_SECRET_KEY,
-    clientAddress,
+    ip,
   );
   if (!okHuman) return json({ ok: false, error: 'Verification failed' }, 400);
 
-  const underLimit = await rateLimit(`lead:${clientAddress}`, 5, 60, {
-    url: env.UPSTASH_REDIS_REST_URL,
-    token: env.UPSTASH_REDIS_REST_TOKEN,
-  });
-  if (!underLimit) return json({ ok: false, error: 'Too many requests' }, 429);
+  // Layered limits: a short burst window + a sustained hourly window per IP, plus a
+  // per-email daily cap. Generous enough for a shared office/NAT, tight enough that
+  // one source can't mass-produce leads.
+  const upstash = { url: env.UPSTASH_REDIS_REST_URL, token: env.UPSTASH_REDIS_REST_TOKEN };
+  const [ipBurst, ipHour, emailDay] = await Promise.all([
+    rateLimit(`lead:ip:${ip}`, 5, 60, upstash),
+    rateLimit(`lead:ip:h:${ip}`, 30, 3600, upstash),
+    rateLimit(`lead:email:${result.data.email}`, 5, 86_400, upstash),
+  ]);
+  if (!ipBurst || !ipHour || !emailDay) return json({ ok: false, error: 'Too many requests' }, 429);
 
   const now = new Date();
   const submissionId = formatSubmissionReference(now, referenceSequence());
