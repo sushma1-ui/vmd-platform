@@ -604,7 +604,10 @@ const register = PRACTICE.regulator.registerSearchUrl;
     margin-inline: auto;
     padding: var(--space-6) var(--space-4);
     display: grid;
-    grid-template-columns: minmax(15rem, 1fr) 2.2fr;
+    /* Give the four service columns more width (and the featured panel a little less)
+       so a longer heading like "Student & Graduate Visa" fits on one line and reads as
+       a single clear section rather than wrapping to two. */
+    grid-template-columns: minmax(13rem, 0.85fr) 3.5fr;
     gap: var(--space-7);
   }
   .mega__feat {
