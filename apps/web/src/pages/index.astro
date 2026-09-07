@@ -56,10 +56,15 @@ const heroTitle =
 // "unset" so this shorter version wins until an editor sets a genuinely new value.
 const OLD_HERO_LEAD_2 =
   "Helping individuals, families, and businesses navigate Australia's migration system with ethical, personalised advice from a Registered Migration Agent.";
+// Previous concise lead — treated as "unset" so the practice-intro lead below wins
+// until an editor sets a genuinely new value in the CMS.
+const OLD_HERO_LEAD_3 =
+  'Personalised visa and migration guidance from a Registered Migration Agent, tailored to your circumstances and your next steps.';
+const SUPERSEDED_HERO_LEADS = [OLD_HERO_LEAD, OLD_HERO_LEAD_2, OLD_HERO_LEAD_3];
 const heroLead =
-  hp?.hero?.lead && hp.hero.lead.trim() !== OLD_HERO_LEAD && hp.hero.lead.trim() !== OLD_HERO_LEAD_2
+  hp?.hero?.lead && !SUPERSEDED_HERO_LEADS.includes(hp.hero.lead.trim())
     ? hp.hero.lead
-    : 'Ethical, professional guidance on Australian visas and migration — for individuals, families and businesses — direct from a Registered Migration Agent.';
+    : "Visa & Migration Doctors is a boutique, appointment-only migration practice in Perth, Western Australia, led personally by Sunil Uprety, Registered Migration Agent (MARN 2318234). We assist individuals, couples, families, students, skilled workers and employers to navigate Australia's migration system with clarity.";
 
 // "Where are you in your journey?" — situation-first navigation that speaks the
 // client's language (not subclass numbers) and routes to the most relevant hub.
