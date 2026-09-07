@@ -36,3 +36,23 @@ test('healthCheckSubmission is capture-only: no eligibility/result/score field',
   assert.equal('eligibility' in parsed, false);
   assert.equal('score' in parsed, false);
 });
+
+test('healthCheckSubmission accepts a branched submission without situation/location/refusal', () => {
+  // A dynamic pathway (e.g. study) skips situation, location and the general refusal
+  // flag — the submission must still validate on the required contact/context fields.
+  const r = healthCheckSubmission.safeParse({
+    pathway: 'study',
+    studyField: 'Nursing',
+    qualification: 'bachelor',
+    englishTest: 'yes',
+    englishTestType: 'ielts',
+    englishScore: '7.0',
+    country: 'Nepal',
+    nationality: 'Nepali',
+    firstName: 'Bikash',
+    email: 'bikash@example.com',
+  });
+  assert.equal(r.success, true);
+  assert.equal(r.data?.pathway, 'study');
+  assert.equal(r.data?.englishTestType, 'ielts');
+});

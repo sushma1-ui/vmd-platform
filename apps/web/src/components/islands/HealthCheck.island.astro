@@ -1,12 +1,20 @@
 ---
 /**
- * Free Visa Health Check — a multi-step LEAD-CAPTURE wizard (Blueprint §9.4).
+ * Free Visa Health Check — a CONDITION-BASED, multi-step LEAD-CAPTURE wizard
+ * (Blueprint §9.4).
  *
- * It collects the information a Registered Migration Agent needs to review a case
- * and hands off to the team. It is NOT an assessment tool: it never computes or
- * shows eligibility, a score, an indicative position, or migration advice. On
- * submit it posts to /api/health-check and redirects to the thank-you page with
- * the returned reference. Lightweight vanilla-JS island; progressive per step.
+ * It asks ONLY the questions relevant to the pathway the person selects, revealing
+ * follow-ups progressively (e.g. English test → Yes → test type & score; No → skip).
+ * It is NOT an assessment tool: it never computes or shows eligibility, a score, or
+ * migration advice. On submit it posts to /api/health-check and redirects to the
+ * thank-you page with the returned reference.
+ *
+ * Architecture: every question is a <fieldset data-step="id">. A small data-driven
+ * flow engine (below) walks the fieldsets in DOM order, skipping any whose `when`
+ * predicate is false for the current answers, so the sequence — and the progress
+ * count — adapt to the chosen pathway. All answers live in one flat state object,
+ * persisted to localStorage and posted as JSON; the server (zod) is the source of
+ * truth and stores the whole object in the schemaless leads.healthCheck field.
  *
  * Abuse protection: a hidden honeypot field, plus a Cloudflare Turnstile widget
  * rendered only when PUBLIC_TURNSTILE_SITE_KEY is configured. The server also
@@ -32,29 +40,33 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
       <label for="hc-website">Do not fill this field</label>
       <input id="hc-website" name="website" type="text" tabindex="-1" autocomplete="off" />
     </div>
-    <!-- 1 · Situation -->
-    <fieldset class="hc__step" data-step="1">
+
+    <!-- ENTRY · pathway (always) -->
+    <fieldset class="hc__step" data-step="pathway">
       <legend class="hc__q">What best describes your situation?</legend>
       <div class="hc__opts">
-        <button type="button" data-next data-set="situation:skilled-professional">
-          I'm a skilled professional
-        </button>
-        <button type="button" data-next data-set="situation:student">I'm a student</button>
-        <button type="button" data-next data-set="situation:partnered-to-australian">
-          I've an Australian Partner (Citizen or Permanent Resident)
-        </button>
-        <button type="button" data-next data-set="situation:employer">I'm an employer</button>
-        <button type="button" data-next data-set="situation:visa-refused"
-          >My visa was refused</button
+        <button type="button" data-next data-set="pathway:study"
+          >I want to study in Australia</button
         >
-        <button type="button" data-next data-set="situation:bridging-visa">
-          I'm on a bridging visa
+        <button type="button" data-next data-set="pathway:work">I want to work in Australia</button>
+        <button type="button" data-next data-set="pathway:permanent">
+          I want to migrate permanently
         </button>
+        <button type="button" data-next data-set="pathway:partner">
+          I have an Australian partner
+        </button>
+        <button type="button" data-next data-set="pathway:existing-visa">
+          I already have an Australian visa
+        </button>
+        <button type="button" data-next data-set="pathway:refusal">
+          My visa was refused or cancelled
+        </button>
+        <button type="button" data-next data-set="pathway:other">Other / Not sure</button>
       </div>
     </fieldset>
 
-    <!-- 2 · Location -->
-    <fieldset class="hc__step" data-step="2" hidden>
+    <!-- Location (always) -->
+    <fieldset class="hc__step" data-step="location" hidden>
       <legend class="hc__q">Where are you now?</legend>
       <div class="hc__opts">
         <button type="button" data-next data-set="location:australia">In Australia</button>
@@ -62,27 +74,369 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
       </div>
     </fieldset>
 
-    <!-- 3 · About you (identity) -->
-    <fieldset class="hc__step" data-step="3" hidden>
-      <legend class="hc__q">About you</legend>
-      <label class="hc__label" for="hc-country">Country of residence</label>
+    <!-- ===== PARTNER ===== -->
+    <fieldset class="hc__step" data-step="partnerStatus" hidden>
+      <legend class="hc__q">Is your partner an Australian citizen or permanent resident?</legend>
+      <div class="hc__opts">
+        <button type="button" data-next data-set="partnerStatus:citizen">Australian citizen</button>
+        <button type="button" data-next data-set="partnerStatus:permanent-resident">
+          Permanent resident
+        </button>
+        <button type="button" data-next data-set="partnerStatus:not-sure">Not sure</button>
+      </div>
+    </fieldset>
+    <fieldset class="hc__step" data-step="relationshipType" hidden>
+      <legend class="hc__q">What is your relationship status?</legend>
+      <div class="hc__opts">
+        <button type="button" data-next data-set="relationshipType:married">Married</button>
+        <button type="button" data-next data-set="relationshipType:de-facto">De facto</button>
+        <button type="button" data-next data-set="relationshipType:engaged">Engaged</button>
+        <button type="button" data-next data-set="relationshipType:other">Other</button>
+      </div>
+    </fieldset>
+    <fieldset class="hc__step" data-step="timeTogether" hidden>
+      <legend class="hc__q">How long have you been together?</legend>
+      <div class="hc__opts">
+        <button type="button" data-next data-set="timeTogether:under-1">Less than 1 year</button>
+        <button type="button" data-next data-set="timeTogether:1-2">1–2 years</button>
+        <button type="button" data-next data-set="timeTogether:2-3">2–3 years</button>
+        <button type="button" data-next data-set="timeTogether:3-plus">3+ years</button>
+      </div>
+    </fieldset>
+    <fieldset class="hc__step" data-step="livedTogether" hidden>
+      <legend class="hc__q">Have you lived together?</legend>
+      <div class="hc__opts hc__opts--row">
+        <button type="button" data-next data-set="livedTogether:yes">Yes</button>
+        <button type="button" data-next data-set="livedTogether:no">No</button>
+      </div>
+    </fieldset>
+    <fieldset class="hc__step" data-step="priorPartnerVisa" hidden>
+      <legend class="hc__q">Have you previously applied for a partner visa?</legend>
+      <div class="hc__opts hc__opts--row">
+        <button type="button" data-next data-set="priorPartnerVisa:yes">Yes</button>
+        <button type="button" data-next data-set="priorPartnerVisa:no">No</button>
+      </div>
+    </fieldset>
+
+    <!-- ===== STUDY ===== -->
+    <fieldset class="hc__step" data-step="studyField" hidden>
+      <legend class="hc__q">What do you plan to study?</legend>
+      <label class="hc__label" for="hc-studyField">Field or course of interest</label>
       <input
         class="hc__input"
-        id="hc-country"
-        name="country"
-        autocomplete="country-name"
+        id="hc-studyField"
+        name="studyField"
         required
+        placeholder="e.g. Nursing, IT, Business"
       />
-      <label class="hc__label" for="hc-nationality">Nationality</label>
-      <input class="hc__input" id="hc-nationality" name="nationality" required />
-      <label class="hc__label" for="hc-visa">Current Australian visa (if any)</label>
-      <input class="hc__input" id="hc-visa" name="currentVisa" placeholder="e.g. Subclass 500" />
+      <p class="hc__err" data-step-err role="alert" hidden></p>
+      <button type="button" class="hc__continue" data-continue>Continue</button>
+    </fieldset>
+    <fieldset class="hc__step" data-step="chosenCourse" hidden>
+      <legend class="hc__q">Have you already chosen a course or provider?</legend>
+      <div class="hc__opts">
+        <button type="button" data-next data-set="chosenCourse:yes">Yes</button>
+        <button type="button" data-next data-set="chosenCourse:no">Not yet</button>
+        <button type="button" data-next data-set="chosenCourse:not-sure">Not sure</button>
+      </div>
+    </fieldset>
+
+    <!-- ===== WORK / PERMANENT (shared occupation block) ===== -->
+    <fieldset class="hc__step" data-step="currentOccupation" hidden>
+      <legend class="hc__q">What is your current profession or occupation?</legend>
+      <label class="hc__label" for="hc-currentOccupation">Current occupation</label>
+      <input
+        class="hc__input"
+        id="hc-currentOccupation"
+        name="currentOccupation"
+        required
+        placeholder="e.g. Registered Nurse"
+      />
+      <p class="hc__err" data-step-err role="alert" hidden></p>
+      <button type="button" class="hc__continue" data-continue>Continue</button>
+    </fieldset>
+    <fieldset class="hc__step" data-step="intendedOccupation" hidden>
+      <legend class="hc__q">What occupation do you plan to work in, in Australia?</legend>
+      <label class="hc__label" for="hc-intendedOccupation">Intended occupation</label>
+      <input
+        class="hc__input"
+        id="hc-intendedOccupation"
+        name="intendedOccupation"
+        placeholder="e.g. same as current, or a related role"
+      />
+      <p class="hc__err" data-step-err role="alert" hidden></p>
+      <button type="button" class="hc__continue" data-continue>Continue</button>
+    </fieldset>
+    <fieldset class="hc__step" data-step="skilledExperienceYears" hidden>
+      <legend class="hc__q">How many years of relevant work experience do you have?</legend>
+      <div class="hc__opts">
+        <button type="button" data-next data-set="skilledExperienceYears:0">None yet</button>
+        <button type="button" data-next data-set="skilledExperienceYears:1-2">1–2 years</button>
+        <button type="button" data-next data-set="skilledExperienceYears:3-4">3–4 years</button>
+        <button type="button" data-next data-set="skilledExperienceYears:5-7">5–7 years</button>
+        <button type="button" data-next data-set="skilledExperienceYears:8-plus">8+ years</button>
+      </div>
+    </fieldset>
+
+    <!-- Highest qualification (study / work / permanent) -->
+    <fieldset class="hc__step" data-step="qualification" hidden>
+      <legend class="hc__q">What is your highest completed qualification?</legend>
+      <div class="hc__opts">
+        <button type="button" data-next data-set="qualification:none"
+          >No formal qualification</button
+        >
+        <button type="button" data-next data-set="qualification:certificate">Certificate</button>
+        <button type="button" data-next data-set="qualification:diploma">Diploma</button>
+        <button type="button" data-next data-set="qualification:bachelor">Bachelor's degree</button>
+        <button type="button" data-next data-set="qualification:masters">Master's degree</button>
+        <button type="button" data-next data-set="qualification:doctorate">Doctorate (PhD)</button>
+      </div>
+    </fieldset>
+
+    <!-- Qualification related to occupation (work) -->
+    <fieldset class="hc__step" data-step="qualificationRelated" hidden>
+      <legend class="hc__q">Is your qualification related to your occupation?</legend>
+      <div class="hc__opts hc__opts--row">
+        <button type="button" data-next data-set="qualificationRelated:yes">Yes</button>
+        <button type="button" data-next data-set="qualificationRelated:no">No</button>
+        <button type="button" data-next data-set="qualificationRelated:not-sure">Not sure</button>
+      </div>
+    </fieldset>
+
+    <!-- Age (permanent) -->
+    <fieldset class="hc__step" data-step="ageBracket" hidden>
+      <legend class="hc__q">Your age</legend>
+      <div class="hc__opts">
+        <button type="button" data-next data-set="ageBracket:under-25">Under 25</button>
+        <button type="button" data-next data-set="ageBracket:25-32">25–32</button>
+        <button type="button" data-next data-set="ageBracket:33-39">33–39</button>
+        <button type="button" data-next data-set="ageBracket:40-44">40–44</button>
+        <button type="button" data-next data-set="ageBracket:45-plus">45+</button>
+      </div>
+    </fieldset>
+
+    <!-- Skills assessment (work / permanent) → authority -->
+    <fieldset class="hc__step" data-step="skillsAssessment" hidden>
+      <legend class="hc__q">Have you completed a skills assessment?</legend>
+      <div class="hc__opts hc__opts--row">
+        <button type="button" data-next data-set="skillsAssessment:yes">Yes</button>
+        <button type="button" data-next data-set="skillsAssessment:no">No</button>
+        <button type="button" data-next data-set="skillsAssessment:not-sure">Not sure</button>
+      </div>
+    </fieldset>
+    <fieldset class="hc__step" data-step="skillsAssessmentAuthority" hidden>
+      <legend class="hc__q">Which assessing authority?</legend>
+      <label class="hc__label" for="hc-skillsAuthority">Assessing authority (if known)</label>
+      <input
+        class="hc__input"
+        id="hc-skillsAuthority"
+        name="skillsAssessmentAuthority"
+        placeholder="e.g. ANMAC, ACS, VETASSESS, Engineers Australia"
+      />
       <p class="hc__err" data-step-err role="alert" hidden></p>
       <button type="button" class="hc__continue" data-continue>Continue</button>
     </fieldset>
 
-    <!-- 4 · Destination goal -->
-    <fieldset class="hc__step" data-step="4" hidden>
+    <!-- English test (study / work / permanent) → type + score -->
+    <fieldset class="hc__step" data-step="englishTest" hidden>
+      <legend class="hc__q">Have you taken an English test?</legend>
+      <div class="hc__opts hc__opts--row">
+        <button type="button" data-next data-set="englishTest:yes">Yes</button>
+        <button type="button" data-next data-set="englishTest:no">No</button>
+        <button type="button" data-next data-set="englishTest:not-sure">Not sure</button>
+      </div>
+    </fieldset>
+    <fieldset class="hc__step" data-step="englishDetails" hidden>
+      <legend class="hc__q">Which test, and your result?</legend>
+      <label class="hc__label" for="hc-englishTestType">Test taken</label>
+      <select class="hc__input" id="hc-englishTestType" name="englishTestType" required>
+        <option value="">Select a test…</option>
+        <option value="ielts">IELTS</option>
+        <option value="pte">PTE</option>
+        <option value="toefl">TOEFL</option>
+        <option value="oet">OET</option>
+        <option value="other">Other</option>
+      </select>
+      <label class="hc__label" for="hc-englishScore">Overall score (optional)</label>
+      <input
+        class="hc__input"
+        id="hc-englishScore"
+        name="englishScore"
+        placeholder="e.g. IELTS 7.0 / PTE 65"
+      />
+      <p class="hc__err" data-step-err role="alert" hidden></p>
+      <button type="button" class="hc__continue" data-continue>Continue</button>
+    </fieldset>
+
+    <!-- Job offer (work) → details -->
+    <fieldset class="hc__step" data-step="jobOffer" hidden>
+      <legend class="hc__q">Do you currently have an Australian employer or job offer?</legend>
+      <div class="hc__opts hc__opts--row">
+        <button type="button" data-next data-set="jobOffer:yes">Yes</button>
+        <button type="button" data-next data-set="jobOffer:no">No</button>
+      </div>
+    </fieldset>
+    <fieldset class="hc__step" data-step="jobOfferDetails" hidden>
+      <legend class="hc__q">Tell us about the employer or role</legend>
+      <label class="hc__label" for="hc-jobOfferDetails">Employer / role (optional)</label>
+      <input
+        class="hc__input"
+        id="hc-jobOfferDetails"
+        name="jobOfferDetails"
+        placeholder="e.g. employer name, role, location"
+      />
+      <p class="hc__err" data-step-err role="alert" hidden></p>
+      <button type="button" class="hc__continue" data-continue>Continue</button>
+    </fieldset>
+
+    <!-- Australian work experience (work / permanent) → occupation + duration -->
+    <fieldset class="hc__step" data-step="ausExperience" hidden>
+      <legend class="hc__q">Have you worked in Australia?</legend>
+      <div class="hc__opts hc__opts--row">
+        <button type="button" data-next data-set="ausExperience:yes">Yes</button>
+        <button type="button" data-next data-set="ausExperience:no">No</button>
+      </div>
+    </fieldset>
+    <fieldset class="hc__step" data-step="ausExperienceDetails" hidden>
+      <legend class="hc__q">Your Australian work experience</legend>
+      <label class="hc__label" for="hc-ausExpOcc">Occupation in Australia</label>
+      <input class="hc__input" id="hc-ausExpOcc" name="ausExperienceOccupation" />
+      <label class="hc__label" for="hc-ausExpDur">How long (approx.)</label>
+      <input
+        class="hc__input"
+        id="hc-ausExpDur"
+        name="ausExperienceDuration"
+        placeholder="e.g. 2 years"
+      />
+      <p class="hc__err" data-step-err role="alert" hidden></p>
+      <button type="button" class="hc__continue" data-continue>Continue</button>
+    </fieldset>
+
+    <!-- Australian study (study / permanent) → course + duration -->
+    <fieldset class="hc__step" data-step="ausStudy" hidden>
+      <legend class="hc__q">Have you studied in Australia?</legend>
+      <div class="hc__opts hc__opts--row">
+        <button type="button" data-next data-set="ausStudy:yes">Yes</button>
+        <button type="button" data-next data-set="ausStudy:no">No</button>
+      </div>
+    </fieldset>
+    <fieldset class="hc__step" data-step="ausStudyDetails" hidden>
+      <legend class="hc__q">Your Australian study</legend>
+      <label class="hc__label" for="hc-ausStudyCourse">Course / qualification</label>
+      <input class="hc__input" id="hc-ausStudyCourse" name="ausStudyCourse" />
+      <label class="hc__label" for="hc-ausStudyDur">How long (approx.)</label>
+      <input
+        class="hc__input"
+        id="hc-ausStudyDur"
+        name="ausStudyDuration"
+        placeholder="e.g. 2 years"
+      />
+      <p class="hc__err" data-step-err role="alert" hidden></p>
+      <button type="button" class="hc__continue" data-continue>Continue</button>
+    </fieldset>
+
+    <!-- ===== EXISTING VISA ===== -->
+    <fieldset class="hc__step" data-step="currentVisa" hidden>
+      <legend class="hc__q">What is your current Australian visa?</legend>
+      <label class="hc__label" for="hc-visa">Current visa type</label>
+      <input
+        class="hc__input"
+        id="hc-visa"
+        name="currentVisa"
+        required
+        placeholder="e.g. Subclass 500 (Student)"
+      />
+      <p class="hc__err" data-step-err role="alert" hidden></p>
+      <button type="button" class="hc__continue" data-continue>Continue</button>
+    </fieldset>
+    <fieldset class="hc__step" data-step="currentVisaExpiry" hidden>
+      <legend class="hc__q">When does it expire?</legend>
+      <label class="hc__label" for="hc-visaExpiry">Approximate expiry (optional)</label>
+      <input
+        class="hc__input"
+        id="hc-visaExpiry"
+        name="currentVisaExpiry"
+        placeholder="e.g. March 2026"
+      />
+      <p class="hc__err" data-step-err role="alert" hidden></p>
+      <button type="button" class="hc__continue" data-continue>Continue</button>
+    </fieldset>
+    <fieldset class="hc__step" data-step="whatNext" hidden>
+      <legend class="hc__q">What would you like to do next?</legend>
+      <div class="hc__opts">
+        <button type="button" data-next data-set="whatNext:study">Study</button>
+        <button type="button" data-next data-set="whatNext:work">Work</button>
+        <button type="button" data-next data-set="whatNext:permanent">Migrate permanently</button>
+        <button type="button" data-next data-set="whatNext:partner">Partner / family</button>
+        <button type="button" data-next data-set="whatNext:stay">Stay on my current visa</button>
+        <button type="button" data-next data-set="whatNext:not-sure">Not sure</button>
+      </div>
+    </fieldset>
+
+    <!-- ===== REFUSAL / CANCELLATION ===== -->
+    <fieldset class="hc__step" data-step="refusedVisaType" hidden>
+      <legend class="hc__q">Which visa did you apply for?</legend>
+      <label class="hc__label" for="hc-refusedVisa">Visa type</label>
+      <input
+        class="hc__input"
+        id="hc-refusedVisa"
+        name="refusedVisaType"
+        required
+        placeholder="e.g. Subclass 500 (Student)"
+      />
+      <p class="hc__err" data-step-err role="alert" hidden></p>
+      <button type="button" class="hc__continue" data-continue>Continue</button>
+    </fieldset>
+    <fieldset class="hc__step" data-step="refusedOrCancelled" hidden>
+      <legend class="hc__q">Was it refused or cancelled?</legend>
+      <div class="hc__opts hc__opts--row">
+        <button type="button" data-next data-set="refusedOrCancelled:refused">Refused</button>
+        <button type="button" data-next data-set="refusedOrCancelled:cancelled">Cancelled</button>
+        <button type="button" data-next data-set="refusedOrCancelled:not-sure">Not sure</button>
+      </div>
+    </fieldset>
+    <fieldset class="hc__step" data-step="refusalWhen" hidden>
+      <legend class="hc__q">When did this happen?</legend>
+      <label class="hc__label" for="hc-refusalWhen">Approximate date (optional)</label>
+      <input
+        class="hc__input"
+        id="hc-refusalWhen"
+        name="refusalWhen"
+        placeholder="e.g. July 2025"
+      />
+      <p class="hc__err" data-step-err role="alert" hidden></p>
+      <button type="button" class="hc__continue" data-continue>Continue</button>
+    </fieldset>
+    <fieldset class="hc__step" data-step="refusalReason" hidden>
+      <legend class="hc__q">What reason was given?</legend>
+      <label class="hc__label" for="hc-refusalReason">Reason, in your own words (optional)</label>
+      <textarea class="hc__input" id="hc-refusalReason" name="refusalReason" rows="3"></textarea>
+      <p class="hc__err" data-step-err role="alert" hidden></p>
+      <button type="button" class="hc__continue" data-continue>Continue</button>
+    </fieldset>
+    <fieldset class="hc__step" data-step="currentStatus" hidden>
+      <legend class="hc__q">What is your current visa or status now?</legend>
+      <label class="hc__label" for="hc-currentStatus">Current status (optional)</label>
+      <input
+        class="hc__input"
+        id="hc-currentStatus"
+        name="currentStatus"
+        placeholder="e.g. bridging visa, offshore"
+      />
+      <p class="hc__err" data-step-err role="alert" hidden></p>
+      <button type="button" class="hc__continue" data-continue>Continue</button>
+    </fieldset>
+    <fieldset class="hc__step" data-step="priorRefusal" hidden>
+      <legend class="hc__q">Have you had any other refusals or cancellations before?</legend>
+      <div class="hc__opts hc__opts--row">
+        <button type="button" data-next data-set="priorRefusal:yes">Yes</button>
+        <button type="button" data-next data-set="priorRefusal:no">No</button>
+        <button type="button" data-next data-set="priorRefusal:not-sure">Not sure</button>
+      </div>
+    </fieldset>
+
+    <!-- ===== OTHER / NOT SURE ===== -->
+    <fieldset class="hc__step" data-step="goal" hidden>
       <legend class="hc__q">What are you hoping to achieve?</legend>
       <div class="hc__opts">
         <button type="button" data-next data-set="goal:permanent-residence">
@@ -99,39 +453,8 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
       </div>
     </fieldset>
 
-    <!-- 5 · Age bracket -->
-    <fieldset class="hc__step" data-step="5" hidden>
-      <legend class="hc__q">Your age</legend>
-      <div class="hc__opts">
-        <button type="button" data-next data-set="ageBracket:under-25">Under 25</button>
-        <button type="button" data-next data-set="ageBracket:25-32">25–32</button>
-        <button type="button" data-next data-set="ageBracket:33-39">33–39</button>
-        <button type="button" data-next data-set="ageBracket:40-44">40–44</button>
-        <button type="button" data-next data-set="ageBracket:45-plus">45+</button>
-      </div>
-    </fieldset>
-
-    <!-- 6 · English test + skills assessment -->
-    <fieldset class="hc__step" data-step="6" hidden>
-      <legend class="hc__q">Have you completed these?</legend>
-      <p class="hc__sub" id="hc-eng-label">An English test (e.g. IELTS, PTE)</p>
-      <div class="hc__opts hc__opts--row" role="group" aria-labelledby="hc-eng-label">
-        <button type="button" data-choice data-set="englishTest:yes">Yes</button>
-        <button type="button" data-choice data-set="englishTest:no">No</button>
-        <button type="button" data-choice data-set="englishTest:not-sure">Not sure</button>
-      </div>
-      <p class="hc__sub" id="hc-skills-label">A skills assessment</p>
-      <div class="hc__opts hc__opts--row" role="group" aria-labelledby="hc-skills-label">
-        <button type="button" data-choice data-set="skillsAssessment:yes">Yes</button>
-        <button type="button" data-choice data-set="skillsAssessment:no">No</button>
-        <button type="button" data-choice data-set="skillsAssessment:not-sure">Not sure</button>
-      </div>
-      <p class="hc__err" data-step-err role="alert" hidden></p>
-      <button type="button" class="hc__continue" data-continue>Continue</button>
-    </fieldset>
-
-    <!-- 7 · Refusal history -->
-    <fieldset class="hc__step" data-step="7" hidden>
+    <!-- Shared refusal flag (partner / existing-visa / other) -->
+    <fieldset class="hc__step" data-step="refusalHistory" hidden>
       <legend class="hc__q">Has a visa ever been refused or cancelled?</legend>
       <div class="hc__opts">
         <button type="button" data-next data-set="everRefusedOrCancelled:no">No</button>
@@ -140,8 +463,8 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
       </div>
     </fieldset>
 
-    <!-- 8 · Contact details -->
-    <fieldset class="hc__step" data-step="8" hidden>
+    <!-- CONTACT (always) -->
+    <fieldset class="hc__step" data-step="contact" hidden>
       <legend class="hc__q">Where should our team send your response?</legend>
       <label class="hc__label" for="hc-name">First name</label>
       <input class="hc__input" id="hc-name" name="firstName" autocomplete="given-name" required />
@@ -164,6 +487,16 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
         inputmode="tel"
         autocomplete="tel"
       />
+      <label class="hc__label" for="hc-country">Country of residence</label>
+      <input
+        class="hc__input"
+        id="hc-country"
+        name="country"
+        autocomplete="country-name"
+        required
+      />
+      <label class="hc__label" for="hc-nationality">Nationality</label>
+      <input class="hc__input" id="hc-nationality" name="nationality" required />
       <label class="hc__label" for="hc-contact">Preferred contact</label>
       <select class="hc__input" id="hc-contact" name="preferredContact">
         <option value="email">Email</option>
@@ -290,6 +623,12 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
     border-radius: var(--radius-control);
     font-size: var(--type-body);
   }
+  textarea.hc__input {
+    min-block-size: calc(var(--space-8) + var(--space-4));
+    padding-block: var(--space-2);
+    resize: vertical;
+    font-family: var(--font-body);
+  }
   .hc__input:focus-visible {
     outline: 2px solid var(--color-action);
     outline-offset: 1px;
@@ -373,15 +712,16 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
 <script>
   const root = document.querySelector('[data-hc]');
   if (root instanceof HTMLElement) {
-    const KEY = 'vmd-health-check';
-    const total = 8;
-    let state: Record<string, unknown> = {};
+    // Bumped key: the flow model changed, so any state saved by the old linear form
+    // is discarded rather than mixed into the new conditional flow.
+    const KEY = 'vmd-health-check-v2';
+    type State = Record<string, unknown>;
+    let state: State = {};
     try {
       state = JSON.parse(localStorage.getItem(KEY) || '{}');
     } catch {
       state = {};
     }
-    let step = 1;
 
     const bar = root.querySelector<HTMLElement>('[data-hc-bar]');
     const progress = root.querySelector<HTMLElement>('.hc__progress');
@@ -389,6 +729,53 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
     const back = root.querySelector<HTMLButtonElement>('[data-hc-back]');
     const form = root.querySelector<HTMLFormElement>('[data-hc-form]');
     const steps = Array.from(root.querySelectorAll<HTMLElement>('.hc__step'));
+    // FLOW = the fieldsets in DOM order; each is gated by an optional predicate below.
+    const FLOW = steps.map((f) => f.dataset.step ?? '');
+    const byId = new Map(steps.map((f) => [f.dataset.step ?? '', f]));
+
+    const is = (k: string, ...vals: string[]) => vals.includes(String(state[k] ?? ''));
+    // Which step applies, given the answers so far. Missing id ⇒ always shown.
+    const WHEN: Record<string, () => boolean> = {
+      partnerStatus: () => is('pathway', 'partner'),
+      relationshipType: () => is('pathway', 'partner'),
+      timeTogether: () => is('pathway', 'partner'),
+      livedTogether: () => is('pathway', 'partner'),
+      priorPartnerVisa: () => is('pathway', 'partner'),
+      studyField: () => is('pathway', 'study'),
+      chosenCourse: () => is('pathway', 'study'),
+      currentOccupation: () => is('pathway', 'work', 'permanent'),
+      intendedOccupation: () => is('pathway', 'work', 'permanent'),
+      skilledExperienceYears: () => is('pathway', 'work', 'permanent'),
+      qualification: () => is('pathway', 'study', 'work', 'permanent'),
+      qualificationRelated: () => is('pathway', 'work'),
+      ageBracket: () => is('pathway', 'permanent'),
+      skillsAssessment: () => is('pathway', 'work', 'permanent'),
+      skillsAssessmentAuthority: () => is('skillsAssessment', 'yes'),
+      englishTest: () => is('pathway', 'study', 'work', 'permanent'),
+      englishDetails: () => is('englishTest', 'yes'),
+      jobOffer: () => is('pathway', 'work'),
+      jobOfferDetails: () => is('jobOffer', 'yes'),
+      ausExperience: () => is('pathway', 'work', 'permanent'),
+      ausExperienceDetails: () => is('ausExperience', 'yes'),
+      ausStudy: () => is('pathway', 'study', 'permanent'),
+      ausStudyDetails: () => is('ausStudy', 'yes'),
+      currentVisa: () => is('pathway', 'existing-visa'),
+      currentVisaExpiry: () => is('pathway', 'existing-visa'),
+      whatNext: () => is('pathway', 'existing-visa'),
+      refusedVisaType: () => is('pathway', 'refusal'),
+      refusedOrCancelled: () => is('pathway', 'refusal'),
+      refusalWhen: () => is('pathway', 'refusal'),
+      refusalReason: () => is('pathway', 'refusal'),
+      currentStatus: () => is('pathway', 'refusal'),
+      priorRefusal: () => is('pathway', 'refusal'),
+      goal: () => is('pathway', 'other'),
+      refusalHistory: () => is('pathway', 'partner', 'existing-visa', 'other'),
+    };
+    const applies = (id: string) => (WHEN[id] ? WHEN[id]() : true);
+    const applicable = () => FLOW.filter(applies);
+
+    let current = FLOW[0];
+    const historyStack: string[] = [];
 
     // Attribution: captured once on load (UTM + referrer + landing page + device).
     const params = new URLSearchParams(location.search);
@@ -404,88 +791,100 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
 
     const persist = () => localStorage.setItem(KEY, JSON.stringify(state));
 
-    const show = (n: number) => {
-      step = n;
-      for (const f of steps) f.hidden = Number(f.dataset.step) !== n;
-      if (bar) bar.style.inlineSize = `${Math.round((n / total) * 100)}%`;
-      if (progress) progress.setAttribute('aria-valuenow', String(n));
-      if (count) count.textContent = `Step ${n} of ${total}`;
-      if (back) back.hidden = n === 1;
-      const focusable = steps[n - 1]?.querySelector<HTMLElement>('button, input, select');
-      focusable?.focus();
+    const render = () => {
+      const apps = applicable();
+      if (!apps.includes(current)) current = apps[0] ?? FLOW[0];
+      for (const f of steps) f.hidden = (f.dataset.step ?? '') !== current;
+      const idx = Math.max(0, apps.indexOf(current));
+      const total = apps.length;
+      if (bar) bar.style.inlineSize = `${Math.round(((idx + 1) / total) * 100)}%`;
+      if (progress) {
+        progress.setAttribute('aria-valuenow', String(idx + 1));
+        progress.setAttribute('aria-valuemax', String(total));
+      }
+      if (count) count.textContent = `Step ${idx + 1} of ${total}`;
+      if (back) back.hidden = historyStack.length === 0;
+      byId.get(current)?.querySelector<HTMLElement>('button, input, select, textarea')?.focus();
     };
 
-    // Auto-advance choice buttons.
+    const goTo = (id: string) => {
+      historyStack.push(current);
+      current = id;
+      persist();
+      render();
+    };
+    const goNext = () => {
+      const apps = applicable();
+      const i = apps.indexOf(current);
+      const nextId = apps[i + 1];
+      if (nextId) goTo(nextId);
+    };
+    const goBack = () => {
+      const prev = historyStack.pop();
+      if (prev) {
+        current = prev;
+        render();
+      }
+    };
+
+    // Choice buttons: set the value and advance to the next applicable step.
     root.querySelectorAll<HTMLButtonElement>('[data-next]').forEach((btn) => {
       btn.addEventListener('click', () => {
         const [k, v] = (btn.dataset.set ?? '').split(':');
-        if (k) state[k] = v;
-        persist();
-        if (step < total) show(step + 1);
-      });
-    });
-
-    // Single-select choice buttons (radio behaviour within a group).
-    root.querySelectorAll<HTMLButtonElement>('[data-choice]').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const [k, v] = (btn.dataset.set ?? '').split(':');
         if (!k) return;
-        state[k] = v;
+        if (k === 'pathway') {
+          // Switching pathway resets branch answers so a stale branch can't linger.
+          state = { attribution: state.attribution, pathway: v };
+          historyStack.length = 0;
+        } else {
+          state[k] = v;
+        }
         persist();
-        const group = btn.closest('[role="group"]');
-        group
-          ?.querySelectorAll('[data-choice]')
-          .forEach((b) => b.setAttribute('aria-pressed', 'false'));
-        btn.setAttribute('aria-pressed', 'true');
+        goNext();
       });
     });
 
-    const stepError = (n: number, msg: string) => {
-      const el = steps[n - 1]?.querySelector<HTMLElement>('[data-step-err]');
+    const stepError = (id: string, msg: string) => {
+      const el = byId.get(id)?.querySelector<HTMLElement>('[data-step-err]');
       if (el) {
         el.textContent = msg;
         el.hidden = false;
       }
     };
-    const clearStepError = (n: number) => {
-      const el = steps[n - 1]?.querySelector<HTMLElement>('[data-step-err]');
+    const clearStepError = (id: string) => {
+      const el = byId.get(id)?.querySelector<HTMLElement>('[data-step-err]');
       if (el) el.hidden = true;
     };
 
-    // Validate + advance for input / grouped-choice steps.
+    // Input steps: save every named field, require any marked [required], then advance.
     root.querySelectorAll<HTMLButtonElement>('[data-continue]').forEach((btn) => {
       btn.addEventListener('click', () => {
-        clearStepError(step);
-        if (step === 3) {
-          const country = (root.querySelector<HTMLInputElement>('#hc-country')?.value ?? '').trim();
-          const nationality = (
-            root.querySelector<HTMLInputElement>('#hc-nationality')?.value ?? ''
-          ).trim();
-          const currentVisa = (
-            root.querySelector<HTMLInputElement>('#hc-visa')?.value ?? ''
-          ).trim();
-          if (!country || !nationality) {
-            stepError(3, 'Please enter your country of residence and nationality.');
+        clearStepError(current);
+        const fs = byId.get(current);
+        if (!fs) return;
+        const fields = Array.from(
+          fs.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(
+            'input[name], select[name], textarea[name]',
+          ),
+        );
+        for (const el of fields) {
+          if (el.required && !el.value.trim()) {
+            stepError(current, 'Please complete this to continue.');
+            el.focus();
             return;
           }
-          state.country = country;
-          state.nationality = nationality;
-          if (currentVisa) state.currentVisa = currentVisa;
         }
-        if (step === 6) {
-          if (!state.englishTest || !state.skillsAssessment) {
-            stepError(6, 'Please answer both questions.');
-            return;
-          }
+        for (const el of fields) {
+          const val = el.value.trim();
+          if (val) state[el.name] = val;
+          else delete state[el.name];
         }
         persist();
-        if (step < total) show(step + 1);
+        goNext();
       });
     });
 
-    back?.addEventListener('click', () => {
-      if (step > 1) show(step - 1);
-    });
+    back?.addEventListener('click', goBack);
 
     form?.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -498,6 +897,9 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
       state.email = String(fd.get('email') ?? '').trim();
       const mobile = String(fd.get('mobile') ?? '').trim();
       if (mobile) state.mobile = mobile;
+      else delete state.mobile;
+      state.country = String(fd.get('country') ?? '').trim();
+      state.nationality = String(fd.get('nationality') ?? '').trim();
       state.preferredContact = String(fd.get('preferredContact') ?? 'email');
       state.sensitiveInfoAcknowledged = fd.get('sensitive') === 'on';
       // Abuse signals: honeypot (must be empty) + Turnstile token (when enabled).
@@ -509,6 +911,13 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
       if (!state.firstName || !emailOk) {
         if (errEl) {
           errEl.textContent = 'Please enter your first name and a valid email.';
+          errEl.hidden = false;
+        }
+        return;
+      }
+      if (!state.country || !state.nationality) {
+        if (errEl) {
+          errEl.textContent = 'Please enter your country of residence and nationality.';
           errEl.hidden = false;
         }
         return;
@@ -551,6 +960,6 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
       }
     });
 
-    show(1);
+    render();
   }
 </script>

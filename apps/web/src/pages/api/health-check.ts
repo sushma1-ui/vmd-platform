@@ -161,7 +161,8 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     {
       event: 'health_check_submitted',
       consent: true,
-      params: { situation: String(data.situation ?? '') },
+      // `pathway` is the new primary dimension; `situation` kept for continuity.
+      params: { situation: String(data.situation ?? ''), pathway: String(data.pathway ?? '') },
     },
     {
       ga4: env.GA4_MEASUREMENT_ID
