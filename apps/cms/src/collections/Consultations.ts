@@ -32,6 +32,18 @@ export const Consultations: CollectionConfig = {
         'in-person',
       ],
     },
+    // Enquiry context captured on the consultation form (see BookingForm island).
+    // Stored as text so the option lists can evolve without a schema migration.
+    {
+      name: 'journeyStage',
+      type: 'text',
+      admin: { description: 'Where the person is in their migration journey (from the form).' },
+    },
+    {
+      name: 'matter',
+      type: 'text',
+      admin: { description: 'The matter they want to discuss (from the form).' },
+    },
     { name: 'firstName', type: 'text', required: true },
     { name: 'email', type: 'email', required: true, index: true },
     { name: 'mobile', type: 'text', required: true },

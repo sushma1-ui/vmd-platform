@@ -5,6 +5,43 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
 
 <form class="bk" data-bk novalidate>
   <div class="bk__grid">
+    <div class="bk__f bk__f--wide">
+      <label for="bk-journey">Where are you in your journey?</label>
+      <select id="bk-journey" name="journeyStage">
+        <option value="">Select…</option>
+        <option value="planning-study">I'm planning to study in Australia</option>
+        <option value="currently-studying">I'm currently studying in Australia</option>
+        <option value="working">I'm working in Australia</option>
+        <option value="planning-work">I'm planning to work in Australia</option>
+        <option value="planning-pr">I'm planning to apply for permanent residency</option>
+        <option value="australian-partner">I have an Australian partner</option>
+        <option value="employer">I'm an employer/business looking to sponsor an employee</option>
+        <option value="refused">My visa has been refused or cancelled</option>
+        <option value="in-australia-next-visa">
+          I'm already in Australia and need advice about my next visa
+        </option>
+        <option value="unsure">I'm not sure which pathway is right for me</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+    <div class="bk__f bk__f--wide">
+      <label for="bk-matter">Matter to be discussed</label>
+      <select id="bk-matter" name="matter">
+        <option value="">Select…</option>
+        <option value="student-500">Student Visa (500)</option>
+        <option value="graduate-485">Temporary Graduate Visa (485)</option>
+        <option value="gsm">General Skilled Migration</option>
+        <option value="employer-sponsored">Employer Sponsored Visa</option>
+        <option value="sponsoring-employee">Sponsoring an Employee</option>
+        <option value="partner">Partner Visa</option>
+        <option value="visitor">Visitor Visa</option>
+        <option value="skills-assessment">Skills Assessment</option>
+        <option value="refusal">Visa Refusal / Cancellation</option>
+        <option value="extension">Visa Extension / Further Stay</option>
+        <option value="citizenship">Australian Citizenship</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
     <div class="bk__f">
       <label for="bk-type">Consultation type</label>
       <select id="bk-type" name="type"
@@ -94,10 +131,13 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
     </div>
   </div>
   <div class="bk__f">
-    <label for="bk-notes">Any questions, or anything we should know?</label><textarea
+    <label for="bk-notes">Tell us where you are now and what you'd like to achieve</label><textarea
       id="bk-notes"
       name="notes"
-      rows="3"></textarea>
+      rows="4"
+      data-bk-notes
+      placeholder="Example: I'm currently studying in Australia, my student visa expires in October, and I'd like to understand my options to stay longer and eventually apply for permanent residency."
+    ></textarea>
   </div>
   <input
     type="text"
@@ -138,6 +178,15 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
     flex-direction: column;
     gap: var(--space-1);
     margin-block-end: var(--space-3);
+  }
+  /* Journey + matter span the full width so the long labels read on one line and
+     read as the first, framing questions. */
+  .bk__f--wide {
+    grid-column: 1 / -1;
+  }
+  .bk textarea::placeholder {
+    color: var(--color-text-muted);
+    opacity: 0.8;
   }
   .bk__f label {
     font-weight: 500;
@@ -222,6 +271,100 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
   };
   typeSel?.addEventListener('change', toggleEdu);
   toggleEdu();
+
+  // --- Context-aware "Matter to be discussed" + dynamic example placeholder ---
+  const journeySel = form?.querySelector('#bk-journey');
+  const matterSel = form?.querySelector('#bk-matter');
+  const notes = form?.querySelector('[data-bk-notes]');
+  // Snapshot the matter options once so reordering is always from the full set.
+  const matterAll = matterSel
+    ? Array.from(matterSel.querySelectorAll('option')).map((o) => ({
+        value: o.value,
+        label: o.textContent || '',
+      }))
+    : [];
+  // Which matters to surface first for each journey (the rest still follow, in order).
+  const MATTER_PRIORITY = {
+    'planning-study': ['student-500', 'graduate-485', 'skills-assessment', 'gsm'],
+    'currently-studying': ['student-500', 'graduate-485', 'extension', 'gsm'],
+    working: ['gsm', 'employer-sponsored', 'skills-assessment', 'extension'],
+    'planning-work': ['employer-sponsored', 'gsm', 'skills-assessment', 'student-500'],
+    'planning-pr': ['gsm', 'employer-sponsored', 'partner', 'skills-assessment'],
+    'australian-partner': ['partner'],
+    employer: ['employer-sponsored', 'sponsoring-employee'],
+    refused: ['refusal', 'extension'],
+    'in-australia-next-visa': ['extension', 'gsm', 'student-500', 'graduate-485', 'partner'],
+    unsure: ['gsm', 'student-500', 'graduate-485', 'partner', 'employer-sponsored'],
+  };
+  const reorderMatter = () => {
+    if (!matterSel || !matterAll.length) return;
+    const journey = journeySel?.value || '';
+    const priority = MATTER_PRIORITY[journey] || [];
+    const chosen = matterSel.value;
+    const rank = (v) => {
+      if (v === '') return -1; // keep the "Select…" placeholder first
+      const i = priority.indexOf(v);
+      return i === -1 ? priority.length + matterAll.findIndex((o) => o.value === v) : i;
+    };
+    const ordered = [...matterAll].sort((a, b) => rank(a.value) - rank(b.value));
+    matterSel.innerHTML = '';
+    for (const o of ordered) {
+      const opt = document.createElement('option');
+      opt.value = o.value;
+      opt.textContent = o.label;
+      matterSel.appendChild(opt);
+    }
+    matterSel.value = chosen; // preserve any current selection
+  };
+
+  const EXAMPLES = {
+    student:
+      "Example: I'm currently studying in Australia and my student visa expires in October. I'd like to understand my options to extend my stay or apply for a Temporary Graduate visa.",
+    graduate:
+      "Example: I'm an international student completing my bachelor's degree and I want to know whether I'm eligible for a Temporary Graduate visa after graduation.",
+    skilled:
+      "Example: I'm a professional with 5 years of experience in Australia and 5 years of experience in my home country in my field. I'd like to understand my options for permanent residency.",
+    employer:
+      "Example: I own a business and would like to sponsor an employee so we can retain them for the foreseeable future. I'd like to understand the available sponsorship options.",
+    refusal:
+      "Example: My visa application was recently refused. I'd like to understand why it was refused and what options I have from here.",
+    partner:
+      "Example: My partner is an Australian permanent resident and we've been together for 3 years. I'd like to understand my partner visa options.",
+    unsure:
+      "Example: I'm currently working in Australia and have several years of experience in my occupation, but I'm not sure which pathway to permanent residency would suit me.",
+    generic:
+      "Example: I'm currently studying in Australia, my student visa expires in October, and I'd like to understand my options to stay longer and eventually apply for permanent residency.",
+  };
+  const JOURNEY_EXAMPLE = {
+    'planning-study': 'student',
+    'currently-studying': 'student',
+    working: 'skilled',
+    'planning-work': 'skilled',
+    'planning-pr': 'skilled',
+    'in-australia-next-visa': 'skilled',
+    'australian-partner': 'partner',
+    employer: 'employer',
+    refused: 'refusal',
+    unsure: 'unsure',
+  };
+  const updateExample = () => {
+    if (!notes) return;
+    const matter = matterSel?.value || '';
+    const journey = journeySel?.value || '';
+    // The matter answer refines the example where it's more specific than the journey.
+    let key = JOURNEY_EXAMPLE[journey] || 'generic';
+    if (matter === 'graduate-485') key = 'graduate';
+    else if (matter === 'partner') key = 'partner';
+    else if (matter === 'refusal') key = 'refusal';
+    else if (matter === 'employer-sponsored' || matter === 'sponsoring-employee') key = 'employer';
+    notes.setAttribute('placeholder', EXAMPLES[key] || EXAMPLES.generic);
+  };
+  journeySel?.addEventListener('change', () => {
+    reorderMatter();
+    updateExample();
+  });
+  matterSel?.addEventListener('change', updateExample);
+
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     err.hidden = true;
@@ -229,6 +372,8 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
     let when = fd.get('requestedStartUtc');
     const payload = {
       type: fd.get('type'),
+      journeyStage: fd.get('journeyStage') || undefined,
+      matter: fd.get('matter') || undefined,
       firstName: fd.get('firstName'),
       email: fd.get('email'),
       mobile: fd.get('mobile'),

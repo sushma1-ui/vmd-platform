@@ -29,6 +29,12 @@ export const consultationType = z.enum([
 
 export const consultationRequest = z.object({
   type: consultationType,
+  // Context captured to make an enquiry useful BEFORE it reaches the agent. Both are
+  // free-form slugs from the form's dropdowns (kept as strings, not enums, so the
+  // option lists can evolve without a schema/DB change). Optional for backwards
+  // compatibility with existing submissions/integrations.
+  journeyStage: z.string().trim().max(120).optional(), // "Where are you in your journey?"
+  matter: z.string().trim().max(120).optional(), // "Matter to be discussed"
   firstName,
   email,
   mobile: phone,

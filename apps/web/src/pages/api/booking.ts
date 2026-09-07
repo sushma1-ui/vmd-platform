@@ -102,6 +102,8 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
           submissionId: recordId !== 'pending' ? recordId : undefined,
           healthCheck: {
             consultationType: data.type,
+            journeyStage: data.journeyStage,
+            matter: data.matter,
             preferredTime: data.requestedStartUtc,
             timezone: data.timezone,
             notes: data.notes,
