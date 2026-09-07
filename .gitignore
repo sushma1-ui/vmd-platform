@@ -28,3 +28,6 @@ apps/web/public/homepage-prototype*.html
 # hero-carousel source PNGs (raw, tens of MB) — only the optimised /hero-carousel/*.webp ship
 apps/web/public/Carousal/
 apps/web/public/Carousal 2/
+# internal working docs (not website content — never ship, keep out of `git add -A`)
+/DESIGN-REVIEW.md
+/VMD-DIGITAL-ASSESSMENT.md
