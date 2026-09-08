@@ -4,7 +4,7 @@ import { track } from '@vmd/analytics';
 import { PRACTICE } from '@vmd/config';
 import { sendTransactional } from '@vmd/email';
 import { getCrmProvider } from '@vmd/crm';
-import { verifyTurnstile, rateLimit, readJson } from '@vmd/forms';
+import { passesTurnstile, honeypotTripped, rateLimit, readJson } from '@vmd/forms';
 import { createLead } from '../../lib/cms.ts';
 
 export const prerender = false;
@@ -32,19 +32,21 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
 
   // 1a — Honeypot: bots fill the hidden "website" field. Drop silently with a
   //      generic success so they learn nothing; no lead, no email, no CRM.
-  if (typeof raw.website === 'string' && raw.website.trim() !== '') {
+  if (honeypotTripped(raw, 'website')) {
     return json({ ok: true, submissionId: null, stored: false }, 200);
   }
 
-  // 1b — Cloudflare Turnstile. Enforced when TURNSTILE_SECRET_KEY is set; in dev
-  //      (no secret) verifyTurnstile returns true so local testing still works.
+  // 1b — Cloudflare Turnstile. Fail closed when configured (secret set, or the widget
+  //      is live via the public site key); in dev (neither set) it allows so local
+  //      testing still works while honeypot/validation/rate-limit remain in force.
   const ip =
     clientAddress || request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
-  const human = await verifyTurnstile(
-    typeof raw.turnstileToken === 'string' ? raw.turnstileToken : undefined,
-    env.TURNSTILE_SECRET_KEY,
-    ip,
-  );
+  const human = await passesTurnstile({
+    token: typeof raw.turnstileToken === 'string' ? raw.turnstileToken : undefined,
+    secret: env.TURNSTILE_SECRET_KEY,
+    siteKey: env.PUBLIC_TURNSTILE_SITE_KEY,
+    remoteIp: ip,
+  });
   if (!human) return json({ ok: false, error: 'verification-failed' }, 403);
 
   // 1c — Validate the full submission (country/nationality/etc. required).

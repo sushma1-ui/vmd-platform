@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro';
 import { consultationRequest, scoreLead } from '@vmd/schema';
 import { getSchedulingProvider } from '@vmd/scheduling';
-import { rateLimit, verifyTurnstile, readJson } from '@vmd/forms';
+import { rateLimit, passesTurnstile, honeypotTripped, readJson } from '@vmd/forms';
 import { sendTransactional } from '@vmd/email';
 import { PRACTICE } from '@vmd/config';
 import { createConsultation, patchConsultation, createLead } from '../../lib/cms.ts';
@@ -14,18 +14,20 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   if (!read.ok) return json({ ok: false, error: read.error }, read.status);
   const body = read.data;
   const raw = body as Record<string, unknown>;
-  if (raw.company) return json({ ok: true }); // honeypot
+  if (honeypotTripped(raw, 'company')) return json({ ok: true }); // honeypot
 
   const parsed = consultationRequest.safeParse(body);
   if (!parsed.success) return json({ ok: false, fieldErrors: errs(parsed.error.issues) }, 422);
 
   const ip =
     clientAddress || request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
-  const okHuman = await verifyTurnstile(
-    raw.turnstileToken as string | undefined,
-    env.TURNSTILE_SECRET_KEY,
-    ip,
-  );
+  // Fail closed when Turnstile is configured (secret set, or widget live via site key).
+  const okHuman = await passesTurnstile({
+    token: raw.turnstileToken as string | undefined,
+    secret: env.TURNSTILE_SECRET_KEY,
+    siteKey: env.PUBLIC_TURNSTILE_SITE_KEY,
+    remoteIp: ip,
+  });
   if (!okHuman) return json({ ok: false, error: 'Verification failed' }, 400);
 
   const upstash = { url: env.UPSTASH_REDIS_REST_URL, token: env.UPSTASH_REDIS_REST_TOKEN };

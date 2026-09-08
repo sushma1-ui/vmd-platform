@@ -9,6 +9,7 @@
   },
   "scripts": {
     "build": "echo source-only",
+    "test": "node --test --experimental-strip-types \"src/spam.test.ts\" \"src/rate-limit.test.ts\" \"src/validate.test.ts\"",
     "typecheck": "tsc --noEmit",
     "lint": "eslint ."
   },

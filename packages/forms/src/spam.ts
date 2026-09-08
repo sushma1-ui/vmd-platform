@@ -68,3 +68,61 @@ export async function verifyTurnstile(
     return false;
   }
 }
+
+export interface TurnstileGate {
+  /** The token submitted by the client (cf-turnstile-response). */
+  token: string | undefined;
+  /** TURNSTILE_SECRET_KEY — server-only; presence means "we can verify". */
+  secret: string | undefined;
+  /** PUBLIC_TURNSTILE_SITE_KEY — presence means "the widget is live for users". */
+  siteKey?: string | undefined;
+  remoteIp?: string;
+  expectedHostname?: string;
+}
+
+/**
+ * The SINGLE human-check decision every public endpoint uses, so all forms enforce
+ * Turnstile identically — no form is protected merely because another one is.
+ *
+ *   - secret set                   → the token MUST verify; a missing, invalid,
+ *                                    expired or reused token is REJECTED (fail closed).
+ *   - secret unset but siteKey set → MISCONFIGURATION: the widget is live (users are
+ *                                    solving challenges) but the server has no secret
+ *                                    to verify with. REJECT rather than allow a
+ *                                    tokenless bypass — otherwise a bot skips the check
+ *                                    simply by not sending a token. (fail closed)
+ *   - neither set                  → Turnstile is not configured (local/dev/pre-launch).
+ *                                    Allow; honeypot, validation and rate limiting still
+ *                                    apply. Setting BOTH keys switches on enforcement.
+ */
+export async function passesTurnstile(gate: TurnstileGate): Promise<boolean> {
+  if (turnstileConfigured(gate.secret)) {
+    return verifyTurnstile(gate.token, gate.secret, {
+      remoteIp: gate.remoteIp,
+      expectedHostname: gate.expectedHostname,
+    });
+  }
+  if (typeof gate.siteKey === 'string' && gate.siteKey.length > 0) {
+    console.error(
+      '[turnstile] PUBLIC_TURNSTILE_SITE_KEY is set but TURNSTILE_SECRET_KEY is missing — ' +
+        'rejecting the submission to avoid a verification bypass. Set the secret to enable verification.',
+    );
+    return false;
+  }
+  return true;
+}
+
+/**
+ * True if any hidden honeypot field was filled. Humans never see these fields, so a
+ * non-empty value is a bot. Shared so every form drops honeypot hits the same way.
+ */
+export function honeypotTripped(
+  body: Record<string, unknown> | null | undefined,
+  ...fields: string[]
+): boolean {
+  if (!body) return false;
+  return fields.some((f) => {
+    const v = body[f];
+    return typeof v === 'string' ? v.trim() !== '' : v != null && v !== false;
+  });
+}

@@ -1,5 +1,12 @@
 import { leadSchema, type Lead } from '@vmd/schema';
-export { verifyTurnstile, turnstileConfigured, type TurnstileOptions } from './spam.ts';
+export {
+  verifyTurnstile,
+  passesTurnstile,
+  honeypotTripped,
+  turnstileConfigured,
+  type TurnstileOptions,
+  type TurnstileGate,
+} from './spam.ts';
 export { rateLimit, type UpstashConfig } from './rate-limit.ts';
 export { readJson, type ReadJsonResult } from './body.ts';
 

@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { validateLead, verifyTurnstile, rateLimit, readJson } from '@vmd/forms';
+import { validateLead, passesTurnstile, honeypotTripped, rateLimit, readJson } from '@vmd/forms';
 import { scoreLead, formatSubmissionReference } from '@vmd/schema';
 import { sendTransactional } from '@vmd/email';
 import { track } from '@vmd/analytics';
@@ -14,18 +14,20 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   if (!read.ok) return json({ ok: false, error: read.error }, read.status);
   const body = read.data as Record<string, unknown>;
 
-  if (body.company) return json({ ok: true, id: 'ignored' }); // honeypot
+  if (honeypotTripped(body, 'company')) return json({ ok: true, id: 'ignored' }); // honeypot
 
   const result = validateLead(body);
   if (!result.ok) return json({ ok: false, fieldErrors: result.fieldErrors }, 422);
 
   const ip =
     clientAddress || request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
-  const okHuman = await verifyTurnstile(
-    body.turnstileToken as string | undefined,
-    env.TURNSTILE_SECRET_KEY,
-    ip,
-  );
+  // Fail closed when Turnstile is configured (secret set, or widget live via site key).
+  const okHuman = await passesTurnstile({
+    token: body.turnstileToken as string | undefined,
+    secret: env.TURNSTILE_SECRET_KEY,
+    siteKey: env.PUBLIC_TURNSTILE_SITE_KEY,
+    remoteIp: ip,
+  });
   if (!okHuman) return json({ ok: false, error: 'Verification failed' }, 400);
 
   // Layered limits: a short burst window + a sustained hourly window per IP, plus a
