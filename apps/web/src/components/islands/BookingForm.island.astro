@@ -6,8 +6,10 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
 <form class="bk" data-bk novalidate>
   <div class="bk__grid">
     <div class="bk__f bk__f--wide">
-      <label for="bk-journey">Where are you in your journey?</label>
-      <select id="bk-journey" name="journeyStage">
+      <label for="bk-journey"
+        >Where are you in your journey? <span class="bk__req" aria-hidden="true">*</span></label
+      >
+      <select id="bk-journey" name="journeyStage" required aria-required="true">
         <option value="">Select…</option>
         <option value="planning-study">I'm planning to study in Australia</option>
         <option value="currently-studying">I'm currently studying in Australia</option>
@@ -25,8 +27,10 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
       </select>
     </div>
     <div class="bk__f bk__f--wide">
-      <label for="bk-matter">Matter to be discussed</label>
-      <select id="bk-matter" name="matter">
+      <label for="bk-matter"
+        >Matter to be discussed <span class="bk__req" aria-hidden="true">*</span></label
+      >
+      <select id="bk-matter" name="matter" required aria-required="true">
         <option value="">Select…</option>
         <option value="student-500">Student Visa (500)</option>
         <option value="graduate-485">Temporary Graduate Visa (485)</option>
@@ -45,11 +49,9 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
     <div class="bk__f">
       <label for="bk-type">Consultation type</label>
       <select id="bk-type" name="type"
-        ><option value="initial">Initial Consultation</option><option value="second-opinion"
-          >Second Opinion</option
-        ><option value="follow-up">Follow-up</option><option value="educational"
-          >Educational Consultation — FREE</option
-        ></select
+        ><option value="initial">Initial Consultation</option><option value="follow-up"
+          >Follow-up</option
+        ><option value="educational">Educational Consultation — FREE</option></select
       >
     </div>
     <div class="bk__f">
@@ -191,6 +193,9 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
   .bk__f label {
     font-weight: 500;
     font-size: var(--type-body-sm);
+  }
+  .bk__req {
+    color: var(--color-critical);
   }
   .bk input,
   .bk select,
@@ -403,6 +408,20 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
         ]
           .filter(Boolean)
           .join('\n') || undefined;
+    }
+    // Required context — enforced client-side (the form is novalidate) AND server-side
+    // (consultationRequest schema). Both must be chosen before we submit.
+    if (!payload.journeyStage) {
+      err.textContent = 'Please tell us where you are in your journey.';
+      err.hidden = false;
+      form.querySelector<HTMLElement>('#bk-journey')?.focus();
+      return;
+    }
+    if (!payload.matter) {
+      err.textContent = 'Please choose the matter you would like to discuss.';
+      err.hidden = false;
+      form.querySelector<HTMLElement>('#bk-matter')?.focus();
+      return;
     }
     if (!payload.firstName || !payload.email || !payload.mobile) {
       err.textContent = 'Please enter your name, email and mobile.';

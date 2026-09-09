@@ -21,14 +21,6 @@ const types = [
     href: '/initial-consultation',
   },
   {
-    value: 'second-opinion',
-    title: 'Second Opinion',
-    fee: 'AUD $220',
-    detail:
-      'A fresh, independent review of a matter already underway — or a visa refusal or cancellation you want assessed.',
-    href: null,
-  },
-  {
     value: 'follow-up',
     title: 'Follow-up',
     fee: null,
@@ -55,7 +47,7 @@ const trail = [
 
 <Base
   title="Book a Consultation | Visa & Migration Doctors"
-  description="Book a consultation with a Registered Migration Agent in Perth — choose an initial consultation, second opinion or follow-up, in person or online."
+  description="Book a consultation with a Registered Migration Agent in Perth — choose an initial consultation or follow-up, in person or online."
   schemas={[breadcrumbSchema(trail)]}
 >
   <section class="bkc">
@@ -129,7 +121,7 @@ const trail = [
   });
   // Deep link: /book-consultation?type=educational (or #educational) — used by the
   // Study in Australia FREE Educational Consultation CTAs.
-  const valid = ['initial', 'second-opinion', 'follow-up', 'educational'];
+  const valid = ['initial', 'follow-up', 'educational'];
   const params = new URLSearchParams(location.search);
   const pre = params.get('type') || (location.hash ? location.hash.slice(1) : '');
   if (pre && valid.includes(pre)) choose(pre);

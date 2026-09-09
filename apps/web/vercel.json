@@ -4,6 +4,12 @@
   "redirects": [
     { "source": "/visa-services", "destination": "/services", "permanent": true },
     { "source": "/visa-services/:path*", "destination": "/services", "permanent": true },
+    { "source": "/services/second-opinion", "destination": "/services", "permanent": true },
+    {
+      "source": "/services/refusal-recovery",
+      "destination": "/services/art-review-applications",
+      "permanent": true
+    },
     {
       "source": "/results/grant-ledger",
       "destination": "/results/success-stories",

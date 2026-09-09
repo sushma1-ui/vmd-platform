@@ -99,16 +99,13 @@ export function buildServiceNav(docs: ServiceDoc[]): ServiceNav {
 
   // Other services. "Admissions" is the Study in Australia education page (bespoke —
   // not a CMS service doc), labelled simply "Admissions". "ART Merits Review" is the
-  // refusal/review wording used throughout the navbar. Second Opinion and Refusal
-  // Recovery are the dedicated review pages.
+  // refusal/review service (merits review at the ART) surfaced in the navbar.
   const otherServices: NavItem[] = [
     { label: 'Admissions', href: '/study-in-australia/' },
     { label: 'Health Insurance', href: '/resources/health-insurance/' },
     ...pick(bySlug, ['skills-assessment']),
     ...pick(bySlug, ['initial-consultation']),
     ...pick(bySlug, ['art-review-applications']),
-    { label: 'Second Opinion', href: '/services/second-opinion/' },
-    { label: 'Refusal Recovery', href: '/services/refusal-recovery/' },
   ];
 
   return {

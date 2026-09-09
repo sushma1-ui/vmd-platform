@@ -31,10 +31,19 @@ export const consultationRequest = z.object({
   type: consultationType,
   // Context captured to make an enquiry useful BEFORE it reaches the agent. Both are
   // free-form slugs from the form's dropdowns (kept as strings, not enums, so the
-  // option lists can evolve without a schema/DB change). Optional for backwards
-  // compatibility with existing submissions/integrations.
-  journeyStage: z.string().trim().max(120).optional(), // "Where are you in your journey?"
-  matter: z.string().trim().max(120).optional(), // "Matter to be discussed"
+  // option lists can evolve without a schema/DB change). REQUIRED — the consultation
+  // form must not be submitted without them; enforced here so a direct POST can't
+  // bypass the requirement. (Historical records are not re-validated at read time.)
+  journeyStage: z
+    .string({ required_error: 'Please tell us where you are in your journey.' })
+    .trim()
+    .min(1, 'Please tell us where you are in your journey.')
+    .max(120), // "Where are you in your journey?"
+  matter: z
+    .string({ required_error: 'Please choose the matter you would like to discuss.' })
+    .trim()
+    .min(1, 'Please choose the matter you would like to discuss.')
+    .max(120), // "Matter to be discussed"
   firstName,
   email,
   mobile: phone,
