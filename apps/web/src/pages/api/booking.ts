@@ -70,8 +70,8 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     await patchConsultation(recordId, { providerRef }, apiKey);
 
   // 4) A booking is also a high-value lead. Educational Consultations (the Study in
-  //    Australia funnel) are tagged distinctly so that funnel can be measured, and
-  //    routed to admissions@ — without changing the general consultation pipeline.
+  //    Australia funnel) are tagged distinctly (source 'educational-consultation') so
+  //    that funnel can be measured — without changing the general consultation pipeline.
   const isEducational = data.type === 'educational';
   const bookingLeadSource = isEducational ? 'educational-consultation' : 'consultation';
   if (apiKey)
@@ -90,11 +90,13 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   //    checklist (commitment device, §9.4).
   if (env.POSTMARK_SERVER_TOKEN && env.POSTMARK_FROM_EMAIL) {
     const postmark = { serverToken: env.POSTMARK_SERVER_TOKEN, from: env.POSTMARK_FROM_EMAIL };
-    // Team alert — route educational (Study in Australia) enquiries to admissions@,
-    // every other consultation to the general practice inbox.
+    // Team alert — ALL consultation types (including educational / Study) go to the
+    // shared enquiries inbox. Study enquiries stay distinguishable via the email
+    // subject/heading ("Study Enquiry", see @vmd/email sourceLabel) and the CMS
+    // (lead source 'educational-consultation', consultation type 'educational').
     await sendTransactional(
       {
-        to: isEducational ? PRACTICE.contact.admissionsEmail : PRACTICE.contact.email,
+        to: PRACTICE.contact.email,
         template: 'lead-internal-notification',
         model: {
           firstName: data.firstName,

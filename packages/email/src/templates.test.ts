@@ -40,3 +40,31 @@ test('admin notification carries id, source, identity and questionnaire answers'
   assert.match(text, /englishTest: yes/);
   assert.match(text, /utmSource: google/);
 });
+
+test('Study (educational) enquiry is labelled "Study Enquiry" in subject and body heading', () => {
+  const { subject, text } = renderTemplate('lead-internal-notification', {
+    source: 'educational consultation booking',
+    firstName: 'Bikash',
+    email: 'bikash@example.com',
+  });
+  assert.match(subject, /^New Study Enquiry — Bikash/);
+  assert.match(text, /^Study Enquiry\n/); // explicit body heading
+});
+
+test('General enquiry and normal booking labels are unchanged (no Study leak)', () => {
+  const general = renderTemplate('lead-internal-notification', {
+    source: 'general-enquiry',
+    firstName: 'Gen',
+    email: 'g@example.com',
+  });
+  assert.match(general.subject, /^New website enquiry — Gen/);
+  assert.doesNotMatch(general.text, /Study Enquiry/);
+
+  const booking = renderTemplate('lead-internal-notification', {
+    source: 'consultation booking',
+    firstName: 'Bo',
+    email: 'b@example.com',
+  });
+  assert.match(booking.subject, /^New consultation booking — Bo/);
+  assert.doesNotMatch(booking.text, /Study Enquiry/);
+});

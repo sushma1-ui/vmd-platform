@@ -50,12 +50,12 @@ export const PRACTICE = {
   contact: {
     phone: '+61493719431',
     phoneDisplay: '+61 493 719 431',
-    // Practice-standard shared mailbox (matches client documents). sunil@ is retained
+    // Practice-standard shared mailbox (matches client documents), and the single
+    // destination for ALL website enquiries — general, Study/Education, and
+    // consultation bookings alike. Study enquiries are distinguished by the email
+    // subject/heading and CMS labels, not by a separate mailbox. sunil@ is retained
     // for direct client correspondence only, not shown as the public site contact.
     email: 'enquiries@migrationdoctors.com.au',
-    // Education / admissions enquiries — the Study in Australia funnel (Educational
-    // Consultation bookings + the Study page/footer education contact) route here.
-    admissionsEmail: 'admissions@migrationdoctors.com.au',
   },
   address: {
     street: 'Level 27, 44 St Georges Terrace',

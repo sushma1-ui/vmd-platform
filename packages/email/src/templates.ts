@@ -15,6 +15,10 @@ function line(label: string, v: unknown): string {
 function sourceLabel(source: unknown): string {
   const s = str(source).toLowerCase();
   if (s.includes('health')) return 'Free Visa Health Check';
+  // Study / Education (educational consultation) — checked BEFORE consultation/booking
+  // because its source string also contains "consultation". Routed to the shared
+  // enquiries inbox but labelled distinctly so the team can spot it at a glance.
+  if (s.includes('study') || s.includes('education')) return 'Study Enquiry';
   if (s.includes('second')) return 'Second Opinion request';
   if (s.includes('consultation') || s.includes('booking')) return 'consultation booking';
   if (s.includes('guide')) return 'guide download';
@@ -59,6 +63,9 @@ export function renderTemplate(t: TransactionalTemplate, m: Record<string, unkno
           str(m.submissionId) ? ` (${str(m.submissionId)})` : ''
         }`,
         text:
+          // Study enquiries get an explicit heading; every other type's body is
+          // byte-for-byte unchanged (the heading line is added only for Study).
+          (sourceLabel(m.source) === 'Study Enquiry' ? `Study Enquiry\n\n` : '') +
           `New submission from the ${str(m.source) || 'website'}.\n\n` +
           line('Reference', m.submissionId) +
           line('Received', m.receivedAt) +
