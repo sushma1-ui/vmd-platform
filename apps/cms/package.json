@@ -4,6 +4,9 @@
   "private": true,
   "description": "ADMIN + content API. Payload 3 (Next-based), Supabase Postgres via the pooled connection, Supabase Storage adapter. Content types live HERE as collections, not in packages/ (ARCHITECTURE.md \u00a72.3).",
   "type": "module",
+  "engines": {
+    "node": "24.x"
+  },
   "scripts": {
     "dev": "next dev -p 3000",
     "build": "node scripts/run-migrations.mjs && next build",
