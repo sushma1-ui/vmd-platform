@@ -431,6 +431,13 @@ const schemas = [
         Education &amp; admissions enquiries —
         <a href={`mailto:${PRACTICE.contact.email}`}>{PRACTICE.contact.email}</a>
       </p>
+      <p class="se-cta__disclosure">
+        Disclosure: where we help you enrol with an education provider, we may receive a commission
+        or referral fee from that provider. Any such arrangement relevant to your matter is
+        disclosed to you in writing before we act, in accordance with the Migration Agents Code of
+        Conduct. Course and enrolment guidance is general education support; immigration advice is
+        provided only by our Registered Migration Agent.
+      </p>
     </div>
   </section>
 </Base>
@@ -969,6 +976,13 @@ const schemas = [
   .se-cta__email a:hover,
   .se-cta__email a:focus-visible {
     border-block-end-color: currentColor;
+  }
+  .se-cta__disclosure {
+    max-inline-size: 60ch;
+    margin: var(--space-4) auto 0;
+    font-size: var(--type-body-sm);
+    line-height: 1.6;
+    color: color-mix(in srgb, var(--color-text-inverse) 64%, transparent);
   }
   /* FREE Educational Consultation — mid-page conversion band. Warm bone ground with
      a gold wash + hairline, so the offer reads as one consistent campaign with the

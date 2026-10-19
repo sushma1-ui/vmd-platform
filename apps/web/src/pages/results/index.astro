@@ -19,7 +19,7 @@ const trail = pathnameToTrail(Astro.url.pathname);
 
 <Base
   title="Results — evidence, not testimony"
-  description="How we show our work: client success stories, anonymised case studies, and verified Google reviews. Evidence you can check — no success rates, no cherry-picked promises."
+  description="How we show our work: client success stories, anonymised case studies, and Google reviews. Evidence you can check — no success rates, no cherry-picked promises."
   schemas={[breadcrumbSchema(trail)]}
 >
   <section class="rs-hero">
@@ -44,7 +44,7 @@ const trail = pathnameToTrail(Astro.url.pathname);
       {
         gr?.rating && gr?.count && (
           <p class="rs-hero__agg">
-            {gr.rating.toFixed(1)} ★ from {gr.count} verified Google reviews
+            {gr.rating.toFixed(1)} ★ from {gr.count} Google reviews
           </p>
         )
       }

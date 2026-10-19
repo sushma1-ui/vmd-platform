@@ -1,0 +1,73 @@
+---
+import SimplePage from '../../components/content/SimplePage.astro';
+import { PRACTICE } from '@vmd/config';
+
+// Official OMARA-published Consumer Guide (single source of truth: the regulator's
+// own document). English PDF + the regulator's landing page, which also carries the
+// 38+ translated versions. We link the authoritative source rather than hosting a
+// copy that could fall out of date.
+const GUIDE_LANDING =
+  'https://www.mara.gov.au/notices-and-reports/guides-and-factsheets/consumer-guide';
+const GUIDE_PDF_EN =
+  'https://www.mara.gov.au/get-help-visa-subsite/FIles/consumer_guide_english.pdf';
+---
+
+<SimplePage
+  title="Consumer Guide"
+  description="The OMARA Consumer Guide for clients of registered migration agents — what to expect from your agent, your rights, and how to make a complaint. Published by the regulator."
+  eyebrow="Checkable"
+  lead="What you can expect from a registered migration agent — in the regulator's own words."
+  cta={{ href: GUIDE_PDF_EN, label: 'Read the Consumer Guide (PDF)' }}
+>
+  <p>
+    The <strong>Consumer Guide</strong> is published by the Office of the Migration Agents Registration
+    Authority (OMARA). It explains the standards and rules a registered migration agent must follow —
+    including how agents give immigration assistance, what should be in your service agreement, how fees
+    and invoices work, and how to raise a complaint.
+  </p>
+
+  <p>
+    Under the Migration Agents Code of Conduct, a registered migration agent must give you a copy of
+    the Consumer Guide before providing immigration assistance. We provide it to every client
+    directly, and we publish it here so you can read it before you decide to work with us.
+  </p>
+
+  <h2>Read the Consumer Guide</h2>
+  <ul>
+    <li>
+      <a href={GUIDE_PDF_EN} rel="noopener" target="_blank">Consumer Guide — English (PDF)</a>
+    </li>
+    <li>
+      <a href={GUIDE_LANDING} rel="noopener" target="_blank">Consumer Guide on the OMARA website</a> —
+      also available in 38+ translated languages.
+    </li>
+  </ul>
+
+  <p>
+    If you would like a copy by email or in another language, just ask — contact us at{' '}
+    <a href={`mailto:${PRACTICE.contact.email}`}>{PRACTICE.contact.email}</a> or through our{' '}
+    <a href="/contact/">contact page</a>.
+  </p>
+
+  <p>
+    You can also verify our Registered Migration Agent on the{' '}
+    <a href={PRACTICE.regulator.registerSearchUrl} rel="noopener" target="_blank"
+      >OMARA register of migration agents</a
+    >: {PRACTICE.principal.name}, MARN {PRACTICE.principal.marn}.
+  </p>
+</SimplePage>
+
+<style>
+  h2 {
+    font-size: var(--type-h3);
+    margin-block: var(--space-6) var(--space-2);
+    color: var(--color-action);
+  }
+  ul {
+    margin: 0 0 var(--space-4);
+    padding-inline-start: var(--space-5);
+    display: grid;
+    gap: var(--space-2);
+    line-height: 1.6;
+  }
+</style>

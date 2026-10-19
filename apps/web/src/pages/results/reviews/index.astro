@@ -27,7 +27,7 @@ const tYear = (iso?: string) => {
 ---
 
 <Base
-  title="Client reviews — verified Google reviews"
+  title="Client reviews — Google reviews"
   description="Verified Google reviews for Visa & Migration Doctors, Perth. Placed after the evidence and the person, reviews read as corroboration — not advertising."
   schemas={[breadcrumbSchema(trail)]}
 >
@@ -47,16 +47,16 @@ const tYear = (iso?: string) => {
       {
         gr?.rating && gr?.count ? (
           <h1 class="rv-hero__title">
-            {gr.rating.toFixed(1)} ★ from {gr.count} verified Google reviews
+            {gr.rating.toFixed(1)} ★ from {gr.count} Google reviews
           </h1>
         ) : (
-          <h1 class="rv-hero__title">Verified client reviews</h1>
+          <h1 class="rv-hero__title">Client reviews</h1>
         )
       }
       <Rule width="short" />
       <p class="rv-hero__lead">
         Placed here — after the evidence and the person — reviews read as corroboration, not
-        advertising. Every one is a real, verified Google review.
+        advertising. Every one is a genuine review published on our Google Business Profile.
       </p>
       <TrustStrip reviewUrl={gr?.profileUrl ?? '/results/reviews/'} />
       {

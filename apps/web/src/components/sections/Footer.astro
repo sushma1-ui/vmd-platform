@@ -27,6 +27,7 @@ const colsFallback = [
     links: [
       [`${RMA_LINE} · OMARA register`, PRACTICE.regulator.registerSearchUrl],
       ['Code of Conduct', PRACTICE.regulator.codeOfConductUrl],
+      ['Consumer Guide', '/consumer-guide/'],
       ['Complaints & Feedback', '/complaints/'],
     ],
   },
@@ -75,11 +76,6 @@ const ACKNOWLEDGEMENT =
       <p class="footer__nap">
         <a href={`tel:${PRACTICE.contact.phone}`}>{PRACTICE.contact.phoneDisplay}</a> · <a
           href={`mailto:${PRACTICE.contact.email}`}>{PRACTICE.contact.email}</a
-        >
-      </p>
-      <p class="footer__nap">
-        Education &amp; admissions: <a href={`mailto:${PRACTICE.contact.email}`}
-          >{PRACTICE.contact.email}</a
         >
       </p>
       <p class="footer__nap">{RMA_LINE}</p>

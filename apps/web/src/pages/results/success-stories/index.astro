@@ -165,7 +165,7 @@ const trail = [
 
 <Base
   title="Client stories — reviews, testimonials & visa outcomes"
-  description="Real, consented client stories: verified Google reviews, testimonials, and individual visa and skills-assessment outcomes. Every case is decided on its own merits; this is not a guarantee of any outcome."
+  description="Real, consented client stories: Google reviews, testimonials, and individual visa and skills-assessment outcomes. Every case is decided on its own merits; this is not a guarantee of any outcome."
   schemas={[breadcrumbSchema(trail)]}
 >
   <section class="cs">
@@ -185,7 +185,7 @@ const trail = [
               ★★★★★
             </span>
             <span class="cs__agg-txt">
-              {gr.count ? `average from ${gr.count} verified Google reviews` : 'average on Google'}
+              {gr.count ? `average from ${gr.count} Google reviews` : 'average on Google'}
             </span>
           </div>
         )
@@ -310,7 +310,7 @@ const trail = [
     {
       pinned.length > 0 && (
         <div class="cs__block">
-          <p class="cs__k">Verified on Google</p>
+          <p class="cs__k">Published on Google</p>
           <h2 class="cs__h">Google reviews</h2>
           <ul class="cs__grid cs__grid--rev" role="list">
             {pinned.map((r) => (
@@ -344,7 +344,7 @@ const trail = [
         <p class="cs__empty">
           Client stories are published here with each client's permission. The first stories are
           being prepared — in the meantime, see our
-          <a href="/results/reviews/">verified Google reviews</a>.
+          <a href="/results/reviews/">Google reviews</a>.
         </p>
       )
     }

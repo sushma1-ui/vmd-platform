@@ -4,6 +4,9 @@ import { PRACTICE } from '@vmd/config';
 /** RMA + MARN, always paired (compliance). Used in client-facing signatures. */
 const SIGNATURE = `— ${PRACTICE.legalName}\nRegistered Migration Agent (RMA): ${PRACTICE.principal.name} · MARN ${PRACTICE.principal.marn}`;
 
+/** OMARA Consumer Guide — surfaced to clients at the booking touchpoint (Code obligation). */
+const CONSUMER_GUIDE_URL = `https://${PRACTICE.domain}/consumer-guide/`;
+
 function str(v: unknown): string {
   return v == null ? '' : String(v);
 }
@@ -92,7 +95,14 @@ export function renderTemplate(t: TransactionalTemplate, m: Record<string, unkno
     case 'consultation-confirmation':
       return {
         subject: 'Your consultation is confirmed',
-        text: `Hi ${name}, your consultation is confirmed. Please bring: passport, current visa, any refusal/decision letters, employment or study documents, English test results, and skills assessment (if any).`,
+        text:
+          `Hi ${name}, your consultation is confirmed.\n\n` +
+          `Please bring: passport, current visa, any refusal/decision letters, ` +
+          `employment or study documents, English test results, and skills assessment (if any).\n\n` +
+          `Before your consultation, please read the OMARA Consumer Guide for clients of ` +
+          `registered migration agents. It sets out what you can expect from a registered ` +
+          `migration agent and your rights:\n  ${CONSUMER_GUIDE_URL}\n\n` +
+          SIGNATURE,
       };
     case 'health-check-result':
       // Legacy template retained for compatibility. The current flow uses

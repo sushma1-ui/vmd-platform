@@ -5,16 +5,84 @@ import { PRACTICE } from '@vmd/config';
 
 <SimplePage
   title="Complaints & Feedback"
-  description="How to raise a concern about our service, including the OMARA complaint pathway."
+  description="How to raise a concern about our service, how we handle it, and the external bodies you can contact — including the OMARA and the OAIC."
   eyebrow="Checkable"
   lead="We publish this because accountability should be easy to find."
   cta={{ href: '/contact/', label: 'Contact the practice' }}
 >
   <p>
-    If you have a concern, contact us first and we will respond promptly. You may also complain to
-    OMARA, the regulator, at any time —{' '}
-    <a href={PRACTICE.regulator.complaintsUrl} rel="noopener" target="_blank"
-      >make a complaint on the OMARA website</a
-    >.
+    We take concerns seriously and treat every complaint as a chance to put something right and
+    improve how we work. You can raise a concern at any time, and doing so will never affect how we
+    handle your matter.
   </p>
+
+  <h2>How to raise a complaint</h2>
+  <p>
+    Please contact us first so we have the chance to resolve it directly. You can reach us by email
+    at <a href={`mailto:${PRACTICE.contact.email}`}>{PRACTICE.contact.email}</a>, by phone on{' '}
+    <a href={`tel:${PRACTICE.contact.phone}`}>{PRACTICE.contact.phoneDisplay}</a>, or through our{
+      ' '
+    }
+    <a href="/contact/">contact page</a>. It helps if you tell us what happened, when, and the
+    outcome you are looking for.
+  </p>
+
+  <h2>How we handle it</h2>
+  <ul>
+    <li>
+      <strong>We acknowledge your complaint in writing</strong> within 5 business days of receiving it,
+      so you know it has reached the right person.
+    </li>
+    <li>
+      <strong>We review it properly.</strong> Your complaint is considered by the Registered Migration
+      Agent, who will look into what happened and may contact you for further detail.
+    </li>
+    <li>
+      <strong>We respond with an outcome</strong> — normally within 30 days. If a complaint is complex
+      and needs longer, we will tell you why and keep you updated on our progress.
+    </li>
+    <li>
+      <strong>We keep it confidential</strong> and handle any personal information in accordance with
+      our <a href="/privacy/">Privacy Policy</a>.
+    </li>
+  </ul>
+
+  <h2>If you are not satisfied</h2>
+  <p>
+    If we cannot resolve your complaint to your satisfaction, you can escalate it at any time — you
+    do not have to come to us first, and lodging a complaint will not affect a current visa
+    application:
+  </p>
+  <ul>
+    <li>
+      Concerns about the conduct of a registered migration agent —{' '}
+      <a href={PRACTICE.regulator.complaintsUrl} rel="noopener" target="_blank"
+        >make a complaint to the OMARA</a
+      >, the Office of the Migration Agents Registration Authority.
+    </li>
+    <li>
+      Concerns about how we have handled your personal information —{' '}
+      <a href="https://www.oaic.gov.au/privacy/privacy-complaints" rel="noopener" target="_blank"
+        >the Office of the Australian Information Commissioner (OAIC)</a
+      >, on 1300 363 992.
+    </li>
+  </ul>
 </SimplePage>
+
+<style>
+  h2 {
+    font-size: var(--type-h3);
+    margin-block: var(--space-6) var(--space-2);
+    color: var(--color-action);
+  }
+  ul {
+    margin: 0 0 var(--space-4);
+    padding-inline-start: var(--space-5);
+    display: grid;
+    gap: var(--space-2);
+    line-height: 1.6;
+  }
+  li {
+    padding-inline-start: var(--space-1);
+  }
+</style>

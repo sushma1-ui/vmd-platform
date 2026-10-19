@@ -23,7 +23,7 @@ export const CURATED_REVIEWS: CuratedReview[] = [
     reviewerName: 'Utshab Bhusal',
     rating: 5,
     reviewDate: '4 months ago',
-    text: 'I recently received my subclass 190 visa as a Chef. He really simplified the process and broke down each and every section, which relieved me from stress and gave me time to focus back on my work and wellbeing. He was very flexible with his schedule whenever I needed guidance and offered me the best service in Perth. I would recommend him as your migration agent based on my experience.',
+    text: 'I recently received my subclass 190 visa as a Chef. He really simplified the process and broke down each and every section, which relieved me from stress and gave me time to focus back on my work and wellbeing. He was very flexible with his schedule whenever I needed guidance. I would recommend him as your migration agent based on my experience.',
   },
   {
     reviewerName: 'Saroj Naharki',
